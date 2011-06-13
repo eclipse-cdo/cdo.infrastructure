@@ -26,6 +26,12 @@ public class Promoter
 
   private static String jobName;
 
+  private static File hudsonJob;
+
+  private static File builds;
+
+  private static File drops;
+
   public static void main(String[] args) throws Exception
   {
     if (args.length != 5)
@@ -43,14 +49,16 @@ public class Promoter
     hudsonJobsDir = args[1];
     jobName = args[2];
 
+    hudsonJob = new File(hudsonJobsDir, jobName);
+    builds = new File(hudsonJob, "builds");
+    drops = new File(downloadsDir, "drops");
+
     final int lastBuildNumber = Integer.parseInt(args[3]);
     final int nextBuildNumber = Integer.parseInt(args[4]);
     int lastCheckedPromotion = lastBuildNumber;
 
     try
     {
-      final File hudsonJob = new File(hudsonJobsDir, jobName);
-      final File builds = new File(hudsonJob, "builds");
 
       for (int buildNumber = lastBuildNumber; buildNumber < nextBuildNumber; buildNumber++)
       {
@@ -73,32 +81,44 @@ public class Promoter
 
   private static void checkBuild(File build) throws IOException
   {
-    File drops = new File(downloadsDir, "drops");
+    // if (!build.exists())
+    // {
+    // build = new File("jobs/" + jobName + "/builds/" + build.getName());
+    // if (!build.exists())
+    // {
+    // throw new IOException(build.getAbsolutePath() + " does not exist");
+    // }
+    // }
+
     File archive = new File(build, "archive");
     if (archive.exists() && archive.isDirectory())
     {
-      BuildInfo buildInfo = XML.getBuildInfo(new File(archive, "build-info.xml"));
-      String buildType = buildInfo.getType();
-      String buildQualifier = buildInfo.getQualifier();
+      File file = new File(archive, "build-info.xml");
+      if (file.exists() && file.isFile())
+      {
+        BuildInfo buildInfo = XML.getBuildInfo(file);
+        String buildType = buildInfo.getType();
+        String buildQualifier = buildInfo.getQualifier();
 
-      if (!"N".equals(buildType))
-      {
-        System.out.println("Ignoring " + buildQualifier);
-      }
-      else
-      {
-        File drop = new File(drops, buildQualifier);
-        if (drop.exists())
+        if (!"N".equals(buildType))
         {
-          if (!drop.isDirectory())
-          {
-            System.err.println("Warning: " + drop.getAbsolutePath() + " is not a directory!");
-          }
+          System.out.println("Ignoring " + buildQualifier);
         }
         else
         {
-          System.out.println("Promoting " + buildQualifier);
-          drop.mkdirs();
+          File drop = new File(drops, buildQualifier);
+          if (drop.exists())
+          {
+            if (!drop.isDirectory())
+            {
+              System.err.println("Warning: " + drop.getAbsolutePath() + " is not a directory!");
+            }
+          }
+          else
+          {
+            System.out.println("Promoting " + buildQualifier);
+            drop.mkdirs();
+          }
         }
       }
     }
