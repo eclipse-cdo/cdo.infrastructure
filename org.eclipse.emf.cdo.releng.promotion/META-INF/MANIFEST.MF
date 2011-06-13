@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: CDO Promotion
+Bundle-Name: CDO Release Engineering Promotion
 Bundle-SymbolicName: org.eclipse.emf.cdo.releng.promotion
 Bundle-Version: 4.0.0.qualifier
 Bundle-Vendor: Eclipse Modeling Project

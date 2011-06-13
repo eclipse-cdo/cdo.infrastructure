@@ -2,7 +2,7 @@
 <project name="bootstrap" default="bootstrap">
 
 	<target name="bootstrap">
-		<java classname="org.eclipse.emf.cdo.releng.promoter.Promoter" dir="${promotionWorkDir}" fork="true">
+		<java classname="org.eclipse.emf.cdo.releng.promotion.Promoter" dir="${promotionWorkDir}" fork="true">
 			<classpath path="classes" />
 			<arg value="${hudsonJobsDir}" />
 			<arg value="${jobName}" />
