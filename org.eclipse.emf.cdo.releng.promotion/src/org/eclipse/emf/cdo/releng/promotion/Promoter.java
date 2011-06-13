@@ -34,7 +34,7 @@ public class Promoter
     }
 
     String workingDir = new File("").getAbsolutePath();
-    System.out.println("Working directory: " + workingDir);
+    System.out.println("Working directory is " + workingDir);
     if (!workingDir.endsWith("/promotion"))
     {
       System.err.println("Working directory is not called promotion.");
@@ -67,7 +67,7 @@ public class Promoter
     {
       if (lastCheckedPromotion != lastBuildNumber)
       {
-        saveLastBuildNumber(lastCheckedPromotion);
+        saveNextBuildNumber(lastCheckedPromotion + 1);
       }
     }
   }
@@ -77,7 +77,7 @@ public class Promoter
     System.out.println("Promoting " + jobName + "#" + build.getName());
   }
 
-  private static void saveLastBuildNumber(int lastCheckedPromotion) throws IOException
+  private static void saveNextBuildNumber(int lastCheckedPromotion) throws IOException
   {
     FileOutputStream out = null;
 
