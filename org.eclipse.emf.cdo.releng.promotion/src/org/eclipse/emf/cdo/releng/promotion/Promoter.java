@@ -81,15 +81,6 @@ public class Promoter
 
   private static void checkBuild(File build) throws IOException
   {
-    // if (!build.exists())
-    // {
-    // build = new File("jobs/" + jobName + "/builds/" + build.getName());
-    // if (!build.exists())
-    // {
-    // throw new IOException(build.getAbsolutePath() + " does not exist");
-    // }
-    // }
-
     File archive = new File(build, "archive");
     if (archive.exists() && archive.isDirectory())
     {
@@ -100,7 +91,7 @@ public class Promoter
         String buildType = buildInfo.getType();
         String buildQualifier = buildInfo.getQualifier();
 
-        if (!"N".equals(buildType))
+        if ("N".equals(buildType))
         {
           System.out.println("Ignoring " + buildQualifier);
         }
