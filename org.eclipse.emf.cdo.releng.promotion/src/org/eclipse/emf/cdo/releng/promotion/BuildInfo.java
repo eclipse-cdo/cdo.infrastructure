@@ -15,7 +15,7 @@ import java.io.File;
 /**
  * @author Eike Stepper
  */
-public class BuildInfo
+public final class BuildInfo
 {
   private String hudson;
 
