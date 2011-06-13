@@ -4,6 +4,7 @@
 	<target name="bootstrap">
 		<java classname="org.eclipse.emf.cdo.releng.promotion.Promoter" dir="${promotionWorkDir}" fork="true">
 			<classpath path="classes" />
+			<arg value="${downloadsDir}" />
 			<arg value="${hudsonJobsDir}" />
 			<arg value="${jobName}" />
 			<arg value="${lastBuildNumber}" />

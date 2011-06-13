@@ -3,6 +3,7 @@ set -e
 
 promotionWorkDir=~/promotion
 
+DOWNLOADS_DIR=/home/data/httpd/download.eclipse.org/modeling/emf/cdo
 HUDSON_JOBS_DIR=/shared/jobs
 JAVA_HOME=/shared/common/jdk-1.6.0_10
 ANT=/shared/common/apache-ant-1.7.1/bin/ant
@@ -27,6 +28,7 @@ CriticalSection ()
 	  then
 	    echo "Checking $jobName for builds that need promotion..."
 	    "$ANT" -f "$promotionWorkDir/promoter.ant" \
+	    	"-DdownloadsDir=$DOWNLOADS_DIR" \
 	    	"-DhudsonJobsDir=$HUDSON_JOBS_DIR" \
 	    	"-DpromotionWorkDir=$promotionWorkDir" \
 	    	"-DjobName=$jobName" \

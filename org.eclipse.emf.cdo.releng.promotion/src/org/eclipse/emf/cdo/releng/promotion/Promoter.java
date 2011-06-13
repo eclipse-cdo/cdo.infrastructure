@@ -20,27 +20,31 @@ import java.io.PrintStream;
  */
 public class Promoter
 {
+  private static String downloadsDir;
+
   private static String hudsonJobsDir;
 
   private static String jobName;
 
-  public static void main(String[] args) throws IOException
+  public static void main(String[] args) throws Exception
   {
-    if (args.length != 4)
+    if (args.length != 5)
     {
-      System.err.println("Specify exactly four arguments, "
-          + "e.g. Promoter /path/to/hudson/jobs hudson-job-name last-build-number next-build-number");
+      System.err
+          .println("Specify exactly five arguments, "
+              + "e.g. Promoter /path/to/downloads /path/to/hudson/jobs hudson-job-name last-build-number next-build-number");
       System.exit(2);
     }
 
     String workingDir = new File("").getAbsolutePath();
     System.out.println("Working directory is " + workingDir);
 
-    hudsonJobsDir = args[0];
-    jobName = args[1];
+    downloadsDir = args[0];
+    hudsonJobsDir = args[1];
+    jobName = args[2];
 
-    final int lastBuildNumber = Integer.parseInt(args[2]);
-    final int nextBuildNumber = Integer.parseInt(args[3]);
+    final int lastBuildNumber = Integer.parseInt(args[3]);
+    final int nextBuildNumber = Integer.parseInt(args[4]);
     int lastCheckedPromotion = lastBuildNumber;
 
     try
@@ -53,7 +57,7 @@ public class Promoter
         File build = new File(builds, String.valueOf(buildNumber));
         if (build.exists())
         {
-          promote(build);
+          checkBuild(build);
           lastCheckedPromotion = buildNumber;
         }
       }
@@ -63,6 +67,37 @@ public class Promoter
       if (lastCheckedPromotion != lastBuildNumber)
       {
         saveNextBuildNumber(lastCheckedPromotion + 1);
+      }
+    }
+  }
+
+  private static void checkBuild(File build) throws IOException
+  {
+    File archive = new File(build, "archive");
+    File drops = new File(downloadsDir, "drops");
+
+    BuildInfo buildInfo = XML.getBuildInfo(new File(archive, "build-info.xml"));
+    String buildType = buildInfo.getType();
+    String buildQualifier = buildInfo.getQualifier();
+
+    if (!"N".equals(buildType))
+    {
+      System.out.println("Ignoring " + buildQualifier);
+    }
+    else
+    {
+      File drop = new File(drops, buildQualifier);
+      if (drop.exists())
+      {
+        if (!drop.isDirectory())
+        {
+          System.err.println("Warning: " + drop.getAbsolutePath() + " is not a directory!");
+        }
+      }
+      else
+      {
+        System.out.println("Promoting " + buildQualifier);
+        drop.mkdirs();
       }
     }
   }
@@ -86,11 +121,5 @@ public class Promoter
         out.close();
       }
     }
-  }
-
-  private static void promote(File build)
-  {
-    System.out.println("Promoting " + jobName + "#" + build.getName());
-
   }
 }
