@@ -14,12 +14,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.regex.Pattern;
 
 /**
  * @author Eike Stepper
  */
 public class Promoter
 {
+  private static final Pattern QUALIFIER_PATTERN = Pattern
+      .compile("[NIMSR]20[0-9][0-9][0-1][0-9][0-3][0-9]-[0-2][0-9][0-5][0-9]");
+
   private static String downloadsDir;
 
   private static String hudsonJobsDir;
@@ -79,42 +83,6 @@ public class Promoter
     }
   }
 
-  private static void checkBuild(File build) throws IOException
-  {
-    File archive = new File(build, "archive");
-    if (archive.exists() && archive.isDirectory())
-    {
-      File file = new File(archive, "build-info.xml");
-      if (file.exists() && file.isFile())
-      {
-        BuildInfo buildInfo = XML.getBuildInfo(file);
-        String buildQualifier = buildInfo.getQualifier();
-
-        File drop = new File(drops, buildQualifier);
-        if (drop.exists())
-        {
-          if (!drop.isDirectory())
-          {
-            System.err.println("Warning: " + drop.getAbsolutePath() + " is not a directory!");
-          }
-        }
-        else
-        {
-          String buildType = buildInfo.getType();
-          if ("N".equals(buildType))
-          {
-            System.out.println("Ignoring " + buildQualifier);
-          }
-          else
-          {
-            System.out.println("Promoting " + buildQualifier);
-            drop.mkdirs();
-          }
-        }
-      }
-    }
-  }
-
   private static void saveNextBuildNumber(int nextBuildNumber) throws IOException
   {
     System.out.println("Remembering next build to check: " + nextBuildNumber);
@@ -134,5 +102,53 @@ public class Promoter
         out.close();
       }
     }
+  }
+
+  private static void checkBuild(File build) throws IOException
+  {
+    File archive = new File(build, "archive");
+    if (!archive.exists() || !archive.isDirectory())
+    {
+      System.out.println(archive.getAbsolutePath() + " does not exist or is not a directory.");
+      return;
+    }
+
+    File file = new File(archive, "build-info.xml");
+    if (!file.exists() || !file.isFile())
+    {
+      System.out.println(file.getAbsolutePath() + " does not exist or is not a file.");
+      return;
+    }
+
+    BuildInfo buildInfo = XML.getBuildInfo(file);
+    String buildQualifier = buildInfo.getQualifier();
+    if (!QUALIFIER_PATTERN.matcher(buildQualifier).matches())
+    {
+      System.out.println("Build qualifier " + buildQualifier + " is invalid.");
+      return;
+    }
+
+    File drop = new File(drops, buildQualifier);
+    if (drop.exists())
+    {
+      System.out.println(drop + " already exists.");
+      return;
+    }
+
+    String buildType = buildInfo.getType();
+    if ("N".equals(buildType))
+    {
+      System.out.println("Nightly build " + buildQualifier + " is ignored.");
+      return;
+    }
+
+    promoteBuild(build, buildInfo, drop);
+  }
+
+  private static void promoteBuild(File build, BuildInfo buildInfo, File drop)
+  {
+    String buildQualifier = buildInfo.getQualifier();
+    System.out.println("Promoting " + buildQualifier);
+    drop.mkdirs();
   }
 }
