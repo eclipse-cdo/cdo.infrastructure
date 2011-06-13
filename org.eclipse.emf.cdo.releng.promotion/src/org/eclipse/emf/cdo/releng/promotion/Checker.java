@@ -117,6 +117,9 @@ public final class Checker
       return;
     }
 
+    buildInfo.setBuild(build);
+    buildInfo.setDrop(drop);
+
     Promoter promoter = createPromoter(buildInfo);
     if (promoter != null)
     {
