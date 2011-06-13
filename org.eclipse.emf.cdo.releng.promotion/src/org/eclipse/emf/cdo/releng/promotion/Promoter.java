@@ -11,7 +11,6 @@
 package org.eclipse.emf.cdo.releng.promotion;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -34,18 +33,20 @@ public class Promoter
       System.exit(2);
     }
 
+    System.out.println("Working directory: " + new File(".").getAbsolutePath());
+
     hudsonJobsDir = args[0];
     jobName = args[1];
 
-    int lastBuildNumber = Integer.parseInt(args[2]);
-    int nextBuildNumber = Integer.parseInt(args[3]);
+    final int lastBuildNumber = Integer.parseInt(args[2]);
+    final int nextBuildNumber = Integer.parseInt(args[3]);
     int lastCheckedPromotion = lastBuildNumber;
-
-    File hudsonJob = new File(hudsonJobsDir, jobName);
-    File builds = new File(hudsonJob, "builds");
 
     try
     {
+      final File hudsonJob = new File(hudsonJobsDir, jobName);
+      final File builds = new File(hudsonJob, "builds");
+
       for (int buildNumber = lastBuildNumber; buildNumber < nextBuildNumber; buildNumber++)
       {
         File build = new File(builds, String.valueOf(buildNumber));
@@ -70,7 +71,7 @@ public class Promoter
     System.out.println("Promoting " + jobName + "#" + build.getName());
   }
 
-  private static void saveLastBuildNumber(int lastCheckedPromotion) throws FileNotFoundException, IOException
+  private static void saveLastBuildNumber(int lastCheckedPromotion) throws IOException
   {
     FileOutputStream out = null;
 
