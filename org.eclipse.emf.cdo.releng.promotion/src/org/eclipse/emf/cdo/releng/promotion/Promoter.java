@@ -11,7 +11,10 @@
 package org.eclipse.emf.cdo.releng.promotion;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 
 /**
  * @author Eike Stepper
@@ -36,38 +39,54 @@ public class Promoter
 
     int lastBuildNumber = Integer.parseInt(args[2]);
     int nextBuildNumber = Integer.parseInt(args[3]);
+    int lastCheckedPromotion = lastBuildNumber;
 
     File hudsonJob = new File(hudsonJobsDir, jobName);
     File builds = new File(hudsonJob, "builds");
-    for (int buildNumber = lastBuildNumber; buildNumber < nextBuildNumber; buildNumber++)
+
+    try
     {
-      File build = new File(builds, String.valueOf(buildNumber));
-      if (build.exists())
+      for (int buildNumber = lastBuildNumber; buildNumber < nextBuildNumber; buildNumber++)
       {
-        promote(build);
+        File build = new File(builds, String.valueOf(buildNumber));
+        if (build.exists())
+        {
+          promote(build);
+          lastCheckedPromotion = buildNumber;
+        }
       }
     }
-
-    // FileOutputStream out = null;
-    //
-    // try
-    // {
-    // out = new FileOutputStream(fileName);
-    // PrintStream stream = new PrintStream(out);
-    // stream.println("build.qualifier=" + buildQualifier);
-    // stream.flush();
-    // }
-    // finally
-    // {
-    // if (out != null)
-    // {
-    // out.close();
-    // }
-    // }
+    finally
+    {
+      if (lastCheckedPromotion != lastBuildNumber)
+      {
+        saveLastBuildNumber(lastCheckedPromotion);
+      }
+    }
   }
 
   private static void promote(File build)
   {
     System.out.println("Promoting " + jobName + "#" + build.getName());
+  }
+
+  private static void saveLastBuildNumber(int lastCheckedPromotion) throws FileNotFoundException, IOException
+  {
+    FileOutputStream out = null;
+
+    try
+    {
+      out = new FileOutputStream("jobs/" + jobName + "/nextBuildNumber");
+      PrintStream stream = new PrintStream(out);
+      stream.print(lastCheckedPromotion);
+      stream.flush();
+    }
+    finally
+    {
+      if (out != null)
+      {
+        out.close();
+      }
+    }
   }
 }
