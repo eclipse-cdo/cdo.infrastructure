@@ -35,17 +35,22 @@ public abstract class Promoter implements Runnable
   protected void promoteBuild()
   {
     String buildQualifier = buildInfo.getQualifier();
-    System.out.println("Promoting " + buildQualifier);
+    out("Promoting " + buildQualifier);
     buildInfo.getDrop().mkdirs();
   }
 
   protected final void out(Object msg)
   {
-    System.out.println(buildInfo.getNumber() + ": " + msg);
+    System.out.println(formatMessage(msg));
   }
 
   protected final void err(Object msg)
   {
-    System.err.println(buildInfo.getNumber() + ": " + msg);
+    System.err.println(formatMessage(msg));
+  }
+
+  private String formatMessage(Object msg)
+  {
+    return buildInfo.getNumber() + ": " + msg;
   }
 }

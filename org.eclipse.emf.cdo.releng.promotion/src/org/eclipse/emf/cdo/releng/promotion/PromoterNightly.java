@@ -24,6 +24,6 @@ public class PromoterNightly extends Promoter
   public void promoteBuild()
   {
     String buildQualifier = getBuildInfo().getQualifier();
-    out("Nightly build " + buildQualifier + " is ignored.");
+    out("Ignoring " + buildQualifier);
   }
 }
