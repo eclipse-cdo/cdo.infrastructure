@@ -72,11 +72,6 @@ public class Promoter
     }
   }
 
-  private static void promote(File build)
-  {
-    System.out.println("Promoting " + jobName + "#" + build.getName());
-  }
-
   private static void saveNextBuildNumber(int nextBuildNumber) throws IOException
   {
     FileOutputStream out = null;
@@ -95,5 +90,10 @@ public class Promoter
         out.close();
       }
     }
+  }
+
+  private static void promote(File build)
+  {
+    System.out.println("Promoting " + jobName + "#" + build.getName());
   }
 }
