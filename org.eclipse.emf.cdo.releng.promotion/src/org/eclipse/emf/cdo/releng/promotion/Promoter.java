@@ -73,31 +73,33 @@ public class Promoter
 
   private static void checkBuild(File build) throws IOException
   {
-    File archive = new File(build, "archive");
     File drops = new File(downloadsDir, "drops");
-
-    BuildInfo buildInfo = XML.getBuildInfo(new File(archive, "build-info.xml"));
-    String buildType = buildInfo.getType();
-    String buildQualifier = buildInfo.getQualifier();
-
-    if (!"N".equals(buildType))
+    File archive = new File(build, "archive");
+    if (archive.exists() && archive.isDirectory())
     {
-      System.out.println("Ignoring " + buildQualifier);
-    }
-    else
-    {
-      File drop = new File(drops, buildQualifier);
-      if (drop.exists())
+      BuildInfo buildInfo = XML.getBuildInfo(new File(archive, "build-info.xml"));
+      String buildType = buildInfo.getType();
+      String buildQualifier = buildInfo.getQualifier();
+
+      if (!"N".equals(buildType))
       {
-        if (!drop.isDirectory())
-        {
-          System.err.println("Warning: " + drop.getAbsolutePath() + " is not a directory!");
-        }
+        System.out.println("Ignoring " + buildQualifier);
       }
       else
       {
-        System.out.println("Promoting " + buildQualifier);
-        drop.mkdirs();
+        File drop = new File(drops, buildQualifier);
+        if (drop.exists())
+        {
+          if (!drop.isDirectory())
+          {
+            System.err.println("Warning: " + drop.getAbsolutePath() + " is not a directory!");
+          }
+        }
+        else
+        {
+          System.out.println("Promoting " + buildQualifier);
+          drop.mkdirs();
+        }
       }
     }
   }
