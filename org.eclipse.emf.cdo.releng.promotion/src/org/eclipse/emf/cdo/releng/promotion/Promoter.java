@@ -88,22 +88,22 @@ public class Promoter
       if (file.exists() && file.isFile())
       {
         BuildInfo buildInfo = XML.getBuildInfo(file);
-        String buildType = buildInfo.getType();
         String buildQualifier = buildInfo.getQualifier();
 
-        if ("N".equals(buildType))
+        File drop = new File(drops, buildQualifier);
+        if (drop.exists())
         {
-          System.out.println("Ignoring " + buildQualifier);
+          if (!drop.isDirectory())
+          {
+            System.err.println("Warning: " + drop.getAbsolutePath() + " is not a directory!");
+          }
         }
         else
         {
-          File drop = new File(drops, buildQualifier);
-          if (drop.exists())
+          String buildType = buildInfo.getType();
+          if ("N".equals(buildType))
           {
-            if (!drop.isDirectory())
-            {
-              System.err.println("Warning: " + drop.getAbsolutePath() + " is not a directory!");
-            }
+            System.out.println("Ignoring " + buildQualifier);
           }
           else
           {
