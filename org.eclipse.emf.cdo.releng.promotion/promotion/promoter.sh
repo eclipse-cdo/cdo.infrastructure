@@ -30,12 +30,7 @@ CriticalSection ()
 	  if [ "$nextBuildNumber" != "$lastBuildNumber" ]
 	  then
 	    echo "Checking $jobName for builds that need promotion..."
-	    "$JAVA" -cp classes org.eclipse.emf.cdo.releng.promotion.Checker \ 
-	    	"$DOWNLOADS_DIR" \
-	    	"$HUDSON_JOBS_DIR" \
-	    	"$jobName" \
-	    	"$lastBuildNumber" \
-	    	"$nextBuildNumber"
+	    "$JAVA" -cp classes org.eclipse.emf.cdo.releng.promotion.Checker "$DOWNLOADS_DIR" "$HUDSON_JOBS_DIR" "$jobName" "$lastBuildNumber" "$nextBuildNumber"
 	    	
 	    #"$ANT" -f "$promotionWorkDir/promoter.ant" \
 	    #	"-DdownloadsDir=$DOWNLOADS_DIR" \
