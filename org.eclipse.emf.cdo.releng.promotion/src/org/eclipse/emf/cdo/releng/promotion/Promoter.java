@@ -33,7 +33,7 @@ public class Promoter
       System.exit(2);
     }
 
-    String workingDir = new File(".").getAbsolutePath();
+    String workingDir = new File("").getAbsolutePath();
     System.out.println("Working directory: " + workingDir);
     if (!workingDir.endsWith("/promotion"))
     {
