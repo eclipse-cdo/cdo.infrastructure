@@ -26,7 +26,7 @@ CriticalSection ()
 	  if [ "$nextBuildNumber" != "$lastBuildNumber" ]
 	  then
 	    echo "Checking $jobName for builds that need promotion..."
-	    "$ANT" -f "$promotionWorkDir/bootstrap.ant" \
+	    "$ANT" -f "$promotionWorkDir/promoter.ant" \
 	    	"-DhudsonJobsDir=$HUDSON_JOBS_DIR" \
 	    	"-DpromotionWorkDir=$promotionWorkDir" \
 	    	"-DjobName=$jobName" \

@@ -37,7 +37,7 @@ public class Promoter
     System.out.println("Working directory is " + workingDir);
     if (!workingDir.endsWith("/promotion"))
     {
-      System.err.println("Working directory is not called promotion.");
+      System.err.println("Working directory is not called promotion!");
       System.exit(2);
     }
 
