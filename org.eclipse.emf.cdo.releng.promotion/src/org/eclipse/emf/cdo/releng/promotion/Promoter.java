@@ -77,7 +77,7 @@ public class Promoter
     System.out.println("Promoting " + jobName + "#" + build.getName());
   }
 
-  private static void saveNextBuildNumber(int lastCheckedPromotion) throws IOException
+  private static void saveNextBuildNumber(int nextBuildNumber) throws IOException
   {
     FileOutputStream out = null;
 
@@ -85,7 +85,7 @@ public class Promoter
     {
       out = new FileOutputStream("jobs/" + jobName + "/nextBuildNumber");
       PrintStream stream = new PrintStream(out);
-      stream.print(lastCheckedPromotion);
+      stream.println(nextBuildNumber);
       stream.flush();
     }
     finally
