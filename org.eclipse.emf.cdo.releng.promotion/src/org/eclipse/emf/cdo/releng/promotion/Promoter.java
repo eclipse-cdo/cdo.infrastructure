@@ -91,5 +91,6 @@ public class Promoter
   private static void promote(File build)
   {
     System.out.println("Promoting " + jobName + "#" + build.getName());
+
   }
 }
