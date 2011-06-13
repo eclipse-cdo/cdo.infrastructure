@@ -74,6 +74,7 @@ public class Promoter
 
   private static void saveNextBuildNumber(int nextBuildNumber) throws IOException
   {
+    System.out.println("Remembering next build to check: " + nextBuildNumber);
     FileOutputStream out = null;
 
     try
