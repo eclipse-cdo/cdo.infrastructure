@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<project name="org.eclipse.emf.cdo.releng.promotion" default="build.classes.jar">
+
+	<target name="build.classes.jar">
+		<jar destfile="promotion/classes.jar">
+			<fileset dir="bin">
+				<include name="**" />
+			</fileset>
+		</jar>
+	</target>
+
+</project>

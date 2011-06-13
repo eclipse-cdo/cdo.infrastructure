@@ -33,7 +33,13 @@ public class Promoter
       System.exit(2);
     }
 
-    System.out.println("Working directory: " + new File(".").getAbsolutePath());
+    String workingDir = new File(".").getAbsolutePath();
+    System.out.println("Working directory: " + workingDir);
+    if (!workingDir.endsWith("/promotion"))
+    {
+      System.err.println("Working directory is not called promotion");
+      System.exit(2);
+    }
 
     hudsonJobsDir = args[0];
     jobName = args[1];
