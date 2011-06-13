@@ -34,8 +34,6 @@ CriticalSection ()
 	    	"-DjobName=$jobName" \
 	    	"-DlastBuildNumber=$lastBuildNumber" \
 	    	"-DnextBuildNumber=$nextBuildNumber"
-	  else
-	    echo "Nothing to promote for $jobName"
 	  fi
 	done
 }

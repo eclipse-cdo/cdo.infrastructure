@@ -10,6 +10,8 @@
  */
 package org.eclipse.emf.cdo.releng.promotion;
 
+import java.io.File;
+
 /**
  * @author Eike Stepper
  */
@@ -33,6 +35,10 @@ public class BuildInfo
 
   private String type;
 
+  private File build;
+
+  private File drop;
+
   public BuildInfo()
   {
   }
@@ -42,19 +48,9 @@ public class BuildInfo
     return hudson;
   }
 
-  public void setHudson(String hudson)
-  {
-    this.hudson = hudson;
-  }
-
   public String getJob()
   {
     return job;
-  }
-
-  public void setJob(String job)
-  {
-    this.job = job;
   }
 
   public String getNumber()
@@ -62,19 +58,9 @@ public class BuildInfo
     return number;
   }
 
-  public void setNumber(String number)
-  {
-    this.number = number;
-  }
-
   public String getQualifier()
   {
     return qualifier;
-  }
-
-  public void setQualifier(String qualifier)
-  {
-    this.qualifier = qualifier;
   }
 
   public String getRevision()
@@ -82,19 +68,9 @@ public class BuildInfo
     return revision;
   }
 
-  public void setRevision(String revision)
-  {
-    this.revision = revision;
-  }
-
   public String getStream()
   {
     return stream;
-  }
-
-  public void setStream(String stream)
-  {
-    this.stream = stream;
   }
 
   public String getTimestamp()
@@ -102,19 +78,9 @@ public class BuildInfo
     return timestamp;
   }
 
-  public void setTimestamp(String timestamp)
-  {
-    this.timestamp = timestamp;
-  }
-
   public String getTrigger()
   {
     return trigger;
-  }
-
-  public void setTrigger(String trigger)
-  {
-    this.trigger = trigger;
   }
 
   public String getType()
@@ -122,8 +88,68 @@ public class BuildInfo
     return type;
   }
 
-  public void setType(String type)
+  public File getBuild()
+  {
+    return build;
+  }
+
+  public File getDrop()
+  {
+    return drop;
+  }
+
+  void setHudson(String hudson)
+  {
+    this.hudson = hudson;
+  }
+
+  void setJob(String job)
+  {
+    this.job = job;
+  }
+
+  void setNumber(String number)
+  {
+    this.number = number;
+  }
+
+  void setQualifier(String qualifier)
+  {
+    this.qualifier = qualifier;
+  }
+
+  void setRevision(String revision)
+  {
+    this.revision = revision;
+  }
+
+  void setStream(String stream)
+  {
+    this.stream = stream;
+  }
+
+  void setTimestamp(String timestamp)
+  {
+    this.timestamp = timestamp;
+  }
+
+  void setTrigger(String trigger)
+  {
+    this.trigger = trigger;
+  }
+
+  void setType(String type)
   {
     this.type = type;
+  }
+
+  void setBuild(File build)
+  {
+    this.build = build;
+  }
+
+  void setDrop(File drop)
+  {
+    this.drop = drop;
   }
 }

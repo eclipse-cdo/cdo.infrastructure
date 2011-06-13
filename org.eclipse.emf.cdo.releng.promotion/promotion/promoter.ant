@@ -2,7 +2,7 @@
 <project name="promoter" default="promoter">
 
 	<target name="promoter">
-		<java classname="org.eclipse.emf.cdo.releng.promotion.Promoter" dir="${promotionWorkDir}" fork="true">
+		<java classname="org.eclipse.emf.cdo.releng.promotion.Checker" dir="${promotionWorkDir}" fork="true">
 			<classpath path="classes" />
 			<arg value="${downloadsDir}" />
 			<arg value="${hudsonJobsDir}" />

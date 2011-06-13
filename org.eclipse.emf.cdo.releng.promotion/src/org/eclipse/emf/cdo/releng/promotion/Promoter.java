@@ -10,145 +10,42 @@
  */
 package org.eclipse.emf.cdo.releng.promotion;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.regex.Pattern;
-
 /**
  * @author Eike Stepper
  */
-public class Promoter
+public abstract class Promoter implements Runnable
 {
-  private static final Pattern QUALIFIER_PATTERN = Pattern
-      .compile("[NIMSR]20[0-9][0-9][0-1][0-9][0-3][0-9]-[0-2][0-9][0-5][0-9]");
+  private BuildInfo buildInfo;
 
-  private static String downloadsDir;
-
-  private static String hudsonJobsDir;
-
-  private static String jobName;
-
-  private static File hudsonJob;
-
-  private static File builds;
-
-  private static File drops;
-
-  public static void main(String[] args) throws Exception
+  public Promoter(BuildInfo buildInfo)
   {
-    if (args.length != 5)
-    {
-      System.err
-          .println("Specify exactly five arguments, "
-              + "e.g. Promoter /path/to/downloads /path/to/hudson/jobs hudson-job-name last-build-number next-build-number");
-      System.exit(2);
-    }
-
-    String workingDir = new File("").getAbsolutePath();
-    System.out.println("Working directory is " + workingDir);
-
-    downloadsDir = args[0];
-    hudsonJobsDir = args[1];
-    jobName = args[2];
-
-    hudsonJob = new File(hudsonJobsDir, jobName);
-    builds = new File(hudsonJob, "builds");
-    drops = new File(downloadsDir, "drops");
-
-    final int lastBuildNumber = Integer.parseInt(args[3]);
-    final int nextBuildNumber = Integer.parseInt(args[4]);
-    int lastCheckedPromotion = lastBuildNumber;
-
-    try
-    {
-
-      for (int buildNumber = lastBuildNumber; buildNumber < nextBuildNumber; buildNumber++)
-      {
-        File build = new File(builds, String.valueOf(buildNumber));
-        if (build.exists())
-        {
-          checkBuild(build);
-          lastCheckedPromotion = buildNumber;
-        }
-      }
-    }
-    finally
-    {
-      if (lastCheckedPromotion != lastBuildNumber)
-      {
-        saveNextBuildNumber(lastCheckedPromotion + 1);
-      }
-    }
+    this.buildInfo = buildInfo;
   }
 
-  private static void saveNextBuildNumber(int nextBuildNumber) throws IOException
+  public final BuildInfo getBuildInfo()
   {
-    System.out.println("Remembering next build to check: " + nextBuildNumber);
-    FileOutputStream out = null;
-
-    try
-    {
-      out = new FileOutputStream("jobs/" + jobName + "/nextBuildNumber");
-      PrintStream stream = new PrintStream(out);
-      stream.println(nextBuildNumber);
-      stream.flush();
-    }
-    finally
-    {
-      if (out != null)
-      {
-        out.close();
-      }
-    }
+    return buildInfo;
   }
 
-  private static void checkBuild(File build) throws IOException
+  public final void run()
   {
-    File archive = new File(build, "archive");
-    if (!archive.exists() || !archive.isDirectory())
-    {
-      System.out.println(archive.getAbsolutePath() + " does not exist or is not a directory.");
-      return;
-    }
-
-    File file = new File(archive, "build-info.xml");
-    if (!file.exists() || !file.isFile())
-    {
-      System.out.println(file.getAbsolutePath() + " does not exist or is not a file.");
-      return;
-    }
-
-    BuildInfo buildInfo = XML.getBuildInfo(file);
-    String buildQualifier = buildInfo.getQualifier();
-    if (!QUALIFIER_PATTERN.matcher(buildQualifier).matches())
-    {
-      System.out.println("Build qualifier " + buildQualifier + " is invalid.");
-      return;
-    }
-
-    File drop = new File(drops, buildQualifier);
-    if (drop.exists())
-    {
-      System.out.println(drop + " already exists.");
-      return;
-    }
-
-    String buildType = buildInfo.getType();
-    if ("N".equals(buildType))
-    {
-      System.out.println("Nightly build " + buildQualifier + " is ignored.");
-      return;
-    }
-
-    promoteBuild(build, buildInfo, drop);
+    promoteBuild();
   }
 
-  private static void promoteBuild(File build, BuildInfo buildInfo, File drop)
+  protected void promoteBuild()
   {
     String buildQualifier = buildInfo.getQualifier();
     System.out.println("Promoting " + buildQualifier);
-    drop.mkdirs();
+    buildInfo.getDrop().mkdirs();
+  }
+
+  protected final void out(Object msg)
+  {
+    System.out.println(buildInfo.getNumber() + ": " + msg);
+  }
+
+  protected final void err(Object msg)
+  {
+    System.err.println(buildInfo.getNumber() + ": " + msg);
   }
 }
