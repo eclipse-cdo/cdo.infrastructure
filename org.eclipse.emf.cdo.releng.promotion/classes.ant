@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<project name="classes" default="copy-classes">
+
+	<target name="copy-classes">
+		<copy todir="promotion/classes">
+			<fileset dir="bin">
+				<include name="**" />
+			</fileset>
+		</copy>
+	</target>
+
+</project>
