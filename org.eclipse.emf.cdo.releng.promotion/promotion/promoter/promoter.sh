@@ -20,10 +20,12 @@ CriticalSection ()
 	rm -rf "$projectDownloadsArea/temp"
 	
 	localJobsDir=$projectConfigArea/jobs
-	for jobName in `ls "$localJobsDir"`
+	localJobs=`ls "$localJobsDir"`
+	echo "Checking for builds that need promotion: $localJobs"
+	
+	for jobName in $localjobs
 	do
 		file=$projectWorkingArea/$jobName.nextBuildNumber
-		
 	  if [ -f "$file" ]
 	  then
 	    lastBuildNumber=`cat "$file"`
@@ -34,7 +36,6 @@ CriticalSection ()
 	  nextBuildNumber=`cat "$JOBS_HOME/$jobName/nextBuildNumber"`
 	  if [ "$nextBuildNumber" != "$lastBuildNumber" ]
 	  then
-	    echo "Checking $jobName for builds that need promotion..."
 	    "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes" Checker "$projectDownloadsArea" "$JOBS_HOME" "$jobName" "$lastBuildNumber" "$nextBuildNumber"
 	    exit 0
 	  fi
