@@ -1,19 +1,23 @@
 #!/usr/bin/env bash
 set -e
 
-promotionWorkDir=~/promotion
+##########################################################################
+# Initialize configuration values and minimally needed file system layout.
+##########################################################################
 
-DOWNLOADS_DIR=/home/data/httpd/download.eclipse.org/modeling/emf/cdo
-HUDSON_JOBS_DIR=/shared/jobs
-JAVA_HOME=/shared/common/jdk-1.6.0_10
-JAVA=$JAVA_HOME/bin/java
-ANT=/shared/common/apache-ant-1.7.1/bin/ant
+projectConfigArea=`pwd -P`
+. $projectConfigArea/promoter.properties
+mkdir -pv "$projectWorkingArea$
+
+##########################################################################################
+# Further down the script ensures that this critical section is not executed concurrently.
+##########################################################################################
 
 CriticalSection ()
 {
-	rm -rf "$DOWNLOADS_DIR/temp"
-	localJobsDir=$promotionWorkDir/jobs
+	rm -rf "$projectDownloadsArea/temp"
 	
+	localJobsDir=$projectConfigArea/jobs
 	for jobName in `ls "$localJobsDir"`
 	do
 		jobDir=$localJobsDir/$jobName
@@ -26,24 +30,21 @@ CriticalSection ()
 	    lastBuildNumber=1
 	  fi
 	
-	  nextBuildNumber=`cat "$HUDSON_JOBS_DIR/$jobName/nextBuildNumber"`
+	  nextBuildNumber=`cat "$JOBS_HOME/$jobName/nextBuildNumber"`
 	  if [ "$nextBuildNumber" != "$lastBuildNumber" ]
 	  then
 	    echo "Checking $jobName for builds that need promotion..."
-	    "$JAVA" -cp classes org.eclipse.emf.cdo.releng.promotion.Checker "$DOWNLOADS_DIR" "$HUDSON_JOBS_DIR" "$jobName" "$lastBuildNumber" "$nextBuildNumber"
-	    	
-	    #"$ANT" -f "$promotionWorkDir/promoter.ant" \
-	    #	"-DdownloadsDir=$DOWNLOADS_DIR" \
-	    #	"-DhudsonJobsDir=$HUDSON_JOBS_DIR" \
-	    #	"-DpromotionWorkDir=$promotionWorkDir" \
-	    #	"-DjobName=$jobName" \
-	    #	"-DlastBuildNumber=$lastBuildNumber" \
-	    #	"-DnextBuildNumber=$nextBuildNumber"
+	    "$JAVA_HOME/bin/java" -cp classes Checker "$projectDownloadsArea" "$JOBS_HOME" "$jobName" "$lastBuildNumber" "$nextBuildNumber"
 	  fi
 	done
 }
 
-lockFile=$promotionWorkDir/promote.lock
+#########################################################
+# Execute the critical section if a lock can be acquired.
+#########################################################
+
+lockFile=$projectWorkingArea/promoter.lock
+
 if ( set -o noclobber; echo "$$" > "$lockFile" ) 2> /dev/null; 
 then
   trap 'rm -f "$lockFile"; exit $?' INT TERM EXIT
@@ -55,6 +56,6 @@ then
   rm -f "$lockFile"
   trap - INT TERM EXIT
 else
-	echo "Promotion already being executed by process $(cat $lockFile)."
+	echo "Promoter already being executed by process $(cat $lockFile)."
 fi 
 
