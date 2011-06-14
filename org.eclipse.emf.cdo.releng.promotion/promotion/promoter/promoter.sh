@@ -22,8 +22,7 @@ CriticalSection ()
 	localJobsDir=$projectConfigArea/jobs
 	for jobName in `ls "$localJobsDir"`
 	do
-		jobDir=$localJobsDir/$jobName
-		file=$jobDir/nextBuildNumber
+		file=$projectWorkingArea/$jobName.nextBuildNumber
 		
 	  if [ -f "$file" ]
 	  then
@@ -37,6 +36,7 @@ CriticalSection ()
 	  then
 	    echo "Checking $jobName for builds that need promotion..."
 	    "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes" Checker "$projectDownloadsArea" "$JOBS_HOME" "$jobName" "$lastBuildNumber" "$nextBuildNumber"
+	    exit 0
 	  fi
 	done
 }
