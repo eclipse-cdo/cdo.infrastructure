@@ -9,4 +9,4 @@ svn update
 chmod -R u+x *.sh
 
 cd config
-bash ../promoter/reset.sh
+../promoter/reset.sh
