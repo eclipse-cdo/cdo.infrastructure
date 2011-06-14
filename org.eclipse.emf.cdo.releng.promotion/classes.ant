@@ -3,12 +3,12 @@
 
 	<target name="copy-classes">
 		<delete includeemptydirs="false" failonerror="false">
-			<fileset dir="promotion/classes">
+			<fileset dir="promotion/promoter/classes">
 				<include name="**" />
 			</fileset>
 		</delete>
 
-		<copy todir="promotion/classes">
+		<copy todir="promotion/promoter/classes">
 			<fileset dir="bin">
 				<include name="**" />
 			</fileset>
