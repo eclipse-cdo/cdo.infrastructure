@@ -21,7 +21,8 @@ CriticalSection ()
 	
 	localJobsDir=$projectConfigArea/jobs
 	localJobs=`ls "$localJobsDir"`
-	echo "Checking for builds that need promotion: $localJobs"
+	echo "Checking jobs for builds that need promotion:"
+	echo "$localJobs"
 	
 	for jobName in $localjobs
 	do
