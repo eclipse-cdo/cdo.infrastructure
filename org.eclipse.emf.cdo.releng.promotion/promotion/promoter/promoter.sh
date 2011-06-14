@@ -5,8 +5,10 @@ set -e
 # THIS SCRIPT MUST BE EXECUTED IN THE PROJECT CONFIG AREA!!! 
 ############################################################
 
+promoterInstallArea=`dirname "$0"`
 projectConfigArea=`pwd -P`
 . "$projectConfigArea/promoter.properties"
+
 mkdir -pv "$projectWorkingArea"
 
 ##########################################################################################
@@ -34,7 +36,7 @@ CriticalSection ()
 	  if [ "$nextBuildNumber" != "$lastBuildNumber" ]
 	  then
 	    echo "Checking $jobName for builds that need promotion..."
-	    "$JAVA_HOME/bin/java" -cp classes Checker "$projectDownloadsArea" "$JOBS_HOME" "$jobName" "$lastBuildNumber" "$nextBuildNumber"
+	    "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes" Checker "$projectDownloadsArea" "$JOBS_HOME" "$jobName" "$lastBuildNumber" "$nextBuildNumber"
 	  fi
 	done
 }
