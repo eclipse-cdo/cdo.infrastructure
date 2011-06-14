@@ -6,7 +6,8 @@
 #################################
 
 svn update
-chmod -R u+x *.sh
+chmod -c u+x *.sh
+chmod -c u+x promoter/*.sh
 
 cd config
 ../promoter/reset.sh
