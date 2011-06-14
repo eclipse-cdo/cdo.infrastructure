@@ -8,7 +8,7 @@
 cd ~/promotion
 
 svn update
-chmod -v u+x *.sh promoter/*.sh
+chmod u+x *.sh promoter/*.sh
 
 cd config
 ../promoter/reset.sh
