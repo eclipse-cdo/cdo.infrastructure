@@ -9,22 +9,14 @@ promoterInstallArea=`dirname "$0"`
 projectConfigArea=`pwd -P`
 . "$projectConfigArea/promoter.properties"
 
-mkdir -pv "$projectWorkingArea"
-
 ##########################################################################################
 # Further down the script ensures that this critical section is not executed concurrently.
 ##########################################################################################
 
 CriticalSection ()
 {
-	rm -rf "$projectDownloadsArea/temp"
-	
 	localJobsDir=$projectConfigArea/jobs
-	localJobs=`ls "$localJobsDir"`
-	echo "Checking jobs for builds that need promotion:"
-	echo "$localJobs"
-	
-	for jobName in $localjobs
+	for jobName in `ls "$localJobsDir"`
 	do
 		file=$projectWorkingArea/$jobName.nextBuildNumber
 	  if [ -f "$file" ]
@@ -47,6 +39,7 @@ CriticalSection ()
 # Execute the critical section if a lock can be acquired.
 #########################################################
 
+mkdir -pv "$projectWorkingArea"
 lockFile=$projectWorkingArea/promoter.lock
 
 if ( set -o noclobber; echo "$$" > "$lockFile" ) 2> /dev/null; 
