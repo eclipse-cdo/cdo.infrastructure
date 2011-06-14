@@ -6,5 +6,5 @@ set -e
 ############################################################
 
 projectConfigArea=`pwd -P`
-. $projectConfigArea/promoter.properties
-rm -rf "$projectWorkingArea$
+. "$projectConfigArea/promoter.properties"
+rm -rf "$projectWorkingArea"

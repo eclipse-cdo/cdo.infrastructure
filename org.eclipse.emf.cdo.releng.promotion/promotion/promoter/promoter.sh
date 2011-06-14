@@ -6,8 +6,8 @@ set -e
 ############################################################
 
 projectConfigArea=`pwd -P`
-. $projectConfigArea/promoter.properties
-mkdir -pv "$projectWorkingArea$
+. "$projectConfigArea/promoter.properties"
+mkdir -pv "$projectWorkingArea"
 
 ##########################################################################################
 # Further down the script ensures that this critical section is not executed concurrently.
