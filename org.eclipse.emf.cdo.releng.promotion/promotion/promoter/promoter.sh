@@ -39,7 +39,7 @@ CriticalSection ()
 # Execute the critical section if a lock can be acquired.
 #########################################################
 
-mkdir -pv "$projectWorkingArea"
+mkdir -p "$projectWorkingArea"
 lockFile=$projectWorkingArea/promoter.lock
 
 if ( set -o noclobber; echo "$$" > "$lockFile" ) 2> /dev/null; 
