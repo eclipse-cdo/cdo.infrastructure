@@ -5,3 +5,6 @@
 
 svn update
 chmod -R u+x *.sh
+
+cd config
+../promoter/reset.sh

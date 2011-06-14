@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-##########################################################################
-# Initialize configuration values and minimally needed file system layout.
-##########################################################################
+############################################################
+# THIS SCRIPT MUST BE EXECUTED IN THE PROJECT CONFIG AREA!!! 
+############################################################
 
 projectConfigArea=`pwd -P`
 . $projectConfigArea/promoter.properties
