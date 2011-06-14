@@ -5,7 +5,7 @@
 # cd ~; rm -rf promotion; svn checkout https://dev.eclipse.org/svnroot/modeling/org.eclipse.emf.cdo/infrastructure/org.eclipse.emf.cdo.releng.promotion/promotion; cd promotion
 #################################
 
-cdo ~/promotion
+cd ~/promotion
 
 svn update
 chmod -v u+x *.sh promoter/*.sh
