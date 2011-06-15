@@ -117,9 +117,11 @@ public class Main
         IO.copyTree(archiveDir, target);
 
         String autoVisible = jobProperties.getProperty("auto.visible", "");
+        System.out.println("autoVisible: " + autoVisible);
         if (autoVisible.contains(buildType))
         {
           File file = new File(target, "visible");
+          System.out.println("--> " + file.getAbsolutePath());
           OutputStream stream = null;
 
           try
