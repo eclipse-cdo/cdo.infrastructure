@@ -63,7 +63,7 @@ public class Main
           continue;
         }
 
-        Properties jobProperties = Config.loadProperties(new File(jobDir, "promoter.properties"), false);
+        Properties jobProperties = Config.loadProperties(new File(jobDir, "promotion.properties"), false);
         copyBuilds(new File(Config.getHudsonJobsArea(), jobName), jobProperties);
       }
     }
@@ -117,11 +117,9 @@ public class Main
         IO.copyTree(archiveDir, target);
 
         String autoVisible = jobProperties.getProperty("auto.visible", "");
-        System.out.println("autoVisible: " + autoVisible);
         if (autoVisible.contains(buildType))
         {
-          File file = new File(target, "visible");
-          System.out.println("--> " + file.getAbsolutePath());
+          File file = new File(target, ".visible");
           OutputStream stream = null;
 
           try
