@@ -89,7 +89,7 @@ public final class HudsonOld
       return;
     }
 
-    BuildInfo buildInfo = XML.getBuildInfo(file);
+    BuildInfo buildInfo = XML.readBuildInfo(file);
     String buildQualifier = buildInfo.getQualifier();
     if (!QUALIFIER_PATTERN.matcher(buildQualifier).matches())
     {

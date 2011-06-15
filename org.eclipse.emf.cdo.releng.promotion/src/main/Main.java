@@ -4,6 +4,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import util.BuildInfo;
 import util.Config;
 import util.XML;
 
@@ -82,12 +83,40 @@ public class Main
         if (isNumber(name))
         {
           String buildResult = getBuildResult(buildDir);
-          System.out.println(name + ": " + buildResult);
+          if ("SUCCESS".equalsIgnoreCase(buildResult))
+          {
+            File archiveDir = new File(buildDir, "archive");
+            if (archiveDir.isDirectory() && archiveDir.isDirectory())
+            {
+              File buildInfoFile = new File(archiveDir, "build-info.xml");
+              if (buildInfoFile.exists() && buildInfoFile.isFile())
+              {
+                BuildInfo buildInfo = XML.readBuildInfo(buildInfoFile);
+                modifiedRepositories |= copyBuildIdNeeded(jobProperties, buildDir, buildInfo);
+              }
+            }
+          }
         }
       }
     }
 
     return modifiedRepositories;
+  }
+
+  private static boolean copyBuildIdNeeded(Properties jobProperties, File buildDir, BuildInfo buildInfo)
+  {
+    String autoPromote = jobProperties.getProperty("auto.promote", "IMSR");
+    if (autoPromote.contains(buildInfo.getType()))
+    {
+      File target = new File(drops, buildInfo.getQualifier());
+      if (!target.exists())
+      {
+        System.out.println("Copying build " + buildInfo.getNumber() + " to " + target);
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private static boolean isNumber(String str)

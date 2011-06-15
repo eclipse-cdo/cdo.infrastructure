@@ -69,7 +69,7 @@ public final class XML
     }
   }
 
-  public static BuildInfo getBuildInfo(File file)
+  public static BuildInfo readBuildInfo(File file)
   {
     final BuildInfo result = new BuildInfo();
     parseXML(file, new DefaultHandler()
