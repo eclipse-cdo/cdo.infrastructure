@@ -10,6 +10,9 @@ projectConfigArea=`pwd -P`
 . "$projectConfigArea/promoter.properties"
 
 
+tasksDir=$projectWorkingArea/tasks
+inprogressDir=$tasksDir.inprogress
+
 ##########################################################################################
 # Further down the script ensures that this critical section is not executed concurrently.
 ##########################################################################################
@@ -17,21 +20,19 @@ projectConfigArea=`pwd -P`
 CriticalSection ()
 {
 	# Check working area for new tasks.
-
-	tasksDir=$projectWorkingArea/tasks
 	if [ -d "$tasksDir" ]
 	then
-		tasks=`ls -A "$tasksDir"`
+		mv -f "$tasksDir" "$inprogressDir"
+		tasks=`ls -A "$inprogressDir"`
 		if [ "$tasks" ]
 		then
 			##############
-			StartPromotion
+			CheckPromotion
 			##############
 		fi
 	fi
-	
-	# Check hudson jobs area for new builds.
 
+	# Check hudson jobs area for new builds.
 	for jobName in `ls -A "$projectConfigArea/jobs"`
 	do
 		file=$projectWorkingArea/$jobName.nextBuildNumber
@@ -42,11 +43,11 @@ CriticalSection ()
 	    lastBuildNumber=1
 	  fi
 	
-	  nextBuildNumber=`cat "$JOBS_HOME/$jobName/nextBuildNumber"`
+	  nextBuildNumber=`cat "$hudsonJobsArea/$jobName/nextBuildNumber"`
 	  if [ "$nextBuildNumber" != "$lastBuildNumber" ]
 	  then
 			##############
-	  	StartPromotion
+	  	CheckPromotion
 			##############
 	  fi
 	done
@@ -57,18 +58,12 @@ CriticalSection ()
 # Execute the critical section if a lock can be acquired.
 #########################################################
 
-StartPromotion ()
+CheckPromotion ()
 {
-  "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes" Checker \
-  	"$projectDownloadsArea" \
-  	"$JOBS_HOME" \
-  	"$jobName" \
-  	"$lastBuildNumber"\
-  	"$nextBuildNumber"
+  "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes" main.Main
   	
   # Exit when done.
   # Next check will be triggered by cron...
-
   exit 0
 }
 
@@ -82,7 +77,7 @@ lockFile=$projectWorkingArea/promoter.lock
 
 if ( set -o noclobber; echo "$$" > "$lockFile" ) 2> /dev/null; 
 then
-  trap 'rm -f "$lockFile"; exit $?' INT TERM EXIT
+  trap 'rm -f "$lockFile"; rm -rf "$inprogressDir"; exit $?' INT TERM EXIT
 
 	###############
 	CriticalSection
@@ -90,6 +85,4 @@ then
 		
   rm -f "$lockFile"
   trap - INT TERM EXIT
-else
-	echo "Promoter already being executed by process $(cat $lockFile)."
 fi 
