@@ -76,14 +76,31 @@ public class Main
 
     for (File buildDir : buildsDir.listFiles())
     {
+      String name = buildDir.getName();
       if (buildDir.isDirectory())
       {
-        String buildResult = getBuildResult(buildDir);
-        System.out.println(buildDir.getName() + ": " + buildResult);
+        if (isNumber(name))
+        {
+          String buildResult = getBuildResult(buildDir);
+          System.out.println(name + ": " + buildResult);
+        }
       }
     }
 
     return modifiedRepositories;
+  }
+
+  private static boolean isNumber(String str)
+  {
+    for (char c : str.toCharArray())
+    {
+      if (!Character.isDigit(c))
+      {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   private static String getBuildResult(File buildDir)
