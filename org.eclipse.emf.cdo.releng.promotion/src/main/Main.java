@@ -68,6 +68,8 @@ public class Main
   {
     boolean modifiedRepositories = false;
     File buildsDir = new File(jobDir, "builds");
+    System.out.println("Checking " + buildsDir);
+
     for (File buildDir : buildsDir.listFiles())
     {
       if (buildDir.isDirectory())
