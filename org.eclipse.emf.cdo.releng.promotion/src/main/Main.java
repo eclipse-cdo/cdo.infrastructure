@@ -119,7 +119,7 @@ public class Main
         String autoVisible = jobProperties.getProperty("auto.visible", "");
         if (autoVisible.contains(buildType))
         {
-          File file = new File(target, ".visible");
+          File file = new File(target, "visible");
           OutputStream stream = null;
 
           try
