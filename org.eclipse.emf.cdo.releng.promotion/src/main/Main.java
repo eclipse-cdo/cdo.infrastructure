@@ -56,8 +56,14 @@ public class Main
     {
       if (jobDir.isDirectory())
       {
+        String jobName = jobDir.getName();
+        if (".svn".equalsIgnoreCase(jobName) || "cvs".equalsIgnoreCase(jobName))
+        {
+          continue;
+        }
+
         Properties jobProperties = Config.loadProperties(new File(jobDir, "promoter.properties"), false);
-        modifiedRepositories |= copyBuilds(new File(Config.getHudsonJobsArea(), jobDir.getName()), jobProperties);
+        modifiedRepositories |= copyBuilds(new File(Config.getHudsonJobsArea(), jobName), jobProperties);
       }
     }
 
