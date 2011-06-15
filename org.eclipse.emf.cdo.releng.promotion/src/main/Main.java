@@ -77,22 +77,19 @@ public class Main
     for (File buildDir : buildsDir.listFiles())
     {
       String name = buildDir.getName();
-      if (buildDir.isDirectory())
+      if (buildDir.isDirectory() && isNumber(name))
       {
-        if (isNumber(name))
+        String buildResult = getBuildResult(buildDir);
+        if ("SUCCESS".equalsIgnoreCase(buildResult))
         {
-          String buildResult = getBuildResult(buildDir);
-          if ("SUCCESS".equalsIgnoreCase(buildResult))
+          File archiveDir = new File(buildDir, "archive");
+          if (archiveDir.isDirectory() && archiveDir.isDirectory())
           {
-            File archiveDir = new File(buildDir, "archive");
-            if (archiveDir.isDirectory() && archiveDir.isDirectory())
+            File buildInfoFile = new File(archiveDir, "build-info.xml");
+            if (buildInfoFile.exists() && buildInfoFile.isFile())
             {
-              File buildInfoFile = new File(archiveDir, "build-info.xml");
-              if (buildInfoFile.exists() && buildInfoFile.isFile())
-              {
-                BuildInfo buildInfo = XML.readBuildInfo(buildInfoFile);
-                copyBuildIdNeeded(jobProperties, buildDir, buildInfo);
-              }
+              BuildInfo buildInfo = XML.readBuildInfo(buildInfoFile);
+              copyBuildIdNeeded(jobProperties, buildDir, buildInfo);
             }
           }
         }
