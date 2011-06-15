@@ -10,6 +10,8 @@ import util.IO;
 import util.XML;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -28,29 +30,26 @@ import java.util.Properties;
  */
 public class Main
 {
-  private static final File drops = new File(Config.getProjectDownloadsArea(), "drops");
+  private static final File dropsDir = new File(Config.getProjectDownloadsArea(), "drops");
+
+  private static final List<File> addedDrops = new ArrayList<File>();
+
+  private static final List<File> removedDrops = new ArrayList<File>();
 
   public static void main(String[] args)
   {
-    boolean modifiedRepositories = false;
-    modifiedRepositories |= copyBuilds();
-    modifiedRepositories |= performTasks();
+    copyBuilds();
+    // performTasks();
 
-    if (modifiedRepositories)
+    if (!addedDrops.isEmpty() || !removedDrops.isEmpty())
     {
       generateRepositories();
+      generateDocuments();
     }
-
-    generateDocuments();
-
-    // TaskManager taskManager = new TaskManager();
-    // taskManager.addTaskProvider(new HudsonTask.Provider(1));
-    // taskManager.run();
   }
 
-  private static boolean copyBuilds()
+  private static void copyBuilds()
   {
-    boolean modifiedRepositories = false;
     File jobsDir = new File("jobs");
     for (File jobDir : jobsDir.listFiles())
     {
@@ -63,16 +62,13 @@ public class Main
         }
 
         Properties jobProperties = Config.loadProperties(new File(jobDir, "promoter.properties"), false);
-        modifiedRepositories |= copyBuilds(new File(Config.getHudsonJobsArea(), jobName), jobProperties);
+        copyBuilds(new File(Config.getHudsonJobsArea(), jobName), jobProperties);
       }
     }
-
-    return modifiedRepositories;
   }
 
-  private static boolean copyBuilds(File jobDir, Properties jobProperties)
+  private static void copyBuilds(File jobDir, Properties jobProperties)
   {
-    boolean modifiedRepositories = false;
     File buildsDir = new File(jobDir, "builds");
     System.out.println("Checking " + buildsDir);
 
@@ -93,33 +89,52 @@ public class Main
               if (buildInfoFile.exists() && buildInfoFile.isFile())
               {
                 BuildInfo buildInfo = XML.readBuildInfo(buildInfoFile);
-                modifiedRepositories |= copyBuildIdNeeded(jobProperties, buildDir, buildInfo);
+                copyBuildIdNeeded(jobProperties, buildDir, buildInfo);
               }
             }
           }
         }
       }
     }
-
-    return modifiedRepositories;
   }
 
-  private static boolean copyBuildIdNeeded(Properties jobProperties, File buildDir, BuildInfo buildInfo)
+  private static void copyBuildIdNeeded(Properties jobProperties, File buildDir, BuildInfo buildInfo)
   {
+    String buildType = buildInfo.getType();
+
     String autoPromote = jobProperties.getProperty("auto.promote", "IMSR");
-    if (autoPromote.contains(buildInfo.getType()))
+    if (autoPromote.contains(buildType))
     {
-      File target = new File(drops, buildInfo.getQualifier());
+      dropsDir.mkdirs();
+      File target = new File(dropsDir, buildInfo.getQualifier());
       if (!target.exists())
       {
         System.out.println("Copying build " + buildInfo.getNumber() + " to " + target);
+
         File archiveDir = new File(buildDir, "archive");
         IO.copyTree(archiveDir, target);
-        return true;
+
+        String autoVisible = jobProperties.getProperty("auto.visible", "");
+        if (autoVisible.contains(buildType))
+        {
+          File file = new File(target, ".visible");
+
+          try
+          {
+            if (!file.createNewFile())
+            {
+              throw new RuntimeException(file.getAbsolutePath() + " could not be created");
+            }
+          }
+          catch (Exception ex)
+          {
+            throw new RuntimeException(file.getAbsolutePath() + " could not be created", ex);
+          }
+        }
+
+        addedDrops.add(target);
       }
     }
-
-    return false;
   }
 
   private static boolean isNumber(String str)
@@ -180,11 +195,6 @@ public class Main
     });
 
     return builder.toString();
-  }
-
-  private static boolean performTasks()
-  {
-    return false;
   }
 
   private static void generateRepositories()
