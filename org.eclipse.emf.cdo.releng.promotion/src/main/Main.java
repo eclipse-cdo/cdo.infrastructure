@@ -117,6 +117,7 @@ public class Main
       public void endElement(String uri, String localName, String qName) throws SAXException
       {
         --level;
+        result = false;
       }
 
       @Override
