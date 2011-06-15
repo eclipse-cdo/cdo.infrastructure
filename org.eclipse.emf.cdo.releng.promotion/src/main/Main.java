@@ -6,6 +6,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import util.BuildInfo;
 import util.Config;
+import util.IO;
 import util.XML;
 
 import java.io.File;
@@ -112,6 +113,8 @@ public class Main
       if (!target.exists())
       {
         System.out.println("Copying build " + buildInfo.getNumber() + " to " + target);
+        File archiveDir = new File(buildDir, "archive");
+        IO.copyTree(archiveDir, target);
         return true;
       }
     }
