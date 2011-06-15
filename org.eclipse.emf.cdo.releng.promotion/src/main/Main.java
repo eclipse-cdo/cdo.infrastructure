@@ -100,21 +100,23 @@ public class Main
   private static void copyBuildIdNeeded(Properties jobProperties, File buildDir, BuildInfo buildInfo)
   {
     String buildType = buildInfo.getType();
-
     String autoPromote = jobProperties.getProperty("auto.promote", "IMSR");
+    String autoVisible = jobProperties.getProperty("auto.visible", "");
+
     if (autoPromote.contains(buildType))
     {
       dropsDir.mkdirs();
       File target = new File(dropsDir, buildInfo.getQualifier());
       if (!target.exists())
       {
-        System.out.println("Copying build " + buildInfo.getNumber() + " to " + target);
+        boolean isVisible = autoVisible.contains(buildType);
+        System.out.println("Copying build " + buildInfo.getNumber() + " to " + target
+            + (isVisible ? " (visible)" : " (invisible)"));
 
         File archiveDir = new File(buildDir, "archive");
         IO.copyTree(archiveDir, target);
 
-        String autoVisible = jobProperties.getProperty("auto.visible", "");
-        if (autoVisible.contains(buildType))
+        if (isVisible)
         {
           File file = new File(target, ".visible");
           OutputStream stream = null;
