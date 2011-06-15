@@ -10,6 +10,8 @@ import util.IO;
 import util.XML;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -118,17 +120,19 @@ public class Main
         if (autoVisible.contains(buildType))
         {
           File file = new File(target, ".visible");
+          OutputStream stream = null;
 
           try
           {
-            if (!file.createNewFile())
-            {
-              throw new RuntimeException(file.getAbsolutePath() + " could not be created");
-            }
+            stream = new FileOutputStream(file);
           }
           catch (Exception ex)
           {
             throw new RuntimeException(file.getAbsolutePath() + " could not be created", ex);
+          }
+          finally
+          {
+            IO.close(stream);
           }
         }
 
