@@ -81,7 +81,7 @@ public class Main
       if (buildDir.isDirectory())
       {
         String buildResult = getBuildResult(buildDir);
-        System.out.println(buildResult);
+        System.out.println(buildDir.getName() + ": " + buildResult);
       }
     }
 
@@ -90,8 +90,14 @@ public class Main
 
   private static String getBuildResult(File buildDir)
   {
+    File file = new File(buildDir, "build.xml");
+    if (!file.exists() || !file.isFile())
+    {
+      return null;
+    }
+
     final StringBuilder builder = new StringBuilder();
-    XML.parseXML(new File(buildDir, "build.xml"), new DefaultHandler()
+    XML.parseXML(file, new DefaultHandler()
     {
       private int level;
 
