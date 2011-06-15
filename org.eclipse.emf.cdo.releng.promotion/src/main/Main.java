@@ -4,8 +4,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import tasks.TaskManager;
-import tasks.hudson.HudsonTask;
 import util.Config;
 import util.XML;
 
@@ -43,9 +41,9 @@ public class Main
 
     generateDocuments();
 
-    TaskManager taskManager = new TaskManager();
-    taskManager.addTaskProvider(new HudsonTask.Provider(1));
-    taskManager.run();
+    // TaskManager taskManager = new TaskManager();
+    // taskManager.addTaskProvider(new HudsonTask.Provider(1));
+    // taskManager.run();
   }
 
   private static boolean copyBuilds()
