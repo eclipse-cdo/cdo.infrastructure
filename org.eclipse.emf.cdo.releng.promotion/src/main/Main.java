@@ -37,6 +37,8 @@ import java.util.StringTokenizer;
  */
 public class Main
 {
+  public static final String DOWNLOADS_PATH = Config.getProjectDownloadsArea().getAbsolutePath();
+
   public static final File dropsDir = new File(Config.getProjectDownloadsArea(), "drops");
 
   private static final String MARKER_MIRRORED = ".mirrored";
@@ -53,11 +55,25 @@ public class Main
     try
     {
       out = new FileOutputStream(new File(Config.getProjectWorkingArea(), "promoter.ant"));
-      XMLOutput xml = new XMLOutput(out);
+      XMLOutput xml = new XMLOutput(out)
+      {
+        @Override
+        public XMLOutput attribute(String name, File file) throws SAXException
+        {
+          String path = file.getAbsolutePath();
+          if (path.startsWith(DOWNLOADS_PATH))
+          {
+            path = path.substring(DOWNLOADS_PATH.length() + 1);
+          }
+
+          return super.attribute(name, path);
+        }
+      };
 
       xml.element("project");
       xml.attribute("name", "promoter");
       xml.attribute("default", "main");
+      xml.attribute("basedir", DOWNLOADS_PATH);
       xml.push();
 
       xml.element("target");
@@ -347,10 +363,9 @@ public class Main
     File xmlFile = new File(siteP2, name + ".xml");
     String qualifier = siteP2.getParentFile().getName();
 
-    String downloadsPath = Config.getProjectDownloadsArea().getAbsolutePath();
     String downloadsServer = "download.eclipse.org";
-    int pos = downloadsPath.indexOf(downloadsServer);
-    String downloadsPrefix = downloadsPath.substring(pos + 1);
+    int pos = DOWNLOADS_PATH.indexOf(downloadsServer);
+    String downloadsPrefix = DOWNLOADS_PATH.substring(pos + 1);
 
     String match = "<property name='p2\\.compressed'";
     String url = "http://www.eclipse.org/downloads/download.php?file=/" + downloadsPrefix + "/drops/" + qualifier
