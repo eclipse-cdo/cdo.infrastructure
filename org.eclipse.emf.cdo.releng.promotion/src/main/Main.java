@@ -7,11 +7,14 @@ import org.xml.sax.helpers.DefaultHandler;
 import util.BuildInfo;
 import util.Config;
 import util.IO;
+import util.IO.OutputHandler;
 import util.XML;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -58,13 +61,11 @@ public class Main
       if (jobDir.isDirectory())
       {
         String jobName = jobDir.getName();
-        if (".svn".equalsIgnoreCase(jobName) || "cvs".equalsIgnoreCase(jobName))
+        if (!isExcluded(jobName))
         {
-          continue;
+          Properties jobProperties = Config.loadProperties(new File(jobDir, "promotion.properties"), false);
+          copyBuilds(new File(Config.getHudsonJobsArea(), jobName), jobProperties);
         }
-
-        Properties jobProperties = Config.loadProperties(new File(jobDir, "promotion.properties"), false);
-        copyBuilds(new File(Config.getHudsonJobsArea(), jobName), jobProperties);
       }
     }
   }
@@ -83,10 +84,10 @@ public class Main
         if ("SUCCESS".equalsIgnoreCase(buildResult))
         {
           File archiveDir = new File(buildDir, "archive");
-          if (archiveDir.isDirectory() && archiveDir.isDirectory())
+          if (archiveDir.isDirectory())
           {
             File buildInfoFile = new File(archiveDir, "build-info.xml");
-            if (buildInfoFile.exists() && buildInfoFile.isFile())
+            if (buildInfoFile.isFile())
             {
               BuildInfo buildInfo = XML.readBuildInfo(buildInfoFile);
               copyBuildIdNeeded(jobProperties, buildDir, buildInfo);
@@ -116,28 +117,59 @@ public class Main
         File archiveDir = new File(buildDir, "archive");
         IO.copyTree(archiveDir, target);
 
-        if (isVisible)
-        {
-          File file = new File(target, ".visible");
-          OutputStream stream = null;
-
-          try
-          {
-            stream = new FileOutputStream(file);
-          }
-          catch (Exception ex)
-          {
-            throw new RuntimeException(file.getAbsolutePath() + " could not be created", ex);
-          }
-          finally
-          {
-            IO.close(stream);
-          }
-        }
+        storePromotionProperties(target, jobProperties);
+        storeVisibility(target, isVisible);
+        storeNextBuildNumber(buildInfo.getJob(), Integer.parseInt(buildInfo.getNumber()) + 1);
 
         addedDrops.add(target);
       }
     }
+  }
+
+  private static void storePromotionProperties(File target, Properties properties)
+  {
+    OutputStream out = null;
+
+    try
+    {
+      out = new FileOutputStream(new File(target, "promotion.properties"));
+      properties.store(out, "Promotion Properties");
+    }
+    catch (IOException ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      IO.close(out);
+    }
+  }
+
+  private static void storeVisibility(File target, boolean visible)
+  {
+    if (visible)
+    {
+      IO.writeFile(new File(target, ".visible"), new OutputHandler()
+      {
+        public void handleOutput(OutputStream out) throws IOException
+        {
+          // Do nothing
+        }
+      });
+    }
+  }
+
+  private static void storeNextBuildNumber(String jobName, final int nextBuildNumber)
+  {
+    IO.writeFile(new File(Config.getProjectWorkingArea(), jobName + ".nextBuildNumber"), new OutputHandler()
+    {
+      public void handleOutput(OutputStream out) throws IOException
+      {
+        PrintStream stream = new PrintStream(out);
+        stream.println(nextBuildNumber);
+        stream.flush();
+      }
+    });
   }
 
   private static boolean isNumber(String str)
@@ -151,6 +183,41 @@ public class Main
     }
 
     return true;
+  }
+
+  private static boolean isExcluded(String name)
+  {
+    if (".svn".equalsIgnoreCase(name))
+    {
+      return true;
+    }
+
+    if ("cvs".equalsIgnoreCase(name))
+    {
+      return true;
+    }
+
+    if (".git".equalsIgnoreCase(name))
+    {
+      return true;
+    }
+
+    if (".hg".equalsIgnoreCase(name))
+    {
+      return true;
+    }
+
+    if (".bzr".equalsIgnoreCase(name))
+    {
+      return true;
+    }
+
+    if ("SCCS".equalsIgnoreCase(name))
+    {
+      return true;
+    }
+
+    return false;
   }
 
   private static String getBuildResult(File buildDir)

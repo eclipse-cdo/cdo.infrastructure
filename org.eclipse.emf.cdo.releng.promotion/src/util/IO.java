@@ -423,6 +423,24 @@ public final class IO
     }
   }
 
+  public static void writeFile(File file, OutputHandler handler)
+  {
+    FileOutputStream output = openOutputStream(file);
+
+    try
+    {
+      handler.handleOutput(output);
+    }
+    catch (IOException ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      close(output);
+    }
+  }
+
   public static boolean equals(InputStream stream1, InputStream stream2)
   {
     try
@@ -447,5 +465,13 @@ public final class IO
     {
       throw new RuntimeException(ex);
     }
+  }
+
+  /**
+   * @author Eike Stepper
+   */
+  public interface OutputHandler
+  {
+    public void handleOutput(OutputStream out) throws IOException;
   }
 }
