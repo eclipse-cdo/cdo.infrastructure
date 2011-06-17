@@ -398,9 +398,9 @@ public class Main
               File dropinsZip = new File(zips, "dropins.zip");
               if (dropinsZip.isFile())
               {
-                xml.element("rename");
-                xml.attribute("dest", new File(zips, buildInfo.substitute(generateZipAll)));
-                xml.attribute("src", dropinsZip);
+                xml.element("move");
+                xml.attribute("file", dropinsZip);
+                xml.attribute("tofile", new File(zips, buildInfo.substitute(generateZipAll)));
               }
             }
           }
