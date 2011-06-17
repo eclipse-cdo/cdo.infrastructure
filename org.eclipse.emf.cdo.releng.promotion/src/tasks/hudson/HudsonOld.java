@@ -12,7 +12,6 @@ package tasks.hudson;
  */
 
 import util.BuildInfo;
-import util.XML;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -89,7 +88,7 @@ public final class HudsonOld
       return;
     }
 
-    BuildInfo buildInfo = XML.readBuildInfo(file);
+    BuildInfo buildInfo = BuildInfo.read(file);
     String buildQualifier = buildInfo.getQualifier();
     if (!QUALIFIER_PATTERN.matcher(buildQualifier).matches())
     {

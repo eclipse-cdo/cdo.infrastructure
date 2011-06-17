@@ -10,8 +10,6 @@
  */
 package util;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.SAXParser;
@@ -67,32 +65,6 @@ public final class XML
         }
       }
     }
-  }
-
-  public static BuildInfo readBuildInfo(File file)
-  {
-    final BuildInfo result = new BuildInfo();
-    parseXML(file, new DefaultHandler()
-    {
-      @Override
-      public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
-      {
-        if ("build".equals(qName))
-        {
-          result.setHudson(attributes.getValue("hudson"));
-          result.setJob(attributes.getValue("job"));
-          result.setNumber(attributes.getValue("number"));
-          result.setQualifier(attributes.getValue("qualifier"));
-          result.setRevision(attributes.getValue("revision"));
-          result.setStream(attributes.getValue("stream"));
-          result.setTimestamp(attributes.getValue("timestamp"));
-          result.setTrigger(attributes.getValue("trigger"));
-          result.setType(attributes.getValue("type"));
-        }
-      }
-    });
-
-    return result;
   }
 
   private static RuntimeException wrapException(Exception exception)

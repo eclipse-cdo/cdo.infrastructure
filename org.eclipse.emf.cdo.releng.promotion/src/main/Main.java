@@ -146,7 +146,7 @@ public class Main
           File buildInfoFile = new File(archiveDir, "build-info.xml");
           if (buildInfoFile.isFile())
           {
-            BuildInfo buildInfo = XML.readBuildInfo(buildInfoFile);
+            BuildInfo buildInfo = BuildInfo.read(buildInfoFile);
             copyBuildIfNeeded(jobProperties, buildDir, buildInfo);
           }
         }
@@ -343,19 +343,66 @@ public class Main
 
     for (File drop : dropsDir.listFiles())
     {
-      File siteP2 = new File(drop, "site.p2");
-      if (siteP2.isDirectory())
+      if (drop.isDirectory())
       {
-        if (downloadsPrefix != null)
+        File siteP2 = new File(drop, "site.p2");
+        if (siteP2.isDirectory())
         {
-          File markerFile = new File(siteP2, MARKER_MIRRORED);
-          if (!markerFile.exists())
+          if (downloadsPrefix != null)
           {
-            addMirroring(xml, siteP2, "artifacts", downloadsPrefix);
-            addMirroring(xml, siteP2, "content", downloadsPrefix);
+            File markerFile = new File(siteP2, MARKER_MIRRORED);
+            if (!markerFile.exists())
+            {
+              addMirroring(xml, siteP2, "artifacts", downloadsPrefix);
+              addMirroring(xml, siteP2, "content", downloadsPrefix);
 
-            xml.element("touch");
-            xml.attribute("file", markerFile);
+              xml.element("touch");
+              xml.attribute("file", markerFile);
+            }
+          }
+
+          File buildInfoFile = new File(drop, "build-info.xml");
+          if (buildInfoFile.isFile())
+          {
+            BuildInfo buildInfo = BuildInfo.read(buildInfoFile);
+            Properties promotionProperties = Config.loadProperties(new File(drop, "promotion.properties"), false);
+            File zips = new File(drop, "zips");
+
+            String generateZipSite = promotionProperties.getProperty("generate.zip.site");
+            if (generateZipSite != null)
+            {
+              xml.element("zip");
+              xml.attribute("destfile", new File(zips, buildInfo.substitute(generateZipSite)));
+              xml.push();
+              xml.element("fileset");
+              xml.attribute("dir", siteP2);
+              xml.push();
+              xml.element("includes");
+              xml.attribute("name", "artifacts.jar");
+              xml.element("includes");
+              xml.attribute("name", "content.jar");
+              xml.element("includes");
+              xml.attribute("name", " binary/**");
+              xml.element("includes");
+              xml.attribute("name", " features/**");
+              xml.element("includes");
+              xml.attribute("name", " plugins/**");
+              xml.element("includes");
+              xml.pop();
+              xml.pop();
+            }
+
+            String generateZipAll = promotionProperties.getProperty("generate.zip.all");
+            if (generateZipAll != null)
+            {
+              File dropinsZip = new File(zips, "dropins.zip");
+              if (dropinsZip.isFile())
+              {
+                xml.element("rename");
+                xml.attribute("dest", new File(zips, buildInfo.substitute(generateZipAll)));
+                xml.attribute("src", dropinsZip);
+              }
+            }
           }
         }
       }

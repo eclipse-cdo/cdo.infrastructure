@@ -11,6 +11,10 @@ package util;
  *    Eike Stepper - initial API and implementation
  */
 
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
 import java.io.File;
 
 /**
@@ -35,10 +39,6 @@ public final class BuildInfo
   private String trigger;
 
   private String type;
-
-  private File build;
-
-  private File drop;
 
   public BuildInfo()
   {
@@ -89,14 +89,19 @@ public final class BuildInfo
     return type;
   }
 
-  public File getBuild()
+  public String substitute(String pattern)
   {
-    return build;
-  }
-
-  public File getDrop()
-  {
-    return drop;
+    pattern = pattern.replaceAll("\\${hudson}", hudson);
+    pattern = pattern.replaceAll("\\${job}", job);
+    pattern = pattern.replaceAll("\\${number}", number);
+    pattern = pattern.replaceAll("\\${qualifier}", qualifier);
+    pattern = pattern.replaceAll("\\${revision}", revision);
+    pattern = pattern.replaceAll("\\${hudson}", hudson);
+    pattern = pattern.replaceAll("\\${stream}", stream);
+    pattern = pattern.replaceAll("\\${timestamp}", timestamp);
+    pattern = pattern.replaceAll("\\${trigger}", trigger);
+    pattern = pattern.replaceAll("\\${type}", type);
+    return pattern;
   }
 
   void setHudson(String hudson)
@@ -144,13 +149,29 @@ public final class BuildInfo
     this.type = type;
   }
 
-  void setBuild(File build)
+  public static BuildInfo read(File file)
   {
-    this.build = build;
-  }
+    final BuildInfo result = new BuildInfo();
+    XML.parseXML(file, new DefaultHandler()
+    {
+      @Override
+      public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+      {
+        if ("build".equals(qName))
+        {
+          result.setHudson(attributes.getValue("hudson"));
+          result.setJob(attributes.getValue("job"));
+          result.setNumber(attributes.getValue("number"));
+          result.setQualifier(attributes.getValue("qualifier"));
+          result.setRevision(attributes.getValue("revision"));
+          result.setStream(attributes.getValue("stream"));
+          result.setTimestamp(attributes.getValue("timestamp"));
+          result.setTrigger(attributes.getValue("trigger"));
+          result.setType(attributes.getValue("type"));
+        }
+      }
+    });
 
-  void setDrop(File drop)
-  {
-    this.drop = drop;
+    return result;
   }
 }
