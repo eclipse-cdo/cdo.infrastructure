@@ -62,9 +62,9 @@ CheckPromotion ()
 {
   "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes" main.Main
   
-  if [ -f "$promotionWorkDir/promoter.ant" ]
+  if [ -f "$projectWorkingArea/promoter.ant" ]
   then
-	  "$ANT_HOME/bin/ant" -f "$promotionWorkDir/promoter.ant"
+	  "$ANT_HOME/bin/ant" -f "$projectWorkingArea/promoter.ant"
 	fi
 
   # Exit when done.
