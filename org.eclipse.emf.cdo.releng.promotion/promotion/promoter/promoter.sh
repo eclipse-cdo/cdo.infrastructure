@@ -61,7 +61,12 @@ CriticalSection ()
 CheckPromotion ()
 {
   "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes" main.Main
-  	
+  
+  if [ -f "$promotionWorkDir/promoter.ant" ]
+  then
+	  "$ANT_HOME/bin/ant" -f "$promotionWorkDir/promoter.ant"
+	fi
+
   # Exit when done.
   # Next check will be triggered by cron...
   exit 0

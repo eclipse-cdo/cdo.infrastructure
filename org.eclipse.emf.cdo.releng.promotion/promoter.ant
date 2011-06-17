@@ -3,9 +3,7 @@
 
 	<target name="main">
 		<unjar dest="DEST" src="artifacts.jar">
-			<patternset>
-				<include name="artifacts.xml" />
-			</patternset>
+			<patternset includes="artifacts.xml" />
 		</unjar>
 		<replaceregexp file="" match="" replace="" />
 		<jar destfile="" file="artifacts.xml" />

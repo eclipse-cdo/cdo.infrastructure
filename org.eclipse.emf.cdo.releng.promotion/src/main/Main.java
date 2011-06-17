@@ -378,10 +378,7 @@ public class Main
     xml.attribute("src", jarFile);
     xml.push();
     xml.element("patternset");
-    xml.push();
-    xml.element("include");
-    xml.attribute("name", xmlFile.getName());
-    xml.pop();
+    xml.attribute("includes", xmlFile.getName());
     xml.pop();
 
     xml.element("replaceregexp");
