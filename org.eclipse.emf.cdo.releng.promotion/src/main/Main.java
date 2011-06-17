@@ -15,7 +15,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 /**
  * Copyright (c) 2004 - 2011 Eike Stepper (Berlin, Germany) and others.
@@ -65,6 +68,13 @@ public class Main
     File buildsDir = new File(jobDir, "builds");
     System.out.println("Checking " + buildsDir);
 
+    Set<Integer> excludedBuilds = new HashSet<Integer>();
+    StringTokenizer tokenizer = new StringTokenizer(jobProperties.getProperty("excluded.builds", ""), ",;: \t\n\r\f");
+    while (tokenizer.hasMoreTokens())
+    {
+      excludedBuilds.add(Integer.parseInt(tokenizer.nextToken()));
+    }
+
     final int NO_BUILD = -1;
     int nextBuildNumber = NO_BUILD;
     boolean buildInProgress = false;
@@ -75,6 +85,11 @@ public class Main
       if (buildDir.isDirectory() && isNumber(name))
       {
         int buildNumber = Integer.parseInt(name);
+        if (excludedBuilds.contains(buildNumber))
+        {
+          System.out.println("Build " + buildNumber + " is excluded");
+          continue;
+        }
 
         String buildResult = getBuildResult(buildDir);
         File archiveDir = new File(buildDir, "archive");
