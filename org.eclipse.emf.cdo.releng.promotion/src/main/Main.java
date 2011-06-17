@@ -102,7 +102,15 @@ public class Main
             copyBuildIfNeeded(jobProperties, buildDir, buildInfo);
           }
         }
-        else if (!"FAILURE".equalsIgnoreCase(buildResult))
+        else if ("FAILURE".equalsIgnoreCase(buildResult))
+        {
+          System.out.println("Build " + buildNumber + " is failed");
+        }
+        else if ("ABORTED".equalsIgnoreCase(buildResult))
+        {
+          System.out.println("Build " + buildNumber + " is aborted");
+        }
+        else
         {
           System.out.println("Build " + buildNumber + " is in progress");
           buildInProgress = true;
@@ -134,7 +142,7 @@ public class Main
       if (!target.exists())
       {
         boolean isVisible = autoVisible.contains(buildType);
-        System.out.println("Copying build " + buildInfo.getNumber() + " to " + target
+        System.out.println("Build " + buildInfo.getNumber() + " is copied to " + target
             + (isVisible ? " (visible)" : " (invisible)"));
 
         File archiveDir = new File(buildDir, "archive");
