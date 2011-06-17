@@ -359,7 +359,7 @@ public class Main
 
   private static void addMirroring(XMLOutput xml, File siteP2, String name) throws SAXException
   {
-    String downloadsPrefix = Config.getProperties().getProperty("project.p2.mirrorsURL.prefix");
+    String downloadsPrefix = Config.getProperties().getProperty("projectMirrorsPrefix");
     if (downloadsPrefix == null)
     {
       return;
