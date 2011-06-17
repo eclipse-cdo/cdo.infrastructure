@@ -15,8 +15,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -37,20 +35,12 @@ public class Main
 {
   private static final File dropsDir = new File(Config.getProjectDownloadsArea(), "drops");
 
-  private static final List<File> addedDrops = new ArrayList<File>();
-
-  private static final List<File> removedDrops = new ArrayList<File>();
-
   public static void main(String[] args)
   {
     copyBuilds();
     // performTasks();
-
-    if (!addedDrops.isEmpty() || !removedDrops.isEmpty())
-    {
-      generateRepositories();
-      generateDocuments();
-    }
+    generateRepositories();
+    generateDocuments();
   }
 
   private static void copyBuilds()
@@ -75,26 +65,41 @@ public class Main
     File buildsDir = new File(jobDir, "builds");
     System.out.println("Checking " + buildsDir);
 
+    final int NO_BUILD = -1;
+    int nextBuildNumber = NO_BUILD;
+    boolean buildInProgress = false;
+
     for (File buildDir : buildsDir.listFiles())
     {
       String name = buildDir.getName();
       if (buildDir.isDirectory() && isNumber(name))
       {
         String buildResult = getBuildResult(buildDir);
-        if ("SUCCESS".equalsIgnoreCase(buildResult))
+        File archiveDir = new File(buildDir, "archive");
+        if ("SUCCESS".equalsIgnoreCase(buildResult) && archiveDir.isDirectory())
         {
-          File archiveDir = new File(buildDir, "archive");
-          if (archiveDir.isDirectory())
+          File buildInfoFile = new File(archiveDir, "build-info.xml");
+          if (buildInfoFile.isFile())
           {
-            File buildInfoFile = new File(archiveDir, "build-info.xml");
-            if (buildInfoFile.isFile())
-            {
-              BuildInfo buildInfo = XML.readBuildInfo(buildInfoFile);
-              copyBuildIdNeeded(jobProperties, buildDir, buildInfo);
-            }
+            BuildInfo buildInfo = XML.readBuildInfo(buildInfoFile);
+            copyBuildIdNeeded(jobProperties, buildDir, buildInfo);
           }
         }
+        else
+        {
+          buildInProgress = true;
+        }
+
+        if (!buildInProgress)
+        {
+          nextBuildNumber = Integer.parseInt(name) + 1;
+        }
       }
+    }
+
+    if (nextBuildNumber != NO_BUILD)
+    {
+      storeNextBuildNumber(jobDir.getName(), nextBuildNumber);
     }
   }
 
@@ -119,9 +124,6 @@ public class Main
 
         storePromotionProperties(target, jobProperties);
         storeVisibility(target, isVisible);
-        storeNextBuildNumber(buildInfo.getJob(), Integer.parseInt(buildInfo.getNumber()) + 1);
-
-        addedDrops.add(target);
       }
     }
   }
