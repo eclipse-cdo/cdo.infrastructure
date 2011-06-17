@@ -33,7 +33,7 @@ CriticalSection ()
 	fi
 
 	# Check hudson jobs area for new builds.
-	for jobName in `ls -A "$projectConfigArea/jobs"`
+	for jobName in `ls "$projectConfigArea/jobs"`
 	do
 		file=$projectWorkingArea/$jobName.nextBuildNumber
 	  if [ -f "$file" ]
