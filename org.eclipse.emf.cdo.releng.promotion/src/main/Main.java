@@ -82,10 +82,10 @@ public class Main
           if (buildInfoFile.isFile())
           {
             BuildInfo buildInfo = XML.readBuildInfo(buildInfoFile);
-            copyBuildIdNeeded(jobProperties, buildDir, buildInfo);
+            copyBuildIfNeeded(jobProperties, buildDir, buildInfo);
           }
         }
-        else
+        else if (!"FAILURE".equalsIgnoreCase(buildResult))
         {
           buildInProgress = true;
         }
@@ -103,7 +103,7 @@ public class Main
     }
   }
 
-  private static void copyBuildIdNeeded(Properties jobProperties, File buildDir, BuildInfo buildInfo)
+  private static void copyBuildIfNeeded(Properties jobProperties, File buildDir, BuildInfo buildInfo)
   {
     String buildType = buildInfo.getType();
     String autoPromote = jobProperties.getProperty("auto.promote", "IMSR");
