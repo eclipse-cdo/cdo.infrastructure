@@ -388,7 +388,7 @@ public class Main
 
     xml.element("jar");
     xml.attribute("destfile", jarFile);
-    xml.attribute("file", xmlFile);
+    xml.attribute("includesfile", xmlFile);
     xml.attribute("update", "false");
 
     xml.element("delete");

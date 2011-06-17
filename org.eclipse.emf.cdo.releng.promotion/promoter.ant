@@ -6,7 +6,7 @@
 			<patternset includes="artifacts.xml" />
 		</unjar>
 		<replaceregexp file="" match="" replace="" />
-		<jar destfile="" file="artifacts.xml" update="false" />
+		<jar destfile="" includesfile="artifacts.xml" update="false" />
 		<delete file="artifacts.xml" />
 
 		<touch file="MARKER" />
