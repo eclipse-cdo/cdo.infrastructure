@@ -91,16 +91,16 @@ public final class BuildInfo
 
   public String substitute(String pattern)
   {
-    pattern = pattern.replaceAll("\\${hudson}", hudson);
-    pattern = pattern.replaceAll("\\${job}", job);
-    pattern = pattern.replaceAll("\\${number}", number);
-    pattern = pattern.replaceAll("\\${qualifier}", qualifier);
-    pattern = pattern.replaceAll("\\${revision}", revision);
-    pattern = pattern.replaceAll("\\${hudson}", hudson);
-    pattern = pattern.replaceAll("\\${stream}", stream);
-    pattern = pattern.replaceAll("\\${timestamp}", timestamp);
-    pattern = pattern.replaceAll("\\${trigger}", trigger);
-    pattern = pattern.replaceAll("\\${type}", type);
+    pattern = pattern.replaceAll("\\$\\{hudson}", hudson);
+    pattern = pattern.replaceAll("\\$\\{job}", job);
+    pattern = pattern.replaceAll("\\$\\{number}", number);
+    pattern = pattern.replaceAll("\\$\\{qualifier}", qualifier);
+    pattern = pattern.replaceAll("\\$\\{revision}", revision);
+    pattern = pattern.replaceAll("\\$\\{hudson}", hudson);
+    pattern = pattern.replaceAll("\\$\\{stream}", stream);
+    pattern = pattern.replaceAll("\\$\\{timestamp}", timestamp);
+    pattern = pattern.replaceAll("\\$\\{trigger}", trigger);
+    pattern = pattern.replaceAll("\\$\\{type}", type);
     return pattern;
   }
 
