@@ -9,6 +9,7 @@ import util.Config;
 import util.IO;
 import util.IO.OutputHandler;
 import util.XML;
+import util.XMLOutput;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,7 +27,7 @@ import java.util.StringTokenizer;
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
@@ -36,14 +37,41 @@ import java.util.StringTokenizer;
  */
 public class Main
 {
-  private static final File dropsDir = new File(Config.getProjectDownloadsArea(), "drops");
+  public static final File dropsDir = new File(Config.getProjectDownloadsArea(), "drops");
 
-  public static void main(String[] args)
+  private static final String MARKER_MIRRORED = ".mirrored";
+
+  private static final String MARKER_VISIBLE = ".visible";
+
+  public static void main(String[] args) throws Exception
   {
     copyBuilds();
     // performTasks();
-    generateRepositories();
-    generateDocuments();
+
+    OutputStream out = null;
+
+    try
+    {
+      out = new FileOutputStream(new File(Config.getProjectWorkingArea(), "promoter.ant"));
+      XMLOutput xml = new XMLOutput(out);
+
+      xml.element("project");
+      xml.attribute("name", "promoter");
+      xml.attribute("default", "main");
+
+      xml.element("target");
+      xml.attribute("name", "main");
+
+      postProcessDrops(xml);
+      generateRepositories(xml);
+      generateDocuments(xml);
+
+      xml.done();
+    }
+    finally
+    {
+      IO.close(out);
+    }
   }
 
   private static void copyBuilds()
@@ -149,7 +177,7 @@ public class Main
         IO.copyTree(archiveDir, target);
 
         storePromotionProperties(target, jobProperties);
-        storeVisibility(target, isVisible);
+        storeMarkers(target, isVisible);
       }
     }
   }
@@ -173,17 +201,11 @@ public class Main
     }
   }
 
-  private static void storeVisibility(File target, boolean visible)
+  private static void storeMarkers(File target, boolean visible)
   {
     if (visible)
     {
-      IO.writeFile(new File(target, ".visible"), new OutputHandler()
-      {
-        public void handleOutput(OutputStream out) throws IOException
-        {
-          // Do nothing
-        }
-      });
+      IO.writeFile(new File(target, MARKER_VISIBLE), OutputHandler.EMPTY);
     }
   }
 
@@ -295,11 +317,74 @@ public class Main
     return builder.toString();
   }
 
-  private static void generateRepositories()
+  private static void postProcessDrops(XMLOutput xml) throws SAXException
+  {
+    for (File drop : dropsDir.listFiles())
+    {
+      File siteP2 = new File(drop, "site.p2");
+      if (siteP2.isDirectory())
+      {
+        File markerFile = new File(siteP2, MARKER_MIRRORED);
+        if (!markerFile.exists())
+        {
+          addMirroring(xml, siteP2, "artifacts");
+          addMirroring(xml, siteP2, "content");
+
+          xml.element("touch");
+          xml.attribute("file", markerFile);
+        }
+      }
+    }
+  }
+
+  private static void addMirroring(XMLOutput xml, File siteP2, String name) throws SAXException
+  {
+    File jarFile = new File(siteP2, name + ".jar");
+    File xmlFile = new File(siteP2, name + ".xml");
+    String qualifier = siteP2.getParentFile().getName();
+
+    String downloadsPath = Config.getProjectDownloadsArea().getAbsolutePath();
+    String downloadsServer = "download.eclipse.org";
+    int pos = downloadsPath.indexOf(downloadsServer);
+    String downloadsPrefix = downloadsPath.substring(pos + 1);
+
+    String match = "<property name='p2\\.compressed'";
+    String url = "http://www.eclipse.org/downloads/download.php?file=/" + downloadsPrefix + "/drops/" + qualifier
+        + "/site.p2&amp;protocol=http&amp;format=xml";
+    String replace = match + "\n    " + "<property name='p2.mirrorsURL' value='" + url + "'/>'>";
+
+    xml.element("echo");
+    xml.attribute("message", "Adding p2.mirrorsURL to " + qualifier + ": " + url);
+
+    xml.element("unjar");
+    xml.attribute("dest", siteP2);
+    xml.attribute("src", jarFile);
+    xml.push();
+    xml.element("patternset");
+    xml.push();
+    xml.element("include");
+    xml.attribute("name", xmlFile.getName());
+    xml.pop();
+    xml.pop();
+
+    xml.element("replaceregexp");
+    xml.attribute("file", xmlFile);
+    xml.attribute("match", match);
+    xml.attribute("replace", replace);
+
+    xml.element("jar");
+    xml.attribute("destfile", jarFile);
+    xml.attribute("file", xmlFile);
+
+    xml.element("delete");
+    xml.attribute("file", xmlFile);
+  }
+
+  private static void generateRepositories(XMLOutput xml)
   {
   }
 
-  private static void generateDocuments()
+  private static void generateDocuments(XMLOutput xml)
   {
   }
 }

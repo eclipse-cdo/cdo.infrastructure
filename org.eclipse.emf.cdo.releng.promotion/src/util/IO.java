@@ -472,6 +472,14 @@ public final class IO
    */
   public interface OutputHandler
   {
+    public static final OutputHandler EMPTY = new OutputHandler()
+    {
+      public void handleOutput(OutputStream out) throws IOException
+      {
+        // Do nothing
+      }
+    };
+
     public void handleOutput(OutputStream out) throws IOException;
   }
 }

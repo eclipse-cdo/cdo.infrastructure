@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<project name="promoter" default="main">
+
+	<target name="main">
+		<unjar dest="DEST" src="artifacts.jar">
+			<patternset>
+				<include name="artifacts.xml" />
+			</patternset>
+		</unjar>
+		<replaceregexp file="" match="" replace="" />
+		<jar destfile="" file="artifacts.xml" />
+		<delete file="artifacts.xml" />
+
+		<touch file="MARKER" />
+	</target>
+
+</project>

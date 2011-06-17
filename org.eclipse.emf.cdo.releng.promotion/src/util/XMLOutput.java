@@ -10,6 +10,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -72,6 +73,11 @@ public class XMLOutput
     flush();
     element = new Element(name);
     return this;
+  }
+
+  public XMLOutput attribute(String name, File file) throws SAXException
+  {
+    return attribute(name, file.getAbsolutePath());
   }
 
   public XMLOutput attribute(String name, Object value) throws SAXException
