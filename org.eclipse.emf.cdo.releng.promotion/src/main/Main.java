@@ -339,32 +339,31 @@ public class Main
 
   private static void postProcessDrops(XMLOutput xml) throws SAXException
   {
+    String downloadsPrefix = Config.getProperties().getProperty("projectMirrorsPrefix");
+
     for (File drop : dropsDir.listFiles())
     {
       File siteP2 = new File(drop, "site.p2");
       if (siteP2.isDirectory())
       {
-        File markerFile = new File(siteP2, MARKER_MIRRORED);
-        if (!markerFile.exists())
+        if (downloadsPrefix != null)
         {
-          addMirroring(xml, siteP2, "artifacts");
-          addMirroring(xml, siteP2, "content");
+          File markerFile = new File(siteP2, MARKER_MIRRORED);
+          if (!markerFile.exists())
+          {
+            addMirroring(xml, siteP2, "artifacts", downloadsPrefix);
+            addMirroring(xml, siteP2, "content", downloadsPrefix);
 
-          xml.element("touch");
-          xml.attribute("file", markerFile);
+            xml.element("touch");
+            xml.attribute("file", markerFile);
+          }
         }
       }
     }
   }
 
-  private static void addMirroring(XMLOutput xml, File siteP2, String name) throws SAXException
+  private static void addMirroring(XMLOutput xml, File siteP2, String name, String downloadsPrefix) throws SAXException
   {
-    String downloadsPrefix = Config.getProperties().getProperty("projectMirrorsPrefix");
-    if (downloadsPrefix == null)
-    {
-      return;
-    }
-
     String qualifier = siteP2.getParentFile().getName();
     String match = "<property name='p2\\.compressed'";
     String url = "http://www.eclipse.org/downloads/download.php?file=/" + downloadsPrefix + "/drops/" + qualifier
@@ -373,11 +372,6 @@ public class Main
 
     File jarFile = new File(siteP2, name + ".jar");
     File xmlFile = new File(siteP2, name + ".xml");
-
-    xml.element("echo");
-    xml.attribute("message", "Add mirroring to " + jarFile.getAbsolutePath());
-    xml.element("echo");
-    xml.attribute("message", "p2.mirrorsURL = " + url);
 
     xml.element("unjar");
     xml.attribute("dest", siteP2);
