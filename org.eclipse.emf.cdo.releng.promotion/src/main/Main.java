@@ -377,17 +377,17 @@ public class Main
               xml.element("fileset");
               xml.attribute("dir", siteP2);
               xml.push();
-              xml.element("includes");
+              xml.element("include");
               xml.attribute("name", "artifacts.jar");
-              xml.element("includes");
+              xml.element("include");
               xml.attribute("name", "content.jar");
-              xml.element("includes");
+              xml.element("include");
               xml.attribute("name", " binary/**");
-              xml.element("includes");
+              xml.element("include");
               xml.attribute("name", " features/**");
-              xml.element("includes");
+              xml.element("include");
               xml.attribute("name", " plugins/**");
-              xml.element("includes");
+              xml.element("include");
               xml.pop();
               xml.pop();
             }
