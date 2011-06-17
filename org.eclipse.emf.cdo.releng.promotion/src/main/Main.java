@@ -74,6 +74,8 @@ public class Main
       String name = buildDir.getName();
       if (buildDir.isDirectory() && isNumber(name))
       {
+        int buildNumber = Integer.parseInt(name);
+
         String buildResult = getBuildResult(buildDir);
         File archiveDir = new File(buildDir, "archive");
         if ("SUCCESS".equalsIgnoreCase(buildResult) && archiveDir.isDirectory())
@@ -87,12 +89,13 @@ public class Main
         }
         else if (!"FAILURE".equalsIgnoreCase(buildResult))
         {
+          System.out.println("Build " + buildNumber + " is in progress");
           buildInProgress = true;
         }
 
         if (!buildInProgress)
         {
-          nextBuildNumber = Integer.parseInt(name) + 1;
+          nextBuildNumber = buildNumber + 1;
         }
       }
     }
