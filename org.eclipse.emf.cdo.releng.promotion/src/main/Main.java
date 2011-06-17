@@ -359,18 +359,20 @@ public class Main
 
   private static void addMirroring(XMLOutput xml, File siteP2, String name) throws SAXException
   {
-    File jarFile = new File(siteP2, name + ".jar");
-    File xmlFile = new File(siteP2, name + ".xml");
+    String downloadsPrefix = Config.getProperties().getProperty("project.p2.mirrorsURL.prefix");
+    if (downloadsPrefix == null)
+    {
+      return;
+    }
+
     String qualifier = siteP2.getParentFile().getName();
-
-    String downloadsServer = "download.eclipse.org";
-    int pos = DOWNLOADS_PATH.indexOf(downloadsServer);
-    String downloadsPrefix = DOWNLOADS_PATH.substring(pos + 1);
-
     String match = "<property name='p2\\.compressed'";
     String url = "http://www.eclipse.org/downloads/download.php?file=/" + downloadsPrefix + "/drops/" + qualifier
         + "/site.p2&amp;protocol=http&amp;format=xml";
     String replace = match + "\n    " + "<property name='p2.mirrorsURL' value='" + url + "'/>'>";
+
+    File jarFile = new File(siteP2, name + ".jar");
+    File xmlFile = new File(siteP2, name + ".xml");
 
     xml.element("echo");
     xml.attribute("message", "Add mirroring to " + jarFile.getAbsolutePath());
