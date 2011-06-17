@@ -1,5 +1,3 @@
-package util;
-
 /**
  * Copyright (c) 2004 - 2011 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
@@ -10,6 +8,7 @@ package util;
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
+package util;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
