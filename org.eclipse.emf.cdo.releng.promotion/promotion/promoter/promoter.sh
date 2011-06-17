@@ -60,11 +60,14 @@ CriticalSection ()
 
 CheckPromotion ()
 {
+	promoterAntFile=$projectWorkingArea/promoter.ant
+	rm -f "$promoterAntFile"
+	
   "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes" main.Main
   
-  if [ -f "$projectWorkingArea/promoter.ant" ]
+  if [ -f "$promoterAntFile" ]
   then
-	  "$ANT_HOME/bin/ant" -f "$projectWorkingArea/promoter.ant"
+	  "$ANT_HOME/bin/ant" -f "$promoterAntFile"
 	fi
 
   # Exit when done.
