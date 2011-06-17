@@ -58,14 +58,18 @@ public class Main
       xml.element("project");
       xml.attribute("name", "promoter");
       xml.attribute("default", "main");
+      xml.push();
 
       xml.element("target");
       xml.attribute("name", "main");
+      xml.push();
 
       postProcessDrops(xml);
       generateRepositories(xml);
       generateDocuments(xml);
 
+      xml.pop();
+      xml.pop();
       xml.done();
     }
     finally
@@ -354,7 +358,9 @@ public class Main
     String replace = match + "\n    " + "<property name='p2.mirrorsURL' value='" + url + "'/>'>";
 
     xml.element("echo");
-    xml.attribute("message", "Adding p2.mirrorsURL to " + qualifier + ": " + url);
+    xml.attribute("message", "Add mirroring to " + jarFile.getAbsolutePath());
+    xml.element("echo");
+    xml.attribute("message", "p2.mirrorsURL = " + url);
 
     xml.element("unjar");
     xml.attribute("dest", siteP2);
