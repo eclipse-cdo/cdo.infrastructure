@@ -452,6 +452,7 @@ public class Main
     xml.element("include");
     xml.attribute("name", xmlFile.getName());
     xml.pop();
+
     xml.pop();
 
     xml.element("delete");
