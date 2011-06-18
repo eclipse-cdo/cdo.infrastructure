@@ -185,18 +185,30 @@ public class Main
     if (autoPromote.contains(buildType))
     {
       dropsDir.mkdirs();
-      File target = new File(dropsDir, buildInfo.getQualifier());
-      if (!target.exists())
+      File drop = new File(dropsDir, buildInfo.getQualifier());
+      if (!drop.exists())
       {
         boolean isVisible = autoVisible.contains(buildType);
-        System.out.println("Build " + buildInfo.getNumber() + " is copied to " + target
+        System.out.println("Build " + buildInfo.getNumber() + " is copied to " + drop
             + (isVisible ? " (visible)" : " (invisible)"));
 
         File archiveDir = new File(buildDir, "archive");
-        IO.copyTree(archiveDir, target);
+        IO.copyTree(archiveDir, drop);
 
-        storePromotionProperties(target, jobProperties);
-        storeMarkers(target, isVisible);
+        // Handle old build results layout
+        File siteP2 = new File(drop, "site.p2");
+        if (siteP2.isDirectory())
+        {
+          for (File file : siteP2.listFiles())
+          {
+            file.renameTo(new File(drop, file.getName()));
+          }
+
+          siteP2.delete();
+        }
+
+        storePromotionProperties(drop, jobProperties);
+        storeMarkers(drop, isVisible);
       }
     }
   }
@@ -344,6 +356,8 @@ public class Main
     {
       if (drop.isDirectory())
       {
+
+        // Add p2.mirrorsURL
         if (downloadsPrefix != null)
         {
           File markerFile = new File(drop, MARKER_MIRRORED);
