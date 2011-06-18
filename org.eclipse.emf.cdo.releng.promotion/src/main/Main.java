@@ -449,8 +449,8 @@ public class Main
     xml.element("fileset");
     xml.attribute("dir", drop);
     xml.push();
-    xml.element("fileset");
-    xml.attribute("include", xmlFile.getName());
+    xml.element("include");
+    xml.attribute("name", xmlFile.getName());
     xml.pop();
     xml.pop();
 
