@@ -425,8 +425,8 @@ public class Main
         + "&amp;protocol=http&amp;format=xml";
     String replace = match + "\n    " + "<property name='p2.mirrorsURL' value='" + url + "'/>'>";
 
-    File jarFile = new File(drop, name + ".jar");
     File xmlFile = new File(drop, name + ".xml");
+    File jarFile = new File(drop, name + ".jar");
 
     xml.element("unzip");
     xml.attribute("dest", drop);
