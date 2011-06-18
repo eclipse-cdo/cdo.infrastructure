@@ -420,9 +420,8 @@ public class Main
 
   private static void addMirroring(XMLOutput xml, File drop, String name, String downloadsPrefix) throws SAXException
   {
-    String qualifier = drop.getParentFile().getName();
     String match = "<property name='p2\\.compressed'";
-    String url = "http://www.eclipse.org/downloads/download.php?file=/" + downloadsPrefix + "/drops/" + qualifier
+    String url = "http://www.eclipse.org/downloads/download.php?file=/" + downloadsPrefix + "/drops/" + drop.getName()
         + "&amp;protocol=http&amp;format=xml";
     String replace = match + "\n    " + "<property name='p2.mirrorsURL' value='" + url + "'/>'>";
 
@@ -452,7 +451,6 @@ public class Main
     xml.element("include");
     xml.attribute("name", xmlFile.getName());
     xml.pop();
-
     xml.pop();
 
     xml.element("delete");
