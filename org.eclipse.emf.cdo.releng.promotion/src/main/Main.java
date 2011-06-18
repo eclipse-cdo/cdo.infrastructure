@@ -207,7 +207,7 @@ public class Main
 
     try
     {
-      out = new FileOutputStream(new File(target, "promotion.properties"));
+      out = new FileOutputStream(new File(target, ".promoted"));
       properties.store(out, "Promotion Properties");
     }
     catch (IOException ex)
@@ -344,63 +344,59 @@ public class Main
     {
       if (drop.isDirectory())
       {
-        File siteP2 = new File(drop, "site.p2");
-        if (siteP2.isDirectory())
+        if (downloadsPrefix != null)
         {
-          if (downloadsPrefix != null)
+          File markerFile = new File(drop, MARKER_MIRRORED);
+          if (!markerFile.exists())
           {
-            File markerFile = new File(siteP2, MARKER_MIRRORED);
-            if (!markerFile.exists())
-            {
-              addMirroring(xml, siteP2, "artifacts", downloadsPrefix);
-              addMirroring(xml, siteP2, "content", downloadsPrefix);
+            addMirroring(xml, drop, "artifacts", downloadsPrefix);
+            addMirroring(xml, drop, "content", downloadsPrefix);
 
-              xml.element("touch");
-              xml.attribute("file", markerFile);
-            }
+            xml.element("touch");
+            xml.attribute("file", markerFile);
+          }
+        }
+
+        File buildInfoFile = new File(drop, "build-info.xml");
+        if (buildInfoFile.isFile())
+        {
+          BuildInfo buildInfo = BuildInfo.read(buildInfoFile);
+          Properties promotionProperties = Config.loadProperties(new File(drop, ".promoted"), false);
+          File zips = new File(drop, "zips");
+
+          String generateZipSite = promotionProperties.getProperty("generate.zip.site");
+          if (generateZipSite != null)
+          {
+            xml.element("zip");
+            xml.attribute("destfile", new File(zips, buildInfo.substitute(generateZipSite)));
+            xml.push();
+            xml.element("fileset");
+            xml.attribute("dir", drop);
+            xml.push();
+            xml.element("include");
+            xml.attribute("name", "artifacts.jar");
+            xml.element("include");
+            xml.attribute("name", "content.jar");
+            xml.element("include");
+            xml.attribute("name", "binary/**");
+            xml.element("include");
+            xml.attribute("name", "features/**");
+            xml.element("include");
+            xml.attribute("name", "plugins/**");
+            xml.element("include");
+            xml.pop();
+            xml.pop();
           }
 
-          File buildInfoFile = new File(drop, "build-info.xml");
-          if (buildInfoFile.isFile())
+          String generateZipAll = promotionProperties.getProperty("generate.zip.all");
+          if (generateZipAll != null)
           {
-            BuildInfo buildInfo = BuildInfo.read(buildInfoFile);
-            Properties promotionProperties = Config.loadProperties(new File(drop, "promotion.properties"), false);
-            File zips = new File(drop, "zips");
-
-            String generateZipSite = promotionProperties.getProperty("generate.zip.site");
-            if (generateZipSite != null)
+            File dropinsZip = new File(zips, "dropins.zip");
+            if (dropinsZip.isFile())
             {
-              xml.element("zip");
-              xml.attribute("destfile", new File(zips, buildInfo.substitute(generateZipSite)));
-              xml.push();
-              xml.element("fileset");
-              xml.attribute("dir", siteP2);
-              xml.push();
-              xml.element("include");
-              xml.attribute("name", "artifacts.jar");
-              xml.element("include");
-              xml.attribute("name", "content.jar");
-              xml.element("include");
-              xml.attribute("name", "binary/**");
-              xml.element("include");
-              xml.attribute("name", "features/**");
-              xml.element("include");
-              xml.attribute("name", "plugins/**");
-              xml.element("include");
-              xml.pop();
-              xml.pop();
-            }
-
-            String generateZipAll = promotionProperties.getProperty("generate.zip.all");
-            if (generateZipAll != null)
-            {
-              File dropinsZip = new File(zips, "dropins.zip");
-              if (dropinsZip.isFile())
-              {
-                xml.element("move");
-                xml.attribute("file", dropinsZip);
-                xml.attribute("tofile", new File(zips, buildInfo.substitute(generateZipAll)));
-              }
+              xml.element("move");
+              xml.attribute("file", dropinsZip);
+              xml.attribute("tofile", new File(zips, buildInfo.substitute(generateZipAll)));
             }
           }
         }
@@ -408,19 +404,19 @@ public class Main
     }
   }
 
-  private static void addMirroring(XMLOutput xml, File siteP2, String name, String downloadsPrefix) throws SAXException
+  private static void addMirroring(XMLOutput xml, File drop, String name, String downloadsPrefix) throws SAXException
   {
-    String qualifier = siteP2.getParentFile().getName();
+    String qualifier = drop.getParentFile().getName();
     String match = "<property name='p2\\.compressed'";
     String url = "http://www.eclipse.org/downloads/download.php?file=/" + downloadsPrefix + "/drops/" + qualifier
-        + "/site.p2&amp;protocol=http&amp;format=xml";
+        + "&amp;protocol=http&amp;format=xml";
     String replace = match + "\n    " + "<property name='p2.mirrorsURL' value='" + url + "'/>'>";
 
-    File jarFile = new File(siteP2, name + ".jar");
-    File xmlFile = new File(siteP2, name + ".xml");
+    File jarFile = new File(drop, name + ".jar");
+    File xmlFile = new File(drop, name + ".xml");
 
     xml.element("unjar");
-    xml.attribute("dest", siteP2);
+    xml.attribute("dest", drop);
     xml.attribute("src", jarFile);
     xml.push();
     xml.element("patternset");
