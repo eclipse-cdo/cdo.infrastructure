@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<project name="test" default="test">
+
+	<target name="test">
+		<zip destfile="test.zip" update="false">
+			<fileset dir=".">
+				<include name="reset.sh" />
+			</fileset>
+		</zip>
+	</target>
+
+</project>

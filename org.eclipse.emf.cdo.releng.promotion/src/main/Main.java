@@ -429,7 +429,7 @@ public class Main
     File jarFile = new File(drop, name + ".jar");
     File xmlFile = new File(drop, name + ".xml");
 
-    xml.element("unjar");
+    xml.element("unzip");
     xml.attribute("dest", drop);
     xml.attribute("src", jarFile);
     xml.push();
@@ -442,10 +442,17 @@ public class Main
     xml.attribute("match", match);
     xml.attribute("replace", replace);
 
-    xml.element("jar");
+    xml.element("zip");
     xml.attribute("destfile", jarFile);
-    xml.attribute("includesfile", xmlFile);
     xml.attribute("update", "false");
+    xml.push();
+    xml.element("fileset");
+    xml.attribute("dir", drop);
+    xml.push();
+    xml.element("fileset");
+    xml.attribute("include", xmlFile.getName());
+    xml.pop();
+    xml.pop();
 
     xml.element("delete");
     xml.attribute("file", xmlFile);
