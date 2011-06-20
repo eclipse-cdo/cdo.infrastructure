@@ -86,6 +86,7 @@ public class Repository
     File folder = new File(base, path);
     folder.mkdirs();
 
+    System.out.println();
     System.out.println("Generating repository " + name + ": " + folder.getAbsolutePath());
     for (String child : children)
     {

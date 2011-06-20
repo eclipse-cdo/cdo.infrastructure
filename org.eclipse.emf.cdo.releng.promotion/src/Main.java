@@ -468,7 +468,6 @@ public class Main
           Repository repository = getRepository(compositeDir, buildInfos);
           if (repository != null)
           {
-            System.out.println();
             repository.generate(xml);
           }
         }
