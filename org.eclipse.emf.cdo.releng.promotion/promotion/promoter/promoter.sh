@@ -63,7 +63,7 @@ CheckPromotion ()
 	promoterAntFile=$projectWorkingArea/promoter.ant
 	rm -f "$promoterAntFile"
 	
-  "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes" main.Main
+  "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes" Main
   
   if [ -f "$promoterAntFile" ]
   then
