@@ -82,20 +82,21 @@ public class Repository
     }
   }
 
-  public void generate()
+  public void generate(XMLOutput xml)
   {
     File folder = new File(base, path);
     folder.mkdirs();
 
-    generateXML(folder, "compositeArtifacts.xml", "compositeArtifactRepository",
+    generateXML(xml, folder, "compositeArtifacts", "compositeArtifactRepository",
         "org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository");
-    generateXML(folder, "compositeContent.xml", "compositeMetadataRepository",
+    generateXML(xml, folder, "compositeContent", "compositeMetadataRepository",
         "org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository");
   }
 
-  private void generateXML(final File folder, String xmlName, final String entityName, final String typeName)
+  private void generateXML(final XMLOutput xml, final File folder, final String xmlName, final String entityName,
+      final String typeName)
   {
-    IO.writeFile(new File(folder, xmlName), new IO.OutputHandler()
+    IO.writeFile(new File(folder, xmlName + ".xml"), new IO.OutputHandler()
     {
       public void handleOutput(OutputStream out) throws IOException
       {
@@ -103,49 +104,61 @@ public class Repository
 
         try
         {
-          XMLOutput xml = new XMLOutput(out);
+          XMLOutput repoXML = new XMLOutput(out);
           PrintStream stream = new PrintStream(out);
           stream.println("<?" + entityName + " version='1.0.0'?>");
           stream.flush();
 
-          xml.element("repository");
-          xml.attribute("name", name);
-          xml.attribute("type", typeName);
-          xml.attribute("version", "1.0.0");
-          xml.push();
+          repoXML.element("repository");
+          repoXML.attribute("name", name);
+          repoXML.attribute("type", typeName);
+          repoXML.attribute("version", "1.0.0");
+          repoXML.push();
 
-          xml.element("properties");
-          xml.attribute("size", "3");
-          xml.push();
+          repoXML.element("properties");
+          repoXML.attribute("size", "3");
+          repoXML.push();
 
-          xml.element("property");
-          xml.attribute("name", "p2.timestamp");
-          xml.attribute("value", System.currentTimeMillis());
+          repoXML.element("property");
+          repoXML.attribute("name", "p2.timestamp");
+          repoXML.attribute("value", System.currentTimeMillis());
 
-          xml.element("property");
-          xml.attribute("name", "p2.compressed");
-          xml.attribute("value", "false");
+          repoXML.element("property");
+          repoXML.attribute("name", "p2.compressed");
+          repoXML.attribute("value", "false");
 
-          xml.element("property");
-          xml.attribute("name", "p2.mirrorsURL");
-          xml.attribute("value", "http://www.eclipse.org/downloads/download.php?file=/"
+          repoXML.element("property");
+          repoXML.attribute("name", "p2.mirrorsURL");
+          repoXML.attribute("value", "http://www.eclipse.org/downloads/download.php?file=/"
               + Config.getProperties().getProperty("projectMirrorsPrefix") + "/updates/" + path
               + "&amp;protocol=http&amp;format=xml");
-          xml.pop();
+          repoXML.pop();
 
-          xml.element("children");
-          xml.attribute("size", children.size());
-          xml.push();
+          repoXML.element("children");
+          repoXML.attribute("size", children.size());
+          repoXML.push();
 
           for (String child : children)
           {
-            xml.element("child");
-            xml.attribute("location", child);
+            repoXML.element("child");
+            repoXML.attribute("location", child);
           }
 
+          repoXML.pop();
+          repoXML.pop();
+          repoXML.done();
+
+          xml.element("zip");
+          xml.attribute("destfile", new File(folder, xmlName + ".jar"));
+          xml.attribute("update", "false");
+          xml.push();
+          xml.element("fileset");
+          xml.attribute("dir", folder);
+          xml.push();
+          xml.element("include");
+          xml.attribute("name", xmlName + ".xml");
           xml.pop();
           xml.pop();
-          xml.done();
         }
         catch (Exception ex)
         {

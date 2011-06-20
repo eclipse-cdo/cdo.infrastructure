@@ -458,35 +458,35 @@ public class Main
     File temp = new File(Config.getProjectDownloadsArea(), "temp");
 
     Repository r40 = new Repository.Filtered(temp, "CDO 4.0 Releases", "releases/4.0", "4.0", "R", buildInfos);
-    r40.generate();
+    r40.generate(xml);
 
     Repository r30 = new Repository.Filtered(temp, "CDO 3.0 Releases", "releases/3.0", "3.0", "R", buildInfos);
-    r30.generate();
+    r30.generate(xml);
 
     Repository r20 = new Repository.Filtered(temp, "CDO 2.0 Releases", "releases/2.0", "2.0", "R", buildInfos);
-    r20.generate();
+    r20.generate(xml);
 
     Repository r = new Repository(temp, "CDO Releases", "releases");
     r.addChild("4.0");
     r.addChild("3.0");
     r.addChild("2.0");
-    r.generate();
+    r.generate(xml);
 
     Repository iStable = new Repository.Filtered(temp, "CDO 4.1 Integration Stable Builds", "integration/stable",
         "4.1", "S", buildInfos);
-    iStable.generate();
+    iStable.generate(xml);
 
     Repository iWeekly = new Repository.Filtered(temp, "CDO 4.1 Integration Weekly Builds", "integration/weekly",
         "4.1", "I", buildInfos);
-    iWeekly.generate();
+    iWeekly.generate(xml);
 
     Repository mStable = new Repository.Filtered(temp, "CDO 4.0 Maintenance Stable Builds", "maintenance/stable",
         "4.0", "S", buildInfos);
-    mStable.generate();
+    mStable.generate(xml);
 
     Repository mWeekly = new Repository.Filtered(temp, "CDO 4.0 Maintenance Weekly Builds", "maintenance/weekly",
         "4.0", "M", buildInfos);
-    mWeekly.generate();
+    mWeekly.generate(xml);
 
     // File updates = new File(Config.getProjectDownloadsArea(), "updates");
     // File updatesTmp = new File(Config.getProjectDownloadsArea(), "updates.tmp");

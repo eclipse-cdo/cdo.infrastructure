@@ -62,6 +62,7 @@ CheckPromotion ()
 {
 	promoterAntFile=$projectWorkingArea/promoter.ant
 	rm -f "$promoterAntFile"
+	rm -rf "$projectDownloadsArea/temp"
 	
   "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes" Main
   
