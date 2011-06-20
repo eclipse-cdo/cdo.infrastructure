@@ -8,7 +8,6 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
-package main;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

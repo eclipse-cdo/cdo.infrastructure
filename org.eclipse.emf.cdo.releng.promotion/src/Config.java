@@ -8,7 +8,6 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
-package main;
 
 import java.io.File;
 import java.io.FileInputStream;
