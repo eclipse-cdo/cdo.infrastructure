@@ -11,6 +11,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.Writer;
 import java.util.LinkedList;
 
@@ -21,6 +22,8 @@ import java.util.LinkedList;
 public class XMLOutput
 {
   private static final AttributesImpl NO_ATTRIBUTES = new AttributesImpl();
+
+  private final OutputStream out;
 
   private TransformerHandler xmlHandler;
 
@@ -34,6 +37,7 @@ public class XMLOutput
 
   public XMLOutput(OutputStream out) throws TransformerConfigurationException, SAXException
   {
+    this.out = out;
     setNewLine("\n");
     setIndentation("  ");
     SAXTransformerFactory factory = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
@@ -182,6 +186,9 @@ public class XMLOutput
     }
 
     xmlHandler.endDocument();
+    PrintStream stream = new PrintStream(out);
+    stream.println();
+    stream.flush();
   }
 
   private void flush() throws SAXException
