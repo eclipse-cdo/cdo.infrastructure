@@ -76,27 +76,24 @@ public class Repository
 
   public void addChild(String child)
   {
-    System.out.println("   Adding child location: " + child);
-    children.add(child);
-
     File composite = new File(base, path);
     File folder = new File(composite, child);
-    File categories = new File(folder, "categories");
-    if (categories.isDirectory())
+
+    try
     {
-      System.out.println("   Adding child location: " + child + "/categories");
-      children.add(child + "/categories");
+      System.out.println("   Adding child location: " + folder.getCanonicalPath());
+      children.add(child);
+
+      File categories = new File(folder, "categories");
+      if (categories.isDirectory())
+      {
+        System.out.println("   Adding child location: " + categories.getCanonicalPath());
+        children.add(child + "/categories");
+      }
     }
-    else
+    catch (IOException ex)
     {
-      try
-      {
-        System.out.println("   Excluding child location: " + categories.getCanonicalPath());
-      }
-      catch (IOException ex)
-      {
-        throw new RuntimeException(ex);
-      }
+      throw new RuntimeException(ex);
     }
   }
 
