@@ -513,11 +513,14 @@ public class Main
       return null;
     }
 
+    File temp = PromoterConfig.INSTANCE.getCompositionTempArea();
+    String path = compositeDir.getPath();
+    path = path.substring(path.indexOf("/") + 1);
+
     String childLocations = compositionProperties.getProperty("child.locations");
     if (childLocations != null)
     {
-      Repository repository = new Repository(PromoterConfig.INSTANCE.getCompositionTempArea(), name,
-          compositeDir.getPath());
+      Repository repository = new Repository(temp, name, path);
 
       StringTokenizer tokenizer = new StringTokenizer(childLocations, ",");
       while (tokenizer.hasMoreTokens())
@@ -532,8 +535,7 @@ public class Main
     String childJob = compositionProperties.getProperty("child.job");
     String childStream = compositionProperties.getProperty("child.stream");
     String childTypes = compositionProperties.getProperty("child.types");
-    return new Repository.Filtered(PromoterConfig.INSTANCE.getCompositionTempArea(), name, compositeDir.getPath(),
-        childJob, childStream, childTypes, buildInfos);
+    return new Repository.Filtered(temp, name, path, childJob, childStream, childTypes, buildInfos);
   }
 
   private static void generateDocuments(XMLOutput xml, List<BuildInfo> buildInfos)
