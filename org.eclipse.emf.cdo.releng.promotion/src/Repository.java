@@ -111,6 +111,7 @@ public class Repository
         try
         {
           XMLOutput repoXML = new XMLOutput(out);
+          repoXML.processingInstruction(entityName, "version=\"1.0.0\"");
           // PrintStream stream = new PrintStream(out);
           // stream.println("<?" + entityName + " version='1.0.0'?>");
           // stream.flush();
@@ -131,7 +132,7 @@ public class Repository
 
           repoXML.element("property");
           repoXML.attribute("name", "p2.compressed");
-          repoXML.attribute("value", "false");
+          repoXML.attribute("value", true);
 
           repoXML.element("property");
           repoXML.attribute("name", "p2.mirrorsURL");
@@ -154,12 +155,11 @@ public class Repository
           repoXML.pop();
           repoXML.done();
 
-          String match = "&lt;\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>";
-
-          xml.element("replaceregexp");
-          xml.attribute("file", xmlFile);
-          xml.attribute("match", match);
-          xml.attribute("replace", match + "\n&lt;?" + entityName + " version=\"1.0.0\"?>");
+          // String match = "&lt;\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>";
+          // xml.element("replaceregexp");
+          // xml.attribute("file", xmlFile);
+          // xml.attribute("match", match);
+          // xml.attribute("replace", match + "\n&lt;?" + entityName + " version=\"1.0.0\"?>");
 
           xml.element("zip");
           xml.attribute("destfile", new File(folder, xmlName + ".jar"));

@@ -59,6 +59,13 @@ public class XMLOutput
     this.indentation = indentation.toCharArray();
   }
 
+  public XMLOutput processingInstruction(String name, String data) throws SAXException
+  {
+    flush();
+    xmlHandler.processingInstruction(name, data);
+    return this;
+  }
+
   public XMLOutput comment(String str) throws SAXException
   {
     flush();
