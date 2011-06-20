@@ -205,10 +205,10 @@ public class Repository
           continue;
         }
 
-        if (types != null && !types.contains(buildInfo.getType()))
-        {
-          continue;
-        }
+        // if (types != null && !types.contains(buildInfo.getType()))
+        // {
+        // continue;
+        // }
 
         String child = "../";
         for (int i = 0; i < getPathLevel(); i++)
