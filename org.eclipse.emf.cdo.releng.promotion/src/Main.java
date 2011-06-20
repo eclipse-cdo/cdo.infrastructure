@@ -13,11 +13,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import util.IO;
-import util.IO.OutputHandler;
-import util.XML;
-import util.XMLOutput;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -230,13 +225,13 @@ public class Main
 
     if (visible)
     {
-      IO.writeFile(new File(target, MARKER_VISIBLE), OutputHandler.EMPTY);
+      IO.writeFile(new File(target, MARKER_VISIBLE), IO.OutputHandler.EMPTY);
     }
   }
 
   private static void storeNextBuildNumber(String jobName, final int nextBuildNumber)
   {
-    IO.writeFile(new File(Config.getProjectWorkingArea(), jobName + ".nextBuildNumber"), new OutputHandler()
+    IO.writeFile(new File(Config.getProjectWorkingArea(), jobName + ".nextBuildNumber"), new IO.OutputHandler()
     {
       public void handleOutput(OutputStream out) throws IOException
       {
