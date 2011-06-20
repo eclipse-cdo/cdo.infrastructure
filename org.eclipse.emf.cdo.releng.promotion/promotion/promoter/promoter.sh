@@ -6,8 +6,8 @@ set -e
 ############################################################
 
 promoterInstallArea=`dirname "$0"`
-projectConfigArea=`pwd -P`
-. "$projectConfigArea/promoter.properties"
+configArea=`pwd -P`
+. "$configArea/promoter.properties"
 
 
 tasksDir=$workingArea/tasks
@@ -33,7 +33,7 @@ CriticalSection ()
 	fi
 
 	# Check hudson jobs area for new builds.
-	for jobName in `ls "$projectConfigArea/jobs"`
+	for jobName in `ls "$configArea/jobs"`
 	do
 		file=$workingArea/$jobName.nextBuildNumber
 	  if [ -f "$file" ]
@@ -43,7 +43,7 @@ CriticalSection ()
 	    lastBuildNumber=1
 	  fi
 	
-	  nextBuildNumber=`cat "$hudsonJobsArea/$jobName/nextBuildNumber"`
+	  nextBuildNumber=`cat "$JOBS_HOME/$jobName/nextBuildNumber"`
 	  if [ "$nextBuildNumber" != "$lastBuildNumber" ]
 	  then
 			##############
