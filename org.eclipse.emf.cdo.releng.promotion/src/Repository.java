@@ -87,6 +87,17 @@ public class Repository
       System.out.println("   Adding child location: " + child + "/categories");
       children.add(child + "/categories");
     }
+    else
+    {
+      try
+      {
+        System.out.println("   Excluding child location: " + categories.getCanonicalPath());
+      }
+      catch (IOException ex)
+      {
+        throw new RuntimeException(ex);
+      }
+    }
   }
 
   public void generate(XMLOutput xml)
