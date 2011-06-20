@@ -14,8 +14,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import util.BuildInfo;
-import util.Config;
 import util.IO;
 import util.IO.OutputHandler;
 import util.XML;

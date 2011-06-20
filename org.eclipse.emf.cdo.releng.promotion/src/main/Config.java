@@ -8,7 +8,7 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
-package util;
+package main;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -81,7 +81,7 @@ public final class Config
   public static Properties loadProperties(File file, boolean failIfNotExists)
   {
     Properties properties = new Properties();
-    if (file.exists())
+    if (file.isFile())
     {
       try
       {
@@ -123,7 +123,7 @@ public final class Config
     }
 
     File directory = new File(path);
-    if (!directory.exists() && !directory.isDirectory())
+    if (!directory.isDirectory())
     {
       throw new IllegalStateException(path + " does not exist or is not a directory");
     }
