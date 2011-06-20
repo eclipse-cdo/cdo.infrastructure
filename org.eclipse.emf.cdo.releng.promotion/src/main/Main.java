@@ -36,9 +36,7 @@ import java.util.StringTokenizer;
  */
 public class Main
 {
-  public static final String DOWNLOADS_PATH = Config.getProjectDownloadsArea().getAbsolutePath();
-
-  public static final File dropsDir = new File(Config.getProjectDownloadsArea(), "drops");
+  private static final String MARKER_PROMOTED = ".promoted";
 
   private static final String MARKER_MIRRORED = ".mirrored";
 
@@ -49,6 +47,7 @@ public class Main
     copyBuilds();
     // performTasks();
 
+    final String downloadsPath = Config.getProjectDownloadsArea().getAbsolutePath();
     OutputStream out = null;
 
     try
@@ -60,9 +59,9 @@ public class Main
         public XMLOutput attribute(String name, File file) throws SAXException
         {
           String path = file.getAbsolutePath();
-          if (path.startsWith(DOWNLOADS_PATH))
+          if (path.startsWith(downloadsPath))
           {
-            path = path.substring(DOWNLOADS_PATH.length() + 1);
+            path = path.substring(downloadsPath.length() + 1);
           }
 
           return super.attribute(name, path);
@@ -72,7 +71,7 @@ public class Main
       xml.element("project");
       xml.attribute("name", "promoter");
       xml.attribute("default", "main");
-      xml.attribute("basedir", DOWNLOADS_PATH);
+      xml.attribute("basedir", downloadsPath);
       xml.push();
 
       xml.element("target");
@@ -184,7 +183,9 @@ public class Main
 
     if (autoPromote.contains(buildType))
     {
+      File dropsDir = new File(Config.getProjectDownloadsArea(), "drops");
       dropsDir.mkdirs();
+
       File drop = new File(dropsDir, buildInfo.getQualifier());
       if (!drop.exists())
       {
@@ -207,19 +208,18 @@ public class Main
           siteP2.delete();
         }
 
-        storePromotionProperties(drop, jobProperties);
-        storeMarkers(drop, isVisible);
+        storeMarkers(drop, jobProperties, isVisible);
       }
     }
   }
 
-  private static void storePromotionProperties(File target, Properties properties)
+  private static void storeMarkers(File target, Properties properties, boolean visible)
   {
     OutputStream out = null;
 
     try
     {
-      out = new FileOutputStream(new File(target, ".promoted"));
+      out = new FileOutputStream(new File(target, MARKER_PROMOTED));
       properties.store(out, "Promotion Properties");
     }
     catch (IOException ex)
@@ -230,10 +230,7 @@ public class Main
     {
       IO.close(out);
     }
-  }
 
-  private static void storeMarkers(File target, boolean visible)
-  {
     if (visible)
     {
       IO.writeFile(new File(target, MARKER_VISIBLE), OutputHandler.EMPTY);
@@ -350,13 +347,13 @@ public class Main
 
   private static void postProcessDrops(XMLOutput xml) throws SAXException
   {
+    File dropsDir = new File(Config.getProjectDownloadsArea(), "drops");
     String downloadsPrefix = Config.getProperties().getProperty("projectMirrorsPrefix");
 
     for (File drop : dropsDir.listFiles())
     {
       if (drop.isDirectory())
       {
-
         // Add p2.mirrorsURL
         if (downloadsPrefix != null)
         {
@@ -375,7 +372,7 @@ public class Main
         if (buildInfoFile.isFile())
         {
           BuildInfo buildInfo = BuildInfo.read(buildInfoFile);
-          Properties promotionProperties = Config.loadProperties(new File(drop, ".promoted"), false);
+          Properties promotionProperties = Config.loadProperties(new File(drop, MARKER_PROMOTED), false);
           File zips = new File(drop, "zips");
 
           String generateZipSite = promotionProperties.getProperty("generate.zip.site");
