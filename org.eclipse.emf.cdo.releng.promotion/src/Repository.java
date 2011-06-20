@@ -112,6 +112,7 @@ public class Repository
           xml.attribute("name", name);
           xml.attribute("type", typeName);
           xml.attribute("version", "1.0.0");
+          xml.push();
 
           xml.element("properties");
           xml.attribute("size", "3");
@@ -142,6 +143,7 @@ public class Repository
             xml.attribute("location", child);
           }
 
+          xml.pop();
           xml.pop();
           xml.done();
         }
