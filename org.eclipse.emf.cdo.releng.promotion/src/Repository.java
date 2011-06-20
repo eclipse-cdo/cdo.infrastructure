@@ -85,7 +85,7 @@ public class Repository
       children.add(child);
 
       File categories = new File(folder, "categories");
-      if (categories.isDirectory())
+      if (categories.getCanonicalFile().isDirectory())
       {
         System.out.println("   Adding child location: " + categories.getCanonicalPath());
         children.add(child + "/categories");
