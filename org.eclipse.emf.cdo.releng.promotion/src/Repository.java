@@ -74,7 +74,8 @@ public class Repository
   public void addChild(String child)
   {
     children.add(child);
-    File folder = new File(base, child);
+    File composite = new File(base, path);
+    File folder = new File(composite, child);
     File categories = new File(folder, "categories");
     System.out.println("Checking for " + categories.getAbsolutePath());
     if (categories.isDirectory())
