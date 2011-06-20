@@ -153,8 +153,9 @@ public class Repository
           repoXML.element("property");
           repoXML.attribute("name", "p2.mirrorsURL");
           repoXML.attribute("value",
-              "http://www.eclipse.org/downloads/download.php?file=/" + PromoterConfig.INSTANCE.getDownloadsPath()
-                  + "/updates/" + path + "&amp;protocol=http&amp;format=xml");
+              "http://www.eclipse.org/downloads/download.php?file=/" + PromoterConfig.INSTANCE.getDownloadsPath() + "/"
+                  + PromoterConfig.INSTANCE.getCompositionArea().getName() + "/" + path
+                  + "&amp;protocol=http&amp;format=xml");
           repoXML.pop();
 
           repoXML.element("children");
