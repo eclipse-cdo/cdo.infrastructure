@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -101,6 +102,16 @@ public class Repository
   {
     File folder = new File(base, path);
     folder.mkdirs();
+
+    IO.writeFile(new File(folder, "composition.properties"), new IO.OutputHandler()
+    {
+      public void handleOutput(OutputStream out) throws IOException
+      {
+        PrintStream stream = new PrintStream(out);
+        stream.println("composite.name=" + name);
+        stream.flush();
+      }
+    });
 
     generateXML(xml, folder, "compositeArtifacts", "compositeArtifactRepository",
         "org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository");
