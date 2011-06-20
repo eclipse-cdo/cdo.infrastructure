@@ -17,63 +17,55 @@ import java.util.Properties;
 /**
  * @author Eike Stepper
  */
-public final class Config
+public class Config
 {
-  public static final String FILENAME = "promoter.properties";
+  private final File file;
 
-  public static Properties getProperties()
+  private Properties properties;
+
+  public Config(String filename)
+  {
+    this(new File(filename));
+  }
+
+  public Config(File file)
+  {
+    this.file = file;
+  }
+
+  public final File getFile()
+  {
+    return file;
+  }
+
+  public final Properties getProperties()
   {
     loadIfNeeded();
     return properties;
   }
 
-  public static File getProjectWorkingArea()
+  public File getDirectory(String key)
   {
-    loadIfNeeded();
-    return projectWorkingArea;
+    String path = properties.getProperty(key);
+    if (path == null)
+    {
+      throw new IllegalStateException("Property " + key + " is undefined");
+    }
+
+    File directory = new File(path);
+    if (!directory.isDirectory())
+    {
+      throw new IllegalStateException(path + " does not exist or is not a directory");
+    }
+
+    return directory;
   }
 
-  public static File getProjectDownloadsArea()
-  {
-    loadIfNeeded();
-    return projectDownloadsArea;
-  }
-
-  public static File getProjectRelengArea()
-  {
-    loadIfNeeded();
-    return projectRelengArea;
-  }
-
-  public static File getHudsonJobsArea()
-  {
-    loadIfNeeded();
-    return hudsonJobsArea;
-  }
-
-  private static Properties properties;
-
-  private static File projectWorkingArea;
-
-  private static File projectDownloadsArea;
-
-  private static File projectRelengArea;
-
-  private static File hudsonJobsArea;
-
-  private Config()
-  {
-  }
-
-  private static synchronized void loadIfNeeded()
+  private synchronized void loadIfNeeded()
   {
     if (properties == null)
     {
-      properties = loadProperties(new File(FILENAME), true);
-      projectWorkingArea = getDirectory("projectWorkingArea");
-      projectDownloadsArea = getDirectory("projectDownloadsArea");
-      projectRelengArea = getDirectory("projectRelengArea");
-      hudsonJobsArea = getDirectory("hudsonJobsArea");
+      properties = loadProperties(file, true);
     }
   }
 
@@ -111,22 +103,5 @@ public final class Config
     }
 
     return properties;
-  }
-
-  private static File getDirectory(String key)
-  {
-    String path = properties.getProperty(key);
-    if (path == null)
-    {
-      throw new IllegalStateException("Property " + key + " is undefined");
-    }
-
-    File directory = new File(path);
-    if (!directory.isDirectory())
-    {
-      throw new IllegalStateException(path + " does not exist or is not a directory");
-    }
-
-    return directory;
   }
 }

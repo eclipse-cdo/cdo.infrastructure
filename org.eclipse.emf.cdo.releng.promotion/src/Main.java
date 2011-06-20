@@ -30,23 +30,23 @@ import java.util.StringTokenizer;
  */
 public class Main
 {
-  private static final String MARKER_PROMOTED = ".promoted";
+  public static final String MARKER_PROMOTED = ".promoted";
 
-  private static final String MARKER_MIRRORED = ".mirrored";
+  public static final String MARKER_MIRRORED = ".mirrored";
 
-  private static final String MARKER_VISIBLE = ".visible";
+  public static final String MARKER_INVISIBLE = ".invisible";
 
   public static void main(String[] args) throws Exception
   {
     copyBuilds();
     // performTasks();
 
-    final String downloadsPath = Config.getProjectDownloadsArea().getAbsolutePath();
+    final String downloadsPath = PromoterConfig.INSTANCE.getDownloadsArea().getAbsolutePath();
     OutputStream out = null;
 
     try
     {
-      out = new FileOutputStream(new File(Config.getProjectWorkingArea(), "promoter.ant"));
+      out = new FileOutputStream(new File(PromoterConfig.INSTANCE.getWorkingArea(), "promoter.ant"));
       XMLOutput xml = new XMLOutput(out)
       {
         @Override
@@ -97,7 +97,7 @@ public class Main
         if (!isExcluded(jobName))
         {
           Properties jobProperties = Config.loadProperties(new File(jobDir, "promotion.properties"), false);
-          copyBuilds(new File(Config.getHudsonJobsArea(), jobName), jobProperties);
+          copyBuilds(new File(PromoterConfig.INSTANCE.getJobsHome(), jobName), jobProperties);
         }
       }
     }
@@ -178,7 +178,7 @@ public class Main
 
     if (autoPromote.contains(buildType))
     {
-      File dropsDir = new File(Config.getProjectDownloadsArea(), "drops");
+      File dropsDir = PromoterConfig.INSTANCE.getDropsArea();
       dropsDir.mkdirs();
 
       File drop = new File(dropsDir, buildInfo.getQualifier());
@@ -226,23 +226,24 @@ public class Main
       IO.close(out);
     }
 
-    if (visible)
+    if (!visible)
     {
-      IO.writeFile(new File(target, MARKER_VISIBLE), IO.OutputHandler.EMPTY);
+      IO.writeFile(new File(target, MARKER_INVISIBLE), IO.OutputHandler.EMPTY);
     }
   }
 
   private static void storeNextBuildNumber(String jobName, final int nextBuildNumber)
   {
-    IO.writeFile(new File(Config.getProjectWorkingArea(), jobName + ".nextBuildNumber"), new IO.OutputHandler()
-    {
-      public void handleOutput(OutputStream out) throws IOException
-      {
-        PrintStream stream = new PrintStream(out);
-        stream.println(nextBuildNumber);
-        stream.flush();
-      }
-    });
+    IO.writeFile(new File(PromoterConfig.INSTANCE.getWorkingArea(), jobName + ".nextBuildNumber"),
+        new IO.OutputHandler()
+        {
+          public void handleOutput(OutputStream out) throws IOException
+          {
+            PrintStream stream = new PrintStream(out);
+            stream.println(nextBuildNumber);
+            stream.flush();
+          }
+        });
   }
 
   private static boolean isNumber(String str)
@@ -342,8 +343,8 @@ public class Main
 
   private static List<BuildInfo> postProcessDrops(XMLOutput xml) throws SAXException
   {
-    File dropsDir = new File(Config.getProjectDownloadsArea(), "drops");
-    String downloadsPrefix = Config.getProperties().getProperty("projectMirrorsPrefix");
+    File dropsDir = PromoterConfig.INSTANCE.getDropsArea();
+    String downloadsPath = PromoterConfig.INSTANCE.getDownloadsPath();
 
     List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
     for (File drop : dropsDir.listFiles())
@@ -351,13 +352,13 @@ public class Main
       if (drop.isDirectory())
       {
         // Add p2.mirrorsURL
-        if (downloadsPrefix != null)
+        if (downloadsPath != null)
         {
           File markerFile = new File(drop, MARKER_MIRRORED);
           if (!markerFile.exists())
           {
-            addMirroring(xml, drop, "artifacts", downloadsPrefix);
-            addMirroring(xml, drop, "content", downloadsPrefix);
+            addMirroring(xml, drop, "artifacts", downloadsPath);
+            addMirroring(xml, drop, "content", downloadsPath);
 
             xml.element("touch");
             xml.attribute("file", markerFile);
@@ -456,42 +457,57 @@ public class Main
 
   private static void generateRepositories(XMLOutput xml, List<BuildInfo> buildInfos) throws SAXException
   {
-    System.out.println();
-    File temp = new File(Config.getProjectDownloadsArea(), "temp");
+    File compositesDir = new File("composites");
+    for (File compositeDir : compositesDir.listFiles())
+    {
+      if (compositeDir.isDirectory())
+      {
+        String compositeName = compositeDir.getName();
+        if (!isExcluded(compositeName))
+        {
+          Repository repository = getRepository(compositeDir, buildInfos);
+          if (repository != null)
+          {
+            System.out.println();
+            repository.generate(xml);
+          }
+        }
+      }
+    }
 
-    Repository r40 = new Repository.Filtered(temp, "CDO 4.0 Releases", "releases/4.0", "4.0", "R", buildInfos);
-    r40.generate(xml);
+    // Repository r40 = new Repository.Filtered(temp, "CDO 4.0 Releases", "releases/4.0", null, "4.0", "R", buildInfos);
+    // r40.generate(xml);
+    //
+    // Repository r30 = new Repository.Filtered(temp, "CDO 3.0 Releases", "releases/3.0", null, "3.0", "R", buildInfos);
+    // r30.generate(xml);
+    //
+    // Repository r20 = new Repository.Filtered(temp, "CDO 2.0 Releases", "releases/2.0", null, "2.0", "R", buildInfos);
+    // r20.generate(xml);
+    //
+    // Repository r = new Repository(temp, "CDO Releases", "releases");
+    // r.addChild("4.0");
+    // r.addChild("3.0");
+    // r.addChild("2.0");
+    // r.generate(xml);
+    //
+    // Repository iStable = new Repository.Filtered(temp, "CDO 4.1 Integration Stable Builds", "integration/stable",
+    // "emf-cdo-integration", "4.1", "S", buildInfos);
+    // iStable.generate(xml);
+    //
+    // Repository iWeekly = new Repository.Filtered(temp, "CDO 4.1 Integration Weekly Builds", "integration/weekly",
+    // "emf-cdo-integration", "4.1", "I", buildInfos);
+    // iWeekly.generate(xml);
+    //
+    // Repository mStable = new Repository.Filtered(temp, "CDO 4.0 Maintenance Stable Builds", "maintenance/stable",
+    // "emf-cdo-maintenance", "4.0", "S", buildInfos);
+    // mStable.generate(xml);
+    //
+    // Repository mWeekly = new Repository.Filtered(temp, "CDO 4.0 Maintenance Weekly Builds", "maintenance/weekly",
+    // "emf-cdo-maintenance", "4.0", "M", buildInfos);
+    // mWeekly.generate(xml);
 
-    Repository r30 = new Repository.Filtered(temp, "CDO 3.0 Releases", "releases/3.0", "3.0", "R", buildInfos);
-    r30.generate(xml);
-
-    Repository r20 = new Repository.Filtered(temp, "CDO 2.0 Releases", "releases/2.0", "2.0", "R", buildInfos);
-    r20.generate(xml);
-
-    Repository r = new Repository(temp, "CDO Releases", "releases");
-    r.addChild("4.0");
-    r.addChild("3.0");
-    r.addChild("2.0");
-    r.generate(xml);
-
-    Repository iStable = new Repository.Filtered(temp, "CDO 4.1 Integration Stable Builds", "integration/stable",
-        "4.1", "S", buildInfos);
-    iStable.generate(xml);
-
-    Repository iWeekly = new Repository.Filtered(temp, "CDO 4.1 Integration Weekly Builds", "integration/weekly",
-        "4.1", "I", buildInfos);
-    iWeekly.generate(xml);
-
-    Repository mStable = new Repository.Filtered(temp, "CDO 4.0 Maintenance Stable Builds", "maintenance/stable",
-        "4.0", "S", buildInfos);
-    mStable.generate(xml);
-
-    Repository mWeekly = new Repository.Filtered(temp, "CDO 4.0 Maintenance Weekly Builds", "maintenance/weekly",
-        "4.0", "M", buildInfos);
-    mWeekly.generate(xml);
-
-    // File updates = new File(Config.getProjectDownloadsArea(), "updates");
-    // File updatesTmp = new File(Config.getProjectDownloadsArea(), "updates.tmp");
+    // File updates = PromoterConfig.INSTANCE.getCompositionArea();
+    // File updatesTmp = new File(PromoterConfig.INSTANCE.getProjectDownloadsArea(), "updates.tmp")
     //
     // xml.element("move");
     // xml.attribute("file", updates);
@@ -511,6 +527,38 @@ public class Main
     // xml.attribute("name", updatesTmp.getName() + "/**");
     // xml.pop();
     // xml.pop();
+  }
+
+  private static Repository getRepository(File compositeDir, List<BuildInfo> buildInfos)
+  {
+    Properties compositionProperties = Config.loadProperties(new File(compositeDir, "composition.properties"), false);
+    String name = compositionProperties.getProperty("composite.name");
+    if (name == null)
+    {
+      return null;
+    }
+
+    String childLocations = compositionProperties.getProperty("child.locations");
+    if (childLocations != null)
+    {
+      Repository repository = new Repository(PromoterConfig.INSTANCE.getCompositionTempArea(), name,
+          compositeDir.getPath());
+
+      StringTokenizer tokenizer = new StringTokenizer(childLocations, ",");
+      while (tokenizer.hasMoreTokens())
+      {
+        String childLocation = tokenizer.nextToken().trim();
+        repository.addChild(childLocation);
+      }
+
+      return repository;
+    }
+
+    String childJob = compositionProperties.getProperty("child.job");
+    String childStream = compositionProperties.getProperty("child.stream");
+    String childTypes = compositionProperties.getProperty("child.types");
+    return new Repository.Filtered(PromoterConfig.INSTANCE.getCompositionTempArea(), name, compositeDir.getPath(),
+        childJob, childStream, childTypes, buildInfos);
   }
 
   private static void generateDocuments(XMLOutput xml, List<BuildInfo> buildInfos)

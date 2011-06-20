@@ -10,7 +10,7 @@ projectConfigArea=`pwd -P`
 . "$projectConfigArea/promoter.properties"
 
 
-tasksDir=$projectWorkingArea/tasks
+tasksDir=$workingArea/tasks
 inprogressDir=$tasksDir.inprogress
 
 ##########################################################################################
@@ -35,7 +35,7 @@ CriticalSection ()
 	# Check hudson jobs area for new builds.
 	for jobName in `ls "$projectConfigArea/jobs"`
 	do
-		file=$projectWorkingArea/$jobName.nextBuildNumber
+		file=$workingArea/$jobName.nextBuildNumber
 	  if [ -f "$file" ]
 	  then
 	    lastBuildNumber=`cat "$file"`
@@ -60,9 +60,9 @@ CriticalSection ()
 
 CheckPromotion ()
 {
-	promoterAntFile=$projectWorkingArea/promoter.ant
+	promoterAntFile=$workingArea/promoter.ant
 	rm -f "$promoterAntFile"
-	rm -rf "$projectDownloadsArea/temp"
+	rm -rf "$DOWNLOADS_HOME/$downloadsPath/$compositionTempPath"
 	
   "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes" Main
   
@@ -81,8 +81,8 @@ CheckPromotion ()
 # Execute the critical section if a lock can be acquired.
 #########################################################
 
-mkdir -p "$projectWorkingArea"
-lockFile=$projectWorkingArea/promoter.lock
+mkdir -p "$workingArea"
+lockFile=$workingArea/promoter.lock
 
 if ( set -o noclobber; echo "$$" > "$lockFile" ) 2> /dev/null; 
 then

@@ -9,4 +9,4 @@ promoterInstallArea=`dirname "$0"`
 projectConfigArea=`pwd -P`
 . "$projectConfigArea/promoter.properties"
 
-rm -rf "$projectWorkingArea"
+rm -rf "$workingArea"

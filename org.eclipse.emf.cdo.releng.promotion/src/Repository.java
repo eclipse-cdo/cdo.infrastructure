@@ -136,9 +136,9 @@ public class Repository
 
           repoXML.element("property");
           repoXML.attribute("name", "p2.mirrorsURL");
-          repoXML.attribute("value", "http://www.eclipse.org/downloads/download.php?file=/"
-              + Config.getProperties().getProperty("projectMirrorsPrefix") + "/updates/" + path
-              + "&amp;protocol=http&amp;format=xml");
+          repoXML.attribute("value",
+              "http://www.eclipse.org/downloads/download.php?file=/" + PromoterConfig.INSTANCE.getDownloadsPath()
+                  + "/updates/" + path + "&amp;protocol=http&amp;format=xml");
           repoXML.pop();
 
           repoXML.element("children");
@@ -154,12 +154,6 @@ public class Repository
           repoXML.pop();
           repoXML.pop();
           repoXML.done();
-
-          // String match = "&lt;\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>";
-          // xml.element("replaceregexp");
-          // xml.attribute("file", xmlFile);
-          // xml.attribute("match", match);
-          // xml.attribute("replace", match + "\n&lt;?" + entityName + " version=\"1.0.0\"?>");
 
           xml.element("zip");
           xml.attribute("destfile", new File(folder, xmlName + ".jar"));
@@ -186,24 +180,39 @@ public class Repository
    */
   public static class Filtered extends Repository
   {
+    private String job;
+
     private String stream;
 
     private String types;
 
-    public Filtered(File base, String name, String path, String stream, String types, List<BuildInfo> buildInfos)
+    public Filtered(File base, String name, String path, String job, String stream, String types,
+        List<BuildInfo> buildInfos)
     {
       super(base, name, path);
+      this.job = job;
       this.stream = stream;
       this.types = types;
 
       for (BuildInfo buildInfo : buildInfos)
       {
+        if (job != null && !buildInfo.getJob().equals(job))
+        {
+          continue;
+        }
+
         if (stream != null && !buildInfo.getStream().equals(stream))
         {
           continue;
         }
 
         if (types != null && !types.contains(buildInfo.getType()))
+        {
+          continue;
+        }
+
+        File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
+        if (new File(drop, Main.MARKER_INVISIBLE).isFile())
         {
           continue;
         }
@@ -217,6 +226,11 @@ public class Repository
         child += "drops/" + buildInfo.getQualifier();
         addChild(child);
       }
+    }
+
+    public final String getJob()
+    {
+      return job;
     }
 
     public final String getStream()
