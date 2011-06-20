@@ -144,7 +144,6 @@ public class Repository
           }
 
           xml.pop();
-          xml.pop();
           xml.done();
         }
         catch (Exception ex)
