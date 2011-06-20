@@ -7,6 +7,13 @@
 				<include name="reset.sh" />
 			</fileset>
 		</zip>
+
+		<delete includeemptydirs="true">
+			<fileset dir="dir">
+				<include name="include" />
+			</fileset>
+		</delete>
+
 	</target>
 
 </project>

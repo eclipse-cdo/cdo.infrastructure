@@ -18,7 +18,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -70,9 +72,9 @@ public class Main
       xml.attribute("name", "main");
       xml.push();
 
-      postProcessDrops(xml);
-      generateRepositories(xml);
-      generateDocuments(xml);
+      List<BuildInfo> buildInfos = postProcessDrops(xml);
+      generateRepositories(xml, buildInfos);
+      generateDocuments(xml, buildInfos);
 
       xml.pop();
       xml.pop();
@@ -337,11 +339,12 @@ public class Main
     return builder.toString();
   }
 
-  private static void postProcessDrops(XMLOutput xml) throws SAXException
+  private static List<BuildInfo> postProcessDrops(XMLOutput xml) throws SAXException
   {
     File dropsDir = new File(Config.getProjectDownloadsArea(), "drops");
     String downloadsPrefix = Config.getProperties().getProperty("projectMirrorsPrefix");
 
+    List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
     for (File drop : dropsDir.listFiles())
     {
       if (drop.isDirectory())
@@ -364,6 +367,8 @@ public class Main
         if (buildInfoFile.isFile())
         {
           BuildInfo buildInfo = BuildInfo.read(buildInfoFile);
+          buildInfos.add(buildInfo);
+
           Properties promotionProperties = Config.loadProperties(new File(drop, MARKER_PROMOTED), false);
           File zips = new File(drop, "zips");
 
@@ -405,6 +410,8 @@ public class Main
         }
       }
     }
+
+    return buildInfos;
   }
 
   private static void addMirroring(XMLOutput xml, File drop, String name, String downloadsPrefix) throws SAXException
@@ -446,11 +453,65 @@ public class Main
     xml.attribute("file", xmlFile);
   }
 
-  private static void generateRepositories(XMLOutput xml)
+  private static void generateRepositories(XMLOutput xml, List<BuildInfo> buildInfos) throws SAXException
   {
+    File temp = new File(Config.getProjectDownloadsArea(), "temp");
+
+    Repository r40 = new Repository.Filtered(temp, "CDO 4.0 Releases", "releases/4.0", "4.0", "R", buildInfos);
+    r40.generate();
+
+    Repository r30 = new Repository.Filtered(temp, "CDO 3.0 Releases", "releases/3.0", "3.0", "R", buildInfos);
+    r30.generate();
+
+    Repository r20 = new Repository.Filtered(temp, "CDO 2.0 Releases", "releases/2.0", "2.0", "R", buildInfos);
+    r20.generate();
+
+    Repository r = new Repository(temp, "CDO Releases", "releases");
+    r.addChild("4.0");
+    r.addChild("3.0");
+    r.addChild("2.0");
+    r.generate();
+
+    Repository iStable = new Repository.Filtered(temp, "CDO 4.1 Integration Stable Builds", "integration/stable",
+        "4.1", "S", buildInfos);
+    iStable.generate();
+
+    Repository iWeekly = new Repository.Filtered(temp, "CDO 4.1 Integration Weekly Builds", "integration/weekly",
+        "4.1", "I", buildInfos);
+    iWeekly.generate();
+
+    Repository mStable = new Repository.Filtered(temp, "CDO 4.0 Maintenance Stable Builds", "maintenance/stable",
+        "4.0", "S", buildInfos);
+    mStable.generate();
+
+    Repository mWeekly = new Repository.Filtered(temp, "CDO 4.0 Maintenance Weekly Builds", "maintenance/weekly",
+        "4.0", "M", buildInfos);
+    mWeekly.generate();
+
+    // File updates = new File(Config.getProjectDownloadsArea(), "updates");
+    // File updatesTmp = new File(Config.getProjectDownloadsArea(), "updates.tmp");
+    //
+    // xml.element("move");
+    // xml.attribute("file", updates);
+    // xml.attribute("tofile", updatesTmp);
+    //
+    // xml.element("move");
+    // xml.attribute("file", temp);
+    // xml.attribute("tofile", updates);
+    //
+    // xml.element("delete");
+    // xml.attribute("includeemptydirs", "true");
+    // xml.push();
+    // xml.element("fileset");
+    // xml.attribute("dir", ".");
+    // xml.push();
+    // xml.element("include");
+    // xml.attribute("name", updatesTmp.getName() + "/**");
+    // xml.pop();
+    // xml.pop();
   }
 
-  private static void generateDocuments(XMLOutput xml)
+  private static void generateDocuments(XMLOutput xml, List<BuildInfo> buildInfos)
   {
   }
 }
