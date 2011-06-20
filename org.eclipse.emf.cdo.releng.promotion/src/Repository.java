@@ -199,7 +199,7 @@ public class Repository
       System.out.println("Creating repository " + name);
       for (BuildInfo buildInfo : buildInfos)
       {
-        System.out.println("   Checking drop " + buildInfo.getQualifier());
+        System.out.println("   Checking " + buildInfo);
         if (stream != null && buildInfo.getStream() != stream)
         {
           continue;

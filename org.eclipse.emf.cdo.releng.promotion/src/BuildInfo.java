@@ -172,4 +172,12 @@ public final class BuildInfo
 
     return result;
   }
+
+  @Override
+  public String toString()
+  {
+    return "BuildInfo[hudson=" + hudson + ", job=" + job + ", number=" + number + ", qualifier=" + qualifier
+        + ", revision=" + revision + ", stream=" + stream + ", timestamp=" + timestamp + ", trigger=" + trigger
+        + ", type=" + type + "]";
+  }
 }
