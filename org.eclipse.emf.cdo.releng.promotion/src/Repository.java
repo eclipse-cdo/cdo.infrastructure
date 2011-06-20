@@ -196,8 +196,10 @@ public class Repository
       this.stream = stream;
       this.types = types;
 
+      System.out.println("Creating repository " + name);
       for (BuildInfo buildInfo : buildInfos)
       {
+        System.out.println("   Checking drop " + buildInfo.getQualifier());
         if (stream != null && buildInfo.getStream() != stream)
         {
           continue;
@@ -215,6 +217,7 @@ public class Repository
         }
 
         child += "drops/" + buildInfo.getQualifier();
+        System.out.println("   Adding child location " + child);
         addChild(child);
       }
     }

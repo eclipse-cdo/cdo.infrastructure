@@ -106,6 +106,7 @@ public class Main
   private static void copyBuilds(File jobDir, Properties jobProperties)
   {
     File buildsDir = new File(jobDir, "builds");
+    System.out.println();
     System.out.println("Checking " + buildsDir);
 
     Set<Integer> excludedBuilds = new HashSet<Integer>();
@@ -455,6 +456,7 @@ public class Main
 
   private static void generateRepositories(XMLOutput xml, List<BuildInfo> buildInfos) throws SAXException
   {
+    System.out.println();
     File temp = new File(Config.getProjectDownloadsArea(), "temp");
 
     Repository r40 = new Repository.Filtered(temp, "CDO 4.0 Releases", "releases/4.0", "4.0", "R", buildInfos);
