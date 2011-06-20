@@ -99,15 +99,14 @@ public class Repository
     {
       public void handleOutput(OutputStream out) throws IOException
       {
-        PrintStream stream = new PrintStream(out);
-        stream.println("<?xml version='1.0' encoding='UTF-8'?>");
-        stream.println("<?" + entityName + " version='1.0.0'?>");
-        stream.flush();
+        // stream.println("<?xml version='1.0' encoding='UTF-8'?>");
 
         try
         {
           XMLOutput xml = new XMLOutput(out);
-          stream.println("<?" + typeName + " version='1.0.0'?>");
+          PrintStream stream = new PrintStream(out);
+          stream.println("<?" + entityName + " version='1.0.0'?>");
+          stream.flush();
 
           xml.element("repository");
           xml.attribute("name", name);
