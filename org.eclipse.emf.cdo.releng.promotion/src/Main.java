@@ -205,6 +205,10 @@ public class Main
 
         storeMarkers(drop, jobProperties, isVisible);
       }
+      else
+      {
+        System.out.println("Build " + buildInfo.getNumber() + " is already promoted");
+      }
     }
   }
 
