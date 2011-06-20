@@ -46,7 +46,7 @@ public class Config
 
   public File getDirectory(String key)
   {
-    String path = properties.getProperty(key);
+    String path = getProperties().getProperty(key);
     if (path == null)
     {
       throw new IllegalStateException("Property " + key + " is undefined");
