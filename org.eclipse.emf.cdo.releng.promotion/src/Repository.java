@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -87,6 +86,12 @@ public class Repository
     File folder = new File(base, path);
     folder.mkdirs();
 
+    System.out.println("Generating repository " + name + ": " + folder.getAbsolutePath());
+    for (String child : children)
+    {
+      System.out.println("   Adding child location: " + child);
+    }
+
     generateXML(xml, folder, "compositeArtifacts", "compositeArtifactRepository",
         "org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository");
     generateXML(xml, folder, "compositeContent", "compositeMetadataRepository",
@@ -96,7 +101,8 @@ public class Repository
   private void generateXML(final XMLOutput xml, final File folder, final String xmlName, final String entityName,
       final String typeName)
   {
-    IO.writeFile(new File(folder, xmlName + ".xml"), new IO.OutputHandler()
+    final File xmlFile = new File(folder, xmlName + ".xml");
+    IO.writeFile(xmlFile, new IO.OutputHandler()
     {
       public void handleOutput(OutputStream out) throws IOException
       {
@@ -105,9 +111,9 @@ public class Repository
         try
         {
           XMLOutput repoXML = new XMLOutput(out);
-          PrintStream stream = new PrintStream(out);
-          stream.println("<?" + entityName + " version='1.0.0'?>");
-          stream.flush();
+          // PrintStream stream = new PrintStream(out);
+          // stream.println("<?" + entityName + " version='1.0.0'?>");
+          // stream.flush();
 
           repoXML.element("repository");
           repoXML.attribute("name", name);
@@ -148,6 +154,13 @@ public class Repository
           repoXML.pop();
           repoXML.done();
 
+          String match = "&lt;\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>";
+
+          xml.element("replaceregexp");
+          xml.attribute("file", xmlFile);
+          xml.attribute("match", match);
+          xml.attribute("replace", match + "\n&lt;?" + entityName + " version=\"1.0.0\"?>");
+
           xml.element("zip");
           xml.attribute("destfile", new File(folder, xmlName + ".jar"));
           xml.attribute("update", "false");
@@ -156,7 +169,7 @@ public class Repository
           xml.attribute("dir", folder);
           xml.push();
           xml.element("include");
-          xml.attribute("name", xmlName + ".xml");
+          xml.attribute("name", xmlFile.getName());
           xml.pop();
           xml.pop();
         }
