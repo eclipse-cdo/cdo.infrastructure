@@ -464,27 +464,28 @@ public class Main
     File compositesDir = new File("composites");
     generateRepositories(xml, buildInfos, compositesDir);
 
-    // File updates = PromoterConfig.INSTANCE.getCompositionArea();
-    // File updatesTmp = new File(PromoterConfig.INSTANCE.getProjectDownloadsArea(), "updates.tmp")
-    //
-    // xml.element("move");
-    // xml.attribute("file", updates);
-    // xml.attribute("tofile", updatesTmp);
-    //
-    // xml.element("move");
-    // xml.attribute("file", temp);
-    // xml.attribute("tofile", updates);
-    //
-    // xml.element("delete");
-    // xml.attribute("includeemptydirs", "true");
-    // xml.push();
-    // xml.element("fileset");
-    // xml.attribute("dir", ".");
-    // xml.push();
-    // xml.element("include");
-    // xml.attribute("name", updatesTmp.getName() + "/**");
-    // xml.pop();
-    // xml.pop();
+    File temp = PromoterConfig.INSTANCE.getCompositionTempArea();
+    File updates = PromoterConfig.INSTANCE.getCompositionArea();
+    File updatesTmp = new File(updates.getParentFile(), updates.getName() + ".tmp");
+
+    xml.element("move");
+    xml.attribute("file", updates);
+    xml.attribute("tofile", updatesTmp);
+
+    xml.element("move");
+    xml.attribute("file", temp);
+    xml.attribute("tofile", updates);
+
+    xml.element("delete");
+    xml.attribute("includeemptydirs", "true");
+    xml.push();
+    xml.element("fileset");
+    xml.attribute("dir", ".");
+    xml.push();
+    xml.element("include");
+    xml.attribute("name", updatesTmp.getName() + "/**");
+    xml.pop();
+    xml.pop();
   }
 
   private static void generateRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File folder) throws SAXException
