@@ -458,52 +458,7 @@ public class Main
   private static void generateRepositories(XMLOutput xml, List<BuildInfo> buildInfos) throws SAXException
   {
     File compositesDir = new File("composites");
-    for (File compositeDir : compositesDir.listFiles())
-    {
-      if (compositeDir.isDirectory())
-      {
-        String compositeName = compositeDir.getName();
-        if (!isExcluded(compositeName))
-        {
-          Repository repository = getRepository(compositeDir, buildInfos);
-          if (repository != null)
-          {
-            repository.generate(xml);
-          }
-        }
-      }
-    }
-
-    // Repository r40 = new Repository.Filtered(temp, "CDO 4.0 Releases", "releases/4.0", null, "4.0", "R", buildInfos);
-    // r40.generate(xml);
-    //
-    // Repository r30 = new Repository.Filtered(temp, "CDO 3.0 Releases", "releases/3.0", null, "3.0", "R", buildInfos);
-    // r30.generate(xml);
-    //
-    // Repository r20 = new Repository.Filtered(temp, "CDO 2.0 Releases", "releases/2.0", null, "2.0", "R", buildInfos);
-    // r20.generate(xml);
-    //
-    // Repository r = new Repository(temp, "CDO Releases", "releases");
-    // r.addChild("4.0");
-    // r.addChild("3.0");
-    // r.addChild("2.0");
-    // r.generate(xml);
-    //
-    // Repository iStable = new Repository.Filtered(temp, "CDO 4.1 Integration Stable Builds", "integration/stable",
-    // "emf-cdo-integration", "4.1", "S", buildInfos);
-    // iStable.generate(xml);
-    //
-    // Repository iWeekly = new Repository.Filtered(temp, "CDO 4.1 Integration Weekly Builds", "integration/weekly",
-    // "emf-cdo-integration", "4.1", "I", buildInfos);
-    // iWeekly.generate(xml);
-    //
-    // Repository mStable = new Repository.Filtered(temp, "CDO 4.0 Maintenance Stable Builds", "maintenance/stable",
-    // "emf-cdo-maintenance", "4.0", "S", buildInfos);
-    // mStable.generate(xml);
-    //
-    // Repository mWeekly = new Repository.Filtered(temp, "CDO 4.0 Maintenance Weekly Builds", "maintenance/weekly",
-    // "emf-cdo-maintenance", "4.0", "M", buildInfos);
-    // mWeekly.generate(xml);
+    generateRepositories(xml, buildInfos, compositesDir);
 
     // File updates = PromoterConfig.INSTANCE.getCompositionArea();
     // File updatesTmp = new File(PromoterConfig.INSTANCE.getProjectDownloadsArea(), "updates.tmp")
@@ -526,6 +481,27 @@ public class Main
     // xml.attribute("name", updatesTmp.getName() + "/**");
     // xml.pop();
     // xml.pop();
+  }
+
+  private static void generateRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File folder) throws SAXException
+  {
+    if (folder.isDirectory())
+    {
+      String compositeName = folder.getName();
+      if (!isExcluded(compositeName))
+      {
+        Repository repository = getRepository(folder, buildInfos);
+        if (repository != null)
+        {
+          repository.generate(xml);
+        }
+      }
+
+      for (File child : folder.listFiles())
+      {
+        generateRepositories(xml, buildInfos, child);
+      }
+    }
   }
 
   private static Repository getRepository(File compositeDir, List<BuildInfo> buildInfos)
