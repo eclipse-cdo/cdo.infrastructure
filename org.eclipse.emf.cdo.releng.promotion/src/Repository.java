@@ -34,6 +34,9 @@ public class Repository
 
   public Repository(File base, String name, String path)
   {
+    System.out.println();
+    System.out.println("Generating repository " + name + ": " + new File(base, path).getAbsolutePath());
+
     this.base = base;
     this.name = name;
     this.path = path;
@@ -73,13 +76,15 @@ public class Repository
 
   public void addChild(String child)
   {
+    System.out.println("   Adding child location: " + child);
     children.add(child);
+
     File composite = new File(base, path);
     File folder = new File(composite, child);
     File categories = new File(folder, "categories");
-    System.out.println("Checking for " + categories.getAbsolutePath());
     if (categories.isDirectory())
     {
+      System.out.println("   Adding child location: " + child + "/categories");
       children.add(child + "/categories");
     }
   }
@@ -88,13 +93,6 @@ public class Repository
   {
     File folder = new File(base, path);
     folder.mkdirs();
-
-    System.out.println();
-    System.out.println("Generating repository " + name + ": " + folder.getAbsolutePath());
-    for (String child : children)
-    {
-      System.out.println("   Adding child location: " + child);
-    }
 
     generateXML(xml, folder, "compositeArtifacts", "compositeArtifactRepository",
         "org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository");
@@ -110,15 +108,10 @@ public class Repository
     {
       public void handleOutput(OutputStream out) throws IOException
       {
-        // stream.println("<?xml version='1.0' encoding='UTF-8'?>");
-
         try
         {
           XMLOutput repoXML = new XMLOutput(out);
           repoXML.processingInstruction(entityName, "version=\"1.0.0\"");
-          // PrintStream stream = new PrintStream(out);
-          // stream.println("<?" + entityName + " version='1.0.0'?>");
-          // stream.flush();
 
           repoXML.element("repository");
           repoXML.attribute("name", name);
