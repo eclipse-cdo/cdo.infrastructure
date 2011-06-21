@@ -489,17 +489,18 @@ public class Main
   private static WebNode generateRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File folder)
       throws SAXException
   {
-    WebNode webNode = new WebNode(folder);
-
     if (folder.isDirectory())
     {
       String compositeName = folder.getName();
       if (!isExcluded(compositeName))
       {
+        WebNode webNode = new WebNode(folder);
+
         Repository repository = getRepository(folder, buildInfos);
         if (repository != null)
         {
           repository.generate(xml);
+          webNode.setRepository(repository);
         }
 
         for (File child : folder.listFiles())
@@ -512,10 +513,11 @@ public class Main
         }
 
         Collections.sort(webNode.getChildren());
+        return webNode;
       }
     }
 
-    return webNode;
+    return null;
   }
 
   private static Repository getRepository(File compositeDir, List<BuildInfo> buildInfos)
