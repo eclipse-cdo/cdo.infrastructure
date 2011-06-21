@@ -60,6 +60,13 @@ public class WebNode implements Comparable<WebNode>
 
   public void generate(PrintStream out, int level) throws IOException
   {
+    for (int i = 0; i < level; i++)
+    {
+      System.out.print("   ");
+    }
+
+    System.out.println("Generating PHP for " + folder.getName());
+
     if (repository != null)
     {
       out.println("<h" + level + ">" + repository.getWebLabel() + "/h" + level + ">");
