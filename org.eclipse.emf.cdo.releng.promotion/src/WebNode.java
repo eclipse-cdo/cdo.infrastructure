@@ -70,7 +70,9 @@ public class WebNode implements Comparable<WebNode>
     if (repository != null)
     {
       out.println("<h" + level + ">" + repository.getWebLabel() + "</h" + level + ">");
-      out.println("<a href=\"" + PromoterConfig.INSTANCE.formatUpdateURL(repository.getPath()) + "\">Update Site</a>");
+      // out.println("<a href=\"" + PromoterConfig.INSTANCE.formatUpdateURL(repository.getPath()) +
+      // "\">Update Site</a>");
+      out.println("<a href=\"" + repository.getPath() + "\">Update Site</a>");
     }
 
     for (WebNode child : children)
