@@ -71,16 +71,14 @@ public class WebNode implements Comparable<WebNode>
     if (repository != null)
     {
       out.println("<h" + level + ">" + repository.getWebLabel() + "</h" + level + ">");
-      // out.println("<a href=\"" + PromoterConfig.INSTANCE.formatUpdateURL(repository.getPath()) +
-      // "\">Update Site</a>");
-      out.println("<b><a href=\"" + repository.getPath() + "\">Composite Update Site</a></b>");
+      out.println("<ul>");
+      out.println("<li><b><a href=\"" + repository.getPath() + "\">Composite Update Site</a></b></li>");
 
       if (repository instanceof Repository.Drops)
       {
         Repository.Drops drops = (Repository.Drops)repository;
         String path = getPath();
 
-        out.println("<ul>");
         for (BuildInfo buildInfo : drops.getBuildInfos())
         {
           out.print("<li>" + buildInfo.getQualifier() + ":");
@@ -92,8 +90,9 @@ public class WebNode implements Comparable<WebNode>
           out.println("</li>");
         }
 
-        out.println("</ul>");
       }
+
+      out.println("</ul>");
     }
 
     for (WebNode child : children)
