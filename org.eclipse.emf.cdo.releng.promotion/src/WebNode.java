@@ -72,12 +72,44 @@ public class WebNode implements Comparable<WebNode>
       out.println("<h" + level + ">" + repository.getWebLabel() + "</h" + level + ">");
       // out.println("<a href=\"" + PromoterConfig.INSTANCE.formatUpdateURL(repository.getPath()) +
       // "\">Update Site</a>");
-      out.println("<a href=\"" + repository.getPath() + "\">Update Site</a>");
+      out.println("<b><a href=\"" + repository.getPath() + "\">Composite Update Site</a></b>");
+
+      if (repository instanceof Repository.Drops)
+      {
+        Repository.Drops drops = (Repository.Drops)repository;
+        String path = getPath();
+
+        out.println("<ul>");
+        for (BuildInfo buildInfo : drops.getBuildInfos())
+        {
+          out.print("<li>" + buildInfo.getQualifier() + ":");
+          out.print("&nbsp;<a href=\"" + path + buildInfo.getQualifier() + "\">Update Site</a>");
+          out.print("&nbsp;<a href=\"" + path + "zips/emf-cdo-" + buildInfo.getQualifier()
+              + "-Site.zip\">Update Site ZIP</a>");
+          out.print("&nbsp;<a href=\"" + path + "zips/emf-cdo-" + buildInfo.getQualifier()
+              + "-All\">Installable ZIP</a>");
+          out.println("</li>");
+        }
+
+        out.println("</ul>");
+      }
     }
 
     for (WebNode child : children)
     {
       child.generate(out, level + 1);
     }
+  }
+
+  private String getPath()
+  {
+    String path = "../";
+    for (int i = 0; i < repository.getPathLevel(); i++)
+    {
+      path += "../";
+    }
+
+    path += "drops/";
+    return path;
   }
 }
