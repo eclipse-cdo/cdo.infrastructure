@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Copyright (c) 2004 - 2011 Eike Stepper (Berlin, Germany) and others.
@@ -103,13 +104,15 @@ public class WebNode implements Comparable<WebNode>
 
   private String getPath()
   {
-    String path = "../";
-    for (int i = 0; i < repository.getPathLevel(); i++)
+    String path = "";
+    StringTokenizer tokenizer = new StringTokenizer(PromoterConfig.INSTANCE.getProperties().getProperty(
+        "compositionPath"), "/");
+    while (tokenizer.hasMoreTokens())
     {
+      tokenizer.nextToken();
       path += "../";
     }
 
-    path += "drops/";
-    return path;
+    return path + "drops/";
   }
 }
