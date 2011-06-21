@@ -567,6 +567,7 @@ public class Main
 
   private static void generateDocuments(XMLOutput xml, WebNode webNode)
   {
+    System.out.println();
     PrintStream out = null;
 
     try
