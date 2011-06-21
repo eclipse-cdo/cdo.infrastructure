@@ -84,10 +84,10 @@ public class WebNode implements Comparable<WebNode>
         for (BuildInfo buildInfo : drops.getBuildInfos())
         {
           out.print("<li>" + buildInfo.getQualifier() + ":");
-          out.print("&nbsp;<a href=\"" + path + buildInfo.getQualifier() + "\">Update Site</a>");
-          out.print("&nbsp;<a href=\"" + path + "zips/emf-cdo-" + buildInfo.getQualifier()
+          out.print("&nbsp;&nbsp;<a href=\"" + path + buildInfo.getQualifier() + "\">Update Site</a>");
+          out.print("&nbsp;-&nbsp;<a href=\"" + path + "zips/emf-cdo-" + buildInfo.getQualifier()
               + "-Site.zip\">Update Site ZIP</a>");
-          out.print("&nbsp;<a href=\"" + path + "zips/emf-cdo-" + buildInfo.getQualifier()
+          out.print("&nbsp;-&nbsp;<a href=\"" + path + "zips/emf-cdo-" + buildInfo.getQualifier()
               + "-All\">Installable ZIP</a>");
           out.println("</li>");
         }
