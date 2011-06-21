@@ -33,6 +33,12 @@ public class Repository
 
   private List<String> children = new ArrayList<String>();
 
+  private List<Repository> childRepositories = new ArrayList<Repository>();
+
+  private String webLabel;
+
+  private int webPriority;
+
   public Repository(File base, String name, String path)
   {
     System.out.println();
@@ -98,6 +104,31 @@ public class Repository
     }
   }
 
+  public final List<Repository> getChildRepositories()
+  {
+    return childRepositories;
+  }
+
+  public String getWebLabel()
+  {
+    return webLabel;
+  }
+
+  public void setWebLabel(String webLabel)
+  {
+    this.webLabel = webLabel;
+  }
+
+  public int getWebPriority()
+  {
+    return webPriority;
+  }
+
+  public void setWebPriority(int webPriority)
+  {
+    this.webPriority = webPriority;
+  }
+
   public void generate(XMLOutput xml)
   {
     File folder = new File(base, path);
@@ -152,10 +183,7 @@ public class Repository
 
           repoXML.element("property");
           repoXML.attribute("name", "p2.mirrorsURL");
-          repoXML.attribute("value",
-              "http://www.eclipse.org/downloads/download.php?file=/" + PromoterConfig.INSTANCE.getDownloadsPath() + "/"
-                  + PromoterConfig.INSTANCE.getCompositionArea().getName() + "/" + path
-                  + "&amp;protocol=http&amp;format=xml");
+          repoXML.attribute("value", PromoterConfig.INSTANCE.formatUpdateURL(path));
           repoXML.pop();
 
           repoXML.element("children");
@@ -174,7 +202,7 @@ public class Repository
 
           xml.element("zip");
           xml.attribute("destfile", new File(folder, xmlName + ".jar"));
-          xml.attribute("update", "false");
+          xml.attribute("update", false);
           xml.push();
           xml.element("fileset");
           xml.attribute("dir", folder);
@@ -195,7 +223,7 @@ public class Repository
   /**
    * @author Eike Stepper
    */
-  public static class Filtered extends Repository
+  public static class Drops extends Repository
   {
     private String job;
 
@@ -203,7 +231,9 @@ public class Repository
 
     private String types;
 
-    public Filtered(File base, String name, String path, String job, String stream, String types,
+    private List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
+
+    public Drops(File base, String name, String path, String job, String stream, String types,
         List<BuildInfo> buildInfos)
     {
       super(base, name, path);
@@ -242,6 +272,7 @@ public class Repository
 
         child += "drops/" + buildInfo.getQualifier();
         addChild(child);
+        this.buildInfos.add(buildInfo);
       }
     }
 
@@ -258,6 +289,11 @@ public class Repository
     public final String getTypes()
     {
       return types;
+    }
+
+    public final List<BuildInfo> getBuildInfos()
+    {
+      return buildInfos;
     }
   }
 }

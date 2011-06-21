@@ -67,4 +67,20 @@ public final class PromoterConfig extends Config
   {
     return getDirectory("JOBS_HOME");
   }
+
+  public String formatDownloadURL(String path)
+  {
+    return "http://www.eclipse.org/downloads/download.php?file=/" + getDownloadsPath() + "/" + path
+        + "&amp;protocol=http&amp;format=xml";
+  }
+
+  public String formatDropURL(String qualifier)
+  {
+    return formatDownloadURL("drops/" + qualifier);
+  }
+
+  public String formatUpdateURL(String path)
+  {
+    return formatDownloadURL(getProperties().getProperty("compositionPath") + "/" + path);
+  }
 }

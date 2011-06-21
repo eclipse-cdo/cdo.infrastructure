@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -73,8 +74,8 @@ public class Main
       xml.push();
 
       List<BuildInfo> buildInfos = postProcessDrops(xml);
-      generateRepositories(xml, buildInfos);
-      generateDocuments(xml, buildInfos);
+      WebNode webNode = generateRepositories(xml, buildInfos);
+      generateDocuments(xml, webNode);
 
       xml.pop();
       xml.pop();
@@ -348,7 +349,6 @@ public class Main
   private static List<BuildInfo> postProcessDrops(XMLOutput xml) throws SAXException
   {
     File dropsDir = PromoterConfig.INSTANCE.getDropsArea();
-    String downloadsPath = PromoterConfig.INSTANCE.getDownloadsPath();
 
     List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
     for (File drop : dropsDir.listFiles())
@@ -356,17 +356,14 @@ public class Main
       if (drop.isDirectory())
       {
         // Add p2.mirrorsURL
-        if (downloadsPath != null)
+        File markerFile = new File(drop, MARKER_MIRRORED);
+        if (!markerFile.exists())
         {
-          File markerFile = new File(drop, MARKER_MIRRORED);
-          if (!markerFile.exists())
-          {
-            addMirroring(xml, drop, "artifacts", downloadsPath);
-            addMirroring(xml, drop, "content", downloadsPath);
+          addMirroring(xml, drop, "artifacts");
+          addMirroring(xml, drop, "content");
 
-            xml.element("touch");
-            xml.attribute("file", markerFile);
-          }
+          xml.element("touch");
+          xml.attribute("file", markerFile);
         }
 
         File buildInfoFile = new File(drop, "build-info.xml");
@@ -420,12 +417,11 @@ public class Main
     return buildInfos;
   }
 
-  private static void addMirroring(XMLOutput xml, File drop, String name, String downloadsPrefix) throws SAXException
+  private static void addMirroring(XMLOutput xml, File drop, String name) throws SAXException
   {
     String match = "<property name='p2\\.compressed'";
-    String url = "http://www.eclipse.org/downloads/download.php?file=/" + downloadsPrefix + "/drops/" + drop.getName()
-        + "&amp;protocol=http&amp;format=xml";
-    String replace = match + "\n    " + "<property name='p2.mirrorsURL' value='" + url + "'/>'>";
+    String replace = match + "\n    " + "<property name='p2.mirrorsURL' value='"
+        + PromoterConfig.INSTANCE.formatDropURL(drop.getName()) + "'/>'>";
 
     File xmlFile = new File(drop, name + ".xml");
     File jarFile = new File(drop, name + ".jar");
@@ -445,7 +441,7 @@ public class Main
 
     xml.element("zip");
     xml.attribute("destfile", jarFile);
-    xml.attribute("update", "false");
+    xml.attribute("update", false);
     xml.push();
     xml.element("fileset");
     xml.attribute("dir", drop);
@@ -459,10 +455,10 @@ public class Main
     xml.attribute("file", xmlFile);
   }
 
-  private static void generateRepositories(XMLOutput xml, List<BuildInfo> buildInfos) throws SAXException
+  private static WebNode generateRepositories(XMLOutput xml, List<BuildInfo> buildInfos) throws SAXException
   {
     File compositesDir = new File("composites");
-    generateRepositories(xml, buildInfos, compositesDir);
+    WebNode webNode = generateRepositories(xml, buildInfos, compositesDir);
 
     File temp = PromoterConfig.INSTANCE.getCompositionTempArea();
     File updates = PromoterConfig.INSTANCE.getCompositionArea();
@@ -477,7 +473,7 @@ public class Main
     xml.attribute("tofile", updates);
 
     xml.element("delete");
-    xml.attribute("includeemptydirs", "true");
+    xml.attribute("includeemptydirs", true);
     xml.push();
     xml.element("fileset");
     xml.attribute("dir", ".");
@@ -486,10 +482,15 @@ public class Main
     xml.attribute("name", updatesTmp.getName() + "/**");
     xml.pop();
     xml.pop();
+
+    return webNode;
   }
 
-  private static void generateRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File folder) throws SAXException
+  private static WebNode generateRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File folder)
+      throws SAXException
   {
+    WebNode webNode = new WebNode(folder);
+
     if (folder.isDirectory())
     {
       String compositeName = folder.getName();
@@ -500,13 +501,21 @@ public class Main
         {
           repository.generate(xml);
         }
-      }
 
-      for (File child : folder.listFiles())
-      {
-        generateRepositories(xml, buildInfos, child);
+        for (File child : folder.listFiles())
+        {
+          WebNode childWebNode = generateRepositories(xml, buildInfos, child);
+          if (childWebNode != null)
+          {
+            webNode.getChildren().add(childWebNode);
+          }
+        }
+
+        Collections.sort(webNode.getChildren());
       }
     }
+
+    return webNode;
   }
 
   private static Repository getRepository(File compositeDir, List<BuildInfo> buildInfos)
@@ -518,6 +527,8 @@ public class Main
       return null;
     }
 
+    Repository repository;
+
     File temp = PromoterConfig.INSTANCE.getCompositionTempArea();
     String path = compositeDir.getPath();
     path = path.substring(path.indexOf("/") + 1);
@@ -525,7 +536,7 @@ public class Main
     String childLocations = compositionProperties.getProperty("child.locations");
     if (childLocations != null)
     {
-      Repository repository = new Repository(temp, name, path);
+      repository = new Repository(temp, name, path);
 
       StringTokenizer tokenizer = new StringTokenizer(childLocations, ",");
       while (tokenizer.hasMoreTokens())
@@ -534,16 +545,41 @@ public class Main
         repository.addChild(childLocation);
       }
 
-      return repository;
+    }
+    else
+    {
+      String childJob = compositionProperties.getProperty("child.job");
+      String childStream = compositionProperties.getProperty("child.stream");
+      String childTypes = compositionProperties.getProperty("child.types");
+      repository = new Repository.Drops(temp, name, path, childJob, childStream, childTypes, buildInfos);
     }
 
-    String childJob = compositionProperties.getProperty("child.job");
-    String childStream = compositionProperties.getProperty("child.stream");
-    String childTypes = compositionProperties.getProperty("child.types");
-    return new Repository.Filtered(temp, name, path, childJob, childStream, childTypes, buildInfos);
+    String webLabel = compositionProperties.getProperty("web.label", repository.getName());
+    repository.setWebLabel(webLabel);
+
+    int webPriority = Integer.parseInt(compositionProperties.getProperty("web.priority", "500"));
+    repository.setWebPriority(webPriority);
+
+    return repository;
   }
 
-  private static void generateDocuments(XMLOutput xml, List<BuildInfo> buildInfos)
+  private static void generateDocuments(XMLOutput xml, WebNode webNode)
   {
+    PrintStream out = null;
+
+    try
+    {
+      out = new PrintStream(new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "downloads.php"));
+      webNode.generate(out, 0);
+      out.flush();
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      IO.close(out);
+    }
   }
 }
