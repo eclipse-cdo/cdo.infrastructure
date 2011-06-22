@@ -419,9 +419,9 @@ public class Main
 
   private static void addMirroring(XMLOutput xml, File drop, String name) throws SAXException
   {
-    String match = "<property name='p2\\.compressed'";
-    String replace = match + "\n    " + "<property name='p2.mirrorsURL' value='"
-        + PromoterConfig.INSTANCE.formatDropURL(drop.getName()) + "'/>'>";
+    String match = "<property name='p2\\.compressed' value='true'/>";
+    String replace = "<property name='p2.compressed' value='true'/>\n    " + "<property name='p2.mirrorsURL' value='"
+        + PromoterConfig.INSTANCE.formatDropURL(drop.getName()) + "'/>";
 
     File xmlFile = new File(drop, name + ".xml");
     File jarFile = new File(drop, name + ".jar");
