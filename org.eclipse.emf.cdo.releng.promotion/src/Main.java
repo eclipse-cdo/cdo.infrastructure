@@ -421,7 +421,7 @@ public class Main
   {
     String match = "<property name='p2\\.compressed' value='true'/>";
     String replace = "<property name='p2.compressed' value='true'/>\n    " + "<property name='p2.mirrorsURL' value='"
-        + PromoterConfig.INSTANCE.formatDropURL(drop.getName()) + "'/>";
+        + PromoterConfig.INSTANCE.formatDropURL(drop.getName()) + "&amp;format=xml'/>";
 
     File xmlFile = new File(drop, name + ".xml");
     File jarFile = new File(drop, name + ".jar");

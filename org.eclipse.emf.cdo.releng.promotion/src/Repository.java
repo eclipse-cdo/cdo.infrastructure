@@ -195,7 +195,7 @@ public class Repository
 
           repoXML.element("property");
           repoXML.attribute("name", "p2.mirrorsURL");
-          repoXML.attribute("value", PromoterConfig.INSTANCE.formatUpdateURL(path));
+          repoXML.attribute("value", PromoterConfig.INSTANCE.formatUpdateURL(path) + "&amp;format=xml");
           repoXML.pop();
 
           repoXML.element("children");
