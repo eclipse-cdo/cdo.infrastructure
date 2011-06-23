@@ -129,6 +129,24 @@ public class Repository
     this.webPriority = webPriority;
   }
 
+  public String getAnchorName()
+  {
+    StringBuilder builder = new StringBuilder();
+    for (char c : path.toCharArray())
+    {
+      if (Character.isJavaIdentifierPart(c))
+      {
+        builder.append(c);
+      }
+      else
+      {
+        builder.append('_');
+      }
+    }
+
+    return builder.toString();
+  }
+
   public String getDownloadsURL(String... paths)
   {
     StringBuilder builder = new StringBuilder(path);

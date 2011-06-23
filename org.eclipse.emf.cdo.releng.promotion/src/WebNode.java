@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Copyright (c) 2004 - 2011 Eike Stepper (Berlin, Germany) and others.
@@ -66,25 +65,27 @@ public class WebNode implements Comparable<WebNode>
       System.out.print("   ");
     }
 
+    String http = "http://download.eclipse.org/" + PromoterConfig.INSTANCE.getProperties().getProperty("downloadsPath")
+        + "/";
     System.out.println("Generating HTML for " + folder.getName());
 
     if (repository != null)
     {
-      out.println("<h" + level + ">" + repository.getWebLabel() + "</h" + level + "><a name=\""
-          + repository.getPath().replace('/', '_') + "\"/>");
+      out.println("<h" + level + ">" + repository.getWebLabel() + "</h" + level + ">");
+      out.println("<a name=\"" + repository.getAnchorName() + "\"/>");
       out.println("<ul>");
-      out.println("<li><b><a href=\"" + repository.getPath() + "\">Composite Update Site</a></b></li>");
+      out.println("<li><b><a href=\"" + http + "updates/" + repository.getPath()
+          + "\">Composite Update Site</a></b></li>");
 
       if (repository instanceof Repository.Drops)
       {
         Repository.Drops drops = (Repository.Drops)repository;
-        String path = getDropsPath();
 
         for (BuildInfo buildInfo : drops.getBuildInfos())
         {
           out.print("<li><b>" + buildInfo.getQualifier() + "</b>");
-          out.print("&nbsp;-&nbsp;<a href=\"" + path + buildInfo.getQualifier() + "\">Contents</a>");
-          out.print("&nbsp;-&nbsp;<a href=\"" + path + buildInfo.getQualifier() + "\">Update Site</a>");
+          out.print("&nbsp;-&nbsp;<a href=\"" + http + "drops/" + buildInfo.getQualifier() + "\">Contents</a>");
+          out.print("&nbsp;-&nbsp;<a href=\"" + http + "drops/" + buildInfo.getQualifier() + "\">Update Site</a>");
           out.print("&nbsp;-&nbsp;<a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
                   + buildInfo.getQualifier() + "-Site.zip") + "\">Update Site Archive</a>");
@@ -102,19 +103,5 @@ public class WebNode implements Comparable<WebNode>
     {
       child.generate(out, level + 1);
     }
-  }
-
-  private String getDropsPath()
-  {
-    String path = "";
-    StringTokenizer tokenizer = new StringTokenizer(PromoterConfig.INSTANCE.getProperties().getProperty(
-        "compositionPath"), "/");
-    while (tokenizer.hasMoreTokens())
-    {
-      tokenizer.nextToken();
-      path += "../";
-    }
-
-    return path + "drops/";
   }
 }
