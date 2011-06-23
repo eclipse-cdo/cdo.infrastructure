@@ -66,7 +66,7 @@ public class WebNode implements Comparable<WebNode>
       System.out.print("   ");
     }
 
-    System.out.println("Generating PHP for " + folder.getName());
+    System.out.println("Generating HTML for " + folder.getName());
 
     if (repository != null)
     {
