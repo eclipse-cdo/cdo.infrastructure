@@ -77,20 +77,21 @@ public class WebNode implements Comparable<WebNode>
       if (repository instanceof Repository.Drops)
       {
         Repository.Drops drops = (Repository.Drops)repository;
-        String path = getPath();
+        String path = getDropsPath();
 
         for (BuildInfo buildInfo : drops.getBuildInfos())
         {
           out.print("<li><b>" + buildInfo.getQualifier() + "</b>");
           out.print("&nbsp;-&nbsp;<a href=\"" + path + buildInfo.getQualifier() + "\">Contents</a>");
           out.print("&nbsp;-&nbsp;<a href=\"" + path + buildInfo.getQualifier() + "\">Update Site</a>");
-          out.print("&nbsp;-&nbsp;<a href=\"" + path + buildInfo.getQualifier() + "/zips/emf-cdo-"
-              + buildInfo.getQualifier() + "-Site.zip\">Update Site Archive</a>");
-          out.print("&nbsp;-&nbsp;<a href=\"" + path + buildInfo.getQualifier() + "/zips/emf-cdo-"
-              + buildInfo.getQualifier() + "-All.zip\">Dropins Archive</a>");
+          out.print("&nbsp;-&nbsp;<a href=\""
+              + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
+                  + buildInfo.getQualifier() + "-Site.zip") + "\">Update Site Archive</a>");
+          out.print("&nbsp;-&nbsp;<a href=\""
+              + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
+                  + buildInfo.getQualifier() + "-All.zip") + "\">Dropins Archive</a>");
           out.println("</li>");
         }
-
       }
 
       out.println("</ul>");
@@ -102,7 +103,7 @@ public class WebNode implements Comparable<WebNode>
     }
   }
 
-  private String getPath()
+  private String getDropsPath()
   {
     String path = "";
     StringTokenizer tokenizer = new StringTokenizer(PromoterConfig.INSTANCE.getProperties().getProperty(

@@ -129,6 +129,18 @@ public class Repository
     this.webPriority = webPriority;
   }
 
+  public String getDownloadsURL(String... paths)
+  {
+    StringBuilder builder = new StringBuilder(path);
+    for (String p : paths)
+    {
+      builder.append("/");
+      builder.append(p);
+    }
+
+    return PromoterConfig.INSTANCE.formatUpdateURL(builder.toString());
+  }
+
   public void generate(XMLOutput xml)
   {
     File folder = new File(base, path);

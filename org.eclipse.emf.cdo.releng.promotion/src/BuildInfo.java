@@ -87,6 +87,18 @@ public final class BuildInfo
     return type;
   }
 
+  public String getDownloadsURL(String... paths)
+  {
+    StringBuilder builder = new StringBuilder();
+    for (String p : paths)
+    {
+      builder.append("/");
+      builder.append(p);
+    }
+
+    return PromoterConfig.INSTANCE.formatUpdateURL(builder.toString());
+  }
+
   public String substitute(String pattern)
   {
     pattern = pattern.replaceAll("\\$\\{hudson}", hudson);

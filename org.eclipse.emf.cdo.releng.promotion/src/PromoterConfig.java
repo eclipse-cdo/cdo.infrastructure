@@ -74,9 +74,9 @@ public final class PromoterConfig extends Config
         + "&amp;protocol=http&amp;format=xml";
   }
 
-  public String formatDropURL(String qualifier)
+  public String formatDropURL(String path)
   {
-    return formatDownloadURL("drops/" + qualifier);
+    return formatDownloadURL("drops/" + path);
   }
 
   public String formatUpdateURL(String path)
