@@ -68,6 +68,7 @@ CheckPromotion ()
   
   if [ -f "$promoterAntFile" ]
   then
+  	echo
 	  "$ANT_HOME/bin/ant" -f "$promoterAntFile"
 	fi
 
