@@ -39,6 +39,8 @@ public class Repository
 
   private int webPriority;
 
+  private boolean webCollapsed;
+
   public Repository(File base, String name, String path)
   {
     System.out.println();
@@ -127,6 +129,16 @@ public class Repository
   public void setWebPriority(int webPriority)
   {
     this.webPriority = webPriority;
+  }
+
+  public boolean isWebCollapsed()
+  {
+    return webCollapsed;
+  }
+
+  public void setWebCollapsed(boolean webCollapsed)
+  {
+    this.webCollapsed = webCollapsed;
   }
 
   public String getAnchorName()

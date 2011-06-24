@@ -562,6 +562,9 @@ public class Main
     int webPriority = Integer.parseInt(compositionProperties.getProperty("web.priority", "500"));
     repository.setWebPriority(webPriority);
 
+    boolean webCollapsed = Boolean.parseBoolean(compositionProperties.getProperty("web.collapsed", "false"));
+    repository.setWebCollapsed(webCollapsed);
+
     return repository;
   }
 

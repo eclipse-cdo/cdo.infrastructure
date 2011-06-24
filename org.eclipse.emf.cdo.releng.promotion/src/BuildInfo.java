@@ -18,7 +18,7 @@ import java.io.File;
 /**
  * @author Eike Stepper
  */
-public final class BuildInfo
+public final class BuildInfo implements Comparable<BuildInfo>
 {
   private String hudson;
 
@@ -114,6 +114,19 @@ public final class BuildInfo
     return pattern;
   }
 
+  @Override
+  public String toString()
+  {
+    return "BuildInfo[hudson=" + hudson + ", job=" + job + ", number=" + number + ", qualifier=" + qualifier
+        + ", revision=" + revision + ", stream=" + stream + ", timestamp=" + timestamp + ", trigger=" + trigger
+        + ", type=" + type + "]";
+  }
+
+  public int compareTo(BuildInfo o)
+  {
+    return o.getTimestamp().compareTo(timestamp);
+  }
+
   void setHudson(String hudson)
   {
     this.hudson = hudson;
@@ -183,13 +196,5 @@ public final class BuildInfo
     });
 
     return result;
-  }
-
-  @Override
-  public String toString()
-  {
-    return "BuildInfo[hudson=" + hudson + ", job=" + job + ", number=" + number + ", qualifier=" + qualifier
-        + ", revision=" + revision + ", stream=" + stream + ", timestamp=" + timestamp + ", trigger=" + trigger
-        + ", type=" + type + "]";
   }
 }

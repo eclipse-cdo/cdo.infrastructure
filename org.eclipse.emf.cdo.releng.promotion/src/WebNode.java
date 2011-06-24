@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -95,13 +94,7 @@ public class WebNode implements Comparable<WebNode>
         Repository.Drops drops = (Repository.Drops)repository;
 
         List<BuildInfo> buildInfos = new ArrayList<BuildInfo>(drops.getBuildInfos());
-        Collections.sort(buildInfos, new Comparator<BuildInfo>()
-        {
-          public int compare(BuildInfo b1, BuildInfo b2)
-          {
-            return b2.getTimestamp().compareTo(b1.getTimestamp());
-          }
-        });
+        Collections.sort(buildInfos);
 
         boolean firstDrop = true;
         for (BuildInfo buildInfo : buildInfos)
@@ -110,9 +103,11 @@ public class WebNode implements Comparable<WebNode>
           out.println(prefix + indent + "<li><b><a href=\"javascript:toggle('" + dropID + "')\">"
               + buildInfo.getQualifier() + "</a></b>");
 
-          out.println(prefix + indent + "<ul class=\"drop\" id=\"" + dropID + "\""
+          out.println(prefix + indent + "<div class=\"drop\" id=\"" + dropID + "\""
               + (firstDrop ? "" : " style=\"display: none\"") + ">");
+          out.println(prefix + indent + indent + "<ul>");
           out.println(prefix
+              + indent
               + indent
               + indent
               + "<li class=\"drop-info\"><a href=\""
@@ -124,11 +119,13 @@ public class WebNode implements Comparable<WebNode>
           out.println(prefix
               + indent
               + indent
+              + indent
               + "<li class=\"drop-info\"><a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
                   + buildInfo.getQualifier() + "-Site.zip")
               + "\">Update&nbsp;Site&nbsp;Archive</a> for offline installation.");
           out.println(prefix
+              + indent
               + indent
               + indent
               + "<li class=\"drop-info\"><a href=\""
@@ -137,16 +134,18 @@ public class WebNode implements Comparable<WebNode>
           out.println(prefix
               + indent
               + indent
+              + indent
               + "<li class=\"drop-info\"><a href=\""
               + http
               + "drops/"
               + buildInfo.getQualifier()
               + "/bookmarks.xml\">Bookmarks</a> for the <a href=\"http://help.eclipse.org/indigo/"
               + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
-          out.println(prefix + indent + indent + "<li class=\"drop-info\"><a href=\"" + http + "drops/"
+          out.println(prefix + indent + indent + indent + "<li class=\"drop-info\"><a href=\"" + http + "drops/"
               + buildInfo.getQualifier()
               + "/build-info.xml\">Build&nbsp;Infos</a> for the parameters that produced this build.");
-          out.println(prefix + indent + "</ul>");
+          out.println(prefix + indent + indent + "</ul>");
+          out.println(prefix + indent + "</div>");
           firstDrop = false;
         }
       }
