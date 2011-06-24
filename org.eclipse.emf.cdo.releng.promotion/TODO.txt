@@ -1,0 +1,2 @@
+- validate HTML generation for more than 2 composite levels
+- support nicer drop labels, e.g. "4.0RC3"

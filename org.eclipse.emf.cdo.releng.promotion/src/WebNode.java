@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -92,8 +94,17 @@ public class WebNode implements Comparable<WebNode>
       {
         Repository.Drops drops = (Repository.Drops)repository;
 
+        List<BuildInfo> buildInfos = new ArrayList<BuildInfo>(drops.getBuildInfos());
+        Collections.sort(buildInfos, new Comparator<BuildInfo>()
+        {
+          public int compare(BuildInfo b1, BuildInfo b2)
+          {
+            return b2.getTimestamp().compareTo(b1.getTimestamp());
+          }
+        });
+
         boolean firstDrop = true;
-        for (BuildInfo buildInfo : drops.getBuildInfos())
+        for (BuildInfo buildInfo : buildInfos)
         {
           String dropID = "drop_" + buildInfo.getQualifier().replace('-', '_');
           out.println(prefix + indent + "<li><b><a href=\"javascript:toggle('" + dropID + "')\">"
@@ -139,13 +150,13 @@ public class WebNode implements Comparable<WebNode>
           firstDrop = false;
         }
       }
-
-      out.println(prefix + "</ul>");
     }
 
     for (WebNode child : children)
     {
       child.generate(out, level + 1);
     }
+
+    out.println(prefix + "</ul>");
   }
 }
