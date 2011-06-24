@@ -71,8 +71,10 @@ public class WebNode implements Comparable<WebNode>
 
     if (repository != null)
     {
-      out.println("<h" + level + ">" + repository.getWebLabel() + "</h" + level + ">");
+      int header = level == 1 ? 2 : 4;
+      out.println("<h" + header + ">" + repository.getWebLabel() + "</h" + header + ">");
       out.println("<a name=\"" + repository.getAnchorName() + "\"/>");
+
       out.println("<ul>");
       out.println("<li><b><a href=\"" + http + "updates/" + repository.getPath()
           + "\">Composite Update Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
@@ -89,10 +91,10 @@ public class WebNode implements Comparable<WebNode>
           out.print(", <a href=\"" + http + "drops/" + buildInfo.getQualifier() + "\">Update&nbsp;Site</a>");
           out.print(", <a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                  + buildInfo.getQualifier() + "-Site.zip") + "\">Update&nbsp;Site&nbsp;Archive</a>");
+                  + buildInfo.getQualifier() + "-Site.zip") + "\">Archive</a>");
           out.print(", <a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                  + buildInfo.getQualifier() + "-All.zip") + "\">Dropins&nbsp;Archive</a>");
+                  + buildInfo.getQualifier() + "-All.zip") + "\">Dropins</a>");
           out.println("</li>");
         }
       }
