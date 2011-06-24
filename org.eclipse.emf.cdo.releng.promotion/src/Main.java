@@ -572,7 +572,7 @@ public class Main
 
     try
     {
-      out = new PrintStream(new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "downloads.php"));
+      out = new PrintStream(new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "index.html"));
       webNode.generate(out, 0);
       out.flush();
     }
