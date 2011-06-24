@@ -105,60 +105,55 @@ public class WebNode implements Comparable<WebNode>
           out.println(prefix + indent + "<li><b><a href=\"javascript:toggle('" + dropID + "')\">"
               + buildInfo.getQualifier() + "</a></b>");
           out.println(prefix + "<a name=\"" + buildInfo.getQualifier().replace('-', '_') + "\"/>");
-
           out.println(prefix + indent + "<div class=\"drop\" id=\"" + dropID + "\""
               + (firstDrop ? "" : " style=\"display: none\"") + ">");
-          out.println(prefix + indent + indent + "<ul>");
+
           out.println(prefix
               + indent
               + indent
-              + indent
-              + "<li class=\"drop-info\"><a href=\""
+              + "<a href=\""
               + http
               + "drops/"
               + buildInfo.getQualifier()
               + "\">Update&nbsp;Site</a> for use with <a href=\"http://help.eclipse.org/indigo/"
-              + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can also be used with a web browser.");
+              + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can also be used with a web browser.<br>");
           out.println(prefix
               + indent
               + indent
-              + indent
-              + "<li class=\"drop-info\"><a href=\""
+              + "<a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
                   + buildInfo.getQualifier() + "-Site.zip")
-              + "\">Update&nbsp;Site&nbsp;Archive</a> for offline installation.");
+              + "\">Update&nbsp;Site&nbsp;Archive</a> for offline installation.<br>");
           out.println(prefix
               + indent
               + indent
-              + indent
-              + "<li class=\"drop-info\"><a href=\""
+              + "<a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                  + buildInfo.getQualifier() + "-All.zip") + "\">Dropins&nbsp;Archive</a> for file system deployments.");
+                  + buildInfo.getQualifier() + "-All.zip")
+              + "\">Dropins&nbsp;Archive</a> for file system deployments.<br>");
           out.println(prefix
               + indent
               + indent
-              + indent
-              + "<li class=\"drop-info\"><a href=\""
+              + "<a href=\""
               + http
               + "drops/"
               + buildInfo.getQualifier()
               + "/bookmarks.xml\">Bookmarks</a> for the <a href=\"http://help.eclipse.org/indigo/"
-              + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
-          out.println(prefix + indent + indent + indent + "<li class=\"drop-info\"><a href=\"" + http + "drops/"
-              + buildInfo.getQualifier()
-              + "/build-info.xml\">Build&nbsp;Infos</a> for the parameters that produced this build.");
-          out.println(prefix + indent + indent + "</ul>");
+              + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.<br>");
+          out.println(prefix + indent + indent + "<a href=\"" + http + "drops/" + buildInfo.getQualifier()
+              + "/build-info.xml\">Build&nbsp;Infos</a> for the parameters that produced this build.<br>");
+
           out.println(prefix + indent + "</div>");
           firstDrop = false;
         }
       }
-
-      out.println(prefix + "</div>");
     }
 
     for (WebNode child : children)
     {
       child.generate(out, level + 1);
     }
+
+    out.println(prefix + "</div>");
   }
 }
