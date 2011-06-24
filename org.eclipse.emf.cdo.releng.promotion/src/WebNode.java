@@ -73,7 +73,7 @@ public class WebNode implements Comparable<WebNode>
     {
       int header = level == 1 ? 2 : 4;
       out.println("<h" + header + ">" + repository.getWebLabel() + "</h" + header + ">");
-      out.println("<a name=\"" + repository.getAnchorName() + "\"/>");
+      out.println("<a name=\"" + repository.getAnchorName() + "\"></a>");
 
       out.println("<ul class=\"repo\" id=\"repo_" + repository.getAnchorName() + "\">");
       out.println("<li class=\"repo-info\"><b><a href=\""
