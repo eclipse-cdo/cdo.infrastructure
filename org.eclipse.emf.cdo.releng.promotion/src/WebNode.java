@@ -88,7 +88,11 @@ public class WebNode implements Comparable<WebNode>
       {
         Repository.Drops drops = (Repository.Drops)repository;
 
-        if (!drops.getBuildInfos().isEmpty())
+        if (drops.getBuildInfos().isEmpty())
+        {
+          out.println(prefix(level) + "<p class=\"repo-info\">This composite update site is currently empty.</p>");
+        }
+        else
         {
           out.println(prefix(level++) + "<ul>");
           List<BuildInfo> buildInfos = new ArrayList<BuildInfo>(drops.getBuildInfos());
