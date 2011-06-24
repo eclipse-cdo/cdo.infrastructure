@@ -95,8 +95,8 @@ public class WebNode implements Comparable<WebNode>
         for (BuildInfo buildInfo : drops.getBuildInfos())
         {
           String dropID = "drop_" + buildInfo.getQualifier().replace('-', '_');
-          out.println(prefix + indent + "<li><b><i><a href=\"javascript:toggle('" + dropID + "')\">"
-              + buildInfo.getQualifier() + "</a></i></b>");
+          out.println(prefix + indent + "<li><b><a href=\"javascript:toggle('" + dropID + "')\">"
+              + buildInfo.getQualifier() + "</a></b>");
 
           out.println(prefix + indent + "<ul class=\"drop\" id=\"" + dropID + "\">");
           out.println(prefix
