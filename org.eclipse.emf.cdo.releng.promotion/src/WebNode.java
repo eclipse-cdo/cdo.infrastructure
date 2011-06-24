@@ -75,7 +75,7 @@ public class WebNode implements Comparable<WebNode>
       out.println("<h" + header + ">" + repository.getWebLabel() + "</h" + header + ">");
       out.println("<a name=\"" + repository.getAnchorName() + "\"/>");
 
-      out.println("<ul class=\"repo\" id=\"repo" + repository.getAnchorName() + "\">");
+      out.println("<ul class=\"repo\" id=\"repo_" + repository.getAnchorName() + "\">");
       out.println("<li class=\"repo-info\"><b><a href=\""
           + http
           + "updates/"
@@ -89,8 +89,11 @@ public class WebNode implements Comparable<WebNode>
 
         for (BuildInfo buildInfo : drops.getBuildInfos())
         {
-          out.print("<li><b>" + buildInfo.getQualifier() + "</b>");
-          out.println("<ul class=\"drop\" id=\"drop" + buildInfo.getQualifier() + "\">");
+          String dropID = "drop_" + buildInfo.getQualifier().replace('-', '_');
+          out.print("<li><a href=\"javascript:toggle('" + dropID + "')><b><i>" + buildInfo.getQualifier()
+              + "</i></b></a>");
+
+          out.println("<ul class=\"drop\" id=\"" + dropID + "\">");
           out.print("<li class=\"drop-info\"><a href=\""
               + http
               + "drops/"
