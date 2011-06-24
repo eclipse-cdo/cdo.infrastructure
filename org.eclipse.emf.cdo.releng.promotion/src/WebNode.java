@@ -70,14 +70,12 @@ public class WebNode implements Comparable<WebNode>
     {
       String repoID = "repo_" + repository.getAnchorName();
 
-      out.println(prefix(level++) + "<div class=\"repo-label" + repository.getPathLevel() + "\">");
-      out.println(prefix(level) + "<li><a href=\"javascript:toggle('" + repoID + "')\">" + repository.getWebLabel()
-          + "</a>");
+      out.println(prefix(level) + "<li><a href=\"javascript:toggle('" + repoID + "')\" class=\"repo-label"
+          + repository.getPathLevel() + "\">" + repository.getWebLabel() + "</a>");
       out.println(prefix(level) + "<a name=\"" + repository.getAnchorName() + "\"/>");
-      out.println(prefix(--level) + "</div>");
 
-      out.println(prefix(level++) + "<div class=\"repo\" id=\"repo_" + repository.getAnchorName() + "\""
-          + (repository.isWebCollapsed() ? " style=\"display: none\"" : "") + ">");
+      out.println(prefix(level++) + "<div class=\"repo" + repository.getPathLevel() + "\" id=\"repo_"
+          + repository.getAnchorName() + "\"" + (repository.isWebCollapsed() ? " style=\"display: none\"" : "") + ">");
       out.println(prefix(level)
           + "<p class=\"repo-info\"><b><a href=\""
           + http
