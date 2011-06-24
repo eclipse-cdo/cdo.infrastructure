@@ -75,7 +75,8 @@ public class WebNode implements Comparable<WebNode>
       out.println("<a name=\"" + repository.getAnchorName() + "\"/>");
       out.println("<ul>");
       out.println("<li><b><a href=\"" + http + "updates/" + repository.getPath()
-          + "\">Composite Update Site</a></b></li>");
+          + "\">Composite Update Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
+          + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</li>");
 
       if (repository instanceof Repository.Drops)
       {
@@ -84,14 +85,14 @@ public class WebNode implements Comparable<WebNode>
         for (BuildInfo buildInfo : drops.getBuildInfos())
         {
           out.print("<li><b>" + buildInfo.getQualifier() + "</b>");
-          out.print("&nbsp;-&nbsp;<a href=\"" + http + "drops/" + buildInfo.getQualifier() + "\">Contents</a>");
-          out.print("&nbsp;-&nbsp;<a href=\"" + http + "drops/" + buildInfo.getQualifier() + "\">Update Site</a>");
-          out.print("&nbsp;-&nbsp;<a href=\""
+          out.print(" <a href=\"" + http + "drops/" + buildInfo.getQualifier() + "\">Contents</a>");
+          out.print(", <a href=\"" + http + "drops/" + buildInfo.getQualifier() + "\">Update&nbsp;Site</a>");
+          out.print(", <a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                  + buildInfo.getQualifier() + "-Site.zip") + "\">Update Site Archive</a>");
-          out.print("&nbsp;-&nbsp;<a href=\""
+                  + buildInfo.getQualifier() + "-Site.zip") + "\">Update&nbsp;Site&nbsp;Archive</a>");
+          out.print(", <a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                  + buildInfo.getQualifier() + "-All.zip") + "\">Dropins Archive</a>");
+                  + buildInfo.getQualifier() + "-All.zip") + "\">Dropins&nbsp;Archive</a>");
           out.println("</li>");
         }
       }
