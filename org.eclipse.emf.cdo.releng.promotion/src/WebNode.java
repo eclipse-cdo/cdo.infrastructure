@@ -77,8 +77,7 @@ public class WebNode implements Comparable<WebNode>
     {
       int header = level == 1 ? 2 : 4;
       String repoID = "repo_" + repository.getAnchorName();
-      out.println(prefix + "<h" + header + "><a href=\"javascript:toggle('" + repoID + "')\">"
-          + repository.getWebLabel() + "</a></h" + header + ">");
+      out.println(prefix + "<li><a href=\"javascript:toggle('" + repoID + "')\">" + repository.getWebLabel() + "</a>");
       out.println(prefix + "<a name=\"" + repository.getAnchorName() + "\"/>");
 
       out.println(prefix + "<div class=\"repo\" id=\"repo_" + repository.getAnchorName() + "\">");
@@ -149,11 +148,13 @@ public class WebNode implements Comparable<WebNode>
       }
     }
 
+    out.println(prefix + "<ul>");
     for (WebNode child : children)
     {
       child.generate(out, level + 1);
     }
 
+    out.println(prefix + "</ul>");
     out.println(prefix + "</div>");
   }
 }
