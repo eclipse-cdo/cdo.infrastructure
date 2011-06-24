@@ -77,18 +77,18 @@ public class WebNode implements Comparable<WebNode>
     if (repository != null)
     {
       int header = level == 1 ? 2 : 4;
-      out.println(prefix + "<h" + header + ">" + repository.getWebLabel() + "</h" + header + ">");
+      out.println(prefix + "<ul class=\"repo\" id=\"repo_" + repository.getAnchorName() + "\">");
+      out.println(prefix + "<h" + header + "><li>" + repository.getWebLabel() + "</h" + header + ">");
       out.println(prefix + "<a name=\"" + repository.getAnchorName() + "\"/>");
 
-      out.println(prefix + "<ul class=\"repo\" id=\"repo_" + repository.getAnchorName() + "\">");
       out.println(prefix
           + indent
-          + "<li class=\"repo-info\"><b><a href=\""
+          + "<p class=\"repo-info\"><b><a href=\""
           + http
           + "updates/"
           + repository.getPath()
           + "\">Composite Update Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
-          + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can <b>not</b> be used with a web browser.");
+          + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can <b>not</b> be used with a web browser.</p>");
 
       if (repository instanceof Repository.Drops)
       {
@@ -115,37 +115,38 @@ public class WebNode implements Comparable<WebNode>
           out.println(prefix
               + indent
               + indent
-              + "<li class=\"drop-info\"><a href=\""
+              + "<p class=\"drop-info\"><a href=\""
               + http
               + "drops/"
               + buildInfo.getQualifier()
               + "\">Update&nbsp;Site</a> for use with <a href=\"http://help.eclipse.org/indigo/"
-              + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can also be used with a web browser.");
+              + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can also be used with a web browser.</p>");
           out.println(prefix
               + indent
               + indent
-              + "<li class=\"drop-info\"><a href=\""
+              + "<p class=\"drop-info\"><a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
                   + buildInfo.getQualifier() + "-Site.zip")
-              + "\">Update&nbsp;Site&nbsp;Archive</a> for offline installation.");
+              + "\">Update&nbsp;Site&nbsp;Archive</a> for offline installation.</p>");
           out.println(prefix
               + indent
               + indent
-              + "<li class=\"drop-info\"><a href=\""
+              + "<p class=\"drop-info\"><a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                  + buildInfo.getQualifier() + "-All.zip") + "\">Dropins&nbsp;Archive</a> for file system deployments.");
+                  + buildInfo.getQualifier() + "-All.zip")
+              + "\">Dropins&nbsp;Archive</a> for file system deployments.</p>");
           out.println(prefix
               + indent
               + indent
-              + "<li class=\"drop-info\"><a href=\""
+              + "<p class=\"drop-info\"><a href=\""
               + http
               + "drops/"
               + buildInfo.getQualifier()
               + "/bookmarks.xml\">Bookmarks</a> for the <a href=\"http://help.eclipse.org/indigo/"
-              + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
-          out.println(prefix + indent + indent + "<li class=\"drop-info\"><a href=\"" + http + "drops/"
+              + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.</p>");
+          out.println(prefix + indent + indent + "<p class=\"drop-info\"><a href=\"" + http + "drops/"
               + buildInfo.getQualifier()
-              + "/build-info.xml\">Build&nbsp;Infos</a> for the parameters that produced this build.");
+              + "/build-info.xml\">Build&nbsp;Infos</a> for the parameters that produced this build.</p>");
           out.println(prefix + indent + "</ul>");
           firstDrop = false;
         }
