@@ -92,13 +92,15 @@ public class WebNode implements Comparable<WebNode>
       {
         Repository.Drops drops = (Repository.Drops)repository;
 
+        boolean firstDrop = true;
         for (BuildInfo buildInfo : drops.getBuildInfos())
         {
           String dropID = "drop_" + buildInfo.getQualifier().replace('-', '_');
           out.println(prefix + indent + "<li><b><a href=\"javascript:toggle('" + dropID + "')\">"
               + buildInfo.getQualifier() + "</a></b>");
 
-          out.println(prefix + indent + "<ul class=\"drop\" id=\"" + dropID + "\">");
+          out.println(prefix + indent + "<ul class=\"drop\" id=\"" + dropID + "\""
+              + (firstDrop ? "" : " style=\"display: none\"") + ">");
           out.println(prefix
               + indent
               + indent
@@ -134,6 +136,7 @@ public class WebNode implements Comparable<WebNode>
               + buildInfo.getQualifier()
               + "/build-info.xml\">Build&nbsp;Infos</a> for the parameters that produced this build.");
           out.println(prefix + indent + "</ul>");
+          firstDrop = false;
         }
       }
 
