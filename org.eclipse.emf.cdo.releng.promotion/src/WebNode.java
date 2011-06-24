@@ -69,13 +69,26 @@ public class WebNode implements Comparable<WebNode>
     if (repository != null)
     {
       String repoID = "repo_" + repository.getAnchorName();
+      List<BuildInfo> buildInfos = null;
+      if (repository instanceof Repository.Drops)
+      {
+        Repository.Drops drops = (Repository.Drops)repository;
+        buildInfos = new ArrayList<BuildInfo>(drops.getBuildInfos());
+        Collections.sort(buildInfos);
+      }
 
       out.println(prefix(level) + "<li><a href=\"javascript:toggle('" + repoID + "')\" class=\"repo-label"
           + repository.getPathLevel() + "\">" + repository.getWebLabel() + "</a>");
       out.println(prefix(level) + "<a name=\"" + repository.getAnchorName() + "\"/>");
 
-      out.println(prefix(level++) + "<div class=\"repo" + repository.getPathLevel() + "\" id=\"repo_"
-          + repository.getAnchorName() + "\"" + (repository.isWebCollapsed() ? " style=\"display: none\"" : "") + ">");
+      out.println(prefix(level++)
+          + "<div class=\"repo"
+          + repository.getPathLevel()
+          + "\" id=\"repo_"
+          + repository.getAnchorName()
+          + "\""
+          + (repository.isWebCollapsed() || buildInfos != null && buildInfos.isEmpty() ? " style=\"display: none\""
+              : "") + ">");
       out.println(prefix(level)
           + "<p class=\"repo-info\"><b><a href=\""
           + http
@@ -84,64 +97,57 @@ public class WebNode implements Comparable<WebNode>
           + "\">Composite Update Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
           + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can <b>not</b> be used with a web browser.</p>");
 
-      if (repository instanceof Repository.Drops)
+      if (buildInfos != null && buildInfos.isEmpty())
       {
-        Repository.Drops drops = (Repository.Drops)repository;
+        out.println(prefix(level) + "<p class=\"repo-info\"><i>This composite update site is currently empty.</i></p>");
+      }
+      else
+      {
+        out.println(prefix(level++) + "<ul>");
 
-        if (drops.getBuildInfos().isEmpty())
+        boolean firstDrop = true;
+        for (BuildInfo buildInfo : buildInfos)
         {
-          out.println(prefix(level) + "<p class=\"repo-info\">This composite update site is currently empty.</p>");
+          String dropID = "drop_" + buildInfo.getQualifier().replace('-', '_');
+          out.println(prefix(level) + "<li><b><a href=\"javascript:toggle('" + dropID + "')\" class=\"drop-label\">"
+              + buildInfo.getQualifier() + "</a></b>");
+          out.println(prefix(level) + "<a name=\"" + buildInfo.getQualifier().replace('-', '_') + "\"/>");
+          out.println(prefix(level++) + "<div class=\"drop\" id=\"" + dropID + "\""
+              + (firstDrop ? "" : " style=\"display: none\"") + ">");
+
+          out.println(prefix(level)
+              + "<div class=\"drop-info\"><a href=\""
+              + http
+              + "drops/"
+              + buildInfo.getQualifier()
+              + "\">Update&nbsp;Site</a> for use with <a href=\"http://help.eclipse.org/indigo/"
+              + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can also be used with a web browser.</div>");
+          out.println(prefix(level)
+              + "<div class=\"drop-info\"><a href=\""
+              + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
+                  + buildInfo.getQualifier() + "-Site.zip")
+              + "\">Update&nbsp;Site&nbsp;Archive</a> for offline installation.<div>");
+          out.println(prefix(level)
+              + "<div class=\"drop-info\"><a href=\""
+              + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
+                  + buildInfo.getQualifier() + "-All.zip")
+              + "\">Dropins&nbsp;Archive</a> for file system deployments.<div>");
+          out.println(prefix(level)
+              + "<div class=\"drop-info\"><a href=\""
+              + http
+              + "drops/"
+              + buildInfo.getQualifier()
+              + "/bookmarks.xml\">Bookmarks</a> for the <a href=\"http://help.eclipse.org/indigo/"
+              + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.<div>");
+          out.println(prefix(level) + "<div class=\"drop-info\"><a href=\"" + http + "drops/"
+              + buildInfo.getQualifier()
+              + "/build-info.xml\">Build&nbsp;Infos</a> for the parameters that produced this build.<div>");
+
+          out.println(prefix(--level) + "</div>");
+          firstDrop = false;
         }
-        else
-        {
-          out.println(prefix(level++) + "<ul>");
-          List<BuildInfo> buildInfos = new ArrayList<BuildInfo>(drops.getBuildInfos());
-          Collections.sort(buildInfos);
 
-          boolean firstDrop = true;
-          for (BuildInfo buildInfo : buildInfos)
-          {
-            String dropID = "drop_" + buildInfo.getQualifier().replace('-', '_');
-            out.println(prefix(level) + "<li><b><a href=\"javascript:toggle('" + dropID + "')\" class=\"drop-label\">"
-                + buildInfo.getQualifier() + "</a></b>");
-            out.println(prefix(level) + "<a name=\"" + buildInfo.getQualifier().replace('-', '_') + "\"/>");
-            out.println(prefix(level++) + "<div class=\"drop\" id=\"" + dropID + "\""
-                + (firstDrop ? "" : " style=\"display: none\"") + ">");
-
-            out.println(prefix(level)
-                + "<div class=\"drop-info\"><a href=\""
-                + http
-                + "drops/"
-                + buildInfo.getQualifier()
-                + "\">Update&nbsp;Site</a> for use with <a href=\"http://help.eclipse.org/indigo/"
-                + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can also be used with a web browser.</div>");
-            out.println(prefix(level)
-                + "<div class=\"drop-info\"><a href=\""
-                + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                    + buildInfo.getQualifier() + "-Site.zip")
-                + "\">Update&nbsp;Site&nbsp;Archive</a> for offline installation.<div>");
-            out.println(prefix(level)
-                + "<div class=\"drop-info\"><a href=\""
-                + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                    + buildInfo.getQualifier() + "-All.zip")
-                + "\">Dropins&nbsp;Archive</a> for file system deployments.<div>");
-            out.println(prefix(level)
-                + "<div class=\"drop-info\"><a href=\""
-                + http
-                + "drops/"
-                + buildInfo.getQualifier()
-                + "/bookmarks.xml\">Bookmarks</a> for the <a href=\"http://help.eclipse.org/indigo/"
-                + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.<div>");
-            out.println(prefix(level) + "<div class=\"drop-info\"><a href=\"" + http + "drops/"
-                + buildInfo.getQualifier()
-                + "/build-info.xml\">Build&nbsp;Infos</a> for the parameters that produced this build.<div>");
-
-            out.println(prefix(--level) + "</div>");
-            firstDrop = false;
-          }
-
-          out.println(prefix(--level) + "</ul>");
-        }
+        out.println(prefix(--level) + "</ul>");
       }
     }
 
