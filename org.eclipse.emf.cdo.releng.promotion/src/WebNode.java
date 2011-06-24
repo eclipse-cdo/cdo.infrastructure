@@ -87,12 +87,13 @@ public class WebNode implements Comparable<WebNode>
         for (BuildInfo buildInfo : drops.getBuildInfos())
         {
           out.print("<li><b>" + buildInfo.getQualifier() + "</b>");
-          out.print(" <a href=\"" + http + "drops/" + buildInfo.getQualifier() + "\">Contents</a>");
-          out.print(", <a href=\"" + http + "drops/" + buildInfo.getQualifier() + "\">Update&nbsp;Site</a>");
-          out.print(", <a href=\""
+          out.print(" <a href=\"" + http + "drops/" + buildInfo.getQualifier()
+              + "\">Update&nbsp;Site</a> for use with <a href=\"http://help.eclipse.org/indigo/"
+              + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>");
+          out.print(" &#8212; <a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
                   + buildInfo.getQualifier() + "-Site.zip") + "\">Archive</a>");
-          out.print(", <a href=\""
+          out.print(" &#8212; <a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
                   + buildInfo.getQualifier() + "-All.zip") + "\">Dropins</a>");
           out.println("</li>");
