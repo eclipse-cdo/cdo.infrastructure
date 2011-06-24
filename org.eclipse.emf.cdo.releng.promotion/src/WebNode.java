@@ -69,8 +69,9 @@ public class WebNode implements Comparable<WebNode>
     if (repository != null)
     {
       String repoID = "repo_" + repository.getAnchorName();
-      out.println(prefix(level) + "<li><a href=\"javascript:toggle('" + repoID + "')\" class=\"repo-label\">"
-          + repository.getWebLabel() + "</a>");
+
+      out.println(prefix(level) + "<li><a href=\"javascript:toggle('" + repoID + "')\" class=\"repo-label"
+          + repository.getPathLevel() + "\">" + repository.getWebLabel() + "</a>");
       out.println(prefix(level) + "<a name=\"" + repository.getAnchorName() + "\"/>");
 
       out.println(prefix(level++) + "<div class=\"repo\" id=\"repo_" + repository.getAnchorName() + "\""
