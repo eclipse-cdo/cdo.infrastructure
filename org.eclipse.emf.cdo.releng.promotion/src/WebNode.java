@@ -139,7 +139,10 @@ public class WebNode implements Comparable<WebNode>
     }
 
     out.println(prefix(--level) + "</ul>");
-    out.println(prefix(--level) + "</div>");
+    if (repository != null)
+    {
+      out.println(prefix(--level) + "</div>");
+    }
   }
 
   private String prefix(int level)
