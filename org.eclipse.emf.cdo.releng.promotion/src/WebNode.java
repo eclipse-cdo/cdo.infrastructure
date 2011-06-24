@@ -119,32 +119,35 @@ public class WebNode implements Comparable<WebNode>
                 + (firstDrop ? "" : " style=\"display: none\"") + ">");
 
             out.println(prefix(level)
-                + "<div class=\"drop-info\"><a href=\""
+                + "<div class=\"drop-info\"><b><a href=\""
                 + http
                 + "drops/"
                 + buildInfo.getQualifier()
-                + "\">Update site</a> for use with <a href=\"http://help.eclipse.org/indigo/"
+                + "\">Update site</a><b> for use with <a href=\"http://help.eclipse.org/indigo/"
                 + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can also be used with a web browser.</div>");
             out.println(prefix(level)
                 + "<div class=\"drop-info\"><a href=\""
                 + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                    + buildInfo.getQualifier() + "-Site.zip")
-                + "\">Update site archive</a> for offline installations.<div>");
+                    + buildInfo.getQualifier() + "-Site.zip") + "\">emf-cdo-" + buildInfo.getQualifier()
+                + "-Site.zip</a> for offline installations.<div>");
             out.println(prefix(level)
                 + "<div class=\"drop-info\"><a href=\""
                 + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                    + buildInfo.getQualifier() + "-All.zip")
-                + "\">Dropins archive</a> for file system deployments.<div>");
+                    + buildInfo.getQualifier() + "-All.zip") + "\">emf-cdo-" + buildInfo.getQualifier()
+                + "-All.zip</a> for file system deployments.<div>");
             out.println(prefix(level)
                 + "<div class=\"drop-info\"><a href=\""
                 + http
                 + "drops/"
                 + buildInfo.getQualifier()
-                + "/bookmarks.xml\">Bookmarks</a> for the <a href=\"http://help.eclipse.org/indigo/"
+                + "/bookmarks.xml\">bookmarks.xml</a> for the <a href=\"http://help.eclipse.org/indigo/"
                 + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.<div>");
             out.println(prefix(level) + "<div class=\"drop-info\"><a href=\"" + http + "drops/"
                 + buildInfo.getQualifier()
-                + "/build-info.xml\">Build&nbsp;infos</a> for the parameters that produced this build.<div>");
+                + "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.<div>");
+            out.println(prefix(level) + "<div class=\"drop-info\"><a href=\"" + http + "drops/"
+                + buildInfo.getQualifier()
+                + "/test-report.xml\">test-report.xml</a> for the test results of this build.<div>");
 
             out.println(prefix(--level) + "</div>");
             firstDrop = false;
