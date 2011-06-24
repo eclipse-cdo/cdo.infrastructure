@@ -132,13 +132,17 @@ public class WebNode implements Comparable<WebNode>
       }
     }
 
-    out.println(prefix(level++) + "<ul>");
-    for (WebNode child : children)
+    if (!children.isEmpty())
     {
-      child.generate(out, level);
+      out.println(prefix(level++) + "<ul>");
+      for (WebNode child : children)
+      {
+        child.generate(out, level);
+      }
+
+      out.println(prefix(--level) + "</ul>");
     }
 
-    out.println(prefix(--level) + "</ul>");
     if (repository != null)
     {
       out.println(prefix(--level) + "</div>");
