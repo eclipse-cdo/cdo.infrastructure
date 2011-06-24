@@ -69,8 +69,8 @@ public class WebNode implements Comparable<WebNode>
     if (repository != null)
     {
       String repoID = "repo_" + repository.getAnchorName();
-      out.println(prefix(level) + "<li><a href=\"javascript:toggle('" + repoID + "')\">" + repository.getWebLabel()
-          + "</a>");
+      out.println(prefix(level) + "<li><a href=\"javascript:toggle('" + repoID + "')\" class=\"repo-label\">"
+          + repository.getWebLabel() + "</a>");
       out.println(prefix(level) + "<a name=\"" + repository.getAnchorName() + "\"/>");
 
       out.println(prefix(level++) + "<div class=\"repo\" id=\"repo_" + repository.getAnchorName() + "\""
@@ -97,7 +97,7 @@ public class WebNode implements Comparable<WebNode>
           for (BuildInfo buildInfo : buildInfos)
           {
             String dropID = "drop_" + buildInfo.getQualifier().replace('-', '_');
-            out.println(prefix(level) + "<li><b><a href=\"javascript:toggle('" + dropID + "')\">"
+            out.println(prefix(level) + "<li><b><a href=\"javascript:toggle('" + dropID + "')\" class=\"drop-label\">"
                 + buildInfo.getQualifier() + "</a></b>");
             out.println(prefix(level) + "<a name=\"" + buildInfo.getQualifier().replace('-', '_') + "\"/>");
             out.println(prefix(level++) + "<div class=\"drop\" id=\"" + dropID + "\""
