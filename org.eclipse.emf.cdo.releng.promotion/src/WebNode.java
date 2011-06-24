@@ -76,18 +76,20 @@ public class WebNode implements Comparable<WebNode>
     if (repository != null)
     {
       int header = level == 1 ? 2 : 4;
-      out.println(prefix + "<h" + header + ">" + repository.getWebLabel() + "</h" + header + ">");
+      String repoID = "repo_" + repository.getAnchorName();
+      out.println(prefix + "<h" + header + "><a href=\"javascript:toggle('" + repoID + "')\">"
+          + repository.getWebLabel() + "</a></h" + header + ">");
       out.println(prefix + "<a name=\"" + repository.getAnchorName() + "\"/>");
 
-      out.println(prefix + "<ul class=\"repo\" id=\"repo_" + repository.getAnchorName() + "\">");
+      out.println(prefix + "<div class=\"repo\" id=\"repo_" + repository.getAnchorName() + "\">");
       out.println(prefix
           + indent
-          + "<li class=\"repo-info\"><b><a href=\""
+          + "<p class=\"repo-info\"><b><a href=\""
           + http
           + "updates/"
           + repository.getPath()
           + "\">Composite Update Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
-          + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can <b>not</b> be used with a web browser.");
+          + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can <b>not</b> be used with a web browser.</p>");
 
       if (repository instanceof Repository.Drops)
       {
@@ -102,6 +104,7 @@ public class WebNode implements Comparable<WebNode>
           String dropID = "drop_" + buildInfo.getQualifier().replace('-', '_');
           out.println(prefix + indent + "<li><b><a href=\"javascript:toggle('" + dropID + "')\">"
               + buildInfo.getQualifier() + "</a></b>");
+          out.println(prefix + "<a name=\"" + buildInfo.getQualifier().replace('-', '_') + "\"/>");
 
           out.println(prefix + indent + "<div class=\"drop\" id=\"" + dropID + "\""
               + (firstDrop ? "" : " style=\"display: none\"") + ">");
@@ -150,7 +153,7 @@ public class WebNode implements Comparable<WebNode>
         }
       }
 
-      out.println(prefix + "</ul>");
+      out.println(prefix + "</div>");
     }
 
     for (WebNode child : children)
