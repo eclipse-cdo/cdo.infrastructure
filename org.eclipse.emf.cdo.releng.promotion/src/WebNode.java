@@ -78,7 +78,7 @@ public class WebNode implements Comparable<WebNode>
       out.println("<ul>");
       out.println("<li><b><a href=\"" + http + "updates/" + repository.getPath()
           + "\">Composite Update Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
-          + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</li>");
+          + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.");
 
       if (repository instanceof Repository.Drops)
       {
@@ -87,16 +87,26 @@ public class WebNode implements Comparable<WebNode>
         for (BuildInfo buildInfo : drops.getBuildInfos())
         {
           out.print("<li><b>" + buildInfo.getQualifier() + "</b>");
-          out.print(" <a href=\"" + http + "drops/" + buildInfo.getQualifier()
+          out.println("<ul>");
+          out.print("<li><a href=\"" + http + "drops/" + buildInfo.getQualifier()
               + "\">Update&nbsp;Site</a> for use with <a href=\"http://help.eclipse.org/indigo/"
-              + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>");
-          out.print(" &#8212; <a href=\""
+              + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.");
+          out.print("<li><a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                  + buildInfo.getQualifier() + "-Site.zip") + "\">Archive</a>");
-          out.print(" &#8212; <a href=\""
+                  + buildInfo.getQualifier() + "-Site.zip")
+              + "\">Update&nbsp;Site&nbsp;Archive</a> for offline installation.");
+          out.print("<li><a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                  + buildInfo.getQualifier() + "-All.zip") + "\">Dropins</a>");
-          out.println("</li>");
+                  + buildInfo.getQualifier() + "-All.zip") + "\">Dropins&nbsp;Archive</a> for file system deployments.");
+          out.print("<li><a href=\""
+              + http
+              + "drops/"
+              + buildInfo.getQualifier()
+              + "/bookmarks.xml\">Bookmarks</a> for the <a href=\"http://help.eclipse.org/indigo/"
+              + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
+          out.print("<li><a href=\"" + http + "drops/" + buildInfo.getQualifier()
+              + "/build-info.xml\">Build&nbsp;Infos</a> for the parameters that produced this build.");
+          out.println("</ul>");
         }
       }
 
