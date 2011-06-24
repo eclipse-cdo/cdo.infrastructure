@@ -147,7 +147,7 @@ public class WebNode implements Comparable<WebNode>
                 + "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.<div>");
             out.println(prefix(level) + "<div class=\"drop-info\"><a href=\"" + http + "drops/"
                 + buildInfo.getQualifier()
-                + "/test-report.xml\">test-report.xml</a> for the test results of this build.<div>");
+                + "/testReport.xml\">test-report.xml</a> for the test results of this build.<div>");
 
             out.println(prefix(--level) + "</div>");
             firstDrop = false;
