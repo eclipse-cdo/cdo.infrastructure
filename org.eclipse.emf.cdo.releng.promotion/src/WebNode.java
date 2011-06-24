@@ -123,7 +123,7 @@ public class WebNode implements Comparable<WebNode>
                 + http
                 + "drops/"
                 + buildInfo.getQualifier()
-                + "\">Update site</a><b> for use with <a href=\"http://help.eclipse.org/indigo/"
+                + "\">Update site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
                 + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can also be used with a web browser.</div>");
             out.println(prefix(level)
                 + "<div class=\"drop-info\"><a href=\""
