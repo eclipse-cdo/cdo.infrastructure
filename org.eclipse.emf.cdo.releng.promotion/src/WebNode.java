@@ -61,22 +61,20 @@ public class WebNode implements Comparable<WebNode>
 
   public void generate(PrintStream out, int level) throws IOException
   {
-    int n = level;
-
     String http = "http://download.eclipse.org/" + PromoterConfig.INSTANCE.getProperties().getProperty("downloadsPath")
         + "/";
 
-    System.out.println(prefix(n) + "Generating HTML for " + folder.getName());
+    System.out.println(prefix(level) + "Generating HTML for " + folder.getName());
 
     if (repository != null)
     {
       String repoID = "repo_" + repository.getAnchorName();
-      out.println(prefix(n) + "<li><a href=\"javascript:toggle('" + repoID + "')\">" + repository.getWebLabel()
+      out.println(prefix(level) + "<li><a href=\"javascript:toggle('" + repoID + "')\">" + repository.getWebLabel()
           + "</a>");
-      out.println(prefix(n) + "<a name=\"" + repository.getAnchorName() + "\"/>");
+      out.println(prefix(level) + "<a name=\"" + repository.getAnchorName() + "\"/>");
 
-      out.println(prefix(n++) + "<div class=\"repo\" id=\"repo_" + repository.getAnchorName() + "\">");
-      out.println(prefix(n)
+      out.println(prefix(level++) + "<div class=\"repo\" id=\"repo_" + repository.getAnchorName() + "\">");
+      out.println(prefix(level)
           + "<p class=\"repo-info\"><b><a href=\""
           + http
           + "updates/"
@@ -95,60 +93,60 @@ public class WebNode implements Comparable<WebNode>
         for (BuildInfo buildInfo : buildInfos)
         {
           String dropID = "drop_" + buildInfo.getQualifier().replace('-', '_');
-          out.println(prefix(n) + "<li><b><a href=\"javascript:toggle('" + dropID + "')\">" + buildInfo.getQualifier()
-              + "</a></b>");
-          out.println(prefix(n) + "<a name=\"" + buildInfo.getQualifier().replace('-', '_') + "\"/>");
-          out.println(prefix(n++) + "<div class=\"drop\" id=\"" + dropID + "\""
+          out.println(prefix(level) + "<li><b><a href=\"javascript:toggle('" + dropID + "')\">"
+              + buildInfo.getQualifier() + "</a></b>");
+          out.println(prefix(level) + "<a name=\"" + buildInfo.getQualifier().replace('-', '_') + "\"/>");
+          out.println(prefix(level++) + "<div class=\"drop\" id=\"" + dropID + "\""
               + (firstDrop ? "" : " style=\"display: none\"") + ">");
 
-          out.println(prefix(n)
+          out.println(prefix(level)
               + "<a href=\""
               + http
               + "drops/"
               + buildInfo.getQualifier()
               + "\">Update&nbsp;Site</a> for use with <a href=\"http://help.eclipse.org/indigo/"
               + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can also be used with a web browser.<br>");
-          out.println(prefix(n)
+          out.println(prefix(level)
               + "<a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
                   + buildInfo.getQualifier() + "-Site.zip")
               + "\">Update&nbsp;Site&nbsp;Archive</a> for offline installation.<br>");
-          out.println(prefix(n)
+          out.println(prefix(level)
               + "<a href=\""
               + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
                   + buildInfo.getQualifier() + "-All.zip")
               + "\">Dropins&nbsp;Archive</a> for file system deployments.<br>");
-          out.println(prefix(n)
+          out.println(prefix(level)
               + "<a href=\""
               + http
               + "drops/"
               + buildInfo.getQualifier()
               + "/bookmarks.xml\">Bookmarks</a> for the <a href=\"http://help.eclipse.org/indigo/"
               + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.<br>");
-          out.println(prefix(n) + "<a href=\"" + http + "drops/" + buildInfo.getQualifier()
+          out.println(prefix(level) + "<a href=\"" + http + "drops/" + buildInfo.getQualifier()
               + "/build-info.xml\">Build&nbsp;Infos</a> for the parameters that produced this build.<br>");
 
-          out.println(prefix(--n) + "</div>");
+          out.println(prefix(--level) + "</div>");
           firstDrop = false;
         }
       }
     }
 
-    out.println(prefix(n++) + "<ul>");
+    out.println(prefix(level++) + "<ul>");
     for (WebNode child : children)
     {
-      child.generate(out, n + 1);
+      child.generate(out, level);
     }
 
-    out.println(prefix(--n) + "</ul>");
-    out.println(prefix(--n) + "</div>");
+    out.println(prefix(--level) + "</ul>");
+    out.println(prefix(--level) + "</div>");
   }
 
-  private String prefix(int l)
+  private String prefix(int level)
   {
     String indent = "   ";
     String prefix = "";
-    for (int i = 0; i < l; i++)
+    for (int i = 0; i < level; i++)
     {
       prefix += indent;
     }
