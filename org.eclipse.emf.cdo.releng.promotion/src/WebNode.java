@@ -94,7 +94,7 @@ public class WebNode implements Comparable<WebNode>
           + http
           + "updates/"
           + repository.getPath()
-          + "\">Composite update site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
+          + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
           + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can <b>not</b> be used with a web browser.</p>");
 
       if (buildInfos != null)
