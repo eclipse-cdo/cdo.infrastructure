@@ -131,30 +131,30 @@ public class WebNode implements Comparable<WebNode>
                 + "\">Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
                 + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can also be used with a web browser.</td><td>&nbsp;</td></tr>");
             out.println(prefix(level)
-                + "<tr class=\"drop-info\"><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
+                + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
                 + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
                     + buildInfo.getQualifier() + "-Site.zip") + "\">emf-cdo-" + buildInfo.getQualifier()
                 + "-Site.zip</a> for offline installations.</td><td>&nbsp;</td></tr>");
             out.println(prefix(level)
-                + "<tr class=\"drop-info\"><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
+                + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
                 + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
                     + buildInfo.getQualifier() + "-All.zip") + "\">emf-cdo-" + buildInfo.getQualifier()
                 + "-All.zip</a> for file system deployments.</td><td>&nbsp;</td></tr>");
             out.println(prefix(level)
-                + "<tr class=\"drop-info\"><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
+                + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
                 + http
                 + "drops/"
                 + buildInfo.getQualifier()
                 + "/bookmarks.xml\">bookmarks.xml</a> for the <a href=\"http://help.eclipse.org/indigo/"
                 + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.</td><td>&nbsp;</td></tr>");
             out.println(prefix(level)
-                + "<tr class=\"drop-info\"><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
+                + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
                 + http
                 + "drops/"
                 + buildInfo.getQualifier()
                 + "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.</td><td>&nbsp;</td></tr>");
             out.println(prefix(level)
-                + "<tr class=\"drop-info\"><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
+                + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
                 + http + "drops/" + buildInfo.getQualifier()
                 + "/testReport.xml\">test-report.xml</a> for the test results of this build.</td><td>&nbsp;</td></tr>");
 
