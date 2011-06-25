@@ -359,9 +359,14 @@ public class Main
         File markerFile = new File(drop, MARKER_MIRRORED);
         if (!markerFile.exists())
         {
-          addMirroring(xml, drop, "artifacts");
-          addMirroring(xml, drop, "content");
+          addMirroring(xml, drop, null, "artifacts");
+          addMirroring(xml, drop, null, "content");
 
+          File categories = new File(drop, "categories");
+          if (!categories.exists())
+          {
+            addMirroring(xml, drop, "categories", "content");
+          }
           xml.element("touch");
           xml.attribute("file", markerFile);
         }
@@ -417,17 +422,20 @@ public class Main
     return buildInfos;
   }
 
-  private static void addMirroring(XMLOutput xml, File drop, String name) throws SAXException
+  private static void addMirroring(XMLOutput xml, File drop, String pathInDrop, String name) throws SAXException
   {
+    File path = new File(drop, pathInDrop);
+
     String match = "<property name='p2\\.compressed' value='true'/>";
     String replace = "<property name='p2.compressed' value='true'/>\n    " + "<property name='p2.mirrorsURL' value='"
-        + PromoterConfig.INSTANCE.formatDropURL(drop.getName()) + "&amp;format=xml'/>";
+        + PromoterConfig.INSTANCE.formatDropURL(drop.getName()) + (pathInDrop == null ? "" : "/" + pathInDrop)
+        + "&amp;format=xml'/>";
 
-    File xmlFile = new File(drop, name + ".xml");
-    File jarFile = new File(drop, name + ".jar");
+    File xmlFile = new File(path, name + ".xml");
+    File jarFile = new File(path, name + ".jar");
 
     xml.element("unzip");
-    xml.attribute("dest", drop);
+    xml.attribute("dest", path);
     xml.attribute("src", jarFile);
     xml.push();
     xml.element("patternset");
@@ -444,7 +452,7 @@ public class Main
     xml.attribute("update", false);
     xml.push();
     xml.element("fileset");
-    xml.attribute("dir", drop);
+    xml.attribute("dir", path);
     xml.push();
     xml.element("include");
     xml.attribute("name", xmlFile.getName());
