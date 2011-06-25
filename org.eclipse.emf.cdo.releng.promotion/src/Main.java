@@ -426,7 +426,7 @@ public class Main
   {
     File path = pathInDrop == null ? drop : new File(drop, pathInDrop);
 
-    String match = "<property name='p2\\.compressed' value='true'/>";
+    String match = "<property name=.p2\\.compressed. value=.true./>";
     String replace = "<property name='p2.compressed' value='true'/>\n    " + "<property name='p2.mirrorsURL' value='"
         + PromoterConfig.INSTANCE.formatDropURL(drop.getName()) + (pathInDrop == null ? "" : "/" + pathInDrop)
         + "&amp;format=xml'/>";
