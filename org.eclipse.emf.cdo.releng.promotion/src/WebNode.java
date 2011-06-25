@@ -91,13 +91,15 @@ public class WebNode implements Comparable<WebNode>
           + "\""
           + (repository.isWebCollapsed() || buildInfos != null && buildInfos.isEmpty() ? " style=\"display: none\""
               : "") + ">");
+
+      out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
       out.println(prefix(level)
-          + "<p class=\"repo-info\"><b><img src=\"http://www.eclipse.org/cdo/images/16x16/internet-web-browser.png\"/> <a href=\""
+          + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/internet-web-browser.png\"/></td><td><b><a href=\""
           + http
           + "updates/"
           + repository.getPath()
           + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
-          + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can <b>not</b> be used with a web browser.</p>");
+          + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can <b>not</b> be used with a web browser.</td><td>&nbsp;</td></tr>");
 
       if (buildInfos != null)
       {
@@ -134,29 +136,41 @@ public class WebNode implements Comparable<WebNode>
                 + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
                 + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
                     + buildInfo.getQualifier() + "-Site.zip") + "\">emf-cdo-" + buildInfo.getQualifier()
-                + "-Site.zip</a> for offline installations.</td><td>&nbsp;</td></tr>");
+                + "-Site.zip</a> for offline installations.</td><td>&nbsp;<!-- PROMOTER-FILESIZE "
+                + PromoterConfig.INSTANCE.getDropsArea() + "/" + buildInfo.getQualifier() + "/zips/emf-cdo-"
+                + buildInfo.getQualifier() + "-Site.zip" + " --></td></tr>");
             out.println(prefix(level)
                 + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
                 + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
                     + buildInfo.getQualifier() + "-All.zip") + "\">emf-cdo-" + buildInfo.getQualifier()
-                + "-All.zip</a> for file system deployments.</td><td>&nbsp;</td></tr>");
+                + "-All.zip</a> for file system deployments.</td><td>&nbsp;<!-- PROMOTER-FILESIZE "
+                + PromoterConfig.INSTANCE.getDropsArea() + "/" + buildInfo.getQualifier() + "/zips/emf-cdo-"
+                + buildInfo.getQualifier() + "-All.zip" + " --></td></tr>");
             out.println(prefix(level)
                 + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
                 + http
                 + "drops/"
                 + buildInfo.getQualifier()
                 + "/bookmarks.xml\">bookmarks.xml</a> for the <a href=\"http://help.eclipse.org/indigo/"
-                + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.</td><td>&nbsp;</td></tr>");
+                + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.</td><td>&nbsp;<!-- PROMOTER-FILESIZE "
+                + PromoterConfig.INSTANCE.getDropsArea() + "/" + buildInfo.getQualifier() + "/bookmarks.xml"
+                + " --></td></tr>");
             out.println(prefix(level)
                 + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
                 + http
                 + "drops/"
                 + buildInfo.getQualifier()
-                + "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.</td><td>&nbsp;</td></tr>");
+                + "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.</td><td>&nbsp;<!-- PROMOTER-FILESIZE "
+                + PromoterConfig.INSTANCE.getDropsArea() + "/" + buildInfo.getQualifier() + "/build-info.xml"
+                + " --></td></tr>");
             out.println(prefix(level)
                 + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
-                + http + "drops/" + buildInfo.getQualifier()
-                + "/testReport.xml\">test-report.xml</a> for the test results of this build.</td><td>&nbsp;</td></tr>");
+                + http
+                + "drops/"
+                + buildInfo.getQualifier()
+                + "/testReport.xml\">test-report.xml</a> for the test results of this build.</td><td>&nbsp;<!-- PROMOTER-FILESIZE "
+                + PromoterConfig.INSTANCE.getDropsArea() + "/" + buildInfo.getQualifier() + "/testReport.xml"
+                + " --></td></tr>");
 
             out.println(prefix(--level) + "</table>");
             out.println(prefix(--level) + "</div>");
