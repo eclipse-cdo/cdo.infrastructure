@@ -209,10 +209,10 @@ public class WebNode implements Comparable<WebNode>
   private static String formatFileSize(String path)
   {
     File file = new File(path);
-    if (file.exists())
+    if (file.isFile())
     {
       long size = file.length();
-      formatFileSize(size);
+      return formatFileSize(size);
     }
 
     return "<i>Unknown Size</i>";
