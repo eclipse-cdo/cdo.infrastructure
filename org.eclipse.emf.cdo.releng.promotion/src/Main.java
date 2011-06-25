@@ -93,6 +93,8 @@ public class Main
     {
       generateDocuments(webNode);
     }
+
+    System.out.println();
   }
 
   private static void copyBuilds()
