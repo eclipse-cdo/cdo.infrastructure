@@ -363,7 +363,7 @@ public class Main
           addMirroring(xml, drop, null, "content");
 
           File categories = new File(drop, "categories");
-          if (!categories.exists())
+          if (categories.isDirectory())
           {
             addMirroring(xml, drop, "categories", "content");
           }
