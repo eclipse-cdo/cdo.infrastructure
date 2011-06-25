@@ -139,7 +139,7 @@ public class WebNode implements Comparable<WebNode>
                     + buildInfo.getQualifier() + "-Site.zip")
                 + "\">emf-cdo-"
                 + buildInfo.getQualifier()
-                + "-Site.zip</a> for offline installations.</td><td align=\"right\">"
+                + "-Site.zip</a> for offline installations.</td><td class=\"filesize\">"
                 + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
                     + buildInfo.getQualifier() + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-Site.zip")
                 + "</td></tr>");
@@ -149,7 +149,7 @@ public class WebNode implements Comparable<WebNode>
                     + buildInfo.getQualifier() + "-All.zip")
                 + "\">emf-cdo-"
                 + buildInfo.getQualifier()
-                + "-All.zip</a> for file system deployments.</td><td align=\"right\">"
+                + "-All.zip</a> for file system deployments.</td><td class=\"filesize\">"
                 + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
                     + buildInfo.getQualifier() + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-All.zip")
                 + "</td></tr>");
@@ -159,7 +159,7 @@ public class WebNode implements Comparable<WebNode>
                 + "drops/"
                 + buildInfo.getQualifier()
                 + "/bookmarks.xml\">bookmarks.xml</a> for the <a href=\"http://help.eclipse.org/indigo/"
-                + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.</td><td align=\"right\">"
+                + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.</td><td class=\"filesize\">"
                 + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
                     + buildInfo.getQualifier() + "/bookmarks.xml") + "</td></tr>");
             out.println(prefix(level)
@@ -167,7 +167,7 @@ public class WebNode implements Comparable<WebNode>
                 + http
                 + "drops/"
                 + buildInfo.getQualifier()
-                + "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.</td><td align=\"right\">"
+                + "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.</td><td class=\"filesize\">"
                 + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
                     + buildInfo.getQualifier() + "/build-info.xml") + "</td></tr>");
             out.println(prefix(level)
@@ -175,7 +175,7 @@ public class WebNode implements Comparable<WebNode>
                 + http
                 + "drops/"
                 + buildInfo.getQualifier()
-                + "/testReport.xml\">test-report.xml</a> for the test results of this build.</td><td align=\"right\">"
+                + "/testReport.xml\">test-report.xml</a> for the test results of this build.</td><td class=\"filesize\">"
                 + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
                     + buildInfo.getQualifier() + "/testReport.xml") + "</td></tr>");
 
