@@ -136,42 +136,48 @@ public class WebNode implements Comparable<WebNode>
             out.println(prefix(level)
                 + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
                 + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                    + buildInfo.getQualifier() + "-Site.zip") + "\">emf-cdo-" + buildInfo.getQualifier()
-                + "-Site.zip</a> for offline installations.</td><td>&nbsp;<!-- PROMOTER-FILESIZE "
-                + PromoterConfig.INSTANCE.getDropsArea() + "/" + buildInfo.getQualifier() + "/zips/emf-cdo-"
-                + buildInfo.getQualifier() + "-Site.zip" + " --></td></tr>");
+                    + buildInfo.getQualifier() + "-Site.zip")
+                + "\">emf-cdo-"
+                + buildInfo.getQualifier()
+                + "-Site.zip</a> for offline installations.</td><td align=\"right\">&nbsp;"
+                + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
+                    + buildInfo.getQualifier() + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-Site.zip")
+                + "</td></tr>");
             out.println(prefix(level)
                 + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
                 + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                    + buildInfo.getQualifier() + "-All.zip") + "\">emf-cdo-" + buildInfo.getQualifier()
-                + "-All.zip</a> for file system deployments.</td><td>&nbsp;<!-- PROMOTER-FILESIZE "
-                + PromoterConfig.INSTANCE.getDropsArea() + "/" + buildInfo.getQualifier() + "/zips/emf-cdo-"
-                + buildInfo.getQualifier() + "-All.zip" + " --></td></tr>");
+                    + buildInfo.getQualifier() + "-All.zip")
+                + "\">emf-cdo-"
+                + buildInfo.getQualifier()
+                + "-All.zip</a> for file system deployments.</td><td align=\"right\">&nbsp;"
+                + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
+                    + buildInfo.getQualifier() + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-All.zip")
+                + "</td></tr>");
             out.println(prefix(level)
                 + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
                 + http
                 + "drops/"
                 + buildInfo.getQualifier()
                 + "/bookmarks.xml\">bookmarks.xml</a> for the <a href=\"http://help.eclipse.org/indigo/"
-                + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.</td><td>&nbsp;<!-- PROMOTER-FILESIZE "
-                + PromoterConfig.INSTANCE.getDropsArea() + "/" + buildInfo.getQualifier() + "/bookmarks.xml"
-                + " --></td></tr>");
+                + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.</td><td align=\"right\">&nbsp;"
+                + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
+                    + buildInfo.getQualifier() + "/bookmarks.xml") + "</td></tr>");
             out.println(prefix(level)
                 + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
                 + http
                 + "drops/"
                 + buildInfo.getQualifier()
-                + "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.</td><td>&nbsp;<!-- PROMOTER-FILESIZE "
-                + PromoterConfig.INSTANCE.getDropsArea() + "/" + buildInfo.getQualifier() + "/build-info.xml"
-                + " --></td></tr>");
+                + "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.</td><td align=\"right\">&nbsp;"
+                + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
+                    + buildInfo.getQualifier() + "/build-info.xml") + "</td></tr>");
             out.println(prefix(level)
                 + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
                 + http
                 + "drops/"
                 + buildInfo.getQualifier()
-                + "/testReport.xml\">test-report.xml</a> for the test results of this build.</td><td>&nbsp;<!-- PROMOTER-FILESIZE "
-                + PromoterConfig.INSTANCE.getDropsArea() + "/" + buildInfo.getQualifier() + "/testReport.xml"
-                + " --></td></tr>");
+                + "/testReport.xml\">test-report.xml</a> for the test results of this build.</td><td align=\"right\">&nbsp;"
+                + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
+                    + buildInfo.getQualifier() + "/testReport.xml") + "</td></tr>");
 
             out.println(prefix(--level) + "</table>");
             out.println(prefix(--level) + "</div>");
@@ -200,7 +206,42 @@ public class WebNode implements Comparable<WebNode>
     }
   }
 
-  private String prefix(int level)
+  private static String formatFileSize(String path)
+  {
+    File file = new File(path);
+    if (file.isFile())
+    {
+      long size = file.length();
+      formatFileSize(size);
+    }
+
+    return "";
+  }
+
+  private static String formatFileSize(long size)
+  {
+    long kb = 1024L;
+    if (size < kb)
+    {
+      return Long.toString(size) + " B";
+    }
+
+    long mb = kb * kb;
+    if (size < mb)
+    {
+      return Long.toString(size / kb) + " KB";
+    }
+
+    long gb = mb * kb;
+    if (size < gb)
+    {
+      return Long.toString(size / mb) + " MB";
+    }
+
+    return Long.toString(size / gb) + " GB";
+  }
+
+  private static String prefix(int level)
   {
     String indent = "   ";
     String prefix = "";

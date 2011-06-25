@@ -43,6 +43,7 @@ public class Main
     // performTasks();
 
     final String downloadsPath = PromoterConfig.INSTANCE.getDownloadsArea().getAbsolutePath();
+    WebNode webNode = null;
     OutputStream out = null;
 
     try
@@ -74,8 +75,7 @@ public class Main
       xml.push();
 
       List<BuildInfo> buildInfos = postProcessDrops(xml);
-      WebNode webNode = generateRepositories(xml, buildInfos);
-      generateDocuments(xml, webNode);
+      webNode = generateRepositories(xml, buildInfos);
 
       xml.pop();
       xml.pop();
@@ -84,6 +84,13 @@ public class Main
     finally
     {
       IO.close(out);
+    }
+
+    runPromoterAnt();
+
+    if (webNode != null)
+    {
+      generateDocuments(webNode);
     }
   }
 
@@ -472,24 +479,24 @@ public class Main
     File updates = PromoterConfig.INSTANCE.getCompositionArea();
     File updatesTmp = new File(updates.getParentFile(), updates.getName() + ".tmp");
 
-    xml.element("move");
-    xml.attribute("file", updates);
-    xml.attribute("tofile", updatesTmp);
-
-    xml.element("move");
-    xml.attribute("file", temp);
-    xml.attribute("tofile", updates);
-
-    xml.element("delete");
-    xml.attribute("includeemptydirs", true);
-    xml.push();
-    xml.element("fileset");
-    xml.attribute("dir", ".");
-    xml.push();
-    xml.element("include");
-    xml.attribute("name", updatesTmp.getName() + "/**");
-    xml.pop();
-    xml.pop();
+    // xml.element("move");
+    // xml.attribute("file", updates);
+    // xml.attribute("tofile", updatesTmp);
+    //
+    // xml.element("move");
+    // xml.attribute("file", temp);
+    // xml.attribute("tofile", updates);
+    //
+    // xml.element("delete");
+    // xml.attribute("includeemptydirs", true);
+    // xml.push();
+    // xml.element("fileset");
+    // xml.attribute("dir", ".");
+    // xml.push();
+    // xml.element("include");
+    // xml.attribute("name", updatesTmp.getName() + "/**");
+    // xml.pop();
+    // xml.pop();
 
     return webNode;
   }
@@ -576,7 +583,18 @@ public class Main
     return repository;
   }
 
-  private static void generateDocuments(XMLOutput xml, WebNode webNode)
+  private static void runPromoterAnt() throws IOException, InterruptedException
+  {
+    System.out.println();
+    String ant = PromoterConfig.INSTANCE.getProperties().getProperty("ANT_HOME") + "/bin/ant";
+    String antFile = new File(PromoterConfig.INSTANCE.getWorkingArea(), "promoter.ant").getAbsolutePath();
+
+    ProcessBuilder processBuilder = new ProcessBuilder(ant, "-f", antFile);
+    Process process = processBuilder.start();
+    process.waitFor();
+  }
+
+  private static void generateDocuments(WebNode webNode)
   {
     System.out.println();
     PrintStream out = null;

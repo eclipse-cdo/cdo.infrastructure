@@ -60,18 +60,38 @@ CriticalSection ()
 
 CheckPromotion ()
 {
-	promoterAntFile=$workingArea/promoter.ant
-	rm -f "$promoterAntFile"
-	rm -rf "$DOWNLOADS_HOME/$downloadsPath/$compositionTempPath"
+	#promoterAntFile=$workingArea/promoter.ant
+	#rm -f "$promoterAntFile"
+	
+	compositionTempFolder=$DOWNLOADS_HOME/$downloadsPath/$compositionTempPath
+	rm -rf "$compositionTempFolder"
 	
   "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes" Main
   
-  if [ -f "$promoterAntFile" ]
-  then
-  	echo
-	  "$ANT_HOME/bin/ant" -f "$promoterAntFile"
-	fi
+  #if [ -f "$promoterAntFile" ]
+  #then
+  #	echo
+	#  "$ANT_HOME/bin/ant" -f "$promoterAntFile"
+	#fi
 
+  if [ -d "$compositionTempFolder" ]
+  then
+		compositionFolder=$DOWNLOADS_HOME/$downloadsPath/$compositionPath
+		tmpFolder=$compositionFolder.tmp
+		
+  	if [ -d "$compositionFolder" ]
+	  then
+			mv -f "$compositionFolder" "$tmpFolder"
+		fi
+		
+		mv -f "$compositionTempFolder" "$compositionFolder"
+		
+  	if [ -d "$tmpFolder" ]
+	  then
+			rm -rf "$tmpFolder"
+		fi
+	fi
+	
   # Exit when done.
   # Next check will be triggered by cron...
   exit 0
