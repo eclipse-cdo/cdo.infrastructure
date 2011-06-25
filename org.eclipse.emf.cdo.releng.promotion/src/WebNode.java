@@ -80,7 +80,8 @@ public class WebNode implements Comparable<WebNode>
 
       out.println(prefix(level) + "<li><a href=\"javascript:toggle('" + repoID + "')\" class=\"repo-label"
           + repository.getPathLevel() + "\">" + repository.getWebLabel() + "</a> <a name=\"" + repoName + "\" href=\"#"
-          + repoName + "\"><img src=\"http://www.eclipse.org/cdo/images/link_obj.gif\"/></a>");
+          + repoName
+          + "\"><img src=\"http://www.eclipse.org/cdo/images/link_obj.gif\" width=\"12\" height=\"12\"/></a>");
 
       out.println(prefix(level++)
           + "<div class=\"repo"
