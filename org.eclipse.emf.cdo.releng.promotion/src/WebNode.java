@@ -215,7 +215,7 @@ public class WebNode implements Comparable<WebNode>
       formatFileSize(size);
     }
 
-    return "<i>" + path + "</i>";
+    return "<i>Unknown Size</i>";
   }
 
   private static String formatFileSize(long size)
