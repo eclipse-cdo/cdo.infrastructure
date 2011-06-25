@@ -16,6 +16,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class Main
       xml.push();
 
       List<BuildInfo> buildInfos = postProcessDrops(xml);
-      webNode = generateRepositories(xml, buildInfos);
+      webNode = generateRepositories(xml, buildInfos, new File("composites"));
 
       xml.pop();
       xml.pop();
@@ -470,37 +471,6 @@ public class Main
     xml.attribute("file", xmlFile);
   }
 
-  private static WebNode generateRepositories(XMLOutput xml, List<BuildInfo> buildInfos) throws SAXException
-  {
-    File compositesDir = new File("composites");
-    WebNode webNode = generateRepositories(xml, buildInfos, compositesDir);
-
-    File temp = PromoterConfig.INSTANCE.getCompositionTempArea();
-    File updates = PromoterConfig.INSTANCE.getCompositionArea();
-    File updatesTmp = new File(updates.getParentFile(), updates.getName() + ".tmp");
-
-    // xml.element("move");
-    // xml.attribute("file", updates);
-    // xml.attribute("tofile", updatesTmp);
-    //
-    // xml.element("move");
-    // xml.attribute("file", temp);
-    // xml.attribute("tofile", updates);
-    //
-    // xml.element("delete");
-    // xml.attribute("includeemptydirs", true);
-    // xml.push();
-    // xml.element("fileset");
-    // xml.attribute("dir", ".");
-    // xml.push();
-    // xml.element("include");
-    // xml.attribute("name", updatesTmp.getName() + "/**");
-    // xml.pop();
-    // xml.pop();
-
-    return webNode;
-  }
-
   private static WebNode generateRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File folder)
       throws SAXException
   {
@@ -590,7 +560,20 @@ public class Main
     String antFile = new File(PromoterConfig.INSTANCE.getWorkingArea(), "promoter.ant").getAbsolutePath();
 
     ProcessBuilder processBuilder = new ProcessBuilder(ant, "-f", antFile);
-    Process process = processBuilder.start();
+    processBuilder.redirectErrorStream(true);
+
+    final Process process = processBuilder.start();
+    final InputStream stream = process.getInputStream();
+
+    new Thread()
+    {
+      @Override
+      public void run()
+      {
+        IO.copy(stream, System.out);
+      }
+    }.start();
+
     process.waitFor();
   }
 

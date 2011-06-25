@@ -60,20 +60,11 @@ CriticalSection ()
 
 CheckPromotion ()
 {
-	#promoterAntFile=$workingArea/promoter.ant
-	#rm -f "$promoterAntFile"
-	
 	compositionTempFolder=$DOWNLOADS_HOME/$downloadsPath/$compositionTempPath
 	rm -rf "$compositionTempFolder"
 	
   "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes" Main
   
-  #if [ -f "$promoterAntFile" ]
-  #then
-  #	echo
-	#  "$ANT_HOME/bin/ant" -f "$promoterAntFile"
-	#fi
-
   if [ -d "$compositionTempFolder" ]
   then
 		compositionFolder=$DOWNLOADS_HOME/$downloadsPath/$compositionPath
