@@ -424,7 +424,7 @@ public class Main
 
   private static void addMirroring(XMLOutput xml, File drop, String pathInDrop, String name) throws SAXException
   {
-    File path = new File(drop, pathInDrop);
+    File path = pathInDrop == null ? drop : new File(drop, pathInDrop);
 
     String match = "<property name='p2\\.compressed' value='true'/>";
     String replace = "<property name='p2.compressed' value='true'/>\n    " + "<property name='p2.mirrorsURL' value='"
