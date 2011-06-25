@@ -116,7 +116,7 @@ public class WebNode implements Comparable<WebNode>
             String dropID = "drop_" + dropName;
             out.println(prefix(level) + "<li><b><a href=\"javascript:toggle('" + dropID + "')\" class=\"drop-label\">"
                 + buildInfo.getQualifier() + "</a></b> <a name=\"" + dropName + "\" href=\"#" + dropName
-                + "\"><img src=\"http://www.eclipse.org/cdo/images/link_obj.gif\"/></a>");
+                + "\"><img src=\"http://www.eclipse.org/cdo/images/link_obj.gif\" width=\"8\" height=\"8\"/></a>");
             out.println(prefix(level++) + "<div class=\"drop\" id=\"" + dropID + "\""
                 + (firstDrop ? "" : " style=\"display: none\"") + ">");
 
