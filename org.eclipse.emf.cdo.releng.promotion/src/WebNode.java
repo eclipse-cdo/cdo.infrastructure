@@ -91,11 +91,11 @@ public class WebNode implements Comparable<WebNode>
           + (repository.isWebCollapsed() || buildInfos != null && buildInfos.isEmpty() ? " style=\"display: none\""
               : "") + ">");
       out.println(prefix(level)
-          + "<p class=\"repo-info\"><b><a href=\""
+          + "<p class=\"repo-info\"><b><img src=\"http://www.eclipse.org/cdo/images/tango/internet-web-browser.png\"/> <a href=\""
           + http
           + "updates/"
           + repository.getPath()
-          + "\"><img src=\"http://www.eclipse.org/cdo/images/tango/internet-web-browser.png\"/> Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
+          + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
           + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can <b>not</b> be used with a web browser.</p>");
 
       if (buildInfos != null)
@@ -121,43 +121,37 @@ public class WebNode implements Comparable<WebNode>
                 + (firstDrop ? "" : " style=\"display: none\"") + ">");
 
             out.println(prefix(level)
-                + "<div class=\"drop-info\"><b><a href=\""
+                + "<div class=\"drop-info\"><b><img src=\"http://www.eclipse.org/cdo/images/tango/text-html.png\"/> <a href=\""
                 + http
                 + "drops/"
                 + buildInfo.getQualifier()
-                + "\"><img src=\"http://www.eclipse.org/cdo/images/tango/text-html.png\"/> Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
+                + "\">Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
                 + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can also be used with a web browser.</div>");
             out.println(prefix(level)
-                + "<div class=\"drop-info\"><a href=\""
+                + "<div class=\"drop-info\"><img src=\"http://www.eclipse.org/cdo/images/tango/go-down.png\"/> <a href=\""
                 + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                    + buildInfo.getQualifier() + "-Site.zip")
-                + "\"><img src=\"http://www.eclipse.org/cdo/images/tango/go-down.png\"/> emf-cdo-"
-                + buildInfo.getQualifier() + "-Site.zip</a> for offline installations.<div>");
+                    + buildInfo.getQualifier() + "-Site.zip") + "\">emf-cdo-" + buildInfo.getQualifier()
+                + "-Site.zip</a> for offline installations.<div>");
             out.println(prefix(level)
-                + "<div class=\"drop-info\"><a href=\""
+                + "<div class=\"drop-info\"><img src=\"http://www.eclipse.org/cdo/images/tango/go-down.png\"/> <a href=\""
                 + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                    + buildInfo.getQualifier() + "-All.zip")
-                + "\"><img src=\"http://www.eclipse.org/cdo/images/tango/go-down.png\"/> emf-cdo-"
-                + buildInfo.getQualifier() + "-All.zip</a> for file system deployments.<div>");
+                    + buildInfo.getQualifier() + "-All.zip") + "\">emf-cdo-" + buildInfo.getQualifier()
+                + "-All.zip</a> for file system deployments.<div>");
             out.println(prefix(level)
-                + "<div class=\"drop-info\"><a href=\""
+                + "<div class=\"drop-info\"><img src=\"http://www.eclipse.org/cdo/images/tango/text-x-generic.png\"/> <a href=\""
                 + http
                 + "drops/"
                 + buildInfo.getQualifier()
-                + "/bookmarks.xml\"><img src=\"http://www.eclipse.org/cdo/images/tango/text-x-generic.png\"/> bookmarks.xml</a> for the <a href=\"http://help.eclipse.org/indigo/"
+                + "/bookmarks.xml\">bookmarks.xml</a> for the <a href=\"http://help.eclipse.org/indigo/"
                 + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.<div>");
             out.println(prefix(level)
-                + "<div class=\"drop-info\"><a href=\""
-                + http
-                + "drops/"
-                + buildInfo.getQualifier()
-                + "/build-info.xml\"><img src=\"http://www.eclipse.org/cdo/images/tango/text-x-generic.png\"/> build-info.xml</a> for the parameters that produced this build.<div>");
+                + "<div class=\"drop-info\"><img src=\"http://www.eclipse.org/cdo/images/tango/text-x-generic.png\"/> <a href=\""
+                + http + "drops/" + buildInfo.getQualifier()
+                + "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.<div>");
             out.println(prefix(level)
-                + "<div class=\"drop-info\"><a href=\""
-                + http
-                + "drops/"
-                + buildInfo.getQualifier()
-                + "/testReport.xml\"><img src=\"http://www.eclipse.org/cdo/images/tango/text-x-generic.png\"/> test-report.xml</a> for the test results of this build.<div>");
+                + "<div class=\"drop-info\"><img src=\"http://www.eclipse.org/cdo/images/tango/text-x-generic.png\"/> <a href=\""
+                + http + "drops/" + buildInfo.getQualifier()
+                + "/testReport.xml\">test-report.xml</a> for the test results of this build.<div>");
 
             out.println(prefix(--level) + "</div>");
             firstDrop = false;
