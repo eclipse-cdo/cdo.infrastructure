@@ -218,45 +218,10 @@ public class WebNode implements Comparable<WebNode>
             + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-All.zip") + "</td></tr>");
 
     generateDropSeparator(out, level);
-
     generateDropFile(out, level, buildInfo, "index.xml");
     generateDropFile(out, level, buildInfo, "bookmarks.xml");
     generateDropFile(out, level, buildInfo, "build-info.xml");
     generateDropFile(out, level, buildInfo, "test-report.xml");
-
-    // out.println(prefix(level)
-    // +
-    // "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
-    // + http()
-    // + "drops/"
-    // + buildInfo.getQualifier()
-    // + "/bookmarks.xml\">bookmarks.xml</a> for the <a href=\"http://help.eclipse.org/indigo/"
-    // +
-    // "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.</td><td class=\"file-size\">"
-    // + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
-    // + "/bookmarks.xml") + "</td></tr>");
-    //
-    // out.println(prefix(level)
-    // +
-    // "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
-    // + http()
-    // + "drops/"
-    // + buildInfo.getQualifier()
-    // +
-    // "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.</td><td class=\"file-size\">"
-    // + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
-    // + "/build-info.xml") + "</td></tr>");
-    //
-    // out.println(prefix(level)
-    // +
-    // "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
-    // + http()
-    // + "drops/"
-    // + buildInfo.getQualifier()
-    // + "/test-report.xml\">test-report.xml</a> for the test results of this build.</td><td class=\"file-size\">"
-    // + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
-    // + "/test-report.xml") + "</td></tr>");
-
     generateDropSeparator(out, level);
 
     out.println(prefix(--level) + "</table>");
