@@ -213,7 +213,7 @@ public class WebNode implements Comparable<WebNode>
         + "\">emf-cdo-"
         + buildInfo.getQualifier()
         + "-All.zip</a> for use with a <a href=\"http://help.eclipse.org/indigo/"
-        + "index.jsp?topic=/org.eclipse.platform.doc.isv/reference/misc/p2_dropins_format.htm\">dropins</a> folder.</td><td class=\"file-size\">"
+        + "index.jsp?topic=/org.eclipse.platform.doc.isv/reference/misc/p2_dropins_format.html\">dropins</a> folder.</td><td class=\"file-size\">"
         + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
             + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-All.zip") + "</td></tr>");
 
