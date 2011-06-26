@@ -38,7 +38,7 @@ public class SVN extends SCM
         String to = "tags/drops/" + tag;
 
         PrintStream stream = new PrintStream(out);
-        stream.println("svn cp -m \"Tagging " + branch + " as " + tag + "\" \"" + branch + "\" \"" + to + "\"");
+        stream.println("svn cp \"" + branch + "\" \"" + to + "\"");
         stream.flush();
       }
     });
