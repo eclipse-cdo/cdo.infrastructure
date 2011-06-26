@@ -121,9 +121,18 @@ public class WebNode implements Comparable<WebNode>
     String repoName = repository.getAnchorName();
     String repoID = "repo_" + repoName;
 
-    out.println(prefix(level) + "<li><a href=\"javascript:toggle('" + repoID + "')\" class=\"repo-label"
-        + repository.getPathLevel() + "\">" + repository.getWebLabel() + "</a> <a name=\"" + repoName + "\" href=\"#"
-        + repoName + "\"><img src=\"http://www.eclipse.org/cdo/images/link_obj.gif\" width=\"12\" height=\"12\"/></a>");
+    out.println(prefix(level)
+        + "<li><a href=\"javascript:toggle('"
+        + repoID
+        + "')\" class=\"repo-label"
+        + repository.getPathLevel()
+        + "\">"
+        + repository.getWebLabel()
+        + "</a> <a name=\""
+        + repoName
+        + "\" href=\"#"
+        + repoName
+        + "\"><img src=\"http://www.eclipse.org/cdo/images/link_obj.gif\" alt=\"Permalink\" width=\"12\" height=\"12\"/></a>");
 
     out.println(prefix(level++) + "<div class=\"repo" + repository.getPathLevel() + "\" id=\"repo_" + repoName + "\""
         + (repository.isWebCollapsed() || empty ? " style=\"display: none\"" : "") + ">");
@@ -148,9 +157,16 @@ public class WebNode implements Comparable<WebNode>
     String dropName = buildInfo.getQualifier().replace('-', '_');
     String dropID = "drop_" + dropName;
 
-    out.println(prefix(level) + "<li><b><a href=\"javascript:toggle('" + dropID + "')\" class=\"drop-label\">"
-        + buildInfo.getQualifier() + "</a></b> <a name=\"" + dropName + "\" href=\"#" + dropName
-        + "\"><img src=\"http://www.eclipse.org/cdo/images/link_obj.gif\" width=\"12\" height=\"12\"/></a>");
+    out.println(prefix(level)
+        + "<li><b><a href=\"javascript:toggle('"
+        + dropID
+        + "')\" class=\"drop-label\">"
+        + buildInfo.getQualifier()
+        + "</a></b> <a name=\""
+        + dropName
+        + "\" href=\"#"
+        + dropName
+        + "\"><img src=\"http://www.eclipse.org/cdo/images/link_obj.gif\" alt=\"Permalink\" width=\"12\" height=\"12\"/></a>");
 
     out.println(prefix(level++) + "<div class=\"drop\" id=\"" + dropID + "\""
         + (firstDrop ? "" : " style=\"display: none\"") + ">");
@@ -166,11 +182,11 @@ public class WebNode implements Comparable<WebNode>
         + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td><td class=\"file-size\"></td></tr>");
 
     out.println(prefix(level)
-        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/internet-web-browser.png\"/></td><td><a href=\""
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/internet-web-browser.png\"/></td><td><b><a href=\""
         + http()
         + "drops/"
         + buildInfo.getQualifier()
-        + "/index.html\">Contents</a> for use with a web browser.</td><td class=\"file-size\">"
+        + "/index.html\">Contents</a></b> for use with a web browser.</td><td class=\"file-size\">"
         + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
             + "/index.html") + "</td></tr>");
 
