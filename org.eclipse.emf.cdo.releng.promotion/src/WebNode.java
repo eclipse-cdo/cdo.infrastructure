@@ -183,12 +183,8 @@ public class WebNode implements Comparable<WebNode>
 
     out.println(prefix(level)
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/internet-web-browser.png\"/></td><td><b><a href=\""
-        + http()
-        + "drops/"
-        + buildInfo.getQualifier()
-        + "/index.html\">Contents</a></b> for use with a web browser.</td><td class=\"file-size\">"
-        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
-            + "/index.html") + "</td></tr>");
+        + http() + "drops/" + buildInfo.getQualifier()
+        + "/index.html\">Contents</a></b> for use with a web browser.</td><td class=\"file-size\"></td></tr>");
 
     out.println(prefix(level)
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
