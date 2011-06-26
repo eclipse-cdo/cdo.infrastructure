@@ -77,9 +77,9 @@ CheckPromotion ()
 	echo
 	echo "Starting $classPromoter with classpath $classPath"
 	
-	##############################################################################
-  "$JAVA_HOME/bin/java" -cp "$classPath" "$classPromoter" "-DpromoterInstallArea=$promoterInstallArea"
-	##############################################################################
+	####################################################################################################
+  "$JAVA_HOME/bin/java" "-DpromoterInstallArea=$promoterInstallArea" -cp "$classPath" "$classPromoter"
+	####################################################################################################
   
   if [ -d "$compositionTempFolder" ]
   then
