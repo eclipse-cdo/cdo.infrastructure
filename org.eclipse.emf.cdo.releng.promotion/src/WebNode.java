@@ -131,12 +131,13 @@ public class WebNode implements Comparable<WebNode>
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
     out.println(prefix(level)
-        + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/internet-web-browser.png\"/></td><td><b><a href=\""
+        + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/package-x-generic.png\"/></td>"
+        + "<td><b><a href=\""
         + http()
         + "updates/"
         + repository.getPath()
         + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
-        + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td><td class=\"file-size\"><i>(<b>not</b> for web browser)</i></td></tr>");
+        + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. <b>Not</b> for use with a web browser!</td><td class=\"file-size\"></td></tr>");
 
     out.println(prefix(--level) + "</table>");
     return level;
@@ -157,12 +158,12 @@ public class WebNode implements Comparable<WebNode>
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
     out.println(prefix(level)
-        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-html.png\"/></td><td><b><a href=\""
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/package-x-generic.png\"/></td><td><b><a href=\""
         + http()
         + "drops/"
         + buildInfo.getQualifier()
         + "\">Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
-        + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td><td class=\"file-size\"><i>(and for web browser)</i></td></tr>");
+        + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td><td class=\"file-size\"></td></tr>");
 
     out.println(prefix(level)
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
@@ -183,6 +184,24 @@ public class WebNode implements Comparable<WebNode>
         + "-All.zip</a> for file system deployments.</td><td class=\"file-size\">"
         + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
             + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-All.zip") + "</td></tr>");
+
+    out.println(prefix(level)
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/internet-web-browser.png\"/></td><td><a href=\""
+        + http()
+        + "drops/"
+        + buildInfo.getQualifier()
+        + "/index.html\">index.html</a> for detailed contents of this build.</td><td class=\"file-size\">"
+        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
+            + "/index.html") + "</td></tr>");
+
+    out.println(prefix(level)
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
+        + http()
+        + "drops/"
+        + buildInfo.getQualifier()
+        + "/index.xml\">index.xml</a> for detailed contents of this build.</td><td class=\"file-size\">"
+        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
+            + "/index.xml") + "</td></tr>");
 
     out.println(prefix(level)
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
