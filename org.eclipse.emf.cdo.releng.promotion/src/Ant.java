@@ -113,7 +113,7 @@ public abstract class Ant<RESULT>
         @Override
         public void run()
         {
-          IO.copy(stream, System.out);
+          IO.copy(stream, System.out, 16);
         }
       }.start();
 

@@ -99,7 +99,7 @@ public class WebNode implements Comparable<WebNode>
           + "updates/"
           + repository.getPath()
           + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
-          + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can <b>not</b> be used with a web browser.</td><td>&nbsp;</td></tr>");
+          + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td><td><i>(Can <b>not</b> be used with a web browser)</i></td></tr>");
       out.println(prefix(--level) + "</table>");
 
       if (buildInfos != null)
@@ -132,7 +132,7 @@ public class WebNode implements Comparable<WebNode>
                 + "drops/"
                 + buildInfo.getQualifier()
                 + "\">Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
-                + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>. Can also be used with a web browser.</td><td>&nbsp;</td></tr>");
+                + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td><td><i>(Can also be used with a web browser)</i></td></tr>");
             out.println(prefix(level)
                 + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
                 + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
