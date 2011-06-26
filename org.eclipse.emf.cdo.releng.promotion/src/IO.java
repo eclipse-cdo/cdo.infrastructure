@@ -8,7 +8,6 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -42,6 +41,41 @@ public final class IO
 
   private IO()
   {
+  }
+
+  public static boolean isExcluded(String name)
+  {
+    if (".svn".equalsIgnoreCase(name))
+    {
+      return true;
+    }
+
+    if ("cvs".equalsIgnoreCase(name))
+    {
+      return true;
+    }
+
+    if (".git".equalsIgnoreCase(name))
+    {
+      return true;
+    }
+
+    if (".hg".equalsIgnoreCase(name))
+    {
+      return true;
+    }
+
+    if (".bzr".equalsIgnoreCase(name))
+    {
+      return true;
+    }
+
+    if ("SCCS".equalsIgnoreCase(name))
+    {
+      return true;
+    }
+
+    return false;
   }
 
   public static FileInputStream openInputStream(String fileName)

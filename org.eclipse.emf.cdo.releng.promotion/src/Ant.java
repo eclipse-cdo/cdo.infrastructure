@@ -1,12 +1,3 @@
-import org.xml.sax.SAXException;
-
-import javax.xml.transform.TransformerConfigurationException;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 /**
  * Copyright (c) 2004 - 2011 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
@@ -17,6 +8,14 @@ import java.io.OutputStream;
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
+import org.xml.sax.SAXException;
+
+import javax.xml.transform.TransformerConfigurationException;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @author Eike Stepper
@@ -100,7 +99,7 @@ public abstract class Ant<RESULT>
     try
     {
       System.out.println();
-      String ant = PromoterConfig.INSTANCE.getProperties().getProperty("ANT_HOME") + "/bin/ant";
+      String ant = PromoterConfig.INSTANCE.getProperty("ANT_HOME") + "/bin/ant";
 
       ProcessBuilder processBuilder = new ProcessBuilder(ant, "-f", getScript().getAbsolutePath());
       processBuilder.redirectErrorStream(true);

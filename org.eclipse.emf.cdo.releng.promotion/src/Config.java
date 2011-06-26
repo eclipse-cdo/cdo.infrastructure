@@ -8,7 +8,6 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -44,9 +43,19 @@ public class Config
     return properties;
   }
 
+  public String getProperty(String key)
+  {
+    return properties.getProperty(key);
+  }
+
+  public String getProperty(String key, String defaultValue)
+  {
+    return properties.getProperty(key, defaultValue);
+  }
+
   public File getDirectory(String key)
   {
-    String path = getProperties().getProperty(key);
+    String path = getProperty(key);
     if (path == null)
     {
       throw new IllegalStateException("Property " + key + " is undefined");

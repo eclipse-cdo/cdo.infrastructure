@@ -1,10 +1,3 @@
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Copyright (c) 2004 - 2011 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
@@ -15,6 +8,12 @@ import java.util.List;
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Eike Stepper
@@ -279,7 +278,7 @@ public class WebNode implements Comparable<WebNode>
 
   private static String http()
   {
-    String downloadsPath = PromoterConfig.INSTANCE.getProperties().getProperty("downloadsPath");
+    String downloadsPath = PromoterConfig.INSTANCE.getProperty("downloadsPath");
     return "http://download.eclipse.org/" + downloadsPath + "/";
   }
 }

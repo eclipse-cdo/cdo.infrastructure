@@ -1,11 +1,3 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-
 /**
  * Copyright (c) 2004 - 2011 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
@@ -16,6 +8,13 @@ import java.io.PrintStream;
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 
 /**
  * @author Eike Stepper

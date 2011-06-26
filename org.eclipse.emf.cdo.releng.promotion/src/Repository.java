@@ -1,12 +1,3 @@
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringTokenizer;
-
 /**
  * Copyright (c) 2004 - 2011 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
@@ -17,6 +8,14 @@ import java.util.StringTokenizer;
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * @author Eike Stepper
@@ -301,7 +300,7 @@ public class Repository
         }
 
         File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
-        if (new File(drop, Main.MARKER_INVISIBLE).isFile())
+        if (new File(drop, DropProcessor.MARKER_INVISIBLE).isFile())
         {
           continue;
         }

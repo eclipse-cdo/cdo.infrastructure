@@ -8,7 +8,6 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
-
 import java.io.File;
 
 /**
@@ -30,17 +29,17 @@ public final class PromoterConfig extends Config
 
   public String getDownloadsPath()
   {
-    return getProperties().getProperty("downloadsPath");
+    return getProperty("downloadsPath");
   }
 
   public File getCompositionArea()
   {
-    return new File(getDownloadsArea(), getProperties().getProperty("compositionPath"));
+    return new File(getDownloadsArea(), getProperty("compositionPath"));
   }
 
   public File getCompositionTempArea()
   {
-    return new File(getDownloadsArea(), getProperties().getProperty("compositionTempPath"));
+    return new File(getDownloadsArea(), getProperty("compositionTempPath"));
   }
 
   public File getDropsArea()
@@ -81,6 +80,6 @@ public final class PromoterConfig extends Config
 
   public String formatUpdateURL(String path)
   {
-    return formatDownloadURL(getProperties().getProperty("compositionPath") + "/" + path);
+    return formatDownloadURL(getProperty("compositionPath") + "/" + path);
   }
 }
