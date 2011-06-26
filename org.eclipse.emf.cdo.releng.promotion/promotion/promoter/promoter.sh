@@ -69,6 +69,7 @@ CheckPromotion ()
   	classPath="$classPath:$extraClassPath"
 	fi
 	
+	echo "Class path: $classPath"
   "$JAVA_HOME/bin/java" -cp "$classPath" Main
   
   if [ -d "$compositionTempFolder" ]
