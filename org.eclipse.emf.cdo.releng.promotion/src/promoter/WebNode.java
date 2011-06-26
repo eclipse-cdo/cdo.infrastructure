@@ -143,7 +143,7 @@ public class WebNode implements Comparable<WebNode>
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
     out.println(prefix(level)
-        + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/package-x-generic.png\"/></td>"
+        + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/22x22/package-x-generic.png\"/></td>"
         + "<td><b><a href=\""
         + http()
         + "updates/"

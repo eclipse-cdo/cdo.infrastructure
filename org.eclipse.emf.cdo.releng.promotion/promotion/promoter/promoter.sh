@@ -74,8 +74,8 @@ CheckPromotion ()
   	classPromoter=promoter.Promoter
 	fi
 	
-	echo "Starting $classPromoter with class path $classPath"
 	echo
+	echo "Starting $classPromoter with class path $classPath"
 	
 	#######################################################
   "$JAVA_HOME/bin/java" -cp "$classPath" "$classPromoter"
