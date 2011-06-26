@@ -22,7 +22,7 @@ import java.io.PrintStream;
  */
 public class SVN extends SCM
 {
-  public static final String SVN_ROOT = "https://dev.eclipse.org/svnroot/modeling/org.eclipse.emf.cdo";
+  public static final String SVN_ROOT = "https://dev.eclipse.org/svnroot/modeling/org.eclipse.emf.cdo/";
 
   public SVN()
   {
@@ -35,10 +35,11 @@ public class SVN extends SCM
     {
       public void handleOutput(OutputStream out) throws IOException
       {
-        String to = "tags/drops/" + tag;
+        String from = SVN_ROOT + branch;
+        String to = SVN_ROOT + "tags/drops/" + tag;
 
         PrintStream stream = new PrintStream(out);
-        stream.println("svn cp \"" + branch + "\" \"" + to + "\"");
+        stream.println("svn cp -m \"Tagging " + branch + " as " + tag + "\" \"" + from + "\" \"" + to + "\"");
         stream.flush();
       }
     });
