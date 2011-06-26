@@ -96,13 +96,6 @@ public class Repository
 
       System.out.println("   Adding child location: " + folder);
       children.add(child);
-
-      File categories = new File(folder, "categories");
-      if (categories.isDirectory())
-      {
-        System.out.println("   Adding child location: " + categories);
-        children.add(child + "/categories");
-      }
     }
     catch (IOException ex)
     {
@@ -318,6 +311,8 @@ public class Repository
 
         child += "drops/" + buildInfo.getQualifier();
         addChild(child);
+        addChild(child + "/categories");
+
         this.buildInfos.add(buildInfo);
       }
     }
