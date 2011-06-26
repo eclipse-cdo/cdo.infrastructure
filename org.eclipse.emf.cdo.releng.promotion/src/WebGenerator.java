@@ -16,13 +16,13 @@ import java.io.PrintStream;
 /**
  * @author Eike Stepper
  */
-public class DocumentGenerator
+public class WebGenerator
 {
-  public DocumentGenerator()
+  public WebGenerator()
   {
   }
 
-  public void generateDocument(WebNode webNode)
+  public void generateWeb(WebNode webNode)
   {
     System.out.println();
     PrintStream out = null;

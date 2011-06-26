@@ -151,7 +151,7 @@ public class BuildCopier
           siteP2.delete();
         }
 
-        DropProcessor.storeMarkers(drop, jobProperties, isVisible);
+        BuildProcessor.storeMarkers(drop, jobProperties, isVisible);
       }
       else
       {

@@ -303,7 +303,7 @@ public class Repository
         }
 
         File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
-        if (new File(drop, DropProcessor.MARKER_INVISIBLE).isFile())
+        if (new File(drop, BuildProcessor.MARKER_INVISIBLE).isFile())
         {
           continue;
         }

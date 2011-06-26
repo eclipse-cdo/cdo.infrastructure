@@ -37,8 +37,8 @@ public class Promoter
 
     if (webNode != null)
     {
-      DocumentGenerator documentGenerator = createDocumentGenerator();
-      documentGenerator.generateDocument(webNode);
+      WebGenerator webGenerator = createWebGenerator();
+      webGenerator.generateWeb(webNode);
     }
 
     System.out.println();
@@ -49,9 +49,9 @@ public class Promoter
     return createReflective(BuildCopier.class);
   }
 
-  protected DropProcessor createDropProcessor()
+  protected BuildProcessor createBuildProcessor()
   {
-    return createReflective(DropProcessor.class);
+    return createReflective(BuildProcessor.class);
   }
 
   protected RepositoryComposer createRepositoryComposer()
@@ -59,9 +59,9 @@ public class Promoter
     return createReflective(RepositoryComposer.class);
   }
 
-  protected DocumentGenerator createDocumentGenerator()
+  protected WebGenerator createWebGenerator()
   {
-    return createReflective(DocumentGenerator.class);
+    return createReflective(WebGenerator.class);
   }
 
   protected Ant<WebNode> createAnt()
@@ -100,8 +100,8 @@ public class Promoter
     @Override
     protected WebNode create(XMLOutput xml) throws Exception
     {
-      DropProcessor dropProcessor = createDropProcessor();
-      List<BuildInfo> buildInfos = dropProcessor.processDrops(xml);
+      BuildProcessor buildProcessor = createBuildProcessor();
+      List<BuildInfo> buildInfos = buildProcessor.processBuilds(xml);
 
       RepositoryComposer repositoryComposer = createRepositoryComposer();
       return repositoryComposer.composeRepositories(xml, buildInfos, new File("composites"));
