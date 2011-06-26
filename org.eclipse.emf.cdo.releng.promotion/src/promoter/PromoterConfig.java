@@ -71,6 +71,17 @@ public final class PromoterConfig extends Config
     return getDirectory("JOBS_HOME");
   }
 
+  public File getInstallArea()
+  {
+    String path = System.getProperty("promoterInstallArea");
+    if (path == null)
+    {
+      throw new IllegalStateException("Install area not configured");
+    }
+
+    return new File(path);
+  }
+
   public String formatDownloadURL(String path)
   {
     return "http://www.eclipse.org/downloads/download.php?file=/" + getDownloadsPath() + "/" + path

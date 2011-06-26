@@ -55,11 +55,20 @@ public class BuildProcessor
 
   protected void processBuild(XMLOutput xml, File drop, List<BuildInfo> buildInfos) throws SAXException
   {
+    generateCategories(xml, drop);
+
     // Add p2.mirrorsURL
     File markerFile = new File(drop, BuildProcessor.MARKER_MIRRORED);
     if (!markerFile.exists())
     {
-      addMirroring(xml, drop);
+      addMirroring(xml, drop, null, "artifacts");
+      addMirroring(xml, drop, null, "content");
+
+      File categories = new File(drop, "categories");
+      if (categories.isDirectory())
+      {
+        addMirroring(xml, drop, "categories", "content");
+      }
 
       xml.element("touch");
       xml.attribute("file", markerFile);
@@ -97,16 +106,65 @@ public class BuildProcessor
     }
   }
 
-  protected void addMirroring(XMLOutput xml, File drop) throws SAXException
+  protected File generateCategories(XMLOutput xml, File drop) throws SAXException
   {
-    addMirroring(xml, drop, null, "artifacts");
-    addMirroring(xml, drop, null, "content");
-
     File categories = new File(drop, "categories");
     if (categories.isDirectory())
     {
-      addMirroring(xml, drop, "categories", "content");
+      return null;
     }
+
+    File categoriesJAR = new File(categories, "content.jar");
+    File categoriesXML = new File(categories, "content.xml");
+
+    File contentJAR = new File(drop, "content.jar");
+    File contentXML = new File(drop, "content.xml");
+
+    unzip(xml, drop, contentJAR, contentXML);
+
+    // Transform
+    xml.element("xslt");
+    xml.attribute("style", new File(PromoterConfig.INSTANCE.getInstallArea(), "xsl/content2categories.xsl"));
+    xml.attribute("in", contentXML);
+    xml.attribute("out", categoriesXML);
+
+    String sizeProperty = "requires.size." + drop.getName();
+
+    // Find number of categories
+    xml.element("resourcecount");
+    xml.attribute("property", sizeProperty);
+    xml.push();
+    xml.element("tokens");
+    xml.push();
+    xml.element("concat");
+    xml.push();
+    xml.element("filterchain");
+    xml.push();
+    xml.element("tokenfilter");
+    xml.push();
+    xml.element("containsregex");
+    xml.attribute("pattern", "required namespace");
+    xml.element("linetokenizer");
+    xml.pop();
+    xml.pop();
+    xml.element("fileset");
+    xml.attribute("file", categoriesXML);
+    xml.pop();
+    xml.pop();
+    xml.pop();
+
+    xml.element("replaceregexp");
+    xml.attribute("file", categoriesXML);
+    xml.attribute("match", "REQUIRES_SIZE");
+    xml.attribute("replace", "${" + sizeProperty + "}");
+    xml.attribute("byline", true);
+
+    zip(xml, categories, categoriesJAR, categoriesXML);
+
+    xml.element("delete");
+    xml.attribute("file", categoriesXML);
+
+    return contentXML;
   }
 
   protected void addMirroring(XMLOutput xml, File drop, String pathInDrop, String name) throws SAXException
@@ -118,22 +176,26 @@ public class BuildProcessor
         + PromoterConfig.INSTANCE.formatDropURL(drop.getName()) + (pathInDrop == null ? "" : "/" + pathInDrop)
         + "&amp;format=xml'/>";
 
-    File xmlFile = new File(path, name + ".xml");
     File jarFile = new File(path, name + ".jar");
-
-    xml.element("unzip");
-    xml.attribute("dest", path);
-    xml.attribute("src", jarFile);
-    xml.push();
-    xml.element("patternset");
-    xml.attribute("includes", xmlFile.getName());
-    xml.pop();
+    File xmlFile = new File(path, name + ".xml");
+    if (!xmlFile.isFile())
+    {
+      unzip(xml, path, jarFile, xmlFile);
+    }
 
     xml.element("replaceregexp");
     xml.attribute("file", xmlFile);
     xml.attribute("match", match);
     xml.attribute("replace", replace);
 
+    zip(xml, path, jarFile, xmlFile);
+
+    xml.element("delete");
+    xml.attribute("file", xmlFile);
+  }
+
+  protected void zip(XMLOutput xml, File path, File jarFile, File xmlFile) throws SAXException
+  {
     xml.element("zip");
     xml.attribute("destfile", jarFile);
     xml.attribute("update", false);
@@ -145,9 +207,17 @@ public class BuildProcessor
     xml.attribute("name", xmlFile.getName());
     xml.pop();
     xml.pop();
+  }
 
-    xml.element("delete");
-    xml.attribute("file", xmlFile);
+  protected void unzip(XMLOutput xml, File path, File jarFile, File xmlFile) throws SAXException
+  {
+    xml.element("unzip");
+    xml.attribute("dest", path);
+    xml.attribute("src", jarFile);
+    xml.push();
+    xml.element("patternset");
+    xml.attribute("includes", xmlFile.getName());
+    xml.pop();
   }
 
   protected void generateZipSite(XMLOutput xml, File drop, File zipSite) throws SAXException
