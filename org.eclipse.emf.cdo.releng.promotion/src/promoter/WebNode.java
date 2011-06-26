@@ -83,8 +83,8 @@ public class WebNode implements Comparable<WebNode>
       {
         if (buildInfos.isEmpty())
         {
-          out.println(prefix(level) + "<p class=\"repo-info\"><i>This composite update site is currently empty.<br>"
-              + "This may change in the future when new builds are promoted.</i></p>");
+          // out.println(prefix(level) + "<p class=\"repo-info\"><i>Currently this composite update site is empty.<br>"
+          // + "This may change in the future when new builds are promoted.</i></p>");
         }
         else
         {
@@ -150,6 +150,13 @@ public class WebNode implements Comparable<WebNode>
         + repository.getPath()
         + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
         + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> but <b>not</b> with a web browser.</td><td class=\"file-size\"></td></tr>");
+
+    if (empty)
+    {
+      out.println(prefix(level)
+          + "<tr class=\"repo-info\"><td></td><td><i>Currently this composite update site is empty.<br>"
+          + "This may change in the future when new builds are promoted.</i></td></tr>");
+    }
 
     out.println(prefix(--level) + "</table>");
     return level;
