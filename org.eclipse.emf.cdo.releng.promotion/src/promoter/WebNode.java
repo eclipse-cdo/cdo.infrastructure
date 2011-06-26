@@ -153,6 +153,12 @@ public class WebNode implements Comparable<WebNode>
     return level;
   }
 
+  protected int generateRepositoryEnd(PrintStream out, int level)
+  {
+    out.println(prefix(--level) + "</div>");
+    return level;
+  }
+
   protected int generateDrop(PrintStream out, int level, BuildInfo buildInfo, boolean firstDrop)
   {
     String dropName = buildInfo.getQualifier().replace('-', '_');
@@ -187,6 +193,8 @@ public class WebNode implements Comparable<WebNode>
         + http() + "drops/" + buildInfo.getQualifier()
         + "/index.html\">Contents</a></b> for use with a web browser.</td><td class=\"file-size\"></td></tr>");
 
+    out.println(prefix(level) + "<tr class=\"drop-info\"><td></td><td></td><td class=\"file-size\"></td></tr>");
+
     out.println(prefix(level)
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
         + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-" + buildInfo.getQualifier()
@@ -206,6 +214,8 @@ public class WebNode implements Comparable<WebNode>
         + "-All.zip</a> for file system deployments.</td><td class=\"file-size\">"
         + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
             + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-All.zip") + "</td></tr>");
+
+    out.println(prefix(level) + "<tr class=\"drop-info\"><td></td><td></td><td class=\"file-size\"></td></tr>");
 
     out.println(prefix(level)
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
@@ -245,12 +255,6 @@ public class WebNode implements Comparable<WebNode>
             + "/testReport.xml") + "</td></tr>");
 
     out.println(prefix(--level) + "</table>");
-    out.println(prefix(--level) + "</div>");
-    return level;
-  }
-
-  protected int generateRepositoryEnd(PrintStream out, int level)
-  {
     out.println(prefix(--level) + "</div>");
     return level;
   }
