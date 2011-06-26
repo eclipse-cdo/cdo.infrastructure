@@ -1,4 +1,3 @@
-package promoter;
 /**
  * Copyright (c) 2004 - 2011 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
@@ -9,12 +8,13 @@ package promoter;
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
+package promoter;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import promoter.util.XML;
-
 
 import java.io.File;
 
