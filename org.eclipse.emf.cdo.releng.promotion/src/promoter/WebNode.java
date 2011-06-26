@@ -201,7 +201,8 @@ public class WebNode implements Comparable<WebNode>
             + "-Site.zip")
         + "\">emf-cdo-"
         + buildInfo.getQualifier()
-        + "-Site.zip</a> for offline installations.</td><td class=\"file-size\">"
+        + "-Site.zip</a> for local use with <a href=\"http://help.eclipse.org/indigo/"
+        + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td><td class=\"file-size\">"
         + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
             + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-Site.zip") + "</td></tr>");
 
@@ -211,7 +212,8 @@ public class WebNode implements Comparable<WebNode>
             + "-All.zip")
         + "\">emf-cdo-"
         + buildInfo.getQualifier()
-        + "-All.zip</a> for file system deployments.</td><td class=\"file-size\">"
+        + "-All.zip</a> for use with a <a href=\"http://help.eclipse.org/indigo/"
+        + "index.jsp?topic=/org.eclipse.platform.doc.isv/reference/misc/p2_dropins_format.htm\">dropins</a> folder.</td><td class=\"file-size\">"
         + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
             + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-All.zip") + "</td></tr>");
 
