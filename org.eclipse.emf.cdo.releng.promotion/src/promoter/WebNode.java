@@ -252,9 +252,9 @@ public class WebNode implements Comparable<WebNode>
         + http()
         + "drops/"
         + buildInfo.getQualifier()
-        + "/testReport.xml\">test-report.xml</a> for the test results of this build.</td><td class=\"file-size\">"
+        + "/test-report.xml\">test-report.xml</a> for the test results of this build.</td><td class=\"file-size\">"
         + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
-            + "/testReport.xml") + "</td></tr>");
+            + "/test-report.xml") + "</td></tr>");
 
     generateDropSeparator(out, level);
 
