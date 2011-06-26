@@ -76,29 +76,20 @@ public class WebNode implements Comparable<WebNode>
         Collections.sort(buildInfos);
       }
 
-      boolean empty = buildInfos != null && buildInfos.isEmpty();
-      level = generateRepositoryStart(out, level, empty);
+      level = generateRepositoryStart(out, level, buildInfos != null && buildInfos.isEmpty());
 
-      if (buildInfos != null)
+      if (buildInfos != null && !buildInfos.isEmpty())
       {
-        if (buildInfos.isEmpty())
-        {
-          // out.println(prefix(level) + "<p class=\"repo-info\"><i>Currently this composite update site is empty.<br>"
-          // + "This may change in the future when new builds are promoted.</i></p>");
-        }
-        else
-        {
-          out.println(prefix(level++) + "<ul>");
+        out.println(prefix(level++) + "<ul>");
 
-          boolean firstDrop = true;
-          for (BuildInfo buildInfo : buildInfos)
-          {
-            level = generateDrop(out, level, buildInfo, firstDrop);
-            firstDrop = false;
-          }
-
-          out.println(prefix(--level) + "</ul>");
+        boolean firstDrop = true;
+        for (BuildInfo buildInfo : buildInfos)
+        {
+          level = generateDrop(out, level, buildInfo, firstDrop);
+          firstDrop = false;
         }
+
+        out.println(prefix(--level) + "</ul>");
       }
     }
 
