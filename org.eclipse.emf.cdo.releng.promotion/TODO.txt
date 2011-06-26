@@ -1,13 +1,13 @@
 TODO
 ====
 
-- generate categories in postProcessDrops()
 - generate dropins.zip in postProcessDrops()  (from the signed site.p2!)
+
+- use build qualifier in index.xml/html
 
 - support nicer drop labels, e.g. "4.0RC3"
 
 - rename xyz-All.zip to xyz-Dropins.zip
-- rename testReport.xml to test-report.xml
 
 - xslt index.xml
 - xslt bookmarks.xml
@@ -15,4 +15,3 @@ TODO
 - xslt test-report.xml
 
 - validate HTML generation for more than 2 composite levels
-- change M to I builds
