@@ -16,7 +16,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -43,52 +42,19 @@ public class Main
     copyBuilds();
     // performTasks();
 
-    final String downloadsPath = PromoterConfig.INSTANCE.getDownloadsArea().getAbsolutePath();
-    WebNode webNode = null;
-    OutputStream out = null;
-
-    try
+    File script = new File(PromoterConfig.INSTANCE.getWorkingArea(), "promoter.ant");
+    File basedir = PromoterConfig.INSTANCE.getDownloadsArea();
+    Ant<WebNode> ant = new Ant<WebNode>(script, basedir)
     {
-      out = new FileOutputStream(new File(PromoterConfig.INSTANCE.getWorkingArea(), "promoter.ant"));
-      XMLOutput xml = new XMLOutput(out)
+      @Override
+      protected WebNode create(XMLOutput xml) throws Exception
       {
-        @Override
-        public XMLOutput attribute(String name, File file) throws SAXException
-        {
-          String path = file.getAbsolutePath();
-          if (path.startsWith(downloadsPath))
-          {
-            path = path.substring(downloadsPath.length() + 1);
-          }
+        List<BuildInfo> buildInfos = postProcessDrops(xml);
+        return generateRepositories(xml, buildInfos, new File("composites"));
+      }
+    };
 
-          return super.attribute(name, path);
-        }
-      };
-
-      xml.element("project");
-      xml.attribute("name", "promoter");
-      xml.attribute("default", "main");
-      xml.attribute("basedir", downloadsPath);
-      xml.push();
-
-      xml.element("target");
-      xml.attribute("name", "main");
-      xml.push();
-
-      List<BuildInfo> buildInfos = postProcessDrops(xml);
-      webNode = generateRepositories(xml, buildInfos, new File("composites"));
-
-      xml.pop();
-      xml.pop();
-      xml.done();
-    }
-    finally
-    {
-      IO.close(out);
-    }
-
-    runPromoterAnt();
-
+    WebNode webNode = ant.run();
     if (webNode != null)
     {
       generateDocuments(webNode);
@@ -553,30 +519,6 @@ public class Main
     repository.setWebCollapsed(webCollapsed);
 
     return repository;
-  }
-
-  private static void runPromoterAnt() throws IOException, InterruptedException
-  {
-    System.out.println();
-    String ant = PromoterConfig.INSTANCE.getProperties().getProperty("ANT_HOME") + "/bin/ant";
-    String antFile = new File(PromoterConfig.INSTANCE.getWorkingArea(), "promoter.ant").getAbsolutePath();
-
-    ProcessBuilder processBuilder = new ProcessBuilder(ant, "-f", antFile);
-    processBuilder.redirectErrorStream(true);
-
-    final Process process = processBuilder.start();
-    final InputStream stream = process.getInputStream();
-
-    new Thread()
-    {
-      @Override
-      public void run()
-      {
-        IO.copy(stream, System.out);
-      }
-    }.start();
-
-    process.waitFor();
   }
 
   private static void generateDocuments(WebNode webNode)

@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,7 +22,7 @@ import java.io.PrintStream;
  */
 public class FileSizeInserter
 {
-  private static final String START = "<!-- PROMOTER-FILESIZE";
+  private static final String START = "<!-- FILESIZE";
 
   private static final String END = "-->";
 
@@ -32,7 +31,7 @@ public class FileSizeInserter
     replaceInFile(args[0]);
   }
 
-  public static void replaceInFile(String filepath) throws FileNotFoundException, IOException
+  public static void replaceInFile(String filepath) throws IOException
   {
     File file = new File(filepath);
     File temp = new File(filepath + ".tmp");
