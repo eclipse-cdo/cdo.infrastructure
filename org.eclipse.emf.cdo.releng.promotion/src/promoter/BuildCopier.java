@@ -16,6 +16,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import promoter.util.Config;
 import promoter.util.IO;
+import promoter.util.SCM;
 import promoter.util.XML;
 
 import java.io.File;
@@ -32,8 +33,20 @@ import java.util.StringTokenizer;
  */
 public class BuildCopier
 {
+  private Promoter promoter;
+
   public BuildCopier()
   {
+  }
+
+  public final Promoter getPromoter()
+  {
+    return promoter;
+  }
+
+  void setPromoter(Promoter promoter)
+  {
+    this.promoter = promoter;
   }
 
   public void copyBuilds()
@@ -154,6 +167,12 @@ public class BuildCopier
         }
 
         BuildProcessor.storeMarkers(drop, jobProperties, isVisible);
+
+        SCM scm = promoter.createSCM();
+        if (scm != null)
+        {
+          scm.setTag(buildInfo.getBranch(), buildInfo.getQualifier());
+        }
       }
       else
       {

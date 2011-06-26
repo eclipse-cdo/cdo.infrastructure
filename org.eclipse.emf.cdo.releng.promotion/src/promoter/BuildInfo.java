@@ -23,6 +23,8 @@ import java.io.File;
  */
 public final class BuildInfo implements Comparable<BuildInfo>
 {
+  private String branch;
+
   private String hudson;
 
   private String job;
@@ -43,6 +45,11 @@ public final class BuildInfo implements Comparable<BuildInfo>
 
   public BuildInfo()
   {
+  }
+
+  public String getBranch()
+  {
+    return branch;
   }
 
   public String getHudson()
@@ -120,14 +127,19 @@ public final class BuildInfo implements Comparable<BuildInfo>
   @Override
   public String toString()
   {
-    return "BuildInfo[hudson=" + hudson + ", job=" + job + ", number=" + number + ", qualifier=" + qualifier
-        + ", revision=" + revision + ", stream=" + stream + ", timestamp=" + timestamp + ", trigger=" + trigger
-        + ", type=" + type + "]";
+    return "BuildInfo [branch=" + branch + ", hudson=" + hudson + ", job=" + job + ", number=" + number
+        + ", qualifier=" + qualifier + ", revision=" + revision + ", stream=" + stream + ", timestamp=" + timestamp
+        + ", trigger=" + trigger + ", type=" + type + "]";
   }
 
   public int compareTo(BuildInfo o)
   {
     return o.getTimestamp().compareTo(timestamp);
+  }
+
+  void setBranch(String branch)
+  {
+    this.branch = branch;
   }
 
   void setHudson(String hudson)
@@ -185,6 +197,7 @@ public final class BuildInfo implements Comparable<BuildInfo>
       {
         if ("build".equals(qName))
         {
+          result.setBranch(attributes.getValue("branch"));
           result.setHudson(attributes.getValue("hudson"));
           result.setJob(attributes.getValue("job"));
           result.setNumber(attributes.getValue("number"));

@@ -16,7 +16,6 @@ import javax.xml.transform.TransformerConfigurationException;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -106,32 +105,10 @@ public abstract class Ant<RESULT>
 
   protected void executeAntScript()
   {
-    try
-    {
-      System.out.println();
-      String ant = anthome + "/bin/ant";
-
-      ProcessBuilder processBuilder = new ProcessBuilder(ant, "-f", getScript().getAbsolutePath());
-      processBuilder.redirectErrorStream(true);
-
-      final Process process = processBuilder.start();
-      final InputStream stream = process.getInputStream();
-
-      new Thread()
-      {
-        @Override
-        public void run()
-        {
-          IO.copy(stream, System.out, 1);
-        }
-      }.start();
-
-      process.waitFor();
-    }
-    catch (Exception ex)
-    {
-      throw new RuntimeException(ex);
-    }
+    System.out.println();
+    String ant = anthome + "/bin/ant";
+    String path = getScript().getAbsolutePath();
+    IO.executeProcess(ant, "-f", path);
   }
 
   protected void init(XMLOutput xml) throws SAXException

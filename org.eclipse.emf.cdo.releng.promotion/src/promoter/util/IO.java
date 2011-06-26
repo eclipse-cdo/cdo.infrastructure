@@ -45,6 +45,56 @@ public final class IO
   {
   }
 
+  public static void executeProcess(String command, OutputHandler handler)
+  {
+    File file = null;
+
+    try
+    {
+      file = File.createTempFile("promoter-", ".tmp");
+      writeFile(file, handler);
+      executeProcess(command, file.getAbsolutePath());
+    }
+    catch (IOException ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      if (file != null)
+      {
+        file.delete();
+      }
+    }
+  }
+
+  public static void executeProcess(String... command)
+  {
+    try
+    {
+      ProcessBuilder processBuilder = new ProcessBuilder(command);
+      processBuilder.redirectErrorStream(true);
+
+      final Process process = processBuilder.start();
+      final InputStream stream = process.getInputStream();
+
+      new Thread()
+      {
+        @Override
+        public void run()
+        {
+          copy(stream, System.out, 1);
+        }
+      }.start();
+
+      process.waitFor();
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+  }
+
   public static boolean isExcluded(String name)
   {
     if (".svn".equalsIgnoreCase(name))

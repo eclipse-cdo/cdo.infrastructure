@@ -11,6 +11,7 @@
 package promoter;
 
 import promoter.util.Ant;
+import promoter.util.SCM;
 import promoter.util.XMLOutput;
 
 import java.io.File;
@@ -46,34 +47,41 @@ public class Promoter
     System.out.println();
   }
 
-  protected BuildCopier createBuildCopier()
+  public SCM createSCM()
   {
-    return createReflective(BuildCopier.class);
+    return create(SCM.class);
   }
 
-  protected BuildProcessor createBuildProcessor()
+  public BuildCopier createBuildCopier()
   {
-    return createReflective(BuildProcessor.class);
+    BuildCopier buildCopier = create(BuildCopier.class);
+    buildCopier.setPromoter(this);
+    return buildCopier;
   }
 
-  protected RepositoryComposer createRepositoryComposer()
+  public BuildProcessor createBuildProcessor()
   {
-    return createReflective(RepositoryComposer.class);
+    return create(BuildProcessor.class);
   }
 
-  protected WebGenerator createWebGenerator()
+  public RepositoryComposer createRepositoryComposer()
   {
-    return createReflective(WebGenerator.class);
+    return create(RepositoryComposer.class);
   }
 
-  protected Ant<WebNode> createAnt()
+  public WebGenerator createWebGenerator()
+  {
+    return create(WebGenerator.class);
+  }
+
+  public Ant<WebNode> createAnt()
   {
     File script = new File(PromoterConfig.INSTANCE.getWorkingArea(), "promoter.ant");
     File basedir = PromoterConfig.INSTANCE.getDownloadsArea();
     return new DefaultAnt(script, basedir);
   }
 
-  private <T> T createReflective(Class<T> type)
+  public <T> T create(Class<T> type)
   {
     String name = PromoterConfig.INSTANCE.getProperty("class" + type.getSimpleName(), type.getName());
 
@@ -92,7 +100,7 @@ public class Promoter
   /**
    * @author Eike Stepper
    */
-  protected class DefaultAnt extends Ant<WebNode>
+  public class DefaultAnt extends Ant<WebNode>
   {
     public DefaultAnt(File script, File basedir)
     {
