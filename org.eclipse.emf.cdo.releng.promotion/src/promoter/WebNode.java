@@ -83,8 +83,8 @@ public class WebNode implements Comparable<WebNode>
       {
         if (buildInfos.isEmpty())
         {
-          out.println(prefix(level)
-              + "<p class=\"repo-info\"><i>This composite update site is currently empty.</i></p>");
+          out.println(prefix(level) + "<p class=\"repo-info\"><i>This composite update site is currently empty.<br>"
+              + "This may change when new builds are promoted in the future.</i></p>");
         }
         else
         {

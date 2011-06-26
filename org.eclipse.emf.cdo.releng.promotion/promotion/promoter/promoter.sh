@@ -75,7 +75,7 @@ CheckPromotion ()
 	fi
 	
 	echo
-	echo "Starting $classPromoter with class path $classPath"
+	echo "Starting $classPromoter with classpath $classPath"
 	
 	#######################################################
   "$JAVA_HOME/bin/java" -cp "$classPath" "$classPromoter"
