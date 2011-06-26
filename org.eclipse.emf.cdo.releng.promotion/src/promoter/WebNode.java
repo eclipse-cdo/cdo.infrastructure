@@ -219,42 +219,43 @@ public class WebNode implements Comparable<WebNode>
 
     generateDropSeparator(out, level);
 
-    out.println(prefix(level)
-        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
-        + http()
-        + "drops/"
-        + buildInfo.getQualifier()
-        + "/index.xml\">index.xml</a> for detailed contents of this build.</td><td class=\"file-size\">"
-        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
-            + "/index.xml") + "</td></tr>");
+    generateDropFile(out, level, buildInfo, "index.xml");
+    generateDropFile(out, level, buildInfo, "bookmarks.xml");
+    generateDropFile(out, level, buildInfo, "build-info.xml");
+    generateDropFile(out, level, buildInfo, "test-report.xml");
 
-    out.println(prefix(level)
-        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
-        + http()
-        + "drops/"
-        + buildInfo.getQualifier()
-        + "/bookmarks.xml\">bookmarks.xml</a> for the <a href=\"http://help.eclipse.org/indigo/"
-        + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.</td><td class=\"file-size\">"
-        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
-            + "/bookmarks.xml") + "</td></tr>");
-
-    out.println(prefix(level)
-        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
-        + http()
-        + "drops/"
-        + buildInfo.getQualifier()
-        + "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.</td><td class=\"file-size\">"
-        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
-            + "/build-info.xml") + "</td></tr>");
-
-    out.println(prefix(level)
-        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
-        + http()
-        + "drops/"
-        + buildInfo.getQualifier()
-        + "/test-report.xml\">test-report.xml</a> for the test results of this build.</td><td class=\"file-size\">"
-        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
-            + "/test-report.xml") + "</td></tr>");
+    // out.println(prefix(level)
+    // +
+    // "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
+    // + http()
+    // + "drops/"
+    // + buildInfo.getQualifier()
+    // + "/bookmarks.xml\">bookmarks.xml</a> for the <a href=\"http://help.eclipse.org/indigo/"
+    // +
+    // "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.</td><td class=\"file-size\">"
+    // + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
+    // + "/bookmarks.xml") + "</td></tr>");
+    //
+    // out.println(prefix(level)
+    // +
+    // "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
+    // + http()
+    // + "drops/"
+    // + buildInfo.getQualifier()
+    // +
+    // "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.</td><td class=\"file-size\">"
+    // + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
+    // + "/build-info.xml") + "</td></tr>");
+    //
+    // out.println(prefix(level)
+    // +
+    // "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
+    // + http()
+    // + "drops/"
+    // + buildInfo.getQualifier()
+    // + "/test-report.xml\">test-report.xml</a> for the test results of this build.</td><td class=\"file-size\">"
+    // + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
+    // + "/test-report.xml") + "</td></tr>");
 
     generateDropSeparator(out, level);
 
@@ -266,6 +267,19 @@ public class WebNode implements Comparable<WebNode>
   protected void generateDropSeparator(PrintStream out, int level)
   {
     out.println(prefix(level) + "<tr class=\"drop-info\"><td colspan=\"3\"><hr class=\"drop-separator\"></td></tr>");
+  }
+
+  protected void generateDropFile(PrintStream out, int level, BuildInfo buildInfo, String path)
+  {
+    String size = formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
+        + buildInfo.getQualifier() + "/" + path);
+    if (size.length() > 0)
+    {
+      out.println(prefix(level)
+          + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
+          + http() + "drops/" + buildInfo.getQualifier() + "/" + path + "\">" + path
+          + "</a> for detailed contents of this build.</td><td class=\"file-size\">" + size + "</td></tr>");
+    }
   }
 
   private static String formatFileSize(String path)
