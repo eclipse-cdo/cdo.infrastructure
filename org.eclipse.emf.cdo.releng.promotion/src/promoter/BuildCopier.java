@@ -168,16 +168,22 @@ public class BuildCopier
 
         BuildProcessor.storeMarkers(drop, jobProperties, isVisible);
 
-        SCM scm = promoter.createSCM();
-        if (scm != null)
-        {
-          scm.setTag(buildInfo.getBranch(), buildInfo.getQualifier());
-        }
+        tagSCM(buildInfo);
       }
       else
       {
         System.out.println("Build " + buildInfo.getNumber() + " is already promoted");
       }
+    }
+  }
+
+  protected void tagSCM(BuildInfo buildInfo)
+  {
+    System.out.println();
+    SCM scm = promoter.createSCM();
+    if (scm != null)
+    {
+      scm.setTag(buildInfo.getBranch(), buildInfo.getQualifier());
     }
   }
 
