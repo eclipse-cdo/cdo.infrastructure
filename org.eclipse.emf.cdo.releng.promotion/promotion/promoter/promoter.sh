@@ -63,7 +63,13 @@ CheckPromotion ()
 	compositionTempFolder=$DOWNLOADS_HOME/$downloadsPath/$compositionTempPath
 	rm -rf "$compositionTempFolder"
 	
-  "$JAVA_HOME/bin/java" -cp "$promoterInstallArea/classes:$extraClassPath" Main
+	classPath="$promoterInstallArea/classes"
+  if [ -n "$extraClassPath" ]
+	then
+  	classPath="$classPath:$extraClassPath"
+	fi
+	
+  "$JAVA_HOME/bin/java" -cp "$classPath" Main
   
   if [ -d "$compositionTempFolder" ]
   then
