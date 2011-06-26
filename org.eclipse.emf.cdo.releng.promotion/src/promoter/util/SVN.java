@@ -35,11 +35,14 @@ public class SVN extends SCM
     {
       public void handleOutput(OutputStream out) throws IOException
       {
+        String message = "Tagging " + branch + " as " + tag;
+        System.out.println(message);
+
         String from = SVN_ROOT + branch;
         String to = SVN_ROOT + "tags/drops/" + tag;
 
         PrintStream stream = new PrintStream(out);
-        stream.println("svn cp -m \"Tagging " + branch + " as " + tag + "\" \"" + from + "\" \"" + to + "\"");
+        stream.println("svn cp -m \"" + message + "\" \"" + from + "\" \"" + to + "\"");
         stream.flush();
       }
     });
