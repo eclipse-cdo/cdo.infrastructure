@@ -343,6 +343,7 @@ public class Main
           {
             addMirroring(xml, drop, "categories", "content");
           }
+
           xml.element("touch");
           xml.attribute("file", markerFile);
         }
@@ -359,25 +360,29 @@ public class Main
           String generateZipSite = promotionProperties.getProperty("generate.zip.site");
           if (generateZipSite != null)
           {
-            xml.element("zip");
-            xml.attribute("destfile", new File(zips, buildInfo.substitute(generateZipSite)));
-            xml.push();
-            xml.element("fileset");
-            xml.attribute("dir", drop);
-            xml.push();
-            xml.element("include");
-            xml.attribute("name", "artifacts.jar");
-            xml.element("include");
-            xml.attribute("name", "content.jar");
-            xml.element("include");
-            xml.attribute("name", "binary/**");
-            xml.element("include");
-            xml.attribute("name", "features/**");
-            xml.element("include");
-            xml.attribute("name", "plugins/**");
-            xml.element("include");
-            xml.pop();
-            xml.pop();
+            File zipSite = new File(zips, buildInfo.substitute(generateZipSite));
+            if (!zipSite.exists())
+            {
+              xml.element("zip");
+              xml.attribute("destfile", zipSite);
+              xml.push();
+              xml.element("fileset");
+              xml.attribute("dir", drop);
+              xml.push();
+              xml.element("include");
+              xml.attribute("name", "artifacts.jar");
+              xml.element("include");
+              xml.attribute("name", "content.jar");
+              xml.element("include");
+              xml.attribute("name", "binary/**");
+              xml.element("include");
+              xml.attribute("name", "features/**");
+              xml.element("include");
+              xml.attribute("name", "plugins/**");
+              xml.element("include");
+              xml.pop();
+              xml.pop();
+            }
           }
 
           String generateZipAll = promotionProperties.getProperty("generate.zip.all");
