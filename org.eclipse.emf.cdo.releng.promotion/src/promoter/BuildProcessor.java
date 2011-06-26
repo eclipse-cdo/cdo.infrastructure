@@ -128,9 +128,15 @@ public class BuildProcessor
     xml.attribute("in", contentXML);
     xml.attribute("out", categoriesXML);
 
-    String sizeProperty = "requires.size." + drop.getName();
+    xml.element("replaceregexp");
+    xml.attribute("file", categoriesXML);
+    xml.attribute("match", "BUILD_QUALIFIER");
+    xml.attribute("replace", drop.getName());
+    xml.attribute("byline", true);
 
     // Find number of categories
+    String sizeProperty = "requires.size." + drop.getName();
+
     xml.element("resourcecount");
     xml.attribute("property", sizeProperty);
     xml.push();
