@@ -180,6 +180,8 @@ public class WebNode implements Comparable<WebNode>
 
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
+    generateDropSeparator(out, level);
+
     out.println(prefix(level)
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/package-x-generic.png\"/></td><td><b><a href=\""
         + http()
@@ -193,7 +195,7 @@ public class WebNode implements Comparable<WebNode>
         + http() + "drops/" + buildInfo.getQualifier()
         + "/index.html\">Contents</a></b> for use with a web browser.</td><td class=\"file-size\"></td></tr>");
 
-    out.println(prefix(level) + "<tr class=\"drop-info\"><td colspan=\"3\"><hr></td></tr>");
+    generateDropSeparator(out, level);
 
     out.println(prefix(level)
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
@@ -215,7 +217,7 @@ public class WebNode implements Comparable<WebNode>
         + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
             + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-All.zip") + "</td></tr>");
 
-    out.println(prefix(level) + "<tr class=\"drop-info\"><td colspan=\"3\"><hr></td></tr>");
+    generateDropSeparator(out, level);
 
     out.println(prefix(level)
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
@@ -254,9 +256,16 @@ public class WebNode implements Comparable<WebNode>
         + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
             + "/testReport.xml") + "</td></tr>");
 
+    generateDropSeparator(out, level);
+
     out.println(prefix(--level) + "</table>");
     out.println(prefix(--level) + "</div>");
     return level;
+  }
+
+  protected void generateDropSeparator(PrintStream out, int level)
+  {
+    out.println(prefix(level) + "<tr class=\"drop-info\"><td colspan=\"3\"><hr class=\"drop-separator\"></td></tr>");
   }
 
   private static String formatFileSize(String path)
