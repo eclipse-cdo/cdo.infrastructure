@@ -39,20 +39,24 @@ public class Config
     return file;
   }
 
-  public final Properties getProperties()
+  public final synchronized Properties getProperties()
   {
-    loadIfNeeded();
+    if (properties == null)
+    {
+      properties = loadProperties(file, true);
+    }
+
     return properties;
   }
 
   public String getProperty(String key)
   {
-    return properties.getProperty(key);
+    return getProperties().getProperty(key);
   }
 
   public String getProperty(String key, String defaultValue)
   {
-    return properties.getProperty(key, defaultValue);
+    return getProperties().getProperty(key, defaultValue);
   }
 
   public File getDirectory(String key)
@@ -70,14 +74,6 @@ public class Config
     }
 
     return directory;
-  }
-
-  private synchronized void loadIfNeeded()
-  {
-    if (properties == null)
-    {
-      properties = loadProperties(file, true);
-    }
   }
 
   public static Properties loadProperties(File file, boolean failIfNotExists)
