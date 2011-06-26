@@ -14,11 +14,11 @@ import java.util.List;
 /**
  * @author Eike Stepper
  */
-public class Main
+public class Promoter
 {
   public static void main(String[] args) throws Exception
   {
-    Main main = new Main();
+    Promoter main = new Promoter();
     main.run();
   }
 

@@ -69,8 +69,17 @@ CheckPromotion ()
   	classPath="$classPath:$extraClassPath"
 	fi
 	
-	echo "Class path: $classPath"
-  "$JAVA_HOME/bin/java" -cp "$classPath" Main
+  if [ -z "$classPromoter" ]
+	then
+  	classPromoter=Promoter
+	fi
+	
+	echo "Starting $classPromoter with class path $classPath"
+	echo
+	
+	#######################################################
+  "$JAVA_HOME/bin/java" -cp "$classPath" "$classPromoter"
+	#######################################################
   
   if [ -d "$compositionTempFolder" ]
   then
