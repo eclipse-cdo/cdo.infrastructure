@@ -61,15 +61,10 @@ public class WebNode implements Comparable<WebNode>
 
   public void generate(PrintStream out, int level) throws IOException
   {
-    String http = "http://download.eclipse.org/" + PromoterConfig.INSTANCE.getProperties().getProperty("downloadsPath")
-        + "/";
-
     System.out.println(prefix(level) + "Generating HTML for " + folder.getName());
 
     if (repository != null)
     {
-      String repoName = repository.getAnchorName();
-      String repoID = "repo_" + repoName;
       List<BuildInfo> buildInfos = null;
       if (repository instanceof Repository.Drops)
       {
@@ -78,29 +73,8 @@ public class WebNode implements Comparable<WebNode>
         Collections.sort(buildInfos);
       }
 
-      out.println(prefix(level) + "<li><a href=\"javascript:toggle('" + repoID + "')\" class=\"repo-label"
-          + repository.getPathLevel() + "\">" + repository.getWebLabel() + "</a> <a name=\"" + repoName + "\" href=\"#"
-          + repoName
-          + "\"><img src=\"http://www.eclipse.org/cdo/images/link_obj.gif\" width=\"12\" height=\"12\"/></a>");
-
-      out.println(prefix(level++)
-          + "<div class=\"repo"
-          + repository.getPathLevel()
-          + "\" id=\"repo_"
-          + repoName
-          + "\""
-          + (repository.isWebCollapsed() || buildInfos != null && buildInfos.isEmpty() ? " style=\"display: none\""
-              : "") + ">");
-
-      out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
-      out.println(prefix(level)
-          + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/internet-web-browser.png\"/></td><td><b><a href=\""
-          + http
-          + "updates/"
-          + repository.getPath()
-          + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
-          + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td><td><i>(Can <b>not</b> be used with a web browser)</i></td></tr>");
-      out.println(prefix(--level) + "</table>");
+      boolean empty = buildInfos != null && buildInfos.isEmpty();
+      level = generateRepositoryStart(out, level, empty);
 
       if (buildInfos != null)
       {
@@ -116,71 +90,7 @@ public class WebNode implements Comparable<WebNode>
           boolean firstDrop = true;
           for (BuildInfo buildInfo : buildInfos)
           {
-            String dropName = buildInfo.getQualifier().replace('-', '_');
-            String dropID = "drop_" + dropName;
-            out.println(prefix(level) + "<li><b><a href=\"javascript:toggle('" + dropID + "')\" class=\"drop-label\">"
-                + buildInfo.getQualifier() + "</a></b> <a name=\"" + dropName + "\" href=\"#" + dropName
-                + "\"><img src=\"http://www.eclipse.org/cdo/images/link_obj.gif\" width=\"12\" height=\"12\"/></a>");
-            out.println(prefix(level++) + "<div class=\"drop\" id=\"" + dropID + "\""
-                + (firstDrop ? "" : " style=\"display: none\"") + ">");
-
-            out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
-
-            out.println(prefix(level)
-                + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-html.png\"/></td><td><b><a href=\""
-                + http
-                + "drops/"
-                + buildInfo.getQualifier()
-                + "\">Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
-                + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td><td><i>(Can also be used with a web browser)</i></td></tr>");
-            out.println(prefix(level)
-                + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
-                + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                    + buildInfo.getQualifier() + "-Site.zip")
-                + "\">emf-cdo-"
-                + buildInfo.getQualifier()
-                + "-Site.zip</a> for offline installations.</td><td class=\"file-size\">"
-                + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
-                    + buildInfo.getQualifier() + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-Site.zip")
-                + "</td></tr>");
-            out.println(prefix(level)
-                + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
-                + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-"
-                    + buildInfo.getQualifier() + "-All.zip")
-                + "\">emf-cdo-"
-                + buildInfo.getQualifier()
-                + "-All.zip</a> for file system deployments.</td><td class=\"file-size\">"
-                + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
-                    + buildInfo.getQualifier() + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-All.zip")
-                + "</td></tr>");
-            out.println(prefix(level)
-                + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
-                + http
-                + "drops/"
-                + buildInfo.getQualifier()
-                + "/bookmarks.xml\">bookmarks.xml</a> for the <a href=\"http://help.eclipse.org/indigo/"
-                + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.</td><td class=\"file-size\">"
-                + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
-                    + buildInfo.getQualifier() + "/bookmarks.xml") + "</td></tr>");
-            out.println(prefix(level)
-                + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
-                + http
-                + "drops/"
-                + buildInfo.getQualifier()
-                + "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.</td><td class=\"file-size\">"
-                + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
-                    + buildInfo.getQualifier() + "/build-info.xml") + "</td></tr>");
-            out.println(prefix(level)
-                + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
-                + http
-                + "drops/"
-                + buildInfo.getQualifier()
-                + "/testReport.xml\">test-report.xml</a> for the test results of this build.</td><td class=\"file-size\">"
-                + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
-                    + buildInfo.getQualifier() + "/testReport.xml") + "</td></tr>");
-
-            out.println(prefix(--level) + "</table>");
-            out.println(prefix(--level) + "</div>");
+            level = generateDrop(out, level, buildInfo, firstDrop);
             firstDrop = false;
           }
 
@@ -202,43 +112,126 @@ public class WebNode implements Comparable<WebNode>
 
     if (repository != null)
     {
-      out.println(prefix(--level) + "</div>");
+      generateRepositoryEnd(out, level);
     }
+  }
+
+  protected int generateRepositoryStart(PrintStream out, int level, boolean empty)
+  {
+    String repoName = repository.getAnchorName();
+    String repoID = "repo_" + repoName;
+
+    out.println(prefix(level) + "<li><a href=\"javascript:toggle('" + repoID + "')\" class=\"repo-label"
+        + repository.getPathLevel() + "\">" + repository.getWebLabel() + "</a> <a name=\"" + repoName + "\" href=\"#"
+        + repoName + "\"><img src=\"http://www.eclipse.org/cdo/images/link_obj.gif\" width=\"12\" height=\"12\"/></a>");
+
+    out.println(prefix(level++) + "<div class=\"repo" + repository.getPathLevel() + "\" id=\"repo_" + repoName + "\""
+        + (repository.isWebCollapsed() || empty ? " style=\"display: none\"" : "") + ">");
+
+    out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
+
+    out.println(prefix(level)
+        + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/internet-web-browser.png\"/></td><td><b><a href=\""
+        + http()
+        + "updates/"
+        + repository.getPath()
+        + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
+        + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td><td class=\"file-size\"><i>(<b>not</b> for web browser)</i></td></tr>");
+
+    out.println(prefix(--level) + "</table>");
+    return level;
+  }
+
+  protected int generateDrop(PrintStream out, int level, BuildInfo buildInfo, boolean firstDrop)
+  {
+    String dropName = buildInfo.getQualifier().replace('-', '_');
+    String dropID = "drop_" + dropName;
+
+    out.println(prefix(level) + "<li><b><a href=\"javascript:toggle('" + dropID + "')\" class=\"drop-label\">"
+        + buildInfo.getQualifier() + "</a></b> <a name=\"" + dropName + "\" href=\"#" + dropName
+        + "\"><img src=\"http://www.eclipse.org/cdo/images/link_obj.gif\" width=\"12\" height=\"12\"/></a>");
+
+    out.println(prefix(level++) + "<div class=\"drop\" id=\"" + dropID + "\""
+        + (firstDrop ? "" : " style=\"display: none\"") + ">");
+
+    out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
+
+    out.println(prefix(level)
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-html.png\"/></td><td><b><a href=\""
+        + http()
+        + "drops/"
+        + buildInfo.getQualifier()
+        + "\">Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
+        + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td><td class=\"file-size\"><i>(and for web browser)</i></td></tr>");
+
+    out.println(prefix(level)
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
+        + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-" + buildInfo.getQualifier()
+            + "-Site.zip")
+        + "\">emf-cdo-"
+        + buildInfo.getQualifier()
+        + "-Site.zip</a> for offline installations.</td><td class=\"file-size\">"
+        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
+            + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-Site.zip") + "</td></tr>");
+
+    out.println(prefix(level)
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
+        + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-" + buildInfo.getQualifier()
+            + "-All.zip")
+        + "\">emf-cdo-"
+        + buildInfo.getQualifier()
+        + "-All.zip</a> for file system deployments.</td><td class=\"file-size\">"
+        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
+            + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-All.zip") + "</td></tr>");
+
+    out.println(prefix(level)
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
+        + http()
+        + "drops/"
+        + buildInfo.getQualifier()
+        + "/bookmarks.xml\">bookmarks.xml</a> for the <a href=\"http://help.eclipse.org/indigo/"
+        + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.</td><td class=\"file-size\">"
+        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
+            + "/bookmarks.xml") + "</td></tr>");
+
+    out.println(prefix(level)
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
+        + http()
+        + "drops/"
+        + buildInfo.getQualifier()
+        + "/build-info.xml\">build-info.xml</a> for the parameters that produced this build.</td><td class=\"file-size\">"
+        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
+            + "/build-info.xml") + "</td></tr>");
+
+    out.println(prefix(level)
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
+        + http()
+        + "drops/"
+        + buildInfo.getQualifier()
+        + "/testReport.xml\">test-report.xml</a> for the test results of this build.</td><td class=\"file-size\">"
+        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
+            + "/testReport.xml") + "</td></tr>");
+
+    out.println(prefix(--level) + "</table>");
+    out.println(prefix(--level) + "</div>");
+    return level;
+  }
+
+  protected int generateRepositoryEnd(PrintStream out, int level)
+  {
+    out.println(prefix(--level) + "</div>");
+    return level;
   }
 
   private static String formatFileSize(String path)
   {
-    File file = new File(path);
-    if (file.isFile())
+    String size = FileSizeInserter.formatFileSize(path);
+    if (size.length() > 0)
     {
-      long size = file.length();
-      return "<i>" + formatFileSize(size) + "</i>";
+      size = "<i>" + size + "</i>";
     }
 
-    return "";
-  }
-
-  private static String formatFileSize(long size)
-  {
-    long kb = 1024L;
-    if (size < kb)
-    {
-      return Long.toString(size) + " B";
-    }
-
-    long mb = kb * kb;
-    if (size < mb)
-    {
-      return Long.toString(size / kb) + " KB";
-    }
-
-    long gb = mb * kb;
-    if (size < gb)
-    {
-      return Long.toString(size / mb) + " MB";
-    }
-
-    return Long.toString(size / gb) + " GB";
+    return size;
   }
 
   private static String prefix(int level)
@@ -251,5 +244,11 @@ public class WebNode implements Comparable<WebNode>
     }
 
     return prefix;
+  }
+
+  private static String http()
+  {
+    String downloadsPath = PromoterConfig.INSTANCE.getProperties().getProperty("downloadsPath");
+    return "http://download.eclipse.org/" + downloadsPath + "/";
   }
 }

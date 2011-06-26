@@ -59,7 +59,7 @@ public class FileSizeInserter
 
           int end = line.indexOf(END, start);
           String path = line.substring(start + START.length(), end).trim();
-          String size = formatSize(new File(path).length());
+          String size = formatFileSize(path);
           line = line.substring(0, start) + size + line.substring(end + END.length());
         }
 
@@ -82,8 +82,38 @@ public class FileSizeInserter
     temp.renameTo(file);
   }
 
-  private static String formatSize(long length)
+  public static String formatFileSize(String path)
   {
-    return null;
+    File file = new File(path);
+    if (file.isFile())
+    {
+      long size = file.length();
+      return FileSizeInserter.formatFileSize(size);
+    }
+
+    return "";
+  }
+
+  public static String formatFileSize(long size)
+  {
+    long kb = 1024L;
+    if (size < kb)
+    {
+      return Long.toString(size) + " B";
+    }
+
+    long mb = kb * kb;
+    if (size < mb)
+    {
+      return Long.toString(size / kb) + " KB";
+    }
+
+    long gb = mb * kb;
+    if (size < gb)
+    {
+      return Long.toString(size / mb) + " MB";
+    }
+
+    return Long.toString(size / gb) + " GB";
   }
 }
