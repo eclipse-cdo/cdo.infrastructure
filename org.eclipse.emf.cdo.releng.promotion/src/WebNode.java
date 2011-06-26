@@ -8,6 +8,8 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
+import util.FileSizeInserter;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;

@@ -12,6 +12,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import util.Config;
+import util.IO;
+import util.XML;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;

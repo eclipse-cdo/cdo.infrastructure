@@ -8,6 +8,8 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
+package util;
+
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.SAXParser;

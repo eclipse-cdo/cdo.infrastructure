@@ -8,6 +8,9 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
+import util.IO;
+import util.XMLOutput;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;

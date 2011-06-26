@@ -8,6 +8,8 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
+package util;
+
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.TransformerConfigurationException;
@@ -22,14 +24,22 @@ import java.io.OutputStream;
  */
 public abstract class Ant<RESULT>
 {
+  private File anthome;
+
   private File script;
 
   private File basedir;
 
-  public Ant(File script, File basedir)
+  public Ant(File anthome, File script, File basedir)
   {
+    this.anthome = anthome;
     this.script = script;
     this.basedir = basedir;
+  }
+
+  public final File getAnthome()
+  {
+    return anthome;
   }
 
   public final File getScript()
@@ -99,7 +109,7 @@ public abstract class Ant<RESULT>
     try
     {
       System.out.println();
-      String ant = PromoterConfig.INSTANCE.getProperty("ANT_HOME") + "/bin/ant";
+      String ant = anthome + "/bin/ant";
 
       ProcessBuilder processBuilder = new ProcessBuilder(ant, "-f", getScript().getAbsolutePath());
       processBuilder.redirectErrorStream(true);
@@ -112,7 +122,7 @@ public abstract class Ant<RESULT>
         @Override
         public void run()
         {
-          IO.copy(stream, System.out, 16);
+          IO.copy(stream, System.out, 1);
         }
       }.start();
 

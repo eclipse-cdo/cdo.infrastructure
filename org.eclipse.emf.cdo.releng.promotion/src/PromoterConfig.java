@@ -8,6 +8,8 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
+import util.Config;
+
 import java.io.File;
 
 /**

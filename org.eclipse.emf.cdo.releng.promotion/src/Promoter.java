@@ -8,6 +8,9 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
+import util.Ant;
+import util.XMLOutput;
+
 import java.io.File;
 import java.util.List;
 
@@ -91,7 +94,7 @@ public class Promoter
   {
     public DefaultAnt(File script, File basedir)
     {
-      super(script, basedir);
+      super(PromoterConfig.INSTANCE.getDirectory("ANT_HOME"), script, basedir);
     }
 
     @Override

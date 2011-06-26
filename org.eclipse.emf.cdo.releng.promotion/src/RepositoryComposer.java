@@ -10,6 +10,10 @@
  */
 import org.xml.sax.SAXException;
 
+import util.Config;
+import util.IO;
+import util.XMLOutput;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.List;

@@ -8,6 +8,8 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
+import util.IO;
+
 import java.io.File;
 import java.io.PrintStream;
 
