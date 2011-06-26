@@ -2,12 +2,11 @@ TODO
 ====
 
 - generate dropins.zip in postProcessDrops()  (from the signed site.p2!)
+- rename xyz-All.zip to xyz-Dropins.zip
 
 - use build qualifier in index.xml/html
 
 - support nicer drop labels, e.g. "4.0RC3"
-
-- rename xyz-All.zip to xyz-Dropins.zip
 
 - xslt index.xml
 - xslt bookmarks.xml
