@@ -71,7 +71,7 @@ CheckPromotion ()
 	
   if [ -z "$classPromoter" ]
 	then
-  	classPromoter=Promoter
+  	classPromoter=promoter.Promoter
 	fi
 	
 	echo "Starting $classPromoter with class path $classPath"
