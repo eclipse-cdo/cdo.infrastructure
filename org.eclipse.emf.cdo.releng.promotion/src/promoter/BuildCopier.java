@@ -166,9 +166,9 @@ public class BuildCopier
           siteP2.delete();
         }
 
-        BuildProcessor.storeMarkers(drop, jobProperties, isVisible);
+        setTag(buildInfo);
 
-        tagSCM(buildInfo);
+        BuildProcessor.storeMarkers(drop, jobProperties, isVisible);
       }
       else
       {
@@ -177,7 +177,7 @@ public class BuildCopier
     }
   }
 
-  protected void tagSCM(BuildInfo buildInfo)
+  protected void setTag(BuildInfo buildInfo)
   {
     System.out.println();
     SCM scm = promoter.createSCM();
