@@ -116,7 +116,7 @@ public class WebNode implements Comparable<WebNode>
     String repoID = "repo_" + repoName;
 
     out.println(prefix(level)
-        + "<li><a href=\"javascript:toggle('"
+        + "<li class=\"repo-item\"><a href=\"javascript:toggle('"
         + repoID
         + "')\" class=\"repo-label"
         + repository.getPathLevel()
@@ -165,7 +165,7 @@ public class WebNode implements Comparable<WebNode>
     String dropID = "drop_" + dropName;
 
     out.println(prefix(level)
-        + "<li><b><a href=\"javascript:toggle('"
+        + "<li class=\"repo-item\"><b><a href=\"javascript:toggle('"
         + dropID
         + "')\" class=\"drop-label\">"
         + buildInfo.getQualifier()
