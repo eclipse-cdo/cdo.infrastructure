@@ -100,24 +100,7 @@ public class RepositoryComposer
       repository = new Repository.Drops(temp, name, path, childJob, childStream, childTypes, buildInfos);
     }
 
-    String targetInfo = compositionProperties.getProperty("target.info");
-    repository.setTargetInfo(targetInfo);
-
-    String apiBaselineURL = compositionProperties.getProperty("api.baseline.url");
-    repository.setApiBaselineURL(apiBaselineURL);
-
-    String apiBaselineSize = compositionProperties.getProperty("api.baseline.size", "");
-    repository.setApiBaselineSize(apiBaselineSize);
-
-    String webLabel = compositionProperties.getProperty("web.label", repository.getName());
-    repository.setWebLabel(webLabel);
-
-    int webPriority = Integer.parseInt(compositionProperties.getProperty("web.priority", "500"));
-    repository.setWebPriority(webPriority);
-
-    boolean webCollapsed = Boolean.parseBoolean(compositionProperties.getProperty("web.collapsed", "false"));
-    repository.setWebCollapsed(webCollapsed);
-
+    repository.setProperties(compositionProperties);
     return repository;
   }
 }

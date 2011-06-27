@@ -161,7 +161,8 @@ public class WebNode implements Comparable<WebNode>
     {
       out.println(prefix(level)
           + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/22x22/dialog-information.png\"/></td>"
-          + "<td>" + targetInfo + "</td>" + "<td class=\"file-size level" + repository.getPathLevel() + "\"></td></tr>");
+          + "<td>" + targetInfo + "</td>" + "<td class=\"file-size level" + repository.getPathLevel() + "\"><i>"
+          + repository.getTargetVersions() + "</i></td></tr>");
     }
 
     if (empty)

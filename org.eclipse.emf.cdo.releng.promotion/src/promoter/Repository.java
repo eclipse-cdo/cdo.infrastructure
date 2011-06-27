@@ -20,6 +20,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.StringTokenizer;
 
 /**
@@ -40,6 +41,8 @@ public class Repository
   private List<Repository> childRepositories = new ArrayList<Repository>();
 
   private String targetInfo;
+
+  private String targetVersions;
 
   private String apiBaselineURL;
 
@@ -119,9 +122,9 @@ public class Repository
     return targetInfo;
   }
 
-  public void setTargetInfo(String targetInfo)
+  public String getTargetVersions()
   {
-    this.targetInfo = targetInfo;
+    return targetVersions;
   }
 
   public String getApiBaselineURL()
@@ -129,19 +132,9 @@ public class Repository
     return apiBaselineURL;
   }
 
-  public void setApiBaselineURL(String apiBaselineURL)
-  {
-    this.apiBaselineURL = apiBaselineURL;
-  }
-
   public String getApiBaselineSize()
   {
     return apiBaselineSize;
-  }
-
-  public void setApiBaselineSize(String apiBaselineSize)
-  {
-    this.apiBaselineSize = apiBaselineSize;
   }
 
   public String getWebLabel()
@@ -149,29 +142,14 @@ public class Repository
     return webLabel;
   }
 
-  public void setWebLabel(String webLabel)
-  {
-    this.webLabel = webLabel;
-  }
-
   public int getWebPriority()
   {
     return webPriority;
   }
 
-  public void setWebPriority(int webPriority)
-  {
-    this.webPriority = webPriority;
-  }
-
   public boolean isWebCollapsed()
   {
     return webCollapsed;
-  }
-
-  public void setWebCollapsed(boolean webCollapsed)
-  {
-    this.webCollapsed = webCollapsed;
   }
 
   public String getAnchorName()
@@ -293,6 +271,17 @@ public class Repository
         }
       }
     });
+  }
+
+  void setProperties(Properties properties)
+  {
+    targetInfo = properties.getProperty("target.info");
+    targetVersions = properties.getProperty("target.versions", "");
+    apiBaselineURL = properties.getProperty("api.baseline.url");
+    apiBaselineSize = properties.getProperty("api.baseline.size", "");
+    webLabel = properties.getProperty("web.label", name);
+    webPriority = Integer.parseInt(properties.getProperty("web.priority", "500"));
+    webCollapsed = Boolean.parseBoolean(properties.getProperty("web.collapsed", "false"));
   }
 
   /**
