@@ -6,10 +6,9 @@ TODO
 
 - use build qualifier in index.xml/html
 
-- support nicer drop labels, e.g. "4.0RC3"
-
 - xslt index.xml
 - xslt bookmarks.xml
+- xslt bom.xml
 - xslt build-info.xml
 - xslt test-report.xml
 
