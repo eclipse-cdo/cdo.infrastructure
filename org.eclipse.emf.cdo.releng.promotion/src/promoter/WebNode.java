@@ -222,7 +222,7 @@ public class WebNode implements Comparable<WebNode>
     generateDropFile(out, level, buildInfo, "bookmarks.xml", " for the <a href=\"http://help.eclipse.org/indigo/"
         + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
     generateDropFile(out, level, buildInfo, "bom.xml",
-        " for the <a href=\"http://www.eclipse.org/buckminster\">Buckminster</a> bill of materials.");
+        " for the <a href=\"http://www.eclipse.org/buckminster\">bill of materials</a> of this build.");
     generateDropFile(out, level, buildInfo, "build-info.xml", " for the parameters that produced this build.");
     generateDropFile(out, level, buildInfo, "test-report.xml", " for the test results of this build.");
 
