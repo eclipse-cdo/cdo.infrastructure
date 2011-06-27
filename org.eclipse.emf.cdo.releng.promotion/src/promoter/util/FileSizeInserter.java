@@ -106,15 +106,15 @@ public class FileSizeInserter
     long mb = kb * kb;
     if (size < mb)
     {
-      return Long.toString(size / kb) + " kb";
+      return Long.toString(size / kb) + " KB";
     }
 
     long gb = mb * kb;
     if (size < gb)
     {
-      return Long.toString(size / mb) + " mb";
+      return Long.toString(size / mb) + " MB";
     }
 
-    return Long.toString(size / gb) + " gb";
+    return Long.toString(size / gb) + " GB";
   }
 }
