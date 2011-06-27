@@ -210,6 +210,8 @@ public class WebNode implements Comparable<WebNode>
     generateDropFile(out, level, buildInfo, "index.xml", " for detailed contents of this build.");
     generateDropFile(out, level, buildInfo, "bookmarks.xml", " for the <a href=\"http://help.eclipse.org/indigo/"
         + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
+    generateDropFile(out, level, buildInfo, "bom.xml",
+        " for the <a href=\"http://www.eclipse.org/buckminster\">Buckminster</a> bill of materials.");
     generateDropFile(out, level, buildInfo, "build-info.xml", " for the parameters that produced this build.");
     generateDropFile(out, level, buildInfo, "test-report.xml", " for the test results of this build.");
 
@@ -227,16 +229,16 @@ public class WebNode implements Comparable<WebNode>
 
   protected void generateDropDownload(PrintStream out, int level, BuildInfo buildInfo, String path, String description)
   {
-    out.println(prefix(level)
-        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
-        + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/" + path)
-        + "\">"
-        + new File(path).getName()
-        + "</a>"
-        + description
-        + "</td><td class=\"file-size\">"
-        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
-            + "/" + path) + "</td></tr>");
+    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
+    File download = new File(drop, path);
+    if (download.isFile())
+    {
+      out.println(prefix(level)
+          + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
+          + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/" + path) + "\">"
+          + new File(path).getName() + "</a>" + description + "</td><td class=\"file-size\">"
+          + formatFileSize(download.getAbsolutePath()) + "</td></tr>");
+    }
   }
 
   protected void generateDropFile(PrintStream out, int level, BuildInfo buildInfo, String path, String description)
