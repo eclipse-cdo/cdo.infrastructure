@@ -100,6 +100,9 @@ public class RepositoryComposer
       repository = new Repository.Drops(temp, name, path, childJob, childStream, childTypes, buildInfos);
     }
 
+    String targetInfo = compositionProperties.getProperty("target.info");
+    repository.setTargetInfo(targetInfo);
+
     String apiBaselineURL = compositionProperties.getProperty("api.baseline.url");
     repository.setApiBaselineURL(apiBaselineURL);
 

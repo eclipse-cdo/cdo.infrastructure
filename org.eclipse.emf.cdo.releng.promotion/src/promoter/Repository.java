@@ -39,6 +39,8 @@ public class Repository
 
   private List<Repository> childRepositories = new ArrayList<Repository>();
 
+  private String targetInfo;
+
   private String apiBaselineURL;
 
   private String apiBaselineSize;
@@ -110,6 +112,16 @@ public class Repository
   public final List<Repository> getChildRepositories()
   {
     return childRepositories;
+  }
+
+  public String getTargetInfo()
+  {
+    return targetInfo;
+  }
+
+  public void setTargetInfo(String targetInfo)
+  {
+    this.targetInfo = targetInfo;
   }
 
   public String getApiBaselineURL()
