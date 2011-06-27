@@ -100,6 +100,12 @@ public class RepositoryComposer
       repository = new Repository.Drops(temp, name, path, childJob, childStream, childTypes, buildInfos);
     }
 
+    String apiBaselineURL = compositionProperties.getProperty("api.baseline.url");
+    repository.setApiBaselineURL(apiBaselineURL);
+
+    String apiBaselineSize = compositionProperties.getProperty("api.baseline.size", "");
+    repository.setApiBaselineSize(apiBaselineSize);
+
     String webLabel = compositionProperties.getProperty("web.label", repository.getName());
     repository.setWebLabel(webLabel);
 

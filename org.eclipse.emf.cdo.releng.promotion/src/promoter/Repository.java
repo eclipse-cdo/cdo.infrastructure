@@ -39,6 +39,10 @@ public class Repository
 
   private List<Repository> childRepositories = new ArrayList<Repository>();
 
+  private String apiBaselineURL;
+
+  private String apiBaselineSize;
+
   private String webLabel;
 
   private int webPriority;
@@ -106,6 +110,26 @@ public class Repository
   public final List<Repository> getChildRepositories()
   {
     return childRepositories;
+  }
+
+  public String getApiBaselineURL()
+  {
+    return apiBaselineURL;
+  }
+
+  public void setApiBaselineURL(String apiBaselineURL)
+  {
+    this.apiBaselineURL = apiBaselineURL;
+  }
+
+  public String getApiBaselineSize()
+  {
+    return apiBaselineSize;
+  }
+
+  public void setApiBaselineSize(String apiBaselineSize)
+  {
+    this.apiBaselineSize = apiBaselineSize;
   }
 
   public String getWebLabel()

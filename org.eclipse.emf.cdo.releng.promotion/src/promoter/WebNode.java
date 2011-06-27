@@ -139,12 +139,20 @@ public class WebNode implements Comparable<WebNode>
 
     out.println(prefix(level)
         + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/22x22/package-x-generic.png\"/></td>"
-        + "<td><b><a href=\""
-        + http()
-        + "updates/"
-        + repository.getPath()
-        + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
-        + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> but <b>not</b> with a web browser.</td><td class=\"file-size\"></td></tr>");
+        + "<td><b><a href=\"" + http() + "updates/" + repository.getPath()
+        + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"" + HELP_TOPIC_URL
+        + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> but <b>not</b> with a web browser.</td>"
+        + "<td class=\"file-size\"></td></tr>");
+
+    String apiBaselineURL = repository.getApiBaselineURL();
+    if (apiBaselineURL != null)
+    {
+      out.println(prefix(level)
+          + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/22x22/go-down.png\"/></td>"
+          + "<td><a href=\"" + apiBaselineURL + "\">API Baseline</a> for use with <a href=\"" + HELP_TOPIC_URL
+          + "/topic/org.eclipse.pde.doc.user/tasks/api_tooling_baseline.htm\">API Tools</a>.</td>"
+          + "<td class=\"file-size\">" + repository.getApiBaselineSize() + "</td></tr>");
+    }
 
     if (empty)
     {
@@ -194,12 +202,10 @@ public class WebNode implements Comparable<WebNode>
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
     out.println(prefix(level)
-        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/package-x-generic.png\"/></td><td><b><a href=\""
-        + http()
-        + "drops/"
-        + buildInfo.getQualifier()
-        + "\">Update&nbsp;Site</a></b> for use with <a href=\"http://help.eclipse.org/indigo/"
-        + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td><td class=\"file-size\"></td></tr>");
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/package-x-generic.png\"/></td>"
+        + "<td><b><a href=\"" + http() + "drops/" + buildInfo.getQualifier()
+        + "\">Update&nbsp;Site</a></b> for use with <a href=\"" + HELP_TOPIC_URL
+        + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td>" + "<td class=\"file-size\"></td></tr>");
 
     out.println(prefix(level)
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/internet-web-browser.png\"/></td><td><b><a href=\""
@@ -219,8 +225,8 @@ public class WebNode implements Comparable<WebNode>
     generateDropSeparator(out, level);
 
     generateDropFile(out, level, buildInfo, "index.xml", " for detailed contents of this build.");
-    generateDropFile(out, level, buildInfo, "bookmarks.xml", " for the <a href=\"http://help.eclipse.org/indigo/"
-        + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
+    generateDropFile(out, level, buildInfo, "bookmarks.xml", " for the <a href=\"" + HELP_TOPIC_URL
+        + "/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
     generateDropFile(out, level, buildInfo, "bom.xml",
         " for the <a href=\"http://www.eclipse.org/buckminster\">bill of materials</a> of this build.");
     generateDropFile(out, level, buildInfo, "build-info.xml", " for the parameters that produced this build.");
