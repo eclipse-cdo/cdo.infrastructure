@@ -149,7 +149,8 @@ public class WebNode implements Comparable<WebNode>
     {
       out.println(prefix(level)
           + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/22x22/go-down.png\"/></td>"
-          + "<td><a href=\"" + apiBaselineURL + "\">API Baseline</a> for use with <a href=\"" + HELP_TOPIC_URL
+          + "<td><a href=\"" + apiBaselineURL + "\">" + new File(apiBaselineURL).getName()
+          + "</a> for use with <a href=\"" + HELP_TOPIC_URL
           + "/topic/org.eclipse.pde.doc.user/tasks/api_tooling_baseline.htm\">API Tools</a>.</td>"
           + "<td class=\"file-size\">" + repository.getApiBaselineSize() + "</td></tr>");
     }
