@@ -100,7 +100,7 @@ public class FileSizeInserter
     long kb = 1024L;
     if (size < kb)
     {
-      return Long.toString(size) + (size == 1 ? " byte" : " bytes");
+      return Long.toString(size) + (size == 1 ? " Byte" : " Bytes");
     }
 
     long mb = kb * kb;
