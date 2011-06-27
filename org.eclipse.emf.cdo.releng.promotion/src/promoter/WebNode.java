@@ -208,13 +208,13 @@ public class WebNode implements Comparable<WebNode>
         + "<td><b><a href=\"" + http() + "drops/" + buildInfo.getQualifier()
         + "\">Update&nbsp;Site</a></b> for use with <a href=\"" + HELP_TOPIC_URL
         + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td>" + "<td class=\"file-size level"
-        + repository.getPathLevel() + "\"></td></tr>");
+        + (repository.getPathLevel() + 1) + "\"></td></tr>");
 
     out.println(prefix(level)
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/internet-web-browser.png\"/></td><td><b><a href=\""
         + http() + "drops/" + buildInfo.getQualifier()
         + "/index.html\">Contents</a></b> for use with a web browser.</td><td class=\"file-size level"
-        + repository.getPathLevel() + "\"></td></tr>");
+        + (repository.getPathLevel() + 1) + "\"></td></tr>");
 
     generateDropSeparator(out, level);
 
@@ -262,7 +262,7 @@ public class WebNode implements Comparable<WebNode>
           + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
           + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/" + path) + "\">"
           + new File(path).getName() + "</a>" + description + "</td><td class=\"file-size level"
-          + repository.getPathLevel() + "\">" + formatFileSize(download.getAbsolutePath()) + "</td></tr>");
+          + (repository.getPathLevel() + 1) + "\">" + formatFileSize(download.getAbsolutePath()) + "</td></tr>");
     }
   }
 
@@ -275,7 +275,7 @@ public class WebNode implements Comparable<WebNode>
       out.println(prefix(level)
           + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
           + http() + "drops/" + buildInfo.getQualifier() + "/" + path + "\">" + path + "</a>" + description
-          + "</td><td class=\"file-size level" + repository.getPathLevel() + "\">" + size + "</td></tr>");
+          + "</td><td class=\"file-size level" + (repository.getPathLevel() + 1) + "\">" + size + "</td></tr>");
     }
   }
 
