@@ -24,6 +24,8 @@ import java.util.List;
  */
 public class WebNode implements Comparable<WebNode>
 {
+  public static final String HELP_TOPIC_URL = "http://help.eclipse.org/indigo/index.jsp?topic=";
+
   private File folder;
 
   private Repository repository;
@@ -195,27 +197,13 @@ public class WebNode implements Comparable<WebNode>
 
     generateDropSeparator(out, level);
 
-    out.println(prefix(level)
-        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
-        + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-" + buildInfo.getQualifier()
-            + "-Site.zip")
-        + "\">emf-cdo-"
-        + buildInfo.getQualifier()
-        + "-Site.zip</a> for local use with <a href=\"http://help.eclipse.org/indigo/"
-        + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td><td class=\"file-size\">"
-        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
-            + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-Site.zip") + "</td></tr>");
+    generateDropDownload(out, level, buildInfo, "zips/emf-cdo-" + buildInfo.getQualifier() + "-Site.zip",
+        " for local use with <a href=\"" + HELP_TOPIC_URL
+            + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.");
 
-    out.println(prefix(level)
-        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
-        + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/zips/emf-cdo-" + buildInfo.getQualifier()
-            + "-All.zip")
-        + "\">emf-cdo-"
-        + buildInfo.getQualifier()
-        + "-All.zip</a> for use with a <a href=\"http://help.eclipse.org/indigo/"
-        + "index.jsp?topic=/org.eclipse.platform.doc.isv/reference/misc/p2_dropins_format.html\">dropins</a> folder.</td><td class=\"file-size\">"
-        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
-            + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-All.zip") + "</td></tr>");
+    generateDropDownload(out, level, buildInfo, "zips/emf-cdo-" + buildInfo.getQualifier() + "-All.zip",
+        " for use with a <a href=\"" + HELP_TOPIC_URL
+            + "/org.eclipse.platform.doc.isv/reference/misc/p2_dropins_format.html\">dropins</a> folder.");
 
     generateDropSeparator(out, level);
 
@@ -235,6 +223,20 @@ public class WebNode implements Comparable<WebNode>
   protected void generateDropSeparator(PrintStream out, int level)
   {
     out.println(prefix(level) + "<tr class=\"drop-info\"><td colspan=\"3\"><hr class=\"drop-separator\"></td></tr>");
+  }
+
+  protected void generateDropDownload(PrintStream out, int level, BuildInfo buildInfo, String path, String description)
+  {
+    out.println(prefix(level)
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
+        + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/" + path)
+        + "\">"
+        + new File(path).getName()
+        + "</a>"
+        + description
+        + "</td><td class=\"file-size\">"
+        + formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier()
+            + "/" + path) + "</td></tr>");
   }
 
   protected void generateDropFile(PrintStream out, int level, BuildInfo buildInfo, String path, String description)
