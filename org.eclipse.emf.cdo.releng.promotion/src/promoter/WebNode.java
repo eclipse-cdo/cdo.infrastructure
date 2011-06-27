@@ -10,6 +10,7 @@
  */
 package promoter;
 
+import promoter.util.Config;
 import promoter.util.FileSizeInserter;
 
 import java.io.File;
@@ -18,6 +19,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @author Eike Stepper
@@ -165,12 +167,21 @@ public class WebNode implements Comparable<WebNode>
   {
     String dropName = buildInfo.getQualifier().replace('-', '_');
     String dropID = "drop_" + dropName;
+    String dropLabel = buildInfo.getQualifier();
+
+    Properties webProperties = Config.loadProperties(
+        new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier() + "/web.properties"), false);
+    String webLabel = webProperties.getProperty("web.label");
+    if (webLabel != null)
+    {
+      dropLabel = webLabel + " (" + dropLabel + ")";
+    }
 
     out.println(prefix(level)
         + "<li class=\"repo-item\"><b><a href=\"javascript:toggle('"
         + dropID
         + "')\" class=\"drop-label\">"
-        + buildInfo.getQualifier()
+        + dropLabel
         + "</a></b> <a name=\""
         + dropName
         + "\" href=\"#"
