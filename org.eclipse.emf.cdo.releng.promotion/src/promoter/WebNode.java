@@ -152,8 +152,8 @@ public class WebNode implements Comparable<WebNode>
           + "<td><a href=\"" + apiBaselineURL + "\">" + new File(apiBaselineURL).getName()
           + "</a> for use with <a href=\"" + HELP_TOPIC_URL
           + "/org.eclipse.pde.doc.user/tasks/api_tooling_baseline.htm\">API Tools</a>.</td>"
-          + "<td class=\"file-size level" + repository.getPathLevel() + "\">" + repository.getApiBaselineSize()
-          + "</td></tr>");
+          + "<td class=\"file-size level" + repository.getPathLevel() + "\"><i>" + repository.getApiBaselineSize()
+          + "</i></td></tr>");
     }
 
     if (empty)
