@@ -23,7 +23,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -49,10 +51,10 @@ public class BuildCopier
     this.promoter = promoter;
   }
 
-  public void copyBuilds()
+  public List<BuildInfo> copyBuilds()
   {
-    File jobsDir = new File("jobs");
-    for (File jobDir : jobsDir.listFiles())
+    List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
+    for (File jobDir : new File("jobs").listFiles())
     {
       if (jobDir.isDirectory())
       {
@@ -60,13 +62,15 @@ public class BuildCopier
         if (!IO.isExcluded(jobName))
         {
           Properties jobProperties = Config.loadProperties(new File(jobDir, "promotion.properties"), false);
-          copyBuilds(new File(PromoterConfig.INSTANCE.getJobsHome(), jobName), jobProperties);
+          copyBuilds(new File(PromoterConfig.INSTANCE.getJobsHome(), jobName), jobProperties, buildInfos);
         }
       }
     }
+
+    return buildInfos;
   }
 
-  protected void copyBuilds(File jobDir, Properties jobProperties)
+  protected void copyBuilds(File jobDir, Properties jobProperties, List<BuildInfo> buildInfos)
   {
     File buildsDir = new File(jobDir, "builds");
     System.out.println();
@@ -103,7 +107,10 @@ public class BuildCopier
           if (buildInfoFile.isFile())
           {
             BuildInfo buildInfo = BuildInfo.read(buildInfoFile);
-            copyBuild(jobProperties, buildDir, buildInfo);
+            if (copyBuild(jobProperties, buildDir, buildInfo))
+            {
+              buildInfos.add(buildInfo);
+            }
           }
         }
         else if ("FAILURE".equalsIgnoreCase(buildResult))
@@ -133,7 +140,7 @@ public class BuildCopier
     }
   }
 
-  protected void copyBuild(Properties jobProperties, File buildDir, BuildInfo buildInfo)
+  protected boolean copyBuild(Properties jobProperties, File buildDir, BuildInfo buildInfo)
   {
     String buildType = buildInfo.getType();
     String autoPromote = jobProperties.getProperty("auto.promote", "IMSR");
@@ -169,12 +176,14 @@ public class BuildCopier
         setTag(buildInfo);
 
         BuildProcessor.storeMarkers(drop, jobProperties, isVisible);
+
+        return true;
       }
-      else
-      {
-        System.out.println("Build " + buildInfo.getNumber() + " is already promoted");
-      }
+
+      System.out.println("Build " + buildInfo.getNumber() + " is already promoted");
     }
+
+    return false;
   }
 
   protected void setTag(BuildInfo buildInfo)
