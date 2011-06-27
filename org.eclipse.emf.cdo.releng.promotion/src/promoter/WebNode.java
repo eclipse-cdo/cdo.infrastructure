@@ -142,7 +142,7 @@ public class WebNode implements Comparable<WebNode>
         + "<td><b><a href=\"" + http() + "updates/" + repository.getPath()
         + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"" + HELP_TOPIC_URL
         + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> but <b>not</b> with a web browser.</td>"
-        + "<td class=\"file-size\"></td></tr>");
+        + "<td class=\"file-size level" + repository.getPathLevel() + "\"></td></tr>");
 
     String apiBaselineURL = repository.getApiBaselineURL();
     if (apiBaselineURL != null)
@@ -152,7 +152,8 @@ public class WebNode implements Comparable<WebNode>
           + "<td><a href=\"" + apiBaselineURL + "\">" + new File(apiBaselineURL).getName()
           + "</a> for use with <a href=\"" + HELP_TOPIC_URL
           + "/org.eclipse.pde.doc.user/tasks/api_tooling_baseline.htm\">API Tools</a>.</td>"
-          + "<td class=\"file-size\">" + repository.getApiBaselineSize() + "</td></tr>");
+          + "<td class=\"file-size level" + repository.getPathLevel() + "\">" + repository.getApiBaselineSize()
+          + "</td></tr>");
     }
 
     if (empty)
@@ -206,12 +207,14 @@ public class WebNode implements Comparable<WebNode>
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/package-x-generic.png\"/></td>"
         + "<td><b><a href=\"" + http() + "drops/" + buildInfo.getQualifier()
         + "\">Update&nbsp;Site</a></b> for use with <a href=\"" + HELP_TOPIC_URL
-        + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td>" + "<td class=\"file-size\"></td></tr>");
+        + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td>" + "<td class=\"file-size level"
+        + repository.getPathLevel() + "\"></td></tr>");
 
     out.println(prefix(level)
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/internet-web-browser.png\"/></td><td><b><a href=\""
         + http() + "drops/" + buildInfo.getQualifier()
-        + "/index.html\">Contents</a></b> for use with a web browser.</td><td class=\"file-size\"></td></tr>");
+        + "/index.html\">Contents</a></b> for use with a web browser.</td><td class=\"file-size level"
+        + repository.getPathLevel() + "\"></td></tr>");
 
     generateDropSeparator(out, level);
 
@@ -226,11 +229,15 @@ public class WebNode implements Comparable<WebNode>
     generateDropSeparator(out, level);
 
     generateDropFile(out, level, buildInfo, "index.xml", " for detailed contents of this build.");
+
     generateDropFile(out, level, buildInfo, "bookmarks.xml", " for the <a href=\"" + HELP_TOPIC_URL
         + "/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
+
     generateDropFile(out, level, buildInfo, "bom.xml",
         " for the <a href=\"http://www.eclipse.org/buckminster\">bill of materials</a> of this build.");
+
     generateDropFile(out, level, buildInfo, "build-info.xml", " for the parameters that produced this build.");
+
     generateDropFile(out, level, buildInfo, "test-report.xml", " for the test results of this build.");
 
     generateDropSeparator(out, level);
@@ -254,8 +261,8 @@ public class WebNode implements Comparable<WebNode>
       out.println(prefix(level)
           + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
           + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/" + path) + "\">"
-          + new File(path).getName() + "</a>" + description + "</td><td class=\"file-size\">"
-          + formatFileSize(download.getAbsolutePath()) + "</td></tr>");
+          + new File(path).getName() + "</a>" + description + "</td><td class=\"file-size level"
+          + repository.getPathLevel() + "\">" + formatFileSize(download.getAbsolutePath()) + "</td></tr>");
     }
   }
 
@@ -268,7 +275,7 @@ public class WebNode implements Comparable<WebNode>
       out.println(prefix(level)
           + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
           + http() + "drops/" + buildInfo.getQualifier() + "/" + path + "\">" + path + "</a>" + description
-          + "</td><td class=\"file-size\">" + size + "</td></tr>");
+          + "</td><td class=\"file-size level" + repository.getPathLevel() + "\">" + size + "</td></tr>");
     }
   }
 
