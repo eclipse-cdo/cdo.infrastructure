@@ -218,10 +218,13 @@ public class WebNode implements Comparable<WebNode>
             + "/zips/emf-cdo-" + buildInfo.getQualifier() + "-All.zip") + "</td></tr>");
 
     generateDropSeparator(out, level);
-    generateDropFile(out, level, buildInfo, "index.xml");
-    generateDropFile(out, level, buildInfo, "bookmarks.xml");
-    generateDropFile(out, level, buildInfo, "build-info.xml");
-    generateDropFile(out, level, buildInfo, "test-report.xml");
+
+    generateDropFile(out, level, buildInfo, "index.xml", " for detailed contents of this build.");
+    generateDropFile(out, level, buildInfo, "bookmarks.xml", " for the <a href=\"http://help.eclipse.org/indigo/"
+        + "index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
+    generateDropFile(out, level, buildInfo, "build-info.xml", " for the parameters that produced this build.");
+    generateDropFile(out, level, buildInfo, "test-report.xml", " for the test results of this build.");
+
     generateDropSeparator(out, level);
 
     out.println(prefix(--level) + "</table>");
@@ -234,7 +237,7 @@ public class WebNode implements Comparable<WebNode>
     out.println(prefix(level) + "<tr class=\"drop-info\"><td colspan=\"3\"><hr class=\"drop-separator\"></td></tr>");
   }
 
-  protected void generateDropFile(PrintStream out, int level, BuildInfo buildInfo, String path)
+  protected void generateDropFile(PrintStream out, int level, BuildInfo buildInfo, String path, String description)
   {
     String size = formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
         + buildInfo.getQualifier() + "/" + path);
@@ -242,8 +245,8 @@ public class WebNode implements Comparable<WebNode>
     {
       out.println(prefix(level)
           + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
-          + http() + "drops/" + buildInfo.getQualifier() + "/" + path + "\">" + path
-          + "</a> for detailed contents of this build.</td><td class=\"file-size\">" + size + "</td></tr>");
+          + http() + "drops/" + buildInfo.getQualifier() + "/" + path + "\">" + path + "</a>" + description
+          + "</td><td class=\"file-size\">" + size + "</td></tr>");
     }
   }
 
