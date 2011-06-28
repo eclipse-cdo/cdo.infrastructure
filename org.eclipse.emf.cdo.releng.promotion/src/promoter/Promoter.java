@@ -16,6 +16,8 @@ import promoter.util.XMLOutput;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author Eike Stepper
@@ -35,9 +37,13 @@ public class Promoter
 
     // performTasks();
 
-    Ant<WebNode> ant = createAnt();
-    WebNode webNode = ant.run();
+    Ant<Entry<List<BuildInfo>, WebNode>> ant = createAnt();
+    Entry<List<BuildInfo>, WebNode> result = ant.run();
 
+    ReleaseNotesGenerator releaseNotesGenerator = createReleaseNotesGenerator();
+    releaseNotesGenerator.generateReleaseNotes(result.getKey());
+
+    WebNode webNode = result.getValue();
     if (webNode != null)
     {
       WebGenerator webGenerator = createWebGenerator();
@@ -79,7 +85,7 @@ public class Promoter
     return create(WebGenerator.class);
   }
 
-  public Ant<WebNode> createAnt()
+  public Ant<Map.Entry<List<BuildInfo>, WebNode>> createAnt()
   {
     File script = new File(PromoterConfig.INSTANCE.getWorkingArea(), "promoter.ant");
     File basedir = PromoterConfig.INSTANCE.getDownloadsArea();
@@ -105,7 +111,7 @@ public class Promoter
   /**
    * @author Eike Stepper
    */
-  public class DefaultAnt extends Ant<WebNode>
+  public class DefaultAnt extends Ant<Map.Entry<List<BuildInfo>, WebNode>>
   {
     public DefaultAnt(File script, File basedir)
     {
@@ -113,13 +119,31 @@ public class Promoter
     }
 
     @Override
-    protected WebNode create(XMLOutput xml) throws Exception
+    protected Map.Entry<List<BuildInfo>, WebNode> create(XMLOutput xml) throws Exception
     {
       BuildProcessor buildProcessor = createBuildProcessor();
-      List<BuildInfo> buildInfos = buildProcessor.processBuilds(xml);
+      final List<BuildInfo> buildInfos = buildProcessor.processBuilds(xml);
 
       RepositoryComposer repositoryComposer = createRepositoryComposer();
-      return repositoryComposer.composeRepositories(xml, buildInfos, new File("composites"));
+      final WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, new File("composites"));
+
+      return new Map.Entry<List<BuildInfo>, WebNode>()
+      {
+        public List<BuildInfo> getKey()
+        {
+          return buildInfos;
+        }
+
+        public WebNode getValue()
+        {
+          return webNode;
+        }
+
+        public WebNode setValue(WebNode value)
+        {
+          throw new UnsupportedOperationException();
+        }
+      };
     }
   }
 }
