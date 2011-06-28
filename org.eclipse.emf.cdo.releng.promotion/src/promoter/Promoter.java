@@ -64,6 +64,11 @@ public class Promoter
     return create(BuildProcessor.class);
   }
 
+  public ReleaseNotesGenerator createReleaseNotesGenerator()
+  {
+    return create(ReleaseNotesGenerator.class);
+  }
+
   public RepositoryComposer createRepositoryComposer()
   {
     return create(RepositoryComposer.class);
