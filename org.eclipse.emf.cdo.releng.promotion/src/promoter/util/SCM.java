@@ -11,6 +11,7 @@
 package promoter.util;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +25,8 @@ public abstract class SCM
 
   public abstract void setTag(String branch, String tag);
 
-  public abstract List<LogEntry> getLogEntries(String branch, String fromRevision, String toRevision);
+  public abstract void handleLogEntries(String branch, String fromRevision, String toRevision, boolean withPaths,
+      LogEntryHandler handler);
 
   public abstract void commit(String comment, File... checkouts);
 
@@ -40,6 +42,8 @@ public abstract class SCM
     private String date;
 
     private String message;
+
+    private List<String> paths = new ArrayList<String>();
 
     public LogEntry(String revision)
     {
@@ -81,10 +85,23 @@ public abstract class SCM
       this.message = message;
     }
 
+    public List<String> getPaths()
+    {
+      return paths;
+    }
+
     @Override
     public String toString()
     {
       return "LogEntry [revision=" + revision + ", author=" + author + ", date=" + date + ", message=" + message + "]";
     }
+  }
+
+  /**
+   * @author Eike Stepper
+   */
+  public interface LogEntryHandler
+  {
+    public boolean handleLogEntry(LogEntry logEntry);
   }
 }

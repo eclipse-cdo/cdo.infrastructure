@@ -20,8 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Eike Stepper
@@ -56,7 +54,8 @@ public class SVN extends SCM
   }
 
   @Override
-  public List<LogEntry> getLogEntries(final String branch, final String fromRevision, final String toRevision)
+  public void handleLogEntries(final String branch, final String fromRevision, final String toRevision,
+      final boolean withPaths, final LogEntryHandler handler)
   {
     try
     {
@@ -70,12 +69,11 @@ public class SVN extends SCM
           System.out.println("Getting log entries for " + branch + " (" + range + ")");
 
           PrintStream stream = new PrintStream(out);
-          stream.println("svn log --xml -r " + range + " \"" + SVN_ROOT + branch + "\" > " + xmlFile);
+          stream.println("svn log " + (withPaths ? "-v " : "") + "--xml -r " + range + " \"" + SVN_ROOT + branch
+              + "\" > " + xmlFile);
           stream.flush();
         }
       });
-
-      List<LogEntry> result = new ArrayList<LogEntry>();
 
       XML.parseXML(xmlFile, new DefaultHandler()
       {
@@ -111,6 +109,15 @@ public class SVN extends SCM
             {
               logEntry.setMessage(builder.toString());
             }
+            else if ("path".equalsIgnoreCase(qName))
+            {
+              logEntry.getPaths().add(builder.toString());
+            }
+            else if ("logentry".equalsIgnoreCase(qName))
+            {
+              handler.handleLogEntry(logEntry);
+              logEntry = null;
+            }
           }
         }
 
@@ -120,8 +127,6 @@ public class SVN extends SCM
           builder.append(ch, start, length);
         }
       });
-
-      return result;
     }
     catch (Exception ex)
     {
