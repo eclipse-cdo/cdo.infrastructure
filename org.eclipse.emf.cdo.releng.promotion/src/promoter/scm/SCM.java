@@ -8,7 +8,7 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
-package promoter.util;
+package promoter.scm;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -102,6 +102,6 @@ public abstract class SCM
    */
   public interface LogEntryHandler
   {
-    public boolean handleLogEntry(LogEntry logEntry);
+    public void handleLogEntry(LogEntry logEntry);
   }
 }

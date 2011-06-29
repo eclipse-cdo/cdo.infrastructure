@@ -10,8 +10,9 @@
  */
 package promoter;
 
+import promoter.issues.IssueManager;
+import promoter.scm.SCM;
 import promoter.util.Ant;
-import promoter.util.SCM;
 import promoter.util.XMLOutput;
 
 import java.io.File;
@@ -56,6 +57,11 @@ public class Promoter
   public SCM createSCM()
   {
     return create(SCM.class);
+  }
+
+  public IssueManager createIssueManager()
+  {
+    return create(IssueManager.class);
   }
 
   public BuildCopier createBuildCopier()

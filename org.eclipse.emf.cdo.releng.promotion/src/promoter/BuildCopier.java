@@ -14,9 +14,9 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import promoter.scm.SCM;
 import promoter.util.Config;
 import promoter.util.IO;
-import promoter.util.SCM;
 import promoter.util.XML;
 
 import java.io.File;

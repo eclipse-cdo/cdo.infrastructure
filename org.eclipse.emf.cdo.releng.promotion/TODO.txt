@@ -13,3 +13,5 @@ TODO
 - xslt test-report.xml
 
 - validate HTML generation for more than 2 composite levels
+
+- consider stream change during integration

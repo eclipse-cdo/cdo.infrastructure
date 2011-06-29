@@ -8,12 +8,14 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
-package promoter.util;
+package promoter.scm;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import promoter.util.IO;
+import promoter.util.XML;
 import promoter.util.IO.OutputHandler;
 
 import java.io.File;
