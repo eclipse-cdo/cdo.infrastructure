@@ -10,7 +10,6 @@
  */
 package promoter;
 
-
 /**
  * @author Eike Stepper
  */
@@ -39,7 +38,14 @@ public class Bugzilla extends IssueManager
       }
     }
 
-    return builder.toString();
+    try
+    {
+      return String.valueOf(Integer.parseInt(builder.toString()));
+    }
+    catch (NumberFormatException ex)
+    {
+      return "";
+    }
   }
 
   @Override
