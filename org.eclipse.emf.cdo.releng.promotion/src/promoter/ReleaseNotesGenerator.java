@@ -10,11 +10,9 @@
  */
 package promoter;
 
-import promoter.issues.IssueManager;
-import promoter.issues.IssueManager.Issue;
-import promoter.scm.SCM;
-import promoter.scm.SCM.LogEntry;
-import promoter.scm.SCM.LogEntryHandler;
+import promoter.IssueManager.Issue;
+import promoter.SourceCodeManager.LogEntry;
+import promoter.SourceCodeManager.LogEntryHandler;
 import promoter.util.Config;
 import promoter.util.IO;
 import promoter.util.XMLOutput;
@@ -34,11 +32,9 @@ import java.util.Properties;
 /**
  * @author Eike Stepper
  */
-public class ReleaseNotesGenerator
+public class ReleaseNotesGenerator extends PromoterComponent
 {
-  private Promoter promoter;
-
-  private SCM scm;
+  private SourceCodeManager scm;
 
   private IssueManager issueManager;
 
@@ -46,34 +42,18 @@ public class ReleaseNotesGenerator
   {
   }
 
-  public final Promoter getPromoter()
+  public synchronized void generateReleaseNotes(List<BuildInfo> buildInfos)
   {
-    return promoter;
-  }
+    scm = getPromoter().createSourceCodeManager();
+    issueManager = getPromoter().createIssueManager();
 
-  void setPromoter(Promoter promoter)
-  {
-    this.promoter = promoter;
-    scm = promoter.createSCM();
-    issueManager = promoter.createIssueManager();
-  }
-
-  public final SCM getSCM()
-  {
-    return scm;
-  }
-
-  public final IssueManager getIssueManager()
-  {
-    return issueManager;
-  }
-
-  public void generateReleaseNotes(List<BuildInfo> buildInfos)
-  {
     for (Stream stream : getStreams(buildInfos))
     {
       generateReleaseNotes(stream);
     }
+
+    issueManager = null;
+    scm = null;
   }
 
   protected void generateReleaseNotes(Stream stream)

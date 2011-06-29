@@ -8,16 +8,16 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
-package promoter.issues;
+package promoter;
 
-import promoter.issues.IssueManager.Issue;
+import promoter.IssueManager.Issue;
 
 import java.util.Comparator;
 
 /**
  * @author Eike Stepper
  */
-public abstract class IssueManager implements Comparator<Issue>
+public abstract class IssueManager extends PromoterComponent implements Comparator<Issue>
 {
   public abstract String parseID(String message);
 

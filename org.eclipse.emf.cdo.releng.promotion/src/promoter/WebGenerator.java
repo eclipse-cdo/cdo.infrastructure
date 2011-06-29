@@ -18,7 +18,7 @@ import java.io.PrintStream;
 /**
  * @author Eike Stepper
  */
-public class WebGenerator
+public class WebGenerator extends PromoterComponent
 {
   public WebGenerator()
   {

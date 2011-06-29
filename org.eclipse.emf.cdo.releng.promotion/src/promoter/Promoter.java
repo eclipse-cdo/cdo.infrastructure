@@ -10,8 +10,6 @@
  */
 package promoter;
 
-import promoter.issues.IssueManager;
-import promoter.scm.SCM;
 import promoter.util.Ant;
 import promoter.util.XMLOutput;
 
@@ -54,41 +52,39 @@ public class Promoter
     System.out.println();
   }
 
-  public SCM createSCM()
+  public SourceCodeManager createSourceCodeManager()
   {
-    return create(SCM.class);
+    return createComponent(SourceCodeManager.class);
   }
 
   public IssueManager createIssueManager()
   {
-    return create(IssueManager.class);
+    return createComponent(IssueManager.class);
   }
 
   public BuildCopier createBuildCopier()
   {
-    BuildCopier buildCopier = create(BuildCopier.class);
-    buildCopier.setPromoter(this);
-    return buildCopier;
+    return createComponent(BuildCopier.class);
   }
 
   public BuildProcessor createBuildProcessor()
   {
-    return create(BuildProcessor.class);
+    return createComponent(BuildProcessor.class);
   }
 
   public ReleaseNotesGenerator createReleaseNotesGenerator()
   {
-    return create(ReleaseNotesGenerator.class);
+    return createComponent(ReleaseNotesGenerator.class);
   }
 
   public RepositoryComposer createRepositoryComposer()
   {
-    return create(RepositoryComposer.class);
+    return createComponent(RepositoryComposer.class);
   }
 
   public WebGenerator createWebGenerator()
   {
-    return create(WebGenerator.class);
+    return createComponent(WebGenerator.class);
   }
 
   public Ant<Map.Entry<List<BuildInfo>, WebNode>> createAnt()
@@ -98,7 +94,7 @@ public class Promoter
     return new DefaultAnt(script, basedir);
   }
 
-  public <T> T create(Class<T> type)
+  public <T> T createComponent(Class<T> type)
   {
     String name = PromoterConfig.INSTANCE.getProperty("class" + type.getSimpleName(), type.getName());
 
@@ -106,7 +102,15 @@ public class Promoter
     {
       @SuppressWarnings("unchecked")
       Class<T> c = (Class<T>)getClass().getClassLoader().loadClass(name);
-      return c.newInstance();
+
+      T component = c.newInstance();
+      if (component instanceof PromoterComponent)
+      {
+        PromoterComponent promoterComponent = (PromoterComponent)component;
+        promoterComponent.setPromoter(this);
+      }
+
+      return component;
     }
     catch (Exception ex)
     {

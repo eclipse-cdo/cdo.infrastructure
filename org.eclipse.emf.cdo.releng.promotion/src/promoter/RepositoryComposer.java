@@ -25,7 +25,7 @@ import java.util.StringTokenizer;
 /**
  * @author Eike Stepper
  */
-public class RepositoryComposer
+public class RepositoryComposer extends PromoterComponent
 {
   public RepositoryComposer()
   {

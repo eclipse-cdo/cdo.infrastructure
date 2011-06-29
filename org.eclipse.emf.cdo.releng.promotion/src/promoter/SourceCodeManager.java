@@ -8,7 +8,7 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
-package promoter.scm;
+package promoter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,9 +17,9 @@ import java.util.List;
 /**
  * @author Eike Stepper
  */
-public abstract class SCM
+public abstract class SourceCodeManager extends PromoterComponent
 {
-  public SCM()
+  public SourceCodeManager()
   {
   }
 

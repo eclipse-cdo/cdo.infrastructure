@@ -8,7 +8,8 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
-package promoter.issues;
+package promoter;
+
 
 /**
  * @author Eike Stepper

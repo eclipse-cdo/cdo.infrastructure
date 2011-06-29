@@ -27,7 +27,7 @@ import java.util.Properties;
 /**
  * @author Eike Stepper
  */
-public class BuildProcessor
+public class BuildProcessor extends PromoterComponent
 {
   public static final String MARKER_MIRRORED = ".mirrored";
 

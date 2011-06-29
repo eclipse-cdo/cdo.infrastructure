@@ -8,7 +8,7 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
-package promoter.scm;
+package promoter;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -26,12 +26,12 @@ import java.io.PrintStream;
 /**
  * @author Eike Stepper
  */
-public class SVN extends SCM
+public class Subversion extends SourceCodeManager
 {
   // TODO Make SVN_ROOT configurable
   public static final String SVN_ROOT = "https://dev.eclipse.org/svnroot/modeling/org.eclipse.emf.cdo/";
 
-  public SVN()
+  public Subversion()
   {
   }
 

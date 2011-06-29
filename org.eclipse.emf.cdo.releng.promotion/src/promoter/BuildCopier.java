@@ -14,7 +14,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import promoter.scm.SCM;
 import promoter.util.Config;
 import promoter.util.IO;
 import promoter.util.XML;
@@ -33,22 +32,10 @@ import java.util.StringTokenizer;
 /**
  * @author Eike Stepper
  */
-public class BuildCopier
+public class BuildCopier extends PromoterComponent
 {
-  private Promoter promoter;
-
   public BuildCopier()
   {
-  }
-
-  public final Promoter getPromoter()
-  {
-    return promoter;
-  }
-
-  void setPromoter(Promoter promoter)
-  {
-    this.promoter = promoter;
   }
 
   public List<BuildInfo> copyBuilds()
@@ -189,7 +176,7 @@ public class BuildCopier
   protected void setTag(BuildInfo buildInfo)
   {
     System.out.println();
-    SCM scm = promoter.createSCM();
+    SourceCodeManager scm = getPromoter().createSourceCodeManager();
     if (scm != null)
     {
       scm.setTag(buildInfo.getBranch(), buildInfo.getQualifier());
