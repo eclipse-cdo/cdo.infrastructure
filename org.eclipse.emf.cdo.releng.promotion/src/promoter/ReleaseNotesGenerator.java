@@ -10,10 +10,8 @@
  */
 package promoter;
 
-import promoter.IssueManager.Issue;
 import promoter.SourceCodeManager.LogEntry;
 import promoter.SourceCodeManager.LogEntryHandler;
-import promoter.util.Config;
 import promoter.util.IO;
 import promoter.util.XMLOutput;
 
@@ -27,7 +25,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * @author Eike Stepper
@@ -47,7 +44,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
     scm = getPromoter().createSourceCodeManager();
     issueManager = getPromoter().createIssueManager();
 
-    for (Stream stream : getStreams(buildInfos))
+    for (ReleaseNotesStream stream : getStreams(buildInfos))
     {
       generateReleaseNotes(stream);
     }
@@ -56,7 +53,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
     scm = null;
   }
 
-  protected void generateReleaseNotes(Stream stream)
+  protected void generateReleaseNotes(ReleaseNotesStream stream)
   {
     List<BuildInfo> buildInfos = stream.getBuildInfos();
     Collections.sort(buildInfos, new Comparator<BuildInfo>()
@@ -125,17 +122,17 @@ public class ReleaseNotesGenerator extends PromoterComponent
     }
   }
 
-  protected Collection<Stream> getStreams(List<BuildInfo> buildInfos)
+  protected Collection<ReleaseNotesStream> getStreams(List<BuildInfo> buildInfos)
   {
-    Map<String, Stream> streams = new HashMap<String, Stream>();
+    Map<String, ReleaseNotesStream> streams = new HashMap<String, ReleaseNotesStream>();
     for (BuildInfo buildInfo : buildInfos)
     {
       String name = buildInfo.getStream();
 
-      Stream stream = streams.get(name);
+      ReleaseNotesStream stream = streams.get(name);
       if (stream == null)
       {
-        stream = new Stream(name);
+        stream = new ReleaseNotesStream(name);
         streams.put(name, stream);
       }
 
@@ -173,44 +170,5 @@ public class ReleaseNotesGenerator extends PromoterComponent
   protected void sortIssues(List<Issue> issues)
   {
     Collections.sort(issues, issueManager);
-  }
-
-  /**
-   * @author Eike Stepper
-   */
-  public static class Stream
-  {
-    private String name;
-
-    private String firstRevision;
-
-    private List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
-
-    public Stream(String name)
-    {
-      this.name = name;
-
-      Properties streamProperties = Config.loadProperties(new File("streams", name + ".properties"), true);
-      firstRevision = streamProperties.getProperty("first.revision");
-      if (firstRevision == null)
-      {
-        throw new IllegalStateException("First revision of stream " + name + "is not specified");
-      }
-    }
-
-    public final String getName()
-    {
-      return name;
-    }
-
-    public String getFirstRevision()
-    {
-      return firstRevision;
-    }
-
-    public final List<BuildInfo> getBuildInfos()
-    {
-      return buildInfos;
-    }
   }
 }

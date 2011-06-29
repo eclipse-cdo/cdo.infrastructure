@@ -10,17 +10,34 @@
  */
 package promoter;
 
-
-import java.util.Comparator;
-
 /**
  * @author Eike Stepper
  */
-public abstract class IssueManager extends PromoterComponent implements Comparator<Issue>
+public class Issue
 {
-  public abstract String parseID(String message);
+  private String id;
 
-  public abstract Issue getIssue(String id);
+  private String title;
 
-  public abstract String getURL(Issue issue);
+  public Issue(String id, String title)
+  {
+    this.id = id;
+    this.title = title;
+  }
+
+  public final String getID()
+  {
+    return id;
+  }
+
+  public final String getTitle()
+  {
+    return title;
+  }
+
+  @Override
+  public String toString()
+  {
+    return "Issue [id=" + id + ", title=" + title + "]";
+  }
 }
