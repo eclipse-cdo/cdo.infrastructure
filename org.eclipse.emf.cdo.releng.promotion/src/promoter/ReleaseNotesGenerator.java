@@ -167,8 +167,10 @@ public class ReleaseNotesGenerator
 
   protected List<Issue> getIssues(BuildInfo buildInfo, String fromRevision, String toRevision)
   {
+    String branch = buildInfo.getBranch();
+
     final List<Issue> issues = new ArrayList<Issue>();
-    scm.handleLogEntries(buildInfo.getBranch(), fromRevision, toRevision, false, new LogEntryHandler()
+    scm.handleLogEntries(branch, fromRevision, toRevision, false, new LogEntryHandler()
     {
       public void handleLogEntry(LogEntry logEntry)
       {
