@@ -71,7 +71,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
     {
       String toRevision = buildInfo.getRevision();
       generateReleaseNotes(buildInfo, fromRevision, toRevision);
-      fromRevision = toRevision + 1;
+      fromRevision = scm.getNextRevision(toRevision);
     }
   }
 

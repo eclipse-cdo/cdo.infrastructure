@@ -23,6 +23,8 @@ public abstract class SourceCodeManager extends PromoterComponent
   {
   }
 
+  public abstract String getNextRevision(String revision);
+
   public abstract void setTag(String branch, String tag);
 
   public abstract void handleLogEntries(String branch, String fromRevision, String toRevision, boolean withPaths,

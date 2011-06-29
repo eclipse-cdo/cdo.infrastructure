@@ -36,6 +36,12 @@ public class Subversion extends SourceCodeManager
   }
 
   @Override
+  public String getNextRevision(String revision)
+  {
+    return String.valueOf(Integer.parseInt(revision) + 1);
+  }
+
+  @Override
   public void setTag(final String branch, final String tag)
   {
     IO.executeProcess("/bin/bash", new OutputHandler()
