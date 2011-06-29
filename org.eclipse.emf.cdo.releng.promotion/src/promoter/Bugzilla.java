@@ -10,11 +10,16 @@
  */
 package promoter;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * @author Eike Stepper
  */
 public class Bugzilla extends IssueManager
 {
+  private static final Pattern ID_PATTERN = Pattern.compile("\\[([0-9]+)].*");
+
   public Bugzilla()
   {
   }
@@ -22,30 +27,20 @@ public class Bugzilla extends IssueManager
   @Override
   public String parseID(String message)
   {
-    StringBuilder builder = new StringBuilder();
-    boolean inDigits = false;
-    for (int i = 0; i < message.length(); i++)
+    Matcher matcher = ID_PATTERN.matcher(message);
+    if (matcher.matches())
     {
-      char c = message.charAt(i);
-      if (Character.isDigit(c))
+      try
       {
-        builder.append(c);
-        inDigits = true;
+        return String.valueOf(Integer.parseInt(matcher.group(1)));
       }
-      else if (inDigits)
+      catch (NumberFormatException ex)
       {
-        break;
+        // fall-through
       }
     }
 
-    try
-    {
-      return String.valueOf(Integer.parseInt(builder.toString()));
-    }
-    catch (NumberFormatException ex)
-    {
-      return "";
-    }
+    return "";
   }
 
   @Override
