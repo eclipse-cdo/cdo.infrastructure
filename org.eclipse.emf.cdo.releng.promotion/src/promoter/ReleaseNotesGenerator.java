@@ -23,8 +23,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Eike Stepper
@@ -95,7 +97,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
         xml.attribute("to", toRevision);
         xml.push();
 
-        List<Issue> issues = getIssues(buildInfo, fromRevision, toRevision);
+        List<Issue> issues = new ArrayList<Issue>(getIssues(buildInfo, fromRevision, toRevision));
         sortIssues(issues);
 
         for (Issue issue : issues)
@@ -142,11 +144,11 @@ public class ReleaseNotesGenerator extends PromoterComponent
     return streams.values();
   }
 
-  protected List<Issue> getIssues(BuildInfo buildInfo, String fromRevision, String toRevision)
+  protected Set<Issue> getIssues(BuildInfo buildInfo, String fromRevision, String toRevision)
   {
     String branch = buildInfo.getBranch();
 
-    final List<Issue> issues = new ArrayList<Issue>();
+    final Set<Issue> issues = new HashSet<Issue>();
     scm.handleLogEntries(branch, fromRevision, toRevision, false, new LogEntryHandler()
     {
       public void handleLogEntry(LogEntry logEntry)

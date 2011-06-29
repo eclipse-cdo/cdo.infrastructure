@@ -15,8 +15,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import promoter.util.IO;
-import promoter.util.XML;
 import promoter.util.IO.OutputHandler;
+import promoter.util.XML;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,58 +77,69 @@ public class Subversion extends SourceCodeManager
         }
       });
 
-      XML.parseXML(xmlFile, new DefaultHandler()
+      try
       {
-        private LogEntry logEntry;
-
-        private StringBuilder builder;
-
-        @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+        XML.parseXML(xmlFile, new DefaultHandler()
         {
-          builder = new StringBuilder();
-          if ("logentry".equalsIgnoreCase(qName))
-          {
-            String revision = attributes.getValue("revision");
-            logEntry = new LogEntry(revision);
-          }
-        }
+          private LogEntry logEntry;
 
-        @Override
-        public void endElement(String uri, String localName, String qName) throws SAXException
-        {
-          if (logEntry != null)
+          private StringBuilder builder;
+
+          @Override
+          public void startElement(String uri, String localName, String qName, Attributes attributes)
+              throws SAXException
           {
-            if ("author".equalsIgnoreCase(qName))
+            builder = new StringBuilder();
+            if ("logentry".equalsIgnoreCase(qName))
             {
-              logEntry.setAuthor(builder.toString());
-            }
-            else if ("date".equalsIgnoreCase(qName))
-            {
-              logEntry.setDate(builder.toString());
-            }
-            else if ("msg".equalsIgnoreCase(qName))
-            {
-              logEntry.setMessage(builder.toString());
-            }
-            else if ("path".equalsIgnoreCase(qName))
-            {
-              logEntry.getPaths().add(builder.toString());
-            }
-            else if ("logentry".equalsIgnoreCase(qName))
-            {
-              handler.handleLogEntry(logEntry);
-              logEntry = null;
+              String revision = attributes.getValue("revision");
+              logEntry = new LogEntry(revision);
             }
           }
-        }
 
-        @Override
-        public void characters(char[] ch, int start, int length) throws SAXException
-        {
-          builder.append(ch, start, length);
-        }
-      });
+          @Override
+          public void endElement(String uri, String localName, String qName) throws SAXException
+          {
+            if (logEntry != null)
+            {
+              if ("author".equalsIgnoreCase(qName))
+              {
+                logEntry.setAuthor(builder.toString());
+              }
+              else if ("date".equalsIgnoreCase(qName))
+              {
+                logEntry.setDate(builder.toString());
+              }
+              else if ("msg".equalsIgnoreCase(qName))
+              {
+                logEntry.setMessage(builder.toString());
+              }
+              else if ("path".equalsIgnoreCase(qName))
+              {
+                logEntry.getPaths().add(builder.toString());
+              }
+              else if ("logentry".equalsIgnoreCase(qName))
+              {
+                handler.handleLogEntry(logEntry);
+                logEntry = null;
+              }
+            }
+          }
+
+          @Override
+          public void characters(char[] ch, int start, int length) throws SAXException
+          {
+            builder.append(ch, start, length);
+          }
+        });
+
+        xmlFile.delete();
+      }
+      catch (Exception ex)
+      {
+        System.err.println("Error in XML file " + xmlFile);
+        throw ex;
+      }
     }
     catch (Exception ex)
     {
