@@ -25,6 +25,8 @@ import java.util.regex.Pattern;
  */
 public class Bugzilla extends IssueManager
 {
+  private static final int RETRIES = 3;
+
   public static final String SERVER = "https://bugs.eclipse.org/bugs/show_bug.cgi?id=";
 
   private static final Pattern ID_PATTERN = Pattern.compile("\\[([0-9]+)].*");
@@ -59,7 +61,7 @@ public class Bugzilla extends IssueManager
   {
     final String[] title = { null };
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < RETRIES; i++)
     {
       try
       {
@@ -88,7 +90,7 @@ public class Bugzilla extends IssueManager
       }
       catch (Exception ex)
       {
-        if (i == 5 - 1)
+        if (i == RETRIES - 1)
         {
           throw new RuntimeException(ex);
         }
@@ -101,7 +103,7 @@ public class Bugzilla extends IssueManager
   @Override
   public String getURL(Issue issue)
   {
-    return "https://bugs.eclipse.org/" + issue.getID();
+    return SERVER + issue.getID();
   }
 
   public int compare(Issue i1, Issue i2)

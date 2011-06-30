@@ -31,6 +31,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Collection;
 
 /**
@@ -38,6 +39,8 @@ import java.util.Collection;
  */
 public final class IO
 {
+  private static final int TIMEOUT = 10000;
+
   public static final int EOF = -1;
 
   public static final int DEFAULT_BUFFER_SIZE = 8192;
@@ -500,7 +503,10 @@ public final class IO
 
     try
     {
-      input = new URL(url).openStream();
+      URLConnection connection = new URL(url).openConnection();
+      connection.setConnectTimeout(TIMEOUT);
+
+      input = connection.getInputStream();
       handler.handleInput(input);
     }
     catch (Exception ex)
