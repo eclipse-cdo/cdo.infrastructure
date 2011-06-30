@@ -102,7 +102,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
         for (Issue issue : issues)
         {
-          System.out.println(" Adding " + issue);
+          System.out.println("   Bugzilla " + issue.getID());
 
           xml.element("issue");
           xml.attribute("id", issue.getID());

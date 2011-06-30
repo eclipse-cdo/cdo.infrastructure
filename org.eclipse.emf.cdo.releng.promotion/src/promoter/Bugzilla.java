@@ -10,13 +10,6 @@
  */
 package promoter;
 
-import promoter.util.IO;
-import promoter.util.IO.InputHandler;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,45 +52,47 @@ public class Bugzilla extends IssueManager
   @Override
   protected Issue doGetIssue(String id)
   {
-    final String[] title = { null };
+    return new Issue(id, "This is a bugzilla");
 
-    for (int i = 0; i < RETRIES; i++)
-    {
-      try
-      {
-        IO.readURL(SERVER + id, new InputHandler()
-        {
-          public void handleInput(InputStream in) throws IOException
-          {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            String line;
-            while ((line = reader.readLine()) != null)
-            {
-              Matcher matcher = TITLE_PATTERN.matcher(line);
-              if (matcher.matches())
-              {
-                title[0] = matcher.group(2);
-                return;
-              }
-            }
-          }
-        });
-
-        if (title[0] != null)
-        {
-          return new Issue(id, title[0]);
-        }
-      }
-      catch (Exception ex)
-      {
-        if (i == RETRIES - 1)
-        {
-          throw new RuntimeException(ex);
-        }
-      }
-    }
-
-    return null;
+    // final String[] title = { null };
+    //
+    // for (int i = 0; i < RETRIES; i++)
+    // {
+    // try
+    // {
+    // IO.readURL(SERVER + id, new InputHandler()
+    // {
+    // public void handleInput(InputStream in) throws IOException
+    // {
+    // BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+    // String line;
+    // while ((line = reader.readLine()) != null)
+    // {
+    // Matcher matcher = TITLE_PATTERN.matcher(line);
+    // if (matcher.matches())
+    // {
+    // title[0] = matcher.group(2);
+    // return;
+    // }
+    // }
+    // }
+    // });
+    //
+    // if (title[0] != null)
+    // {
+    // return new Issue(id, title[0]);
+    // }
+    // }
+    // catch (Exception ex)
+    // {
+    // if (i == RETRIES - 1)
+    // {
+    // throw new RuntimeException(ex);
+    // }
+    // }
+    // }
+    //
+    // return null;
   }
 
   @Override
