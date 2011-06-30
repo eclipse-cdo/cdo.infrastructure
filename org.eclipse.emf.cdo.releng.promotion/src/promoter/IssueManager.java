@@ -10,7 +10,9 @@
  */
 package promoter;
 
+import promoter.util.IO;
 
+import java.io.File;
 import java.util.Comparator;
 
 /**
@@ -18,9 +20,31 @@ import java.util.Comparator;
  */
 public abstract class IssueManager extends PromoterComponent implements Comparator<Issue>
 {
+  private File issuesFolder;
+
+  public IssueManager()
+  {
+    issuesFolder = new File(PromoterConfig.INSTANCE.getWorkingArea(), "issues");
+    issuesFolder.mkdirs();
+  }
+
+  public Issue getIssue(String id)
+  {
+    File file = new File(issuesFolder, id);
+    if (file.isFile())
+    {
+      return new Issue(id, IO.readTextFile(file));
+    }
+
+    Issue issue = doGetIssue(id);
+    IO.writeFile(file, issue.getTitle().getBytes());
+
+    return issue;
+  }
+
   public abstract String parseID(String message);
 
-  public abstract Issue getIssue(String id);
-
   public abstract String getURL(Issue issue);
+
+  protected abstract Issue doGetIssue(String id);
 }

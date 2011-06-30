@@ -55,7 +55,7 @@ public class Bugzilla extends IssueManager
   }
 
   @Override
-  public Issue getIssue(String id)
+  protected Issue doGetIssue(String id)
   {
     final String[] title = { null };
 
