@@ -25,11 +25,11 @@ import java.util.regex.Pattern;
  */
 public class Bugzilla extends IssueManager
 {
-  public static final String SERVER = "https://bugs.eclipse.org";
+  public static final String SERVER = "https://bugs.eclipse.org/bugs/show_bug.cgi?id=";
 
   private static final Pattern ID_PATTERN = Pattern.compile("\\[([0-9]+)].*");
 
-  private static final Pattern TITLE_PATTERN = Pattern.compile("<title>Bug ([0-9]*) &ndash; (.*)</title>");
+  private static final Pattern TITLE_PATTERN = Pattern.compile("\\s*<title>Bug ([0-9]*) &ndash; (.*)</title>");
 
   public Bugzilla()
   {
@@ -59,7 +59,7 @@ public class Bugzilla extends IssueManager
   {
     final String[] title = { null };
 
-    IO.readURL(SERVER + "/" + id, new InputHandler()
+    IO.readURL(SERVER + id, new InputHandler()
     {
       public void handleInput(InputStream in) throws IOException
       {

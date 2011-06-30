@@ -24,12 +24,16 @@ public abstract class IssueManager extends PromoterComponent implements Comparat
 
   public IssueManager()
   {
-    issuesFolder = new File(PromoterConfig.INSTANCE.getWorkingArea(), "issues");
-    issuesFolder.mkdirs();
   }
 
-  public Issue getIssue(String id)
+  public synchronized Issue getIssue(String id)
   {
+    if (issuesFolder == null)
+    {
+      issuesFolder = new File(PromoterConfig.INSTANCE.getWorkingArea(), "issues");
+      issuesFolder.mkdirs();
+    }
+
     File file = new File(issuesFolder, id);
     if (file.isFile())
     {
