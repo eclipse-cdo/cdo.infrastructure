@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.URL;
 import java.util.Collection;
 
 /**
@@ -493,6 +494,25 @@ public final class IO
     }
   }
 
+  public static void readURL(String url, InputHandler handler)
+  {
+    InputStream input = null;
+
+    try
+    {
+      input = new URL(url).openStream();
+      handler.handleInput(input);
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      close(input);
+    }
+  }
+
   public static void writeFile(File file, byte[] bytes)
   {
     FileOutputStream output = openOutputStream(file);
@@ -550,6 +570,14 @@ public final class IO
     {
       throw new RuntimeException(ex);
     }
+  }
+
+  /**
+   * @author Eike Stepper
+   */
+  public interface InputHandler
+  {
+    public void handleInput(InputStream in) throws IOException;
   }
 
   /**

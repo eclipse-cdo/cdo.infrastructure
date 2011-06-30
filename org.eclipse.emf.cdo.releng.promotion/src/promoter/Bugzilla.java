@@ -10,6 +10,13 @@
  */
 package promoter;
 
+import promoter.util.IO;
+import promoter.util.IO.InputHandler;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,7 +25,11 @@ import java.util.regex.Pattern;
  */
 public class Bugzilla extends IssueManager
 {
+  public static final String SERVER = "https://bugs.eclipse.org";
+
   private static final Pattern ID_PATTERN = Pattern.compile("\\[([0-9]+)].*");
+
+  private static final Pattern TITLE_PATTERN = Pattern.compile("<title>Bug ([0-9]*) &ndash; (.*)</title>");
 
   public Bugzilla()
   {
@@ -46,7 +57,27 @@ public class Bugzilla extends IssueManager
   @Override
   public Issue getIssue(String id)
   {
-    return new Issue(id, "This is a bug report");
+    final String[] title = { null };
+
+    IO.readURL(SERVER + "/" + id, new InputHandler()
+    {
+      public void handleInput(InputStream in) throws IOException
+      {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String line;
+        while ((line = reader.readLine()) != null)
+        {
+          Matcher matcher = TITLE_PATTERN.matcher(line);
+          if (matcher.matches())
+          {
+            title[0] = matcher.group(2);
+            return;
+          }
+        }
+      }
+    });
+
+    return title[0] == null ? null : new Issue(id, title[0]);
   }
 
   @Override
