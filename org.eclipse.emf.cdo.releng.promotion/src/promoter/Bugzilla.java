@@ -59,25 +59,43 @@ public class Bugzilla extends IssueManager
   {
     final String[] title = { null };
 
-    IO.readURL(SERVER + id, new InputHandler()
+    for (int i = 0; i < 5; i++)
     {
-      public void handleInput(InputStream in) throws IOException
+      try
       {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        String line;
-        while ((line = reader.readLine()) != null)
+        IO.readURL(SERVER + id, new InputHandler()
         {
-          Matcher matcher = TITLE_PATTERN.matcher(line);
-          if (matcher.matches())
+          public void handleInput(InputStream in) throws IOException
           {
-            title[0] = matcher.group(2);
-            return;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            String line;
+            while ((line = reader.readLine()) != null)
+            {
+              Matcher matcher = TITLE_PATTERN.matcher(line);
+              if (matcher.matches())
+              {
+                title[0] = matcher.group(2);
+                return;
+              }
+            }
           }
+        });
+
+        if (title[0] != null)
+        {
+          return new Issue(id, title[0]);
         }
       }
-    });
+      catch (Exception ex)
+      {
+        if (i == 5 - 1)
+        {
+          throw new RuntimeException(ex);
+        }
+      }
+    }
 
-    return title[0] == null ? null : new Issue(id, title[0]);
+    return null;
   }
 
   @Override
