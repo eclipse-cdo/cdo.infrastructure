@@ -79,50 +79,46 @@ public class ReleaseNotesGenerator extends PromoterComponent
       String fromRevision = previousBuildInfo == null ? stream.getFirstRevision() : previousBuildInfo.getRevision();
       String toRevision = buildInfo.getRevision();
 
-      Set<Issue> set = getIssues(buildInfo, fromRevision, toRevision);
-      if (!set.isEmpty())
+      OutputStream out = null;
+
+      try
       {
-        OutputStream out = null;
+        out = new FileOutputStream(relnotes);
+        XMLOutput xml = new XMLOutput(out);
 
-        try
+        xml.element("relnotes");
+        xml.attribute("stream", stream.getName());
+        xml.attribute("drop", buildInfo.getQualifier());
+        xml.attribute("revision", toRevision);
+        if (previousBuildInfo != null)
         {
-          out = new FileOutputStream(relnotes);
-          XMLOutput xml = new XMLOutput(out);
-
-          xml.element("relnotes");
-          xml.attribute("stream", stream.getName());
-          xml.attribute("drop", buildInfo.getQualifier());
-          xml.attribute("revision", toRevision);
-          if (previousBuildInfo != null)
-          {
-            xml.attribute("previousDrop", previousBuildInfo.getQualifier());
-          }
-
-          xml.attribute("previousRevision", fromRevision);
-          xml.push();
-
-          List<Issue> issues = new ArrayList<Issue>(set);
-          sortIssues(issues);
-
-          for (Issue issue : issues)
-          {
-            xml.element("issue");
-            xml.attribute("id", issue.getID());
-            xml.attribute("title", issue.getTitle());
-            xml.attribute("url", issueManager.getURL(issue));
-          }
-
-          xml.pop();
-          xml.done();
+          xml.attribute("previousDrop", previousBuildInfo.getQualifier());
         }
-        catch (Exception ex)
+
+        xml.attribute("previousRevision", fromRevision);
+        xml.push();
+
+        List<Issue> issues = new ArrayList<Issue>(getIssues(buildInfo, fromRevision, toRevision));
+        sortIssues(issues);
+
+        for (Issue issue : issues)
         {
-          throw new RuntimeException(ex);
+          xml.element("issue");
+          xml.attribute("id", issue.getID());
+          xml.attribute("title", issue.getTitle());
+          xml.attribute("url", issueManager.getURL(issue));
         }
-        finally
-        {
-          IO.close(out);
-        }
+
+        xml.pop();
+        xml.done();
+      }
+      catch (Exception ex)
+      {
+        throw new RuntimeException(ex);
+      }
+      finally
+      {
+        IO.close(out);
       }
     }
   }
