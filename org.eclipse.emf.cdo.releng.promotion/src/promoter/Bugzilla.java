@@ -10,7 +10,6 @@
  */
 package promoter;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -33,18 +32,37 @@ public class Bugzilla extends IssueManager
   @Override
   public String parseID(String message)
   {
-    Matcher matcher = ID_PATTERN.matcher(message);
-    if (matcher.matches())
+    if (message.charAt(0) == '[')
     {
-      try
+      int end = message.indexOf(']');
+      if (end != -1)
       {
-        return String.valueOf(Integer.parseInt(matcher.group(1)));
-      }
-      catch (NumberFormatException ex)
-      {
-        // fall-through
+        String id = message.substring(1, end);
+
+        try
+        {
+          Integer.parseInt(id); // Valid integer?
+          return id;
+        }
+        catch (NumberFormatException ex)
+        {
+          // fall-through
+        }
       }
     }
+
+    // Matcher matcher = ID_PATTERN.matcher(message);
+    // if (matcher.matches())
+    // {
+    // try
+    // {
+    // return String.valueOf(Integer.parseInt(matcher.group(1)));
+    // }
+    // catch (NumberFormatException ex)
+    // {
+    // // fall-through
+    // }
+    // }
 
     return "";
   }

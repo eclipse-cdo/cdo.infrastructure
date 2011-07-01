@@ -211,14 +211,13 @@ public class ReleaseNotesGenerator extends PromoterComponent
       public void handleLogEntry(LogEntry logEntry)
       {
         String message = logEntry.getMessage();
-        System.out.println(message);
         String id = issueManager.parseID(message);
         if (id != null && id.length() != 0)
         {
           Issue issue = issueManager.getIssue(id);
           if (issue != null)
           {
-            System.out.println("--> " + issue.getID());
+            System.out.println("   " + issue.getID());
             issues.add(issue);
           }
         }
