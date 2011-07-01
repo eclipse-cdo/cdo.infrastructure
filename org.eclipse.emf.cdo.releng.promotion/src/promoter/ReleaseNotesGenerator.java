@@ -103,8 +103,6 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
         for (Issue issue : issues)
         {
-          System.out.println("   Bugzilla " + issue.getID());
-
           xml.element("issue");
           xml.attribute("id", issue.getID());
           xml.attribute("title", issue.getTitle());
@@ -213,12 +211,14 @@ public class ReleaseNotesGenerator extends PromoterComponent
       public void handleLogEntry(LogEntry logEntry)
       {
         String message = logEntry.getMessage();
+        System.out.println(message);
         String id = issueManager.parseID(message);
         if (id != null && id.length() != 0)
         {
           Issue issue = issueManager.getIssue(id);
           if (issue != null)
           {
+            System.out.println("--> " + issue.getID());
             issues.add(issue);
           }
         }
