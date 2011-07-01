@@ -239,6 +239,8 @@ public class WebNode implements Comparable<WebNode>
 
     generateDropFile(out, level, buildInfo, "index.xml", " for detailed contents of this build.");
 
+    generateDropFile(out, level, buildInfo, "relnotes.xml", " for the release notes of this build.");
+
     generateDropFile(out, level, buildInfo, "bookmarks.xml", " for the <a href=\"" + HELP_TOPIC_URL
         + "/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
 

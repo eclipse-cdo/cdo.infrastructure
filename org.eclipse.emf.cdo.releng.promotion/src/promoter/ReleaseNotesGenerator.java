@@ -79,46 +79,50 @@ public class ReleaseNotesGenerator extends PromoterComponent
       String fromRevision = previousBuildInfo == null ? stream.getFirstRevision() : previousBuildInfo.getRevision();
       String toRevision = buildInfo.getRevision();
 
-      OutputStream out = null;
-
-      try
+      Set<Issue> set = getIssues(buildInfo, fromRevision, toRevision);
+      if (!set.isEmpty())
       {
-        out = new FileOutputStream(relnotes);
-        XMLOutput xml = new XMLOutput(out);
+        OutputStream out = null;
 
-        xml.element("relnotes");
-        xml.attribute("stream", stream.getName());
-        xml.attribute("drop", buildInfo.getQualifier());
-        xml.attribute("revision", toRevision);
-        if (previousBuildInfo != null)
+        try
         {
-          xml.attribute("previousDrop", previousBuildInfo.getQualifier());
+          out = new FileOutputStream(relnotes);
+          XMLOutput xml = new XMLOutput(out);
+
+          xml.element("relnotes");
+          xml.attribute("stream", stream.getName());
+          xml.attribute("drop", buildInfo.getQualifier());
+          xml.attribute("revision", toRevision);
+          if (previousBuildInfo != null)
+          {
+            xml.attribute("previousDrop", previousBuildInfo.getQualifier());
+          }
+
+          xml.attribute("previousRevision", fromRevision);
+          xml.push();
+
+          List<Issue> issues = new ArrayList<Issue>(set);
+          sortIssues(issues);
+
+          for (Issue issue : issues)
+          {
+            xml.element("issue");
+            xml.attribute("id", issue.getID());
+            xml.attribute("title", issue.getTitle());
+            xml.attribute("url", issueManager.getURL(issue));
+          }
+
+          xml.pop();
+          xml.done();
         }
-
-        xml.attribute("previousRevision", fromRevision);
-        xml.push();
-
-        List<Issue> issues = new ArrayList<Issue>(getIssues(buildInfo, fromRevision, toRevision));
-        sortIssues(issues);
-
-        for (Issue issue : issues)
+        catch (Exception ex)
         {
-          xml.element("issue");
-          xml.attribute("id", issue.getID());
-          xml.attribute("title", issue.getTitle());
-          xml.attribute("url", issueManager.getURL(issue));
+          throw new RuntimeException(ex);
         }
-
-        xml.pop();
-        xml.done();
-      }
-      catch (Exception ex)
-      {
-        throw new RuntimeException(ex);
-      }
-      finally
-      {
-        IO.close(out);
+        finally
+        {
+          IO.close(out);
+        }
       }
     }
   }
