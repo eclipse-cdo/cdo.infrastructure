@@ -185,14 +185,9 @@ public class ReleaseNotesGenerator extends PromoterComponent
       return "NIMSR";
     }
 
-    if ("I".equals(currentBuildType))
+    if ("I".equals(currentBuildType) || "M".equals(currentBuildType))
     {
       return "IMSR";
-    }
-
-    if ("M".equals(currentBuildType))
-    {
-      return "MSR";
     }
 
     if ("S".equals(currentBuildType))
