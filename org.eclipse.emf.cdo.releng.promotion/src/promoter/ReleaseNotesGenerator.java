@@ -57,32 +57,27 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
   protected void generateReleaseNotes(ReleaseNotesStream stream)
   {
-    List<BuildInfo> buildInfos = stream.getBuildInfos();
-    Collections.sort(buildInfos, new Comparator<BuildInfo>()
+    BuildInfo[] buildInfos = getBuildInfos(stream);
+    for (int i = 0; i < buildInfos.length; i++)
     {
-      public int compare(BuildInfo bi1, BuildInfo bi2)
-      {
-        return new Integer(bi1.getRevision()).compareTo(new Integer(bi2.getRevision()));
-      }
-    });
-
-    String fromRevision = stream.getFirstRevision();
-    for (BuildInfo buildInfo : buildInfos)
-    {
-      String toRevision = buildInfo.getRevision();
-      generateReleaseNotes(buildInfo, fromRevision, toRevision);
-      fromRevision = scm.getNextRevision(toRevision);
+      generateReleaseNotes(stream, buildInfos, i);
     }
   }
 
-  protected void generateReleaseNotes(BuildInfo buildInfo, String fromRevision, String toRevision)
+  protected void generateReleaseNotes(ReleaseNotesStream stream, BuildInfo[] buildInfos, int i)
   {
+    BuildInfo buildInfo = buildInfos[i];
+
     File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
     File relnotes = new File(drop, "relnotes.xml");
     if (!relnotes.exists())
     {
       System.out.println();
-      System.out.println("Generating " + relnotes);
+      System.out.println("Generating release notes for " + buildInfo.getQualifier());
+
+      BuildInfo previousBuildInfo = getPreviousBuildInfo(buildInfos, i);
+      String fromRevision = previousBuildInfo == null ? stream.getFirstRevision() : previousBuildInfo.getRevision();
+      String toRevision = buildInfo.getRevision();
 
       OutputStream out = null;
 
@@ -142,6 +137,69 @@ public class ReleaseNotesGenerator extends PromoterComponent
     }
 
     return streams.values();
+  }
+
+  protected BuildInfo[] getBuildInfos(ReleaseNotesStream stream)
+  {
+    List<BuildInfo> buildInfos = stream.getBuildInfos();
+    Collections.sort(buildInfos, new Comparator<BuildInfo>()
+    {
+      public int compare(BuildInfo bi1, BuildInfo bi2)
+      {
+        return new Integer(bi1.getRevision()).compareTo(new Integer(bi2.getRevision()));
+      }
+    });
+
+    return buildInfos.toArray(new BuildInfo[buildInfos.size()]);
+  }
+
+  protected BuildInfo getPreviousBuildInfo(BuildInfo[] buildInfos, int current)
+  {
+    String currentBuildType = buildInfos[current].getType();
+    String previousBuildTypes = getPreviousBuildTypes(currentBuildType);
+
+    for (int i = current - 1; i >= 0; --i)
+    {
+      BuildInfo previousBuildInfo = buildInfos[i];
+      String previousBuildType = previousBuildInfo.getType();
+      if (previousBuildTypes.contains(previousBuildType))
+      {
+        return previousBuildInfo;
+      }
+    }
+
+    // Use stream start
+    return null;
+  }
+
+  protected String getPreviousBuildTypes(String currentBuildType)
+  {
+    if ("N".equals(currentBuildType))
+    {
+      return "NIMSR";
+    }
+
+    if ("I".equals(currentBuildType))
+    {
+      return "IMSR";
+    }
+
+    if ("M".equals(currentBuildType))
+    {
+      return "MSR";
+    }
+
+    if ("S".equals(currentBuildType))
+    {
+      return "SR";
+    }
+
+    if ("R".equals(currentBuildType))
+    {
+      return "R";
+    }
+
+    throw new RuntimeException("Unrecognized build type: " + currentBuildType);
   }
 
   protected Set<Issue> getIssues(BuildInfo buildInfo, String fromRevision, String toRevision)
