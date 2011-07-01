@@ -40,6 +40,8 @@ public class Repository
 
   private List<Repository> childRepositories = new ArrayList<Repository>();
 
+  private String childRetention;
+
   private String targetInfo;
 
   private String targetVersions;
@@ -115,6 +117,11 @@ public class Repository
   public final List<Repository> getChildRepositories()
   {
     return childRepositories;
+  }
+
+  public String getChildRetention()
+  {
+    return childRetention;
   }
 
   public String getTargetInfo()
@@ -275,6 +282,7 @@ public class Repository
 
   void setProperties(Properties properties)
   {
+    childRetention = properties.getProperty("child.retention");
     targetInfo = properties.getProperty("target.info");
     targetVersions = properties.getProperty("target.versions", "");
     apiBaselineURL = properties.getProperty("api.baseline.url");

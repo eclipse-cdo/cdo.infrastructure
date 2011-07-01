@@ -165,6 +165,15 @@ public class WebNode implements Comparable<WebNode>
           + repository.getTargetVersions() + "</i></td></tr>");
     }
 
+    String childRetention = repository.getChildRetention();
+    if (childRetention != null)
+    {
+      out.println(prefix(level)
+          + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/22x22/dialog-information.png\"/></td>"
+          + "<td>" + childRetention + "</td>" + "<td class=\"file-size level" + repository.getPathLevel()
+          + "\"></td></tr>");
+    }
+
     if (empty)
     {
       out.println(prefix(level)
