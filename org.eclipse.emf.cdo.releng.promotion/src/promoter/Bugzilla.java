@@ -32,7 +32,7 @@ public class Bugzilla extends IssueManager
   @Override
   public String parseID(String message)
   {
-    if (message.charAt(0) == '[')
+    if (message.length() >= 3 && message.charAt(0) == '[')
     {
       int end = message.indexOf(']');
       if (end != -1)
