@@ -18,11 +18,11 @@ import java.util.regex.Pattern;
  */
 public class Bugzilla extends IssueManager
 {
-  private static final int RETRIES = 3;
-
   public static final String SERVER = "https://bugs.eclipse.org/bugs/show_bug.cgi?id=";
 
-  private static final Pattern ID_PATTERN = Pattern.compile("\\[([0-9]+)].*");
+  private static final int RETRIES = 3;
+
+  private static final Pattern ID_PATTERN = Pattern.compile("^\\[([0-9]+)].*");
 
   private static final Pattern TITLE_PATTERN = Pattern.compile("\\s*<title>Bug ([0-9]*) &ndash; (.*)</title>");
 
