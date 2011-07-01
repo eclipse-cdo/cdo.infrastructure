@@ -87,9 +87,15 @@ public class ReleaseNotesGenerator extends PromoterComponent
         XMLOutput xml = new XMLOutput(out);
 
         xml.element("relnotes");
+        xml.attribute("stream", stream.getName());
         xml.attribute("drop", buildInfo.getQualifier());
-        xml.attribute("from", fromRevision);
-        xml.attribute("to", toRevision);
+        xml.attribute("revision", toRevision);
+        if (previousBuildInfo != null)
+        {
+          xml.attribute("previousDrop", previousBuildInfo.getQualifier());
+        }
+
+        xml.attribute("previousRevision", fromRevision);
         xml.push();
 
         List<Issue> issues = new ArrayList<Issue>(getIssues(buildInfo, fromRevision, toRevision));
