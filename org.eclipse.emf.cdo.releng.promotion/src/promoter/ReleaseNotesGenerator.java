@@ -105,8 +105,8 @@ public class ReleaseNotesGenerator extends PromoterComponent
         {
           xml.element("issue");
           xml.attribute("id", issue.getID());
-          xml.attribute("title", issue.getTitle());
           xml.attribute("url", issueManager.getURL(issue));
+          xml.attribute("title", issue.getTitle());
         }
 
         xml.pop();
