@@ -10,6 +10,14 @@
  */
 package promoter;
 
+import promoter.util.IO;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Eike Stepper
@@ -18,11 +26,9 @@ public class Bugzilla extends IssueManager
 {
   public static final String SERVER = "https://bugs.eclipse.org/bugs/show_bug.cgi?id=";
 
-  // private static final int RETRIES = 3;
-  //
-  // private static final Pattern ID_PATTERN = Pattern.compile("^\\[([0-9]+)].*");
-  //
-  // private static final Pattern TITLE_PATTERN = Pattern.compile("\\s*<title>Bug ([0-9]*) &ndash; (.*)</title>");
+  private static final int RETRIES = 3;
+
+  private static final Pattern TITLE_PATTERN = Pattern.compile("\\s*<title>Bug ([0-9]*) &ndash; (.*)</title>");
 
   public Bugzilla()
   {
@@ -45,23 +51,10 @@ public class Bugzilla extends IssueManager
         }
         catch (NumberFormatException ex)
         {
-          // fall-through
+          //$FALL-THROUGH$
         }
       }
     }
-
-    // Matcher matcher = ID_PATTERN.matcher(message);
-    // if (matcher.matches())
-    // {
-    // try
-    // {
-    // return String.valueOf(Integer.parseInt(matcher.group(1)));
-    // }
-    // catch (NumberFormatException ex)
-    // {
-    // // fall-through
-    // }
-    // }
 
     return "";
   }
@@ -69,47 +62,47 @@ public class Bugzilla extends IssueManager
   @Override
   protected Issue doGetIssue(String id)
   {
-    return new Issue(id, "This is a bugzilla");
+    // return new Issue(id, "This is a bugzilla");
 
-    // final String[] title = { null };
-    //
-    // for (int i = 0; i < RETRIES; i++)
-    // {
-    // try
-    // {
-    // IO.readURL(SERVER + id, new InputHandler()
-    // {
-    // public void handleInput(InputStream in) throws IOException
-    // {
-    // BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-    // String line;
-    // while ((line = reader.readLine()) != null)
-    // {
-    // Matcher matcher = TITLE_PATTERN.matcher(line);
-    // if (matcher.matches())
-    // {
-    // title[0] = matcher.group(2);
-    // return;
-    // }
-    // }
-    // }
-    // });
-    //
-    // if (title[0] != null)
-    // {
-    // return new Issue(id, title[0]);
-    // }
-    // }
-    // catch (Exception ex)
-    // {
-    // if (i == RETRIES - 1)
-    // {
-    // throw new RuntimeException(ex);
-    // }
-    // }
-    // }
-    //
-    // return null;
+    final String[] title = { null };
+
+    for (int i = 0; i < RETRIES; i++)
+    {
+      try
+      {
+        IO.readURL(SERVER + id, new IO.InputHandler()
+        {
+          public void handleInput(InputStream in) throws IOException
+          {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            String line;
+            while ((line = reader.readLine()) != null)
+            {
+              Matcher matcher = TITLE_PATTERN.matcher(line);
+              if (matcher.matches())
+              {
+                title[0] = matcher.group(2);
+                return;
+              }
+            }
+          }
+        });
+
+        if (title[0] != null)
+        {
+          return new Issue(id, title[0]);
+        }
+      }
+      catch (Exception ex)
+      {
+        if (i == RETRIES - 1)
+        {
+          throw new RuntimeException(ex);
+        }
+      }
+    }
+
+    return null;
   }
 
   @Override
