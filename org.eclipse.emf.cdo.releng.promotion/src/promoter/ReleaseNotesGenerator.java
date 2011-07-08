@@ -217,8 +217,10 @@ public class ReleaseNotesGenerator extends PromoterComponent
           Issue issue = issueManager.getIssue(id);
           if (issue != null)
           {
-            System.out.println("   " + issue.getID() + ": " + issue.getTitle());
-            issues.add(issue);
+            if (issues.add(issue))
+            {
+              System.out.println("   " + issue.getID() + ": " + issue.getTitle());
+            }
           }
         }
       }
