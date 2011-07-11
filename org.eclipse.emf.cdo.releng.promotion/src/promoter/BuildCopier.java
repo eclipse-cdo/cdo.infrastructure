@@ -99,6 +99,10 @@ public class BuildCopier extends PromoterComponent
               buildInfos.add(buildInfo);
             }
           }
+          else
+          {
+            System.out.println("Build " + buildNumber + " has no build info");
+          }
         }
         else if ("FAILURE".equalsIgnoreCase(buildResult))
         {
@@ -142,7 +146,7 @@ public class BuildCopier extends PromoterComponent
       if (!drop.exists())
       {
         boolean isVisible = autoVisible.contains(buildType);
-        System.out.println("Build " + buildInfo.getNumber() + " is copied to " + drop
+        System.out.println("Build " + buildInfo.getNumber() + " is being copied to " + drop
             + (isVisible ? " (visible)" : " (invisible)"));
 
         File archiveDir = new File(buildDir, "archive");
@@ -161,13 +165,15 @@ public class BuildCopier extends PromoterComponent
         }
 
         setTag(buildInfo);
-
         BuildProcessor.storeMarkers(drop, jobProperties, isVisible);
-
         return true;
       }
 
       System.out.println("Build " + buildInfo.getNumber() + " is already promoted");
+    }
+    else
+    {
+      System.out.println("Build " + buildInfo.getNumber() + " is not configured for promotion");
     }
 
     return false;
