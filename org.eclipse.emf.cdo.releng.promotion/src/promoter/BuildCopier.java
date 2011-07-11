@@ -88,7 +88,8 @@ public class BuildCopier extends PromoterComponent
 
         String buildResult = getBuildResult(buildDir);
         File archiveDir = new File(buildDir, "archive");
-        if ("SUCCESS".equalsIgnoreCase(buildResult) && archiveDir.isDirectory())
+        if (("SUCCESS".equalsIgnoreCase(buildResult) || "SUCCESS".equalsIgnoreCase(buildResult))
+            && archiveDir.isDirectory())
         {
           File buildInfoFile = new File(archiveDir, "build-info.xml");
           if (buildInfoFile.isFile())
