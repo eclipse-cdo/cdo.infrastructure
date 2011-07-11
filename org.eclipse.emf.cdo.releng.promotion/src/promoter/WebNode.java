@@ -240,9 +240,7 @@ public class WebNode implements Comparable<WebNode>
         " for local use with <a href=\"" + HELP_TOPIC_URL
             + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.");
 
-    generateDropDownload(out, level, buildInfo, "zips/emf-cdo-" + buildInfo.getQualifier() + "-All.zip",
-        " for use with a <a href=\"" + HELP_TOPIC_URL
-            + "/org.eclipse.platform.doc.isv/reference/misc/p2_dropins_format.html\">dropins</a> folder.");
+    generateDropZips(out, level, buildInfo);
 
     generateDropSeparator(out, level);
 
@@ -286,6 +284,27 @@ public class WebNode implements Comparable<WebNode>
     }
   }
 
+  protected void generateDropZips(PrintStream out, int level, BuildInfo buildInfo)
+  {
+    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
+    File zips = new File(drop, "zips");
+
+    List<DropZip> dropZips = new ArrayList<DropZip>();
+    for (File file : zips.listFiles())
+    {
+      if (file.isFile() && file.getName().endsWith(".zip"))
+      {
+        dropZips.add(new DropZip(file));
+      }
+    }
+
+    Collections.sort(dropZips);
+    for (DropZip dropZip : dropZips)
+    {
+      generateDropDownload(out, level, buildInfo, "zips/" + dropZip.getName(), " " + dropZip.getDescription());
+    }
+  }
+
   protected void generateDropFile(PrintStream out, int level, BuildInfo buildInfo, String path, String description)
   {
     String size = formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/"
@@ -326,5 +345,56 @@ public class WebNode implements Comparable<WebNode>
   {
     String downloadsPath = PromoterConfig.INSTANCE.getProperty("downloadsPath");
     return "http://download.eclipse.org/" + downloadsPath + "/";
+  }
+
+  /**
+   * @author Eike Stepper
+   */
+  private static final class DropZip implements Comparable<DropZip>
+  {
+    private File file;
+
+    private String description;
+
+    private int priority;
+
+    public DropZip(File file)
+    {
+      this.file = file;
+
+      String name = file.getName();
+      String propsFileName = name.substring(0, name.length() - ".zip".length()) + ".properties";
+      File propsFile = new File(file.getParentFile(), propsFileName);
+
+      Properties properties = Config.loadProperties(propsFile, false);
+      description = properties.getProperty("description", "");
+      priority = Integer.parseInt(properties.getProperty("priority", "500"));
+    }
+
+    public String getName()
+    {
+      return file.getName();
+    }
+
+    public String getDescription()
+    {
+      return description;
+    }
+
+    public int getPriority()
+    {
+      return priority;
+    }
+
+    public int compareTo(DropZip o)
+    {
+      int result = new Integer(o.getPriority()).compareTo(priority);
+      if (result == 0)
+      {
+        result = getName().compareTo(o.getName());
+      }
+
+      return result;
+    }
   }
 }
