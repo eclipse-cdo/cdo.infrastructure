@@ -291,7 +291,8 @@ public class WebNode implements Comparable<WebNode>
 
     for (File file : new File(drop, "zips").listFiles())
     {
-      if (file.isFile() && file.getName().endsWith(".zip"))
+      String name = file.getName();
+      if (file.isFile() && name.endsWith(".zip") && !name.endsWith("-Site.zip"))
       {
         DropZip dropZip = new DropZip(file);
         dropZips.add(dropZip);
