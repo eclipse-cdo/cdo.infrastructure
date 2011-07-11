@@ -287,14 +287,14 @@ public class WebNode implements Comparable<WebNode>
   protected void generateDropZips(PrintStream out, int level, BuildInfo buildInfo)
   {
     File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
-    File zips = new File(drop, "zips");
-
     List<DropZip> dropZips = new ArrayList<DropZip>();
-    for (File file : zips.listFiles())
+
+    for (File file : new File(drop, "zips").listFiles())
     {
       if (file.isFile() && file.getName().endsWith(".zip"))
       {
-        dropZips.add(new DropZip(file));
+        DropZip dropZip = new DropZip(file);
+        dropZips.add(dropZip);
       }
     }
 
@@ -395,6 +395,12 @@ public class WebNode implements Comparable<WebNode>
       }
 
       return result;
+    }
+
+    @Override
+    public String toString()
+    {
+      return "DropZip [file=" + file + ", description=" + description + ", priority=" + priority + "]";
     }
   }
 }
