@@ -52,7 +52,7 @@ public class Subversion extends SourceCodeManager
         System.out.println(message);
 
         String from = SVN_ROOT + branch;
-        String to = SVN_ROOT + "tags/drops/" + tag;
+        String to = SVN_ROOT + "tags/drop-" + tag;
 
         PrintStream stream = new PrintStream(out);
         stream.println("svn cp -m \"" + message + "\" \"" + from + "\" \"" + to + "\"");
