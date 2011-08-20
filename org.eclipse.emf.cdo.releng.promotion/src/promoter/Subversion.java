@@ -48,7 +48,7 @@ public class Subversion extends SourceCodeManager
     {
       public void handleOutput(OutputStream out) throws IOException
       {
-        String message = "Tagging " + branch + " as " + tag;
+        String message = "Tagging " + branch + " as drop-" + tag;
         System.out.println(message);
 
         String from = SVN_ROOT + branch;
