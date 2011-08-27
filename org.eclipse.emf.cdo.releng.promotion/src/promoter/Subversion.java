@@ -28,6 +28,8 @@ import java.io.PrintStream;
  */
 public class Subversion extends SourceCodeManager
 {
+  public static final String SVN_BINARY = "/usr/local/bin/svn";
+
   // TODO Make SVN_ROOT configurable
   public static final String SVN_ROOT = "https://dev.eclipse.org/svnroot/modeling/org.eclipse.emf.cdo/";
 
@@ -55,7 +57,7 @@ public class Subversion extends SourceCodeManager
         String to = SVN_ROOT + "tags/drop-" + tag;
 
         PrintStream stream = new PrintStream(out);
-        stream.println("svn cp -m \"" + message + "\" \"" + from + "\" \"" + to + "\"");
+        stream.println(SVN_BINARY + " cp -m \"" + message + "\" \"" + from + "\" \"" + to + "\"");
         stream.flush();
       }
     });
@@ -77,8 +79,8 @@ public class Subversion extends SourceCodeManager
           System.out.println("Getting log entries for " + branch + " (" + range + ")");
 
           PrintStream stream = new PrintStream(out);
-          stream.println("svn log " + (withPaths ? "-v " : "") + "--xml -r " + range + " \"" + SVN_ROOT + branch
-              + "\" > " + xmlFile);
+          stream.println(SVN_BINARY + " log " + (withPaths ? "-v " : "") + "--xml -r " + range + " \"" + SVN_ROOT
+              + branch + "\" > " + xmlFile);
           stream.flush();
         }
       });
