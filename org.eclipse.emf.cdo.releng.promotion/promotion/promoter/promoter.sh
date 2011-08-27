@@ -77,7 +77,7 @@ CheckPromotion ()
 	echo
 	echo "Starting $classPromoter"
 	echo "Classpath: $classPath"
-	echo "Time: `date`"
+	echo "Timestamp: `date`"
 	
 	####################################################################################################
   "$JAVA_HOME/bin/java" "-DpromoterInstallArea=$promoterInstallArea" -cp "$classPath" "$classPromoter"
