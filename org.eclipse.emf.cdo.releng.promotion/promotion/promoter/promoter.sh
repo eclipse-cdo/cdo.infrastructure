@@ -75,11 +75,11 @@ CheckPromotion ()
 	fi
 	
 	echo
-	echo "Starting $classPromoter $@ (`date`)"
+	echo "Starting $classPromoter $1 (`date`)"
 	
-	#######################################################################################################
-  "$JAVA_HOME/bin/java" "-DpromoterInstallArea=$promoterInstallArea" -cp "$classPath" "$classPromoter" $@
-	#######################################################################################################
+	#########################################################################################################
+  "$JAVA_HOME/bin/java" "-DpromoterInstallArea=$promoterInstallArea" -cp "$classPath" "$classPromoter" "$1"
+	#########################################################################################################
   
   if [ -d "$compositionTempFolder" ]
   then
