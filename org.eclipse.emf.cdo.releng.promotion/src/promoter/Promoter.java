@@ -48,7 +48,9 @@ public class Promoter
 
     if (builds.isEmpty() /* && tasks.isEmpty() */&& !force)
     {
+      System.out.println();
       System.out.println("No new builds or tasks have been found. Exiting...");
+      System.out.println();
       return;
     }
 
