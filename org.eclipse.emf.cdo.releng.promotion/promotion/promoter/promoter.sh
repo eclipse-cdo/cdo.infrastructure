@@ -12,6 +12,7 @@ configArea=`pwd -P`
 
 tasksDir=$workingArea/tasks
 inprogressDir=$tasksDir.inprogress
+args=$@
 
 ##########################################################################################
 # Further down the script ensures that this critical section is not executed concurrently.
@@ -75,11 +76,11 @@ CheckPromotion ()
 	fi
 	
 	echo
-	echo "Starting $classPromoter $1 (`date`)"
+	echo "Starting $classPromoter $args (`date`)"
 	
-	#########################################################################################################
-  "$JAVA_HOME/bin/java" "-DpromoterInstallArea=$promoterInstallArea" -cp "$classPath" "$classPromoter" "$1"
-	#########################################################################################################
+	############################################################################################################
+  "$JAVA_HOME/bin/java" "-DpromoterInstallArea=$promoterInstallArea" -cp "$classPath" "$classPromoter" "$args"
+	############################################################################################################
   
   if [ -d "$compositionTempFolder" ]
   then
