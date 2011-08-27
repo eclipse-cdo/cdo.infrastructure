@@ -23,8 +23,18 @@ import java.util.Map.Entry;
  */
 public class Promoter
 {
+  private static boolean force;
+
   public static void main(String[] args) throws Exception
   {
+    if (args != null && args.length != 0)
+    {
+      if ("--force".equals(args[0]))
+      {
+        force = true;
+      }
+    }
+
     Promoter main = new Promoter();
     main.run();
   }
@@ -32,9 +42,15 @@ public class Promoter
   public void run()
   {
     BuildCopier buildCopier = createBuildCopier();
-    buildCopier.copyBuilds();
+    List<BuildInfo> builds = buildCopier.copyBuilds();
 
-    // performTasks();
+    // List<Task> tasks = performTasks();
+
+    if (builds.isEmpty() /* && tasks.isEmpty() */&& !force)
+    {
+      System.out.println("No new builds or tasks have been found. Exiting...");
+      return;
+    }
 
     Ant<Entry<List<BuildInfo>, WebNode>> ant = createAnt();
     Entry<List<BuildInfo>, WebNode> result = ant.run();
