@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -74,7 +75,10 @@ public class BuildCopier extends PromoterComponent
     int nextBuildNumber = NO_BUILD;
     boolean buildInProgress = false;
 
-    for (File buildDir : buildsDir.listFiles())
+    File[] buildDirs = buildsDir.listFiles();
+    Arrays.sort(buildDirs);
+
+    for (File buildDir : buildDirs)
     {
       String name = buildDir.getName();
       if (buildDir.isDirectory() && isNumber(name))
