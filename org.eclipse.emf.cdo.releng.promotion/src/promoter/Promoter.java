@@ -46,12 +46,20 @@ public class Promoter
 
     // List<Task> tasks = performTasks();
 
-    if (builds.isEmpty() /* && tasks.isEmpty() */&& !force)
+    if (builds.isEmpty() /* && tasks.isEmpty() */)
     {
       System.out.println();
-      System.out.println("No new builds or tasks have been found. Exiting...");
+      System.out.print("No new builds or tasks have been found.");
+
+      if (!force)
+      {
+        System.out.println(" Exiting...");
+        System.out.println();
+        return;
+      }
+
       System.out.println();
-      return;
+      System.out.println();
     }
 
     Ant<Entry<List<BuildInfo>, WebNode>> ant = createAnt();
