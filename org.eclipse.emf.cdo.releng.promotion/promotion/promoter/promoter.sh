@@ -79,9 +79,9 @@ CheckPromotion ()
 	echo "Classpath: $classPath"
 	echo "Timestamp: `date`"
 	
-	####################################################################################################
-  "$JAVA_HOME/bin/java" "-DpromoterInstallArea=$promoterInstallArea" -cp "$classPath" "$classPromoter"
-	####################################################################################################
+	#######################################################################################################
+  "$JAVA_HOME/bin/java" "-DpromoterInstallArea=$promoterInstallArea" -cp "$classPath" "$classPromoter" $@
+	#######################################################################################################
   
   if [ -d "$compositionTempFolder" ]
   then
