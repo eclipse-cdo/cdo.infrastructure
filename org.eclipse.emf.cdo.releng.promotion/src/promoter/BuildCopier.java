@@ -190,7 +190,7 @@ public class BuildCopier extends PromoterComponent
     SourceCodeManager scm = getPromoter().createSourceCodeManager();
     if (scm != null)
     {
-      scm.setTag(buildInfo.getBranch(), buildInfo.getQualifier());
+      // scm.setTag(buildInfo.getBranch(), buildInfo.getQualifier());
     }
   }
 
