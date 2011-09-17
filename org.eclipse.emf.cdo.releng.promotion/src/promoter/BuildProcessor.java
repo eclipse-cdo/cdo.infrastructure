@@ -318,6 +318,8 @@ public class BuildProcessor extends PromoterComponent
         xml.element("include");
         xml.attribute("name", "html/**");
         xml.element("include");
+        xml.attribute("name", "images/**");
+        xml.element("include");
         xml.attribute("name", "about.html");
         xml.element("include");
         xml.attribute("name", "copyright.txt");
