@@ -310,6 +310,7 @@ public class BuildProcessor extends PromoterComponent
         xml.attribute("dest", new File(help, doc));
         xml.push();
         xml.element("patternset");
+        xml.push();
         xml.element("include");
         xml.attribute("name", "javadoc/**");
         xml.element("include");
@@ -323,9 +324,12 @@ public class BuildProcessor extends PromoterComponent
         xml.element("include");
         xml.attribute("name", "plugin.properties");
         xml.pop();
+        xml.pop();
+        xml.push();
         xml.element("fileset");
         xml.attribute("dir", plugins);
         xml.attribute("includes", doc + "_*.jar");
+        xml.pop();
       }
 
       // Remove the temp unpack folder
