@@ -96,24 +96,12 @@ public class BuildProcessor extends PromoterComponent
           generateZipSite(xml, drop, zipSite);
         }
       }
+    }
 
-      String generateZipAll = promotionProperties.getProperty("generate.zip.all");
-      if (generateZipAll != null)
-      {
-        File zipAll = new File(zips, buildInfo.substitute(generateZipAll));
-
-        File dropinsZip = new File(zips, "dropins.zip");
-        if (dropinsZip.isFile())
-        {
-          renameZipAll(xml, dropinsZip, zipAll);
-        }
-
-        File help = new File(drop, "help");
-        if (help.isDirectory())
-        {
-          unpackHelp(xml, zipAll, help);
-        }
-      }
+    File help = new File(drop, "help");
+    if (help.isDirectory())
+    {
+      unpackHelp(xml, help);
     }
   }
 
@@ -267,7 +255,7 @@ public class BuildProcessor extends PromoterComponent
     xml.attribute("tofile", zipAll);
   }
 
-  protected void unpackHelp(XMLOutput xml, File zipAll, File help) throws SAXException, IOException
+  protected void unpackHelp(XMLOutput xml, File help) throws SAXException, IOException
   {
     File docsFile = new File(help, "docs.txt");
     if (docsFile.isFile())
@@ -303,7 +291,13 @@ public class BuildProcessor extends PromoterComponent
       // Unzip the dropins zip
       xml.element("unzip");
       xml.attribute("dest", help);
-      xml.attribute("src", zipAll);
+      xml.push();
+      xml.element("fileset");
+      xml.attribute("dir", new File(help.getParentFile(), "zips"));
+      xml.push();
+      xml.element("include");
+      xml.attribute("name", "*-Dropins.zip");
+      xml.pop();
       xml.push();
       xml.element("patternset");
       xml.attribute("includes", "plugins/*.doc_*.jar");
