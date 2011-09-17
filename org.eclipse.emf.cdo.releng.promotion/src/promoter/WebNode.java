@@ -234,6 +234,8 @@ public class WebNode implements Comparable<WebNode>
         + "/index.html\">Contents</a></b> for use with a web browser.</td><td class=\"file-size level"
         + (repository.getPathLevel() + 1) + "\"></td></tr>");
 
+    generateDropHelp(out, level, buildInfo);
+
     generateDropSeparator(out, level);
 
     generateDropDownload(out, level, buildInfo, "zips/emf-cdo-" + buildInfo.getQualifier() + "-Site.zip",
@@ -268,6 +270,23 @@ public class WebNode implements Comparable<WebNode>
   protected void generateDropSeparator(PrintStream out, int level)
   {
     out.println(prefix(level) + "<tr class=\"drop-info\"><td colspan=\"3\"><hr class=\"drop-separator\"></td></tr>");
+  }
+
+  protected void generateDropHelp(PrintStream out, int level, BuildInfo buildInfo)
+  {
+    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
+    File help = new File(drop, "help");
+    File index = new File(help, "index.html");
+    if (index.isFile())
+    {
+      out.println(prefix(level)
+          + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/help-browser.png\"/></td><td><b><a href=\""
+          + http()
+          + "drops/"
+          + buildInfo.getQualifier()
+          + "/help/index.html\">Help&nbsp;Center</a></b> to browse the online documentation for this drop.</td><td class=\"file-size level"
+          + (repository.getPathLevel() + 1) + "\"></td></tr>");
+    }
   }
 
   protected void generateDropDownload(PrintStream out, int level, BuildInfo buildInfo, String path, String description)
