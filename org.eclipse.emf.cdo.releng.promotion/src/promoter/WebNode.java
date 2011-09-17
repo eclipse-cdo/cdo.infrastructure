@@ -284,7 +284,7 @@ public class WebNode implements Comparable<WebNode>
           + http()
           + "drops/"
           + buildInfo.getQualifier()
-          + "/help/index.html\">Help&nbsp;Center</a></b> to browse the online documentation for this drop.</td><td class=\"file-size level"
+          + "/help/index.html\">Documentation</a></b> to browse the online help center for this drop.</td><td class=\"file-size level"
           + (repository.getPathLevel() + 1) + "\"></td></tr>");
     }
   }

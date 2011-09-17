@@ -272,6 +272,7 @@ public class BuildProcessor extends PromoterComponent
 
   protected void unpackHelp(XMLOutput xml, File zipAll, File help) throws SAXException, IOException
   {
+    System.out.println("Unpacking help: " + help);
     File docsFile = new File(help, "docs.txt");
     if (docsFile.isFile())
     {
