@@ -16,13 +16,17 @@ import promoter.util.Config;
 import promoter.util.IO;
 import promoter.util.XMLOutput;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * @author Eike Stepper
@@ -53,7 +57,7 @@ public class BuildProcessor extends PromoterComponent
     return buildInfos;
   }
 
-  protected void processBuild(XMLOutput xml, File drop, List<BuildInfo> buildInfos) throws SAXException
+  protected void processBuild(XMLOutput xml, File drop, List<BuildInfo> buildInfos) throws Exception
   {
     generateCategories(xml, drop);
 
@@ -93,14 +97,24 @@ public class BuildProcessor extends PromoterComponent
         }
       }
 
+      File zipAll = null;
       String generateZipAll = promotionProperties.getProperty("generate.zip.all");
       if (generateZipAll != null)
       {
         File dropinsZip = new File(zips, "dropins.zip");
         if (dropinsZip.isFile())
         {
-          File zipAll = new File(zips, buildInfo.substitute(generateZipAll));
+          zipAll = new File(zips, buildInfo.substitute(generateZipAll));
           renameZipAll(xml, dropinsZip, zipAll);
+        }
+      }
+
+      if (zipAll != null)
+      {
+        File help = new File(drop, "help");
+        if (help.isDirectory())
+        {
+          unpackHelp(xml, zipAll, help);
         }
       }
     }
@@ -254,6 +268,98 @@ public class BuildProcessor extends PromoterComponent
     xml.element("move");
     xml.attribute("file", dropinsZip);
     xml.attribute("tofile", zipAll);
+  }
+
+  protected void unpackHelp(XMLOutput xml, File zipAll, File help) throws SAXException, IOException
+  {
+    File docsFile = new File(help, "docs.txt");
+    if (docsFile.isFile())
+    {
+      // Cleanup possible former unpacks that have failed in the middle
+      for (File file : help.listFiles())
+      {
+        if (file.isDirectory())
+        {
+          IO.delete(file);
+        }
+      }
+
+      // Load names of doc plugins
+      Set<String> docs = new HashSet<String>();
+      BufferedReader reader = null;
+
+      try
+      {
+        reader = new BufferedReader(new FileReader(docsFile));
+
+        String line;
+        while ((line = reader.readLine()) != null)
+        {
+          docs.add(line);
+        }
+      }
+      finally
+      {
+        IO.close(reader);
+      }
+
+      // Unzip the dropins zip
+      xml.element("unzip");
+      xml.attribute("dest", help);
+      xml.attribute("src", zipAll);
+      xml.push();
+      xml.element("patternset");
+      xml.attribute("includes", "plugins/*.doc_*.jar");
+      xml.pop();
+
+      // Unzip the doc plugins
+      File plugins = new File(help, "plugins");
+      for (String doc : docs)
+      {
+        xml.element("unzip");
+        xml.attribute("dest", new File(help, doc));
+        xml.push();
+        xml.element("patternset");
+        xml.element("include");
+        xml.attribute("name", "javadoc/**");
+        xml.element("include");
+        xml.attribute("name", "schemadoc/**");
+        xml.element("include");
+        xml.attribute("name", "html/**");
+        xml.element("include");
+        xml.attribute("name", "about.html");
+        xml.element("include");
+        xml.attribute("name", "copyright.txt");
+        xml.element("include");
+        xml.attribute("name", "plugin.properties");
+        xml.pop();
+        xml.push();
+        xml.element("fileset");
+        xml.attribute("dir", plugins);
+        xml.attribute("includes", doc + "_*.jar");
+        xml.pop();
+      }
+
+      // Remove the temp unpack folder
+      xml.element("delete");
+      xml.attribute("includeemptydirs", true);
+      xml.attribute("failonerror", true);
+      xml.push();
+      xml.element("fileset");
+      xml.attribute("dir", help);
+      xml.push();
+      xml.element("include");
+      xml.attribute("name", "plugins/**");
+      xml.element("include");
+      xml.attribute("name", "plugins/**");
+      xml.pop();
+      xml.pop();
+
+      // Rename docs.txt
+      xml.element("move");
+      xml.attribute("file", docsFile);
+      xml.attribute("tofile", new File(help, ".docs"));
+    }
   }
 
   public static void storeMarkers(File drop, Properties properties, boolean visible)
