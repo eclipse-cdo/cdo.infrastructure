@@ -298,8 +298,6 @@ public class BuildProcessor extends PromoterComponent
       xml.element("include");
       xml.attribute("name", "*-Dropins.zip");
       xml.pop();
-      xml.pop();
-      xml.push();
       xml.element("patternset");
       xml.attribute("includes", "plugins/*.doc_*.jar");
       xml.pop();
