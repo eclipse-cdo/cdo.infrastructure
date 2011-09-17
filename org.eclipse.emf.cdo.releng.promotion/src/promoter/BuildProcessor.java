@@ -329,11 +329,9 @@ public class BuildProcessor extends PromoterComponent
         xml.element("include");
         xml.attribute("name", "plugin.properties");
         xml.pop();
-        xml.push();
         xml.element("fileset");
         xml.attribute("dir", plugins);
         xml.attribute("includes", doc + "_*.jar");
-        xml.pop();
       }
 
       // Remove the temp unpack folder
