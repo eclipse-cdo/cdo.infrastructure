@@ -97,33 +97,21 @@ public class BuildProcessor extends PromoterComponent
         }
       }
 
-      File zipAll = null;
       String generateZipAll = promotionProperties.getProperty("generate.zip.all");
+      File zipAll = new File(zips, buildInfo.substitute(generateZipAll));
       if (generateZipAll != null)
       {
         File dropinsZip = new File(zips, "dropins.zip");
         if (dropinsZip.isFile())
         {
-          zipAll = new File(zips, buildInfo.substitute(generateZipAll));
           renameZipAll(xml, dropinsZip, zipAll);
         }
       }
 
-      if (zipAll != null)
+      File help = new File(drop, "help");
+      if (help.isDirectory())
       {
-        File help = new File(drop, "help");
-        if (help.isDirectory())
-        {
-          unpackHelp(xml, zipAll, help);
-        }
-        else
-        {
-          System.out.println("1");
-        }
-      }
-      else
-      {
-        System.out.println("2");
+        unpackHelp(xml, zipAll, help);
       }
     }
   }
@@ -280,7 +268,6 @@ public class BuildProcessor extends PromoterComponent
 
   protected void unpackHelp(XMLOutput xml, File zipAll, File help) throws SAXException, IOException
   {
-    System.out.println("Unpacking help: " + help);
     File docsFile = new File(help, "docs.txt");
     if (docsFile.isFile())
     {
