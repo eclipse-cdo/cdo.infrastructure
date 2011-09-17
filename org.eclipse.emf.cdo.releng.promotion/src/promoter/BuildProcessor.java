@@ -98,20 +98,21 @@ public class BuildProcessor extends PromoterComponent
       }
 
       String generateZipAll = promotionProperties.getProperty("generate.zip.all");
-      File zipAll = new File(zips, buildInfo.substitute(generateZipAll));
       if (generateZipAll != null)
       {
+        File zipAll = new File(zips, buildInfo.substitute(generateZipAll));
+
         File dropinsZip = new File(zips, "dropins.zip");
         if (dropinsZip.isFile())
         {
           renameZipAll(xml, dropinsZip, zipAll);
         }
-      }
 
-      File help = new File(drop, "help");
-      if (help.isDirectory())
-      {
-        unpackHelp(xml, zipAll, help);
+        File help = new File(drop, "help");
+        if (help.isDirectory())
+        {
+          unpackHelp(xml, zipAll, help);
+        }
       }
     }
   }
