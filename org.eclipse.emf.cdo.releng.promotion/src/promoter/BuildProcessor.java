@@ -288,24 +288,24 @@ public class BuildProcessor extends PromoterComponent
         IO.close(reader);
       }
 
-      // Unzip the dropins zip
-      xml.element("unzip");
-      xml.attribute("dest", help);
-      xml.push();
-      xml.element("fileset");
-      xml.attribute("dir", new File(help.getParentFile(), "zips"));
-      xml.push();
-      xml.element("include");
-      xml.attribute("name", "*-Dropins.zip");
-      xml.pop();
-      xml.element("patternset");
-      xml.attribute("includes", "plugins/*.doc_*.jar");
-      xml.pop();
-
       // Unzip the doc plugins
       File plugins = new File(help, "plugins");
       for (String doc : docs)
       {
+        // Unzip from dropins.zip
+        xml.element("unzip");
+        xml.attribute("dest", help);
+        xml.push();
+        xml.element("fileset");
+        xml.attribute("dir", new File(help.getParentFile(), "zips"));
+        xml.push();
+        xml.element("include");
+        xml.attribute("name", "*-Dropins.zip");
+        xml.pop();
+        xml.element("patternset");
+        xml.attribute("includes", "plugins/" + doc + "_*.jar");
+        xml.pop();
+
         xml.element("unzip");
         xml.attribute("dest", new File(help, doc));
         xml.push();
