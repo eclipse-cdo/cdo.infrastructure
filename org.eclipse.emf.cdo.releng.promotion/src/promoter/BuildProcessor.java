@@ -354,7 +354,7 @@ public class BuildProcessor extends PromoterComponent
       xml.push();
       xml.element("fileset");
       xml.attribute("dir", help);
-      xml.attribute("includes", "*.html");
+      xml.attribute("includes", "**/*.html");
       xml.pop();
 
       // Rename docs.txt
