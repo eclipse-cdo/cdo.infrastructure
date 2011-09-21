@@ -347,6 +347,16 @@ public class BuildProcessor extends PromoterComponent
       xml.pop();
       xml.pop();
 
+      // Uncomment beadcrumbs
+      xml.element("replaceregexp");
+      xml.attribute("match", "&lt;!-- (&lt;div class=\"help_breadcrumbs\"&gt;.*) --&gt;");
+      xml.attribute("replace", "\\1");
+      xml.push();
+      xml.element("fileset");
+      xml.attribute("dir", help);
+      xml.attribute("includes", "*.html");
+      xml.pop();
+
       // Rename docs.txt
       xml.element("move");
       xml.attribute("file", docsFile);
