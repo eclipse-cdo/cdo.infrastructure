@@ -349,8 +349,9 @@ public class BuildProcessor extends PromoterComponent
 
       // Uncomment beadcrumbs
       xml.element("replaceregexp");
-      xml.attribute("match", "&lt;!-- (&lt;div class=\"help_breadcrumbs\"&gt;.*) --&gt;");
+      xml.attribute("match", "&lt;!-- (&lt;div class=\"help_breadcrumbs\"&gt;.*?) --&gt;");
       xml.attribute("replace", "\\1");
+      xml.attribute("flags", "s");
       xml.push();
       xml.element("fileset");
       xml.attribute("dir", help);
