@@ -110,14 +110,12 @@ public class RepositoryComposer extends PromoterComponent
 
   protected void createSymLink(XMLOutput xml, WebNode webNode) throws SAXException
   {
-    System.out.println("createSymLink for " + webNode.getFolder());
     Repository repository = webNode.getRepository();
     if (repository == null)
     {
       return;
     }
 
-    System.out.println("collectAllDrops for " + webNode.getFolder());
     List<BuildInfo> drops = new ArrayList<BuildInfo>();
     collectAllDrops(webNode, drops);
     if (drops.isEmpty())
@@ -125,7 +123,6 @@ public class RepositoryComposer extends PromoterComponent
       return;
     }
 
-    System.out.println("isLaterThan for " + webNode.getFolder());
     BuildInfo latest = null;
     for (BuildInfo drop : drops)
     {
@@ -137,7 +134,6 @@ public class RepositoryComposer extends PromoterComponent
 
     if (latest != null)
     {
-      System.out.println("TADA for " + webNode.getFolder());
       String path = repository.getPath();
       File folder = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), path);
       File link = new File(folder, "latest");
@@ -151,15 +147,15 @@ public class RepositoryComposer extends PromoterComponent
 
   protected void collectAllDrops(WebNode webNode, List<BuildInfo> drops)
   {
+    Repository repository = webNode.getRepository();
+    if (repository instanceof Drops)
+    {
+      Drops dropsRepository = (Drops)repository;
+      drops.addAll(dropsRepository.getBuildInfos());
+    }
+
     for (WebNode childNode : webNode.getChildren())
     {
-      Repository childRepository = childNode.getRepository();
-      if (childRepository instanceof Drops)
-      {
-        Drops dropsRepository = (Drops)childRepository;
-        drops.addAll(dropsRepository.getBuildInfos());
-      }
-
       collectAllDrops(childNode, drops);
     }
   }
