@@ -128,12 +128,14 @@ public class RepositoryComposer extends PromoterComponent
 
     if (latest != null)
     {
-      File link = new File(webNode.getFolder(), "latest");
+      String path = webNode.getRepository().getPath();
+      File folder = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), path);
+      File link = new File(folder, "latest");
       File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), latest.getQualifier());
 
       xml.element("symlink");
-      xml.attribute("link", link);
-      xml.attribute("resource", drop);
+      xml.attribute("link", link.getAbsolutePath());
+      xml.attribute("resource", drop.getAbsolutePath());
     }
   }
 
