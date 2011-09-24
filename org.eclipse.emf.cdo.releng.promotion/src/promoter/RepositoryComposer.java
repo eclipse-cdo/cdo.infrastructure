@@ -12,11 +12,13 @@ package promoter;
 
 import org.xml.sax.SAXException;
 
+import promoter.Repository.Drops;
 import promoter.util.Config;
 import promoter.util.IO;
 import promoter.util.XMLOutput;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -57,6 +59,8 @@ public class RepositoryComposer extends PromoterComponent
         }
 
         Collections.sort(webNode.getChildren());
+
+        createSymLink(xml, webNode, folder);
         return webNode;
       }
     }
@@ -102,5 +106,51 @@ public class RepositoryComposer extends PromoterComponent
 
     repository.setProperties(compositionProperties);
     return repository;
+  }
+
+  protected void createSymLink(XMLOutput xml, WebNode webNode, File folder) throws SAXException
+  {
+    List<BuildInfo> drops = new ArrayList<BuildInfo>();
+    collectAllDrops(webNode, drops);
+    if (drops.isEmpty())
+    {
+      return;
+    }
+
+    BuildInfo latest = null;
+    for (BuildInfo drop : drops)
+    {
+      if (drop.isLaterThan(latest))
+      {
+        latest = drop;
+      }
+    }
+
+    if (latest != null)
+    {
+      File link = new File(folder, "latest");
+      File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), latest.getQualifier());
+
+      xml.element("symlink");
+      xml.attribute("link", link);
+      xml.attribute("resource", drop);
+    }
+  }
+
+  protected void collectAllDrops(WebNode webNode, List<BuildInfo> drops)
+  {
+    for (WebNode childNode : webNode.getChildren())
+    {
+      Repository childRepository = childNode.getRepository();
+      if (childRepository instanceof Drops)
+      {
+        Drops dropsRepository = (Drops)childRepository;
+        drops.addAll(dropsRepository.getBuildInfos());
+      }
+      else
+      {
+        collectAllDrops(childNode, drops);
+      }
+    }
   }
 }

@@ -82,6 +82,18 @@ public final class BuildInfo implements Comparable<BuildInfo>
     return stream;
   }
 
+  public int getStreamMajor()
+  {
+    String[] segments = stream.split("\\.");
+    return Integer.parseInt(segments[0]);
+  }
+
+  public int getStreamMinor()
+  {
+    String[] segments = stream.split("\\.");
+    return Integer.parseInt(segments[1]);
+  }
+
   public String getTimestamp()
   {
     return timestamp;
@@ -135,6 +147,31 @@ public final class BuildInfo implements Comparable<BuildInfo>
   public int compareTo(BuildInfo o)
   {
     return o.getTimestamp().compareTo(timestamp);
+  }
+
+  public boolean isLaterThan(BuildInfo o)
+  {
+    if (o == null)
+    {
+      return true;
+    }
+
+    if (getStreamMajor() > o.getStreamMajor())
+    {
+      return true;
+    }
+
+    if (getStreamMinor() > o.getStreamMinor())
+    {
+      return true;
+    }
+
+    if (compareTo(o) > 0)
+    {
+      return true;
+    }
+
+    return false;
   }
 
   void setBranch(String branch)
