@@ -18,6 +18,10 @@ import promoter.util.IO;
 import promoter.util.XMLOutput;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -142,6 +146,26 @@ public class RepositoryComposer extends PromoterComponent
       xml.element("symlink");
       xml.attribute("link", link.getAbsolutePath());
       xml.attribute("resource", drop.getAbsolutePath());
+
+      OutputStream out = null;
+
+      try
+      {
+        File properties = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "latest.properties");
+        out = new FileOutputStream(properties, true);
+        PrintStream stream = new PrintStream(out);
+
+        stream.println(path.replace('/', '_') + " = " + drop.getAbsolutePath());
+        stream.flush();
+      }
+      catch (IOException ex)
+      {
+        throw new RuntimeException(ex);
+      }
+      finally
+      {
+        IO.close(out);
+      }
     }
   }
 
