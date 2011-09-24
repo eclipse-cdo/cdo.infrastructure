@@ -60,7 +60,7 @@ public class RepositoryComposer extends PromoterComponent
 
         Collections.sort(webNode.getChildren());
 
-        createSymLink(xml, webNode, folder);
+        createSymLink(xml, webNode);
         return webNode;
       }
     }
@@ -108,7 +108,7 @@ public class RepositoryComposer extends PromoterComponent
     return repository;
   }
 
-  protected void createSymLink(XMLOutput xml, WebNode webNode, File folder) throws SAXException
+  protected void createSymLink(XMLOutput xml, WebNode webNode) throws SAXException
   {
     List<BuildInfo> drops = new ArrayList<BuildInfo>();
     collectAllDrops(webNode, drops);
@@ -128,7 +128,7 @@ public class RepositoryComposer extends PromoterComponent
 
     if (latest != null)
     {
-      File link = new File(folder, "latest");
+      File link = new File(webNode.getFolder(), "latest");
       File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), latest.getQualifier());
 
       xml.element("symlink");
