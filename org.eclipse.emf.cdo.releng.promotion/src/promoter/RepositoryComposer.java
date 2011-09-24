@@ -151,7 +151,7 @@ public class RepositoryComposer extends PromoterComponent
       appendFile(latestUrl, latest.getQualifier());
 
       File latestUrls = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "latest.qualifiers");
-      String append = path.replace('/', '_').replace('.', '_') + " = " + latest.getQualifier();
+      String append = path.replace('/', '_').replace('.', '_') + " = " + latest.getQualifier() + "\n";
       appendFile(latestUrls, append);
     }
   }
@@ -165,7 +165,7 @@ public class RepositoryComposer extends PromoterComponent
       out = new FileOutputStream(file, true);
       PrintStream stream = new PrintStream(out);
 
-      stream.println(line);
+      stream.print(line);
       stream.flush();
     }
     catch (IOException ex)
