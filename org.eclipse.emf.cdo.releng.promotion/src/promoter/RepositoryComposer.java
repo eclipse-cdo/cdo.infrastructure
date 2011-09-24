@@ -110,6 +110,7 @@ public class RepositoryComposer extends PromoterComponent
 
   protected void createSymLink(XMLOutput xml, WebNode webNode) throws SAXException
   {
+    System.out.println("Symlink for " + webNode.getFolder());
     Repository repository = webNode.getRepository();
     if (repository == null)
     {
