@@ -147,25 +147,34 @@ public class RepositoryComposer extends PromoterComponent
       xml.attribute("link", link.getAbsolutePath());
       xml.attribute("resource", drop.getAbsolutePath());
 
-      OutputStream out = null;
+      File latestUrl = new File(folder, "latest.url");
+      appendFile(latestUrl, latest.getQualifier());
 
-      try
-      {
-        File properties = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "latest.properties");
-        out = new FileOutputStream(properties, true);
-        PrintStream stream = new PrintStream(out);
+      File latestUrls = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "latest.urls");
+      String append = path.replace('/', '_').replace('.', '_') + " = \"" + latest.getQualifier() + "\"";
+      appendFile(latestUrls, append);
+    }
+  }
 
-        stream.println(path.replace('/', '.') + " = " + latest.getQualifier());
-        stream.flush();
-      }
-      catch (IOException ex)
-      {
-        throw new RuntimeException(ex);
-      }
-      finally
-      {
-        IO.close(out);
-      }
+  protected void appendFile(File file, String line)
+  {
+    OutputStream out = null;
+
+    try
+    {
+      out = new FileOutputStream(file, true);
+      PrintStream stream = new PrintStream(out);
+
+      stream.println(line);
+      stream.flush();
+    }
+    catch (IOException ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      IO.close(out);
     }
   }
 
