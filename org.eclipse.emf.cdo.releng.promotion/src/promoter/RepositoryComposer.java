@@ -110,6 +110,12 @@ public class RepositoryComposer extends PromoterComponent
 
   protected void createSymLink(XMLOutput xml, WebNode webNode) throws SAXException
   {
+    Repository repository = webNode.getRepository();
+    if (repository == null)
+    {
+      return;
+    }
+
     List<BuildInfo> drops = new ArrayList<BuildInfo>();
     collectAllDrops(webNode, drops);
     if (drops.isEmpty())
@@ -128,7 +134,7 @@ public class RepositoryComposer extends PromoterComponent
 
     if (latest != null)
     {
-      String path = webNode.getRepository().getPath();
+      String path = repository.getPath();
       File folder = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), path);
       File link = new File(folder, "latest");
       File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), latest.getQualifier());
@@ -149,10 +155,8 @@ public class RepositoryComposer extends PromoterComponent
         Drops dropsRepository = (Drops)childRepository;
         drops.addAll(dropsRepository.getBuildInfos());
       }
-      else
-      {
-        collectAllDrops(childNode, drops);
-      }
+
+      collectAllDrops(childNode, drops);
     }
   }
 }
