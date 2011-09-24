@@ -155,7 +155,7 @@ public class RepositoryComposer extends PromoterComponent
         out = new FileOutputStream(properties, true);
         PrintStream stream = new PrintStream(out);
 
-        stream.println(path.replace('/', '_') + " = " + drop.getAbsolutePath());
+        stream.println(path.replace('/', '.') + " = " + drop.getAbsolutePath());
         stream.flush();
       }
       catch (IOException ex)
