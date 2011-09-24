@@ -147,11 +147,11 @@ public class RepositoryComposer extends PromoterComponent
       xml.attribute("link", link.getAbsolutePath());
       xml.attribute("resource", drop.getAbsolutePath());
 
-      File latestUrl = new File(folder, "latest.url");
+      File latestUrl = new File(folder, "latest.qualifier");
       appendFile(latestUrl, latest.getQualifier());
 
-      File latestUrls = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "latest.urls");
-      String append = path.replace('/', '_').replace('.', '_') + " = \"" + latest.getQualifier() + "\"";
+      File latestUrls = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "latest.qualifiers");
+      String append = path.replace('/', '_').replace('.', '_') + " = " + latest.getQualifier();
       appendFile(latestUrls, append);
     }
   }
