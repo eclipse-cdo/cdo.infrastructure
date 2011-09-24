@@ -361,7 +361,7 @@ public class WebNode implements Comparable<WebNode>
     return prefix;
   }
 
-  private static String http()
+  public static String http()
   {
     String downloadsPath = PromoterConfig.INSTANCE.getProperty("downloadsPath");
     return "http://download.eclipse.org/" + downloadsPath + "/";
