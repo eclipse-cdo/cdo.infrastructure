@@ -157,7 +157,7 @@ public class RepositoryComposer extends PromoterComponent
 
         String key = path.replace('/', '.');
         stream.println(key + " = " + drop.getAbsolutePath());
-        stream.println(key + ".url" + " = " + WebNode.http() + "/drops/" + latest.getQualifier());
+        stream.println(key + ".url" + " = " + WebNode.http() + "drops/" + latest.getQualifier());
         stream.println();
         stream.flush();
       }
