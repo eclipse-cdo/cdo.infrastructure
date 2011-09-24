@@ -166,7 +166,7 @@ public final class BuildInfo implements Comparable<BuildInfo>
       return true;
     }
 
-    if (compareTo(o) > 0)
+    if (compareTo(o) < 0)
     {
       return true;
     }
