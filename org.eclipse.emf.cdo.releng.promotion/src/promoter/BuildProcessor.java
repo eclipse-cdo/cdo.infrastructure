@@ -96,6 +96,17 @@ public class BuildProcessor extends PromoterComponent
           generateZipSite(xml, drop, zipSite);
         }
       }
+
+      String generateZipAll = promotionProperties.getProperty("generate.zip.all");
+      if (generateZipAll != null)
+      {
+        File dropinsZip = new File(zips, "dropins.zip");
+        if (dropinsZip.isFile())
+        {
+          File zipAll = new File(zips, buildInfo.substitute(generateZipAll));
+          renameZipAll(xml, dropinsZip, zipAll);
+        }
+      }
     }
 
     File help = new File(drop, "help");
