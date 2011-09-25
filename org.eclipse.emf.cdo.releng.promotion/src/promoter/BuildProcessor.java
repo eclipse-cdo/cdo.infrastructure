@@ -97,6 +97,7 @@ public class BuildProcessor extends PromoterComponent
         }
       }
 
+      // Keep until end of 4.0 maintenance:
       String generateZipAll = promotionProperties.getProperty("generate.zip.all");
       if (generateZipAll != null)
       {
