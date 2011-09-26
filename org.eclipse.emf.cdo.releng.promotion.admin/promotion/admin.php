@@ -3,10 +3,10 @@
 print "<h1>CDO Promotion Admin</h1>";
 
 /*
-$d = dir("/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops");
+ $d = dir("/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops");
 while (false !== ($entry = $d->read()))
 {
-	echo "test: ".$entry."<br>\n";
+echo "test: ".$entry."<br>\n";
 }
 
 $d->close();
@@ -27,15 +27,17 @@ class Project
 
 	function __construct($name, $path)
 	{
-		echo "Project";
 		$this->name = $name;
 		$this->path = $path;
 
 		$d = dir($path);
 		while (false !== ($entry = $d->read()))
 		{
-			// 			if (strpos($entry, ".") != 0)
-			$this->addDrop($this, $entry);
+			if (strpos($entry, ".") != 0)
+			{
+				$this->addDrop($this, $entry);
+				echo $entry."<br>";
+			}
 		}
 
 		$d->close();
@@ -63,13 +65,9 @@ class Project
 
 	function addDrop($qualifier)
 	{
-		echo 1;
 		$drop = new Drop($this, $qualifier);
-		echo 2;
 		$this->drops[count($this->drops)] = $drop;
-		echo 3;
 		$this->dropsByQualifier[$drop->getQualifier()] = $drop;
-		echo 4;
 		return $drop;
 	}
 }
