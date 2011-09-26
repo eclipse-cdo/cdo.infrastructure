@@ -79,7 +79,7 @@ class Drop
 		$webprops = $this->path . "/web.properties";
 		if (is_file($webprops))
 		{
-			if (preg_match("/web\\.label\\s*=\\s*(.*?)/", file_get_contents($webprops), $match) == 1)
+			if (preg_match("@web.label=(.*?)@", file_get_contents($webprops), $match) == 1)
 			{
 				$this->label = $match[1];
 			}
