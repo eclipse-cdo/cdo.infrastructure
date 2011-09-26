@@ -4,6 +4,9 @@ print "<h1>CDO Promotion Admin</h1>";
 
 
 $cdo = new Project("CDO", "/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops");
+$drops = $cdo->getDrops();
+echo $drops;
+
 foreach ($cdo->getDrops() as $drop)
 {
 	echo "test: ".$drop->getQualifier()."<br>\n";
