@@ -62,9 +62,13 @@ class Project
 
 	function addDrop($qualifier)
 	{
+		echo 1;
 		$drop = new Drop($this, $qualifier);
+		echo 2;
 		$this->drops[count($this->drops)] = $drop;
+		echo 3;
 		$this->dropsByQualifier[$drop->getQualifier()] = $drop;
+		echo 4;
 		return $drop;
 	}
 }
