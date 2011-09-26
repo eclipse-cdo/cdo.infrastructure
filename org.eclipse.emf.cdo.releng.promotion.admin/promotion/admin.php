@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', true);
 
 print "<h1>CDO Promotion Admin</h1>";
 
