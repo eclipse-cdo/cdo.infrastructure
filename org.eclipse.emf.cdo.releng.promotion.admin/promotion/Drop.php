@@ -63,6 +63,7 @@ class Drop
 		echo '</font>';
 		echo '</td>';
 	}
+
 	private function init()
 	{
 		$this->path = $this->getProject()->getPath() . "/" . $this->qualifier;
