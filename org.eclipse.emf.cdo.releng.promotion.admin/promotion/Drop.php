@@ -9,6 +9,7 @@ class Drop
 	private $path;
 	private $visible;
 	private $staging;
+	private $label = "";
 
 	function __construct($project, $qualifier)
 	{
@@ -42,10 +43,16 @@ class Drop
 		return $this->staging;
 	}
 
+	function getLabel()
+	{
+		return $this->label;
+	}
+
 	function generate()
 	{
 		echo '<tr>';
 		$this->td('<font face="Courier">'.$this->qualifier.'</font>', $this->visible);
+		$this->td($this->label);
 		$this->td($this->visible ? "" : "invisible");
 		echo '</tr>';
 	}
@@ -68,6 +75,12 @@ class Drop
 	{
 		$this->path = $this->getProject()->getPath() . "/" . $this->qualifier;
 		$this->visible = !is_file($this->path . "/.invisible");
+
+		$webprops = file($this->path . "/web.properties");
+		if (preg_match("/web\.label\s*=\s*(.*?)/", $webprops, $match))
+		{
+			$this->label = $match[1];
+		}
 	}
 }
 
