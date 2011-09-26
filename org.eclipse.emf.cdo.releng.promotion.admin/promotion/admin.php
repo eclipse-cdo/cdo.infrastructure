@@ -24,7 +24,7 @@ class Project
 		$d = dir($path);
 		while (false !== ($entry = $d->read()))
 		{
-			if (strpos($entry, ".") != 0)
+			// 			if (strpos($entry, ".") != 0)
 			addDrop($this, $entry);
 		}
 
