@@ -60,7 +60,7 @@ class Drop
 		}
 
 		echo '>';
-		echo str;
+		echo $str;
 		echo '</font>';
 		echo '</td>';
 	}
