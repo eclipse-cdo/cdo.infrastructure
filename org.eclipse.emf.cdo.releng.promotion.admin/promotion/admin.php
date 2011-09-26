@@ -25,6 +25,7 @@ class Project
 
 	function __construct($name, $path)
 	{
+		echo "Project";
 		$this->name = $name;
 		$this->path = $path;
 
