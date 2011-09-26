@@ -2,14 +2,84 @@
 
 print "<h1>CDO Promotion Admin</h1>";
 
-$d = dir("/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops");
-while (false !== ($entry = $d->read()))
+$cdo = new Project("CDO", "/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops");
+
+foreach ($cdo->getDrops() as $drop)
 {
-	echo $entry."<br>\n";
+	echo $drop->getQualifier() . "<br>\n";
 }
 
-$d->close();
+class Project
+{
+	private $name;
+	private $path;
+	private $drops = array();
+	private $dropsByQualifier = array();
 
-//print str_replace("\n", "<br>", htmlspecialchars(file_get_contents("/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops/I20110925-0426/build-info.xml")));
+	function __construct($name, $path)
+	{
+		$this->name = $name;
+		$this->path = $path;
+
+		$d = dir($path);
+		while (false !== ($entry = $d->read()))
+		{
+			if (strpos($entry, ".") != 0)
+			addDrop($this, $entry);
+		}
+
+		$d->close();
+	}
+
+	function getName()
+	{
+		return $this->name;
+	}
+
+	function getPath()
+	{
+		return $this->path;
+	}
+
+	function getDrops()
+	{
+		return $this->drops;
+	}
+
+	function getDrop($qualifier)
+	{
+		return $this->dropsByQualifier[$qualifier];
+	}
+
+	function addDrop($qualifier)
+	{
+		$drop = new Drop(this, $qualifier);
+		$this->drops[count($this->drops)] = $drop;
+		$this->dropsByQualifier[$field->getName()] = $drop;
+		return $drop;
+	}
+}
+
+class Drop
+{
+	private $project;
+	private $qualifier;
+
+	function __construct($project, $qualifier)
+	{
+		$this->project = $project;
+		$this->qualifier = $qualifier;
+	}
+
+	function getProject()
+	{
+		return $this->project;
+	}
+
+	function getQualifier()
+	{
+		return $this->qualifier;
+	}
+}
 
 ?>
