@@ -83,6 +83,8 @@ class Drop
 			{
 				$this->label = $match[1];
 			}
+			else
+				$this->label = file_get_contents($webprops);
 		}
 	}
 }
