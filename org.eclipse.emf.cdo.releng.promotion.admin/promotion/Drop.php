@@ -51,8 +51,8 @@ class Drop
 	{
 		echo '<tr>';
 		$this->td($this->stream);
-		$this->td('<font face="Courier">'.$this->qualifier.'</font>', $this->visible);
-		$this->td($this->label);
+		$this->td($this->qualifier, $this->visible);
+		$this->td($this->label, $this->visible);
 		$this->td($this->train);
 		echo '</tr>';
 	}
