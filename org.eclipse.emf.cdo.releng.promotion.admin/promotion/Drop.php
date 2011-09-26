@@ -45,21 +45,20 @@ class Drop
 	function generate()
 	{
 		echo '<tr>';
-		$this->td($this->qualifier);
-		$this->td($this->visible ? "visible" : "invisible");
+		$this->td($this->qualifier, $this->visible);
+		$this->td($this->visible ? "" : "invisible");
 		echo '</tr>';
 	}
 
-	private function td($str = "&nbsp;")
+	private function td($str = "&nbsp;", $visible = true)
 	{
-		echo '<td>';
-		echo '<font face="Courier"';
-		if (!$this->visible)
+		if ($str == "")
 		{
-			echo ' color="#AAAAAA"';
+			$str = "&nbsp;";
 		}
 
-		echo '>';
+		echo '<td>';
+		echo '<font face="Courier" color="'.($visible ? "#000000" : "#BBBBBB").'">';
 		echo $str;
 		echo '</font>';
 		echo '</td>';
