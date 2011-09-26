@@ -1,5 +1,4 @@
 <?php
-error_reporting(E_ALL);
 ini_set('display_errors', true);
 
 print "<h1>CDO Promotion Admin</h1>";
@@ -27,7 +26,7 @@ class Project
 		{
 			if (strpos($entry, ".") !== 0)
 			{
-				$this->addDrop($entry);
+				$this->addDrop($this, $entry);
 			}
 		}
 
@@ -87,7 +86,7 @@ class Drop
 	}
 }
 
-echo"<br>";
-echo"<br>";
-phpinfo();
+// echo"<br>";
+// echo"<br>";
+// phpinfo();
 ?>
