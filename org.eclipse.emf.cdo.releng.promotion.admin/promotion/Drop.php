@@ -49,9 +49,11 @@ class Drop
 
 	function generate()
 	{
+		$href = 'http://www.eclipse.org/cdo/downloads/#'.str_replace('-', '_', $this->qualifier);
+
 		echo '<tr>';
 		$this->td($this->stream);
-		$this->td($this->qualifier, $this->visible);
+		$this->td('<a href="'.$href.'">'.$this->qualifier.'</a>', $this->visible);
 		$this->td($this->label, $this->visible);
 		$this->td($this->train);
 		echo '</tr>';
