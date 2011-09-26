@@ -2,7 +2,6 @@
 
 print "<h1>CDO Promotion Admin</h1>";
 
-
 $cdo = new Project("CDO", "/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops");
 foreach ($cdo->getDrops() as $drop)
 {
@@ -66,11 +65,13 @@ class Drop
 {
 	private $project;
 	private $qualifier;
+	private $staging;
 
 	function __construct($project, $qualifier)
 	{
 		$this->project = $project;
 		$this->qualifier = $qualifier;
+
 	}
 
 	function getProject()
@@ -84,4 +85,7 @@ class Drop
 	}
 }
 
+echo"<br>";
+echo"<br>";
+phpinfo();
 ?>
