@@ -42,6 +42,28 @@ class Drop
 		return $this->staging;
 	}
 
+	function generate()
+	{
+		echo '<tr>';
+		$this->td($this->qualifier);
+		$this->td($this->visible ? "visible" : "invisible");
+		echo '</tr>';
+	}
+
+	private function td($str = "&nbsp;")
+	{
+		echo '<td>';
+		echo '<font face="Courier"';
+		if (!$this->visible)
+		{
+			echo ' color="#AAAAAA"';
+		}
+
+		echo '>';
+		echo str;
+		echo '</font>';
+		echo '</td>';
+	}
 	private function init()
 	{
 		$this->path = $this->getProject()->getPath() . "/" . $this->qualifier;

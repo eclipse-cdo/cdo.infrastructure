@@ -36,6 +36,18 @@ class Project
 		return $this->dropsByQualifier[$qualifier];
 	}
 
+	function generate()
+	{
+		echo "<h1>$name Promotion Admin</h1>";
+		echo '<table>';
+		foreach ($this->drops as $drop)
+		{
+			$drop->generate();
+		}
+
+		echo '</table>';
+	}
+
 	private function init()
 	{
 		$d = dir($this->path);
