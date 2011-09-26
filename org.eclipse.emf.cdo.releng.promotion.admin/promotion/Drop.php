@@ -76,7 +76,7 @@ class Drop
 		$this->path = $this->getProject()->getPath() . "/" . $this->qualifier;
 		$this->visible = !is_file($this->path . "/.invisible");
 
-		$webprops = file($this->path . "/web.properties");
+		$webprops = file_get_contents($this->path . "/web.properties");
 		if (preg_match("/web\.label\s*=\s*(.*?)/", $webprops, $match))
 		{
 			$this->label = $match[1];
