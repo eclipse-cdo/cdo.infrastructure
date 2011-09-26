@@ -4,20 +4,20 @@ require_once 'Project.php';
 
 class Drop
 {
-	private $project;
-	private $qualifier;
-	private $path;
-	private $visible;
-	private $staging;
-	private $label = "";
-	private $stream = "";
+	public $project;
+	public $qualifier;
+	public $path;
+	public $visible;
+	public $staging;
+	public $label = "";
+	public $stream = "";
 
 	function __construct($project, $qualifier)
 	{
 		$this->project = $project;
 		$this->qualifier = $qualifier;
 
-		$this->path = $this->project->getPath() . "/" . $this->qualifier;
+		$this->path = $this->project->path . "/" . $this->qualifier;
 		$this->visible = !is_file($this->path . "/.invisible");
 
 		$file = $this->path . "/web.properties";

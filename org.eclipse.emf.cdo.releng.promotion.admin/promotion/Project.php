@@ -4,31 +4,26 @@ require_once 'Drop.php';
 
 class Project
 {
-	private $name;
-	private $path;
-	private $drops = array();
+	public $name;
+	public $path;
+	public $drops = array();
 	private $dropsByQualifier = array();
 
 	function __construct($name, $path)
 	{
 		$this->name = $name;
 		$this->path = $path;
-		$this->init();
-	}
 
-	function getName()
-	{
-		return $this->name;
-	}
+		$d = dir($this->path);
+		while (false !== ($entry = $d->read()))
+		{
+			if (strpos($entry, ".") !== 0)
+			{
+				$this->addDrop($entry);
+			}
+		}
 
-	function getPath()
-	{
-		return $this->path;
-	}
-
-	function getDrops()
-	{
-		return $this->drops;
+		$d->close();
 	}
 
 	function getDrop($qualifier)
@@ -46,20 +41,6 @@ class Project
 		}
 
 		echo '</table>';
-	}
-
-	private function init()
-	{
-		$d = dir($this->path);
-		while (false !== ($entry = $d->read()))
-		{
-			if (strpos($entry, ".") !== 0)
-			{
-				$this->addDrop($entry);
-			}
-		}
-
-		$d->close();
 	}
 
 	private function addDrop($qualifier)
