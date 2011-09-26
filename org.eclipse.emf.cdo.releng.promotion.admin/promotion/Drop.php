@@ -11,6 +11,7 @@ class Drop
 	public $staging;
 	public $label = "";
 	public $stream = "";
+	public $train = "";
 
 	function __construct($project, $qualifier)
 	{
@@ -34,9 +35,14 @@ class Drop
 		if (is_file($file))
 		{
 			$contents = file_get_contents($file);
-			if (preg_match('@stream="(.*)"@s', $contents, $match))
+			if (preg_match('@stream="(.*?)"@s', $contents, $match))
 			{
 				$this->stream = $match[1];
+			}
+
+			if (preg_match('@train="(.*?)"@s', $contents, $match))
+			{
+				$this->train = $match[1];
 			}
 		}
 	}
@@ -47,6 +53,7 @@ class Drop
 		$this->td($this->stream);
 		$this->td('<font face="Courier">'.$this->qualifier.'</font>', $this->visible);
 		$this->td($this->label);
+		$this->td($this->train);
 		echo '</tr>';
 	}
 
