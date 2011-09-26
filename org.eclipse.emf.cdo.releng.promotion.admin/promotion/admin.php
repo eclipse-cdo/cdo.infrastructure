@@ -15,9 +15,9 @@ foreach ($cdo->getDrops() as $drop)
 	}
 	else
 	{
-		echo '<font color="#444444">';
+		echo '<font color="#888888"><i>';
 		echo $drop->getQualifier();
-		echo '</font>';
+		echo '</i></font>';
 	}
 
 	echo "<br>\n";
