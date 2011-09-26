@@ -2,6 +2,7 @@
 
 print "<h1>CDO Promotion Admin</h1>";
 
+/*
 $d = dir("/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops");
 while (false !== ($entry = $d->read()))
 {
@@ -9,6 +10,7 @@ while (false !== ($entry = $d->read()))
 }
 
 $d->close();
+*/
 
 $cdo = new Project("CDO", "/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops");
 foreach ($cdo->getDrops() as $drop)
@@ -33,8 +35,7 @@ class Project
 		while (false !== ($entry = $d->read()))
 		{
 			// 			if (strpos($entry, ".") != 0)
-			echo $entry;
-			addDrop($this, $entry);
+			$this->addDrop($this, $entry);
 		}
 
 		$d->close();
