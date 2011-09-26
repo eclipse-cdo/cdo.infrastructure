@@ -17,7 +17,7 @@ class Drop
 		$this->project = $project;
 		$this->qualifier = $qualifier;
 
-		$this->path = $this->getProject()->getPath() . "/" . $this->qualifier;
+		$this->path = $this->project->getPath() . "/" . $this->qualifier;
 		$this->visible = !is_file($this->path . "/.invisible");
 
 		$file = $this->path . "/web.properties";
