@@ -53,9 +53,9 @@ class Project
 
 	function addDrop($qualifier)
 	{
-		$drop = new Drop(this, $qualifier);
+		$drop = new Drop($this, $qualifier);
 		$this->drops[count($this->drops)] = $drop;
-		$this->dropsByQualifier[$field->getName()] = $drop;
+		$this->dropsByQualifier[$drop->getQualifier()] = $drop;
 		return $drop;
 	}
 }
