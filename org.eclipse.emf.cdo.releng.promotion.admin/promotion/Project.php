@@ -47,7 +47,7 @@ class Project
 	{
 		$drop = new Drop($this, $qualifier);
 		$this->drops[count($this->drops)] = $drop;
-		$this->dropsByQualifier[$drop->getQualifier()] = $drop;
+		$this->dropsByQualifier[$drop->qualifier] = $drop;
 		return $drop;
 	}
 }
