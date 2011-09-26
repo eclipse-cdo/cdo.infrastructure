@@ -26,6 +26,7 @@ class Project
 		{
 			// 			if (strpos($entry, ".") != 0)
 			addDrop($this, $entry);
+			echo $entry;
 		}
 
 		$d->close();
