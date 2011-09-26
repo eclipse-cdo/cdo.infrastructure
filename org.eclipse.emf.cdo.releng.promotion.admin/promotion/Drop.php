@@ -80,9 +80,8 @@ class Drop
 		if (is_file($webprops))
 		{
 			// 			$this->label = file_get_contents($webprops);
-			if (preg_match("@web\.label=(.*)@s", file_get_contents($webprops), $match))
+			if (preg_match("@web\.label=(.*)$@s", file_get_contents($webprops), $match))
 			{
-				echo "X";
 				$this->label = $match[1];
 			}
 		}
