@@ -38,7 +38,7 @@ class Project
 
 	function generate()
 	{
-		echo "<h1>$name Promotion Admin</h1>";
+		echo "<h1>".$this->name." Promotion Admin</h1>";
 		echo '<table border="1" cellpadding="3">';
 		foreach ($this->drops as $drop)
 		{
