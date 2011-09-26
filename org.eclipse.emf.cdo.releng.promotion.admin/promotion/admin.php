@@ -33,8 +33,8 @@ class Project
 		while (false !== ($entry = $d->read()))
 		{
 			// 			if (strpos($entry, ".") != 0)
-			addDrop($this, $entry);
 			echo $entry;
+			addDrop($this, $entry);
 		}
 
 		$d->close();
