@@ -56,7 +56,7 @@ function ChangeLabel($drop)
 	}
 
 	$start = time();
-	file_put_contents("/tmp/promotion.emf.cdo/public/tasks.tmp/$start.task", "ChangeLabel\n$drop\n$value");
+	file_put_contents("/tmp/promotion.emf.cdo/public/tasks.tmp/$start.task", "ChangeLabel\n$drop->qualifier\n$value");
 
 	$attempt = 0;
 	while (!rename("/tmp/promotion.emf.cdo/public/tasks.tmp", "/tmp/promotion.emf.cdo/public/tasks"))
