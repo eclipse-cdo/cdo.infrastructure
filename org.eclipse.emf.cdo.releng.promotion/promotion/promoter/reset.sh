@@ -10,3 +10,6 @@ projectConfigArea=`pwd -P`
 . "$projectConfigArea/promoter.properties"
 
 rm -rf "$workingArea"
+mkdir "$workingArea"
+mkdir "$workingArea/public"
+chmod a+rwx "$workingArea/public"

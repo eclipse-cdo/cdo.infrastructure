@@ -78,7 +78,7 @@ CheckPromotion ()
 	fi
 	
 	echo
-	echo "Starting $classPromoter $args (`date`)"
+	echo "Starting promotion with $classPromoter $args (`date`)"
 	
 	############################################################################################################
   "$JAVA_HOME/bin/java" "-DpromoterInstallArea=$promoterInstallArea" -cp "$classPath" "$classPromoter" "$args"
