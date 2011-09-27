@@ -36,22 +36,21 @@ class Project
 		echo "<h1>".$this->name." Promotion Admin</h1>";
 
 		$qualifier = $_GET["Hide"];
-		if (isset($qualifier))
+		if (isset($_GET["Hide"]))
 		{
-			$drop = $this->getDrop($qualifier);
+			$drop = $this->getDrop($_GET["Hide"]);
 			$drop->hide();
 		}
 
-		if (isset($qualifier))
+		if (isset($_GET["Show"]))
 		{
-			$drop = $this->getDrop($qualifier);
+			$drop = $this->getDrop($_GET["Show"]);
 			$drop->show();
 		}
 
-		$qualifier = $_GET["Delete"];
-		if (isset($qualifier))
+		if (isset($_GET["Delete"]))
 		{
-			$drop = $this->getDrop($qualifier);
+			$drop = $this->getDrop($_GET["Delete"]);
 			$drop->delete();
 		}
 
