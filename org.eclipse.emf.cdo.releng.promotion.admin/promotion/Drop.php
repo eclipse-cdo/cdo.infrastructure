@@ -53,7 +53,6 @@ class Drop
 		$href = 'http://www.eclipse.org/cdo/downloads/#'.str_replace('-', '_', $this->qualifier);
 
 		echo '<tr>';
-		$this->td($this->stream);
 		$this->td('<a href="'.$href.'">'.$this->qualifier.'</a>');
 		$this->td($this->label);
 

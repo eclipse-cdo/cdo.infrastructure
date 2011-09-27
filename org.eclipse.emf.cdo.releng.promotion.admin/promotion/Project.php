@@ -69,6 +69,12 @@ class Project
 		{
 			echo "<h2>".$stream." Stream</h2>";
 			echo '<table border="1" cellpadding="8">';
+			echo '<tr>';
+			echo '<th>Drop</th>';
+			echo '<th>Label</th>';
+			echo '<th>Train</th>';
+			echo '<th colspan="3">Actions</th>';
+			echo '</tr>';
 
 			foreach ($this->drops as $drop)
 			{
