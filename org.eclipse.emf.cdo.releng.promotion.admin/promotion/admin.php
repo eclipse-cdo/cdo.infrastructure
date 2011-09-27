@@ -46,7 +46,25 @@ function EditLabel($drop)
 
 function ChangeLabel($drop)
 {
-	echo 'Label changed<br>';
+	$value = $_GET["value"];
+
+	$attempt = 0;
+	while (!mkdir("/tmp/promotion.emf.cdo/tasks.tmp"))
+	{
+		sleep(1);
+		echo "Attempt to create /tmp/promotion.emf.cdo/tasks.tmp (".(++$attempt).")<br>";
+	}
+
+	$start = time();
+	file_put_contents("/tmp/promotion.emf.cdo/tasks.tmp/$start.task", "ChangeLabel\n$drop\n$value");
+
+	$attempt = 0;
+	while (!rename("/tmp/promotion.emf.cdo/tasks.tmp", "/tmp/promotion.emf.cdo/tasks"))
+	{
+		sleep(1);
+		echo "Attempt to rename /tmp/promotion.emf.cdo/tasks.tmp (".(++$attempt).")<br>";
+	}
+
 	return true;
 }
 

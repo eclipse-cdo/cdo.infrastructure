@@ -11,9 +11,11 @@
 package promoter;
 
 import promoter.util.Ant;
+import promoter.util.IO;
 import promoter.util.XMLOutput;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -44,9 +46,9 @@ public class Promoter
     BuildCopier buildCopier = createBuildCopier();
     List<BuildInfo> builds = buildCopier.copyBuilds();
 
-    // List<Task> tasks = performTasks();
+    List<Task> tasks = performTasks();
 
-    if (builds.isEmpty() /* && tasks.isEmpty() */)
+    if (builds.isEmpty() && tasks.isEmpty())
     {
       System.out.println();
       System.out.print("No new builds or tasks have been found.");
@@ -76,6 +78,46 @@ public class Promoter
     }
 
     System.out.println();
+  }
+
+  public List<Task> performTasks()
+  {
+    List<Task> tasks = new ArrayList<Task>();
+    File taskFolder = new File(PromoterConfig.INSTANCE.getWorkingArea(), "tasks.inprogress");
+    if (taskFolder.isDirectory())
+    {
+      try
+      {
+        for (File file : taskFolder.listFiles())
+        {
+          if (file.isFile() && file.getName().endsWith(".task"))
+          {
+            String content = IO.readTextFile(file);
+            String[] args = content.split("\n");
+
+            Task task = createComponent("promoter.tasks." + args[0] + "Task");
+            if (task.execute(args))
+            {
+              tasks.add(task);
+            }
+          }
+        }
+      }
+      catch (RuntimeException ex)
+      {
+        throw ex;
+      }
+      catch (Exception ex)
+      {
+        throw new RuntimeException(ex);
+      }
+      finally
+      {
+        IO.delete(taskFolder);
+      }
+    }
+
+    return tasks;
   }
 
   public SourceCodeManager createSourceCodeManager()
@@ -123,7 +165,11 @@ public class Promoter
   public <T> T createComponent(Class<T> type)
   {
     String name = PromoterConfig.INSTANCE.getProperty("class" + type.getSimpleName(), type.getName());
+    return createComponent(name);
+  }
 
+  public <T> T createComponent(String name)
+  {
     try
     {
       @SuppressWarnings("unchecked")
