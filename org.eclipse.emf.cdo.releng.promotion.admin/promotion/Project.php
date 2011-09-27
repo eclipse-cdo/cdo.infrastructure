@@ -53,7 +53,7 @@ class Project
 			$drop->delete();
 		}
 
-		echo '<p><a href="">Reload Page</a></p>';
+		echo '<p><a href="'.$_SERVER['PHP_SELF'].'">Reload Page</a></p>';
 
 		echo '<table border="1" cellpadding="8">';
 		foreach ($this->drops as $drop)
