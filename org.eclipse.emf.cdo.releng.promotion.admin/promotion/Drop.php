@@ -57,7 +57,7 @@ class Drop
 		$this->td('<a href="'.$href.'">'.$this->qualifier.'</a>');
 		$this->td($this->label);
 
-		$this->td($this->train);
+		$this->td('<a href="https://hudson.eclipse.org/hudson/job/'.$this->train.'.runAggregator">'.ucfirst($this->train).'</a>');
 		if ($this->staged)
 		{
 			$this->td();
