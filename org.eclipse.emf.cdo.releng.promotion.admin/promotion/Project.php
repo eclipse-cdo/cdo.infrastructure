@@ -65,7 +65,7 @@ class Project
 		echo "<h1>".$this->name." Promotion Admin</h1>";
 		echo '<p><a href="'.$_SERVER['PHP_SELF'].'">Reload Page</a></p>';
 
-		foreach ($this->getStreams() as $stream)
+		foreach ($this->getStreams() as $stream => $v)
 		{
 			echo "<h2>".$stream." Stream</h2>";
 			echo '<table border="1" cellpadding="8">';
