@@ -20,7 +20,7 @@ class Drop
 
 		$this->path = $this->project->path . "/" . $this->qualifier;
 		$this->visible = !is_file($this->path . "/.invisible");
-		$this->staged = !is_file($this->path . "/.staged");
+		$this->staged = is_file($this->path . "/.staged");
 
 		$file = $this->path . "/web.properties";
 		if (is_file($file))
