@@ -65,10 +65,13 @@ class Project
 		echo "<h1>".$this->name." Promotion Admin</h1>";
 		echo '<p><a href="'.$_SERVER['PHP_SELF'].'">Reload Page</a></p>';
 
+		echo '<table border="1" cellpadding="8">';
 		foreach ($this->getStreams() as $stream => $v)
 		{
-			echo "<h2>".$stream." Stream</h2>";
-			echo '<table border="1" cellpadding="8">';
+			echo '<tr>';
+			echo '<td colspan="6"><h2>'.$stream.' Stream</h2></td>';
+			echo '</tr>';
+
 			echo '<tr>';
 			echo '<th>Drop</th>';
 			echo '<th>Label</th>';
@@ -83,9 +86,9 @@ class Project
 					$drop->generate();
 				}
 			}
-
-			echo '</table>';
 		}
+
+		echo '</table>';
 	}
 
 	private function addDrop($qualifier)
