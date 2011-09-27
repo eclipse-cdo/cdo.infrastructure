@@ -13,7 +13,12 @@ deleteFolder("$publicFolder/tasks.inprogress");
 
 function deleteFolder($tmpPath)
 {
-	if (!is_writeable($tmpPath) && is_dir($tmpPath))
+	if (!is_dir($tmpPath))
+	{
+		return;
+	}
+
+	if (!is_writeable($tmpPath))
 	{
 		chmod($tmpPath,0777);
 	}
@@ -47,15 +52,6 @@ function deleteFolder($tmpPath)
 
 	closedir($handle);
 	rmdir($tmpPath);
-
-	if (!is_dir($tmpPath))
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
 }
 
 ?>
