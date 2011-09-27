@@ -37,7 +37,9 @@ function EditLabel($drop)
 	echo '<form method="GET">';
 	echo '<input name="drop" type="hidden" value="'.$drop->qualifier.'"></input>';
 	echo '<p>Label: <input name="value" type="text" value="'.$drop->label.'"></input></p>';
-	echo '<input name="action" type="submit" value="ChangeLabel"></input>&nbsp;';
+	echo '<input name="action" type="submit" value="ChangeLabel"></input>';
+	echo '&nbsp;';
+	echo '<input name="action" type="submit" value="Cancel"></input>';
 	echo '</form>';
 	return false;
 }
