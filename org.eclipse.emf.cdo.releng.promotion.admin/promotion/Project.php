@@ -89,7 +89,7 @@ class Project
 
 	function generate()
 	{
-		echo '<center>';
+		echo '<center><font face="Helvetica,Arial">';
 		echo "<h1>".$this->name." Promotion Admin</h1>";
 		echo '<p><a href="'.$_SERVER['PHP_SELF'].'">Reload Page</a></p>';
 
@@ -107,7 +107,7 @@ class Project
 		}
 
 		echo '</table>';
-		echo '</center>';
+		echo '</font></center>';
 	}
 
 	private function addDrop($qualifier)
