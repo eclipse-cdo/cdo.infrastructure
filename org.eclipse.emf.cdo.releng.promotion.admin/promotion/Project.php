@@ -35,6 +35,12 @@ class Project
 	{
 		echo "<h1>".$this->name." Promotion Admin</h1>";
 
+		if (isset($_GET["Stage"]))
+		{
+			$drop = $this->getDrop($_GET["Stage"]);
+			$drop->stage();
+		}
+
 		if (isset($_GET["Hide"]))
 		{
 			$drop = $this->getDrop($_GET["Hide"]);

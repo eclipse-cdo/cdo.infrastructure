@@ -67,11 +67,24 @@ class Drop
 			$this->td('<a href="?Stage='.$this->qualifier.'">Stage</a>');
 		}
 
-
 		$visibility = $this->visible ? "Hide" : "Show";
 		$this->td('<a href="?'.$visibility.'='.$this->qualifier.'">'.$visibility.'</a>');
-		$this->td('<a href="?Delete='.$this->qualifier.'"><img src="images/delete.gif"></a>');
+
+		if ($this->staged)
+		{
+			$this->td();
+		}
+		else
+		{
+			$this->td('<a href="?Delete='.$this->qualifier.'"><img src="images/delete.gif"></a>');
+		}
+
 		echo '</tr>';
+	}
+
+	function stage()
+	{
+		echo $this->qualifier." staged";
 	}
 
 	function hide()
@@ -97,7 +110,9 @@ class Drop
 		}
 
 		echo '<td bgcolor="'.($this->visible ? "#FFFFFF" : "#EEEEEE").'">';
+		if ($this->staged) echo "<b>";
 		echo $str;
+		if ($this->staged) echo "</b>";
 		echo '</td>';
 	}
 }
