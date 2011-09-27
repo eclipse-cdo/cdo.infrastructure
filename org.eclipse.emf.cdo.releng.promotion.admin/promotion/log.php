@@ -13,7 +13,7 @@ $run = null;
 $lines = file($logfile);
 foreach ($lines as $line)
 {
-	if (strpos($line, "Starting promotion with") == 0)
+	if (strpos($line, "Starting promotion with") !== false)
 	{
 		addRun();
 		$run = new Run($line);
@@ -64,7 +64,7 @@ class Run
 	function addBody($line)
 	{
 		$this->body[count($this->body)] = htmlspecialchars($line);
-		if (strpos($line, "No new builds or tasks have been found") == 0)
+		if (strpos($line, "No new builds or tasks have been found") !== false)
 		{
 			$this->noop = true;
 		}
