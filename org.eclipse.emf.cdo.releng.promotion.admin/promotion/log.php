@@ -37,7 +37,7 @@ foreach ($lines as $line)
 }
 
 addRun();
-array_reverse($runs);
+$runs = array_reverse($runs);
 
 echo "<tt>\n\n";
 
