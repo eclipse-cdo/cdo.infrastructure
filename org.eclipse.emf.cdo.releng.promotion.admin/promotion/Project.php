@@ -33,6 +33,33 @@ class Project
 		return $this->dropsByQualifier[$qualifier];
 	}
 
+	function getDrops($stream)
+	{
+		$drops = array();
+		foreach ($this->drops as $drop)
+		{
+			if ($drop->stream == $stream)
+			{
+				$drops[count($drops)] = $drop;
+			}
+		}
+
+		uksort($drops, "cmpDrops");
+		return $drops;
+	}
+
+	function getStreams()
+	{
+		$streams = array();
+		foreach ($this->drops as $drop)
+		{
+			$streams[$drop->stream] = true;
+		}
+
+		uksort($streams, "cmpStreams");
+		return $streams;
+	}
+
 	function process()
 	{
 		if (isset($_GET["Stage"]))
@@ -79,12 +106,9 @@ class Project
 			echo '<th colspan="3">Actions</th>';
 			echo '</tr>';
 
-			foreach ($this->drops as $drop)
+			foreach ($this->getDrops($stream) as $drop)
 			{
-				if ($drop->stream == $stream)
-				{
-					$drop->generate();
-				}
+				$drop->generate();
 			}
 		}
 
@@ -98,18 +122,6 @@ class Project
 		$this->dropsByQualifier[$drop->qualifier] = $drop;
 		return $drop;
 	}
-
-	private function getStreams()
-	{
-		$streams = array();
-		foreach ($this->drops as $drop)
-		{
-			$streams[$drop->stream] = true;
-		}
-
-		uksort($streams, "cmpStreams");
-		return $streams;
-	}
 }
 
 function cmpStreams($a, $b)
@@ -122,6 +134,13 @@ function cmpStreams($a, $b)
 	if (intval($a[1]) > intval($b[1])) return -1;
 	if (intval($a[1]) < intval($b[1])) return 1;
 	return 0;
+}
+
+function cmpDrops($a, $b)
+{
+	$a = substr($a->qualifier, 1);
+	$b = substr($b->qualifier, 1);
+	return -strcmp($a, $b);
 }
 
 ?>
