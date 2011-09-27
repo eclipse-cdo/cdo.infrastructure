@@ -88,7 +88,7 @@ class Drop
 		}
 		else
 		{
-			$this->td('<a href="?action=Delete&drop='.$this->qualifier.'" title="Delete"><img src="images/delete.gif"></a>');
+			$this->td('<a href="?action=AskDelete&drop='.$this->qualifier.'" title="Delete"><img src="images/delete.gif"></a>');
 		}
 
 		echo '</tr>';
