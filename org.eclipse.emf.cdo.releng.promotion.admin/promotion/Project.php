@@ -101,18 +101,18 @@ class Project
 		uksort($streams, "cmpStreams");
 		return $streams;
 	}
+}
 
-	private function cmpStreams($a, $b)
-	{
-		$a = explode(".", $a);
-		$b = explode(".", $b);
+function cmpStreams($a, $b)
+{
+	$a = explode(".", $a);
+	$b = explode(".", $b);
 
-		if (intval($a[0]) > intval($b[0])) return -1;
-		if (intval($a[0]) < intval($b[0])) return 1;
-		if (intval($a[1]) > intval($b[1])) return -1;
-		if (intval($a[1]) < intval($b[1])) return 1;
-		return 0;
-	}
+	if (intval($a[0]) > intval($b[0])) return -1;
+	if (intval($a[0]) < intval($b[0])) return 1;
+	if (intval($a[1]) > intval($b[1])) return -1;
+	if (intval($a[1]) < intval($b[1])) return 1;
+	return 0;
 }
 
 ?>
