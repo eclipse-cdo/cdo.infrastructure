@@ -5,7 +5,7 @@ $logfile = "/tmp/promotion.emf.cdo/promoter.log";
 
 echo '<font face="Helvetica,Arial">';
 echo "<h1>$logfile</h1>";
-echo '</font>';
+echo "</font>\n\n";
 
 $runs = array();
 $run = null;
@@ -30,7 +30,7 @@ foreach ($lines as $line)
 addRun();
 array_reverse($runs);
 
-echo '<pre>';
+echo "<tt>\n\n";
 
 $id = 0;
 foreach ($runs as $run)
@@ -38,7 +38,7 @@ foreach ($runs as $run)
 	$run->generate(++$id);
 }
 
-echo '</pre>';
+echo "</tt>\n";
 
 
 function addRun()
