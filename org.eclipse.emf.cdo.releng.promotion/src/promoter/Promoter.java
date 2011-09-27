@@ -83,7 +83,8 @@ public class Promoter
   public List<Task> performTasks()
   {
     List<Task> tasks = new ArrayList<Task>();
-    File taskFolder = new File(PromoterConfig.INSTANCE.getWorkingArea(), "public/tasks.inprogress");
+    File publicFolder = new File(PromoterConfig.INSTANCE.getWorkingArea(), "public");
+    File taskFolder = new File(publicFolder, "tasks.inprogress");
     if (taskFolder.isDirectory())
     {
       try
@@ -114,6 +115,7 @@ public class Promoter
       finally
       {
         IO.delete(taskFolder);
+        IO.delete(new File(publicFolder, "tasks.tmp")); // Can be left by PHP
       }
     }
 
