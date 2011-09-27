@@ -63,6 +63,18 @@ class Drop
 		echo '</tr>';
 	}
 
+	function hide()
+	{
+	}
+
+	function show()
+	{
+	}
+
+	function delete()
+	{
+	}
+
 	private function td($str = "&nbsp;")
 	{
 		if ($str == "")

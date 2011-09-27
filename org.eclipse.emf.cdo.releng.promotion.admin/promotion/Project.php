@@ -34,6 +34,30 @@ class Project
 	function generate()
 	{
 		echo "<h1>".$this->name." Promotion Admin</h1>";
+
+		$qualifier = $_GET["Hide"];
+		if ($qualifier)
+		{
+			$drop = $this->getDrop($qualifier);
+			$drop->hide();
+		}
+
+		$qualifier = $_GET["Show"];
+		if ($qualifier)
+		{
+			$drop = $this->getDrop($qualifier);
+			$drop->show();
+		}
+
+		$qualifier = $_GET["Delete"];
+		if ($qualifier)
+		{
+			$drop = $this->getDrop($qualifier);
+			$drop->delete();
+		}
+
+		echo '<p><a href="">Reload Page</a></p>';
+
 		echo '<table border="1" cellpadding="8">';
 		foreach ($this->drops as $drop)
 		{
