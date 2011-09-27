@@ -53,23 +53,31 @@ class Drop
 
 		echo '<tr>';
 		$this->td($this->stream);
-		$this->td('<a href="'.$href.'">'.$this->qualifier.'</a>', $this->visible);
-		$this->td($this->label, $this->visible);
+		$this->td('<a href="'.$href.'">'.$this->qualifier.'</a>');
+		$this->td($this->label);
 		$this->td($this->train);
+		if ($this->visible)
+		{
+			$this->td('<a href="hide.php">Hide</a>');
+		}
+		else
+		{
+			$this->td('<a href="show.php">Show</a>');
+		}
+
+		$this->td('<a href="delete.php">Delete</a>');
 		echo '</tr>';
 	}
 
-	private function td($str = "&nbsp;", $visible = true)
+	private function td($str = "&nbsp;")
 	{
 		if ($str == "")
 		{
 			$str = "&nbsp;";
 		}
 
-		echo '<td>';
-		echo '<font color="'.($visible ? "#000000" : "#BBBBBB").'">';
+		echo '<td bgcolor="'.($this->visible ? "#FFFFFF" : "#EEEEEE").'">';
 		echo $str;
-		echo '</font>';
 		echo '</td>';
 	}
 }
