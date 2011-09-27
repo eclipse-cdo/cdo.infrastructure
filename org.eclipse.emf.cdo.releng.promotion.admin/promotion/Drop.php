@@ -8,7 +8,7 @@ class Drop
 	public $qualifier;
 	public $path;
 	public $visible;
-	public $staging;
+	public $staged;
 	public $label = "";
 	public $stream = "";
 	public $train = "";
@@ -20,6 +20,7 @@ class Drop
 
 		$this->path = $this->project->path . "/" . $this->qualifier;
 		$this->visible = !is_file($this->path . "/.invisible");
+		$this->staged = !is_file($this->path . "/.staged");
 
 		$file = $this->path . "/web.properties";
 		if (is_file($file))
@@ -55,7 +56,17 @@ class Drop
 		$this->td($this->stream);
 		$this->td('<a href="'.$href.'">'.$this->qualifier.'</a>');
 		$this->td($this->label);
+
 		$this->td($this->train);
+		if ($this->staged)
+		{
+			$this->td();
+		}
+		else
+		{
+			$this->td('<a href="?Stage='.$this->qualifier.'">Stage</a>');
+		}
+
 
 		$visibility = $this->visible ? "Hide" : "Show";
 		$this->td('<a href="?'.$visibility.'='.$this->qualifier.'">'.$visibility.'</a>');
