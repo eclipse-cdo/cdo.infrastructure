@@ -76,7 +76,7 @@ class Drop
 		}
 		else
 		{
-			$this->td('<a href="?Stage='.$this->qualifier.'">Stage</a>');
+			$this->td('<a href="?Stage='.$this->qualifier.'" title="Stage"><img src="images/stage.gif"></a>');
 		}
 
 		$visibility = $this->visible ? "Hide" : "Show";
