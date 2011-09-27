@@ -76,7 +76,7 @@ class Run
 		echo "<a href=\"javascript:toggle('run$id')\">";
 		if ($this->noop)
 		{
-			echo '<font color="#EEEEEE">';
+			echo '<font color="#444444">';
 		}
 
 		echo $this->head;
@@ -89,7 +89,7 @@ class Run
 		echo "</div>\n";
 
 		echo "<div id=\"run$id\" style=\"display: none\">";
-		foreach ($body as $line)
+		foreach ($this->body as $line)
 		{
 			echo $line;
 		}
