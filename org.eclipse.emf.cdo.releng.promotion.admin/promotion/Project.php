@@ -99,12 +99,12 @@ class Project
 			echo '<th colspan="6"><font size="+2">'.$stream.' Stream</font></th>';
 			echo '</tr>';
 
-			echo '<tr>';
-			echo '<th>Drop</th>';
-			echo '<th>Label</th>';
-			echo '<th>Train</th>';
-			echo '<th colspan="3">Actions</th>';
-			echo '</tr>';
+			// 			echo '<tr>';
+			// 			echo '<th>Drop</th>';
+			// 			echo '<th>Label</th>';
+			// 			echo '<th>Train</th>';
+			// 			echo '<th colspan="3">Actions</th>';
+			// 			echo '</tr>';
 
 			foreach ($this->getDrops($stream) as $drop)
 			{
