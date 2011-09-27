@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * @author Eike Stepper
  */
-public class BuildProcessor extends PromoterComponent
+public class DropProcessor extends PromoterComponent
 {
   public static final String MARKER_MIRRORED = ".mirrored";
 
@@ -39,30 +39,30 @@ public class BuildProcessor extends PromoterComponent
 
   public static final String MARKER_INVISIBLE = ".invisible";
 
-  public BuildProcessor()
+  public DropProcessor()
   {
   }
 
-  public List<BuildInfo> processBuilds(XMLOutput xml) throws Exception
+  public List<BuildInfo> processDrops(XMLOutput xml) throws Exception
   {
     List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
     for (File drop : PromoterConfig.INSTANCE.getDropsArea().listFiles())
     {
       if (drop.isDirectory())
       {
-        processBuild(xml, drop, buildInfos);
+        processDrop(xml, drop, buildInfos);
       }
     }
 
     return buildInfos;
   }
 
-  protected void processBuild(XMLOutput xml, File drop, List<BuildInfo> buildInfos) throws Exception
+  protected void processDrop(XMLOutput xml, File drop, List<BuildInfo> buildInfos) throws Exception
   {
     generateCategories(xml, drop);
 
     // Add p2.mirrorsURL
-    File markerFile = new File(drop, BuildProcessor.MARKER_MIRRORED);
+    File markerFile = new File(drop, DropProcessor.MARKER_MIRRORED);
     if (!markerFile.exists())
     {
       addMirroring(xml, drop, null, "artifacts");
@@ -84,7 +84,7 @@ public class BuildProcessor extends PromoterComponent
       BuildInfo buildInfo = BuildInfo.read(buildInfoFile);
       buildInfos.add(buildInfo);
 
-      Properties promotionProperties = Config.loadProperties(new File(drop, BuildProcessor.MARKER_PROMOTED), false);
+      Properties promotionProperties = Config.loadProperties(new File(drop, DropProcessor.MARKER_PROMOTED), false);
       File zips = new File(drop, "zips");
 
       String generateZipSite = promotionProperties.getProperty("generate.zip.site");

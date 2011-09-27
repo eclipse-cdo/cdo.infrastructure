@@ -93,9 +93,9 @@ public class Promoter
     return createComponent(BuildCopier.class);
   }
 
-  public BuildProcessor createBuildProcessor()
+  public DropProcessor createDropProcessor()
   {
-    return createComponent(BuildProcessor.class);
+    return createComponent(DropProcessor.class);
   }
 
   public ReleaseNotesGenerator createReleaseNotesGenerator()
@@ -157,8 +157,8 @@ public class Promoter
     @Override
     protected Map.Entry<List<BuildInfo>, WebNode> create(XMLOutput xml) throws Exception
     {
-      BuildProcessor buildProcessor = createBuildProcessor();
-      final List<BuildInfo> buildInfos = buildProcessor.processBuilds(xml);
+      DropProcessor dropProcessor = createDropProcessor();
+      final List<BuildInfo> buildInfos = dropProcessor.processDrops(xml);
 
       RepositoryComposer repositoryComposer = createRepositoryComposer();
       final WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, new File("composites"));

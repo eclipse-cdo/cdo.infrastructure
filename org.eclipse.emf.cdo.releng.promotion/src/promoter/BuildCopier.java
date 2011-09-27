@@ -170,7 +170,7 @@ public class BuildCopier extends PromoterComponent
         }
 
         setTag(buildInfo);
-        BuildProcessor.storeMarkers(drop, jobProperties, isVisible);
+        DropProcessor.storeMarkers(drop, jobProperties, isVisible);
         return true;
       }
 
