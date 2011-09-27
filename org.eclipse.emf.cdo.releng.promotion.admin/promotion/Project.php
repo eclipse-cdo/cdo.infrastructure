@@ -44,6 +44,7 @@ class Project
 			}
 		}
 
+		echo $drops;
 		uksort($drops, "cmpDrops");
 		return $drops;
 	}
