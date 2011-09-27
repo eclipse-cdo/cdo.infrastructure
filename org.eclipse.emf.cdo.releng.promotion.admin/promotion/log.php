@@ -97,7 +97,7 @@ class Run
 		echo '</a>';
 		echo "</div>\n";
 
-		echo "<div id=\"run$id\" style=\"display: none\">";
+		echo "<div id=\"run$id\" style=\"display:none; margin-left:24px;\">";
 		foreach ($this->body as $line)
 		{
 			echo $line;
