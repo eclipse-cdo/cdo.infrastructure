@@ -106,11 +106,15 @@ class Run
 		echo "</div>\n";
 
 		echo "<div id=\"run$id\" style=\"display:none; margin-left:24px;\">";
+		echo '<table border="0">';
 		foreach ($this->body as $line)
 		{
+			echo '<tr><td nowrap>';
 			echo $line;
+			echo '</td></tr>';
 		}
 
+		echo "</table>";
 		echo "</div>\n";
 	}
 }
