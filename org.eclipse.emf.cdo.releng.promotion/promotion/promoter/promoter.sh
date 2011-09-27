@@ -12,7 +12,7 @@ configArea=`pwd -P`
 . "$configArea/promoter.properties"
 
 
-tasksDir=$workingArea/tasks
+tasksDir=$workingArea/public/tasks
 inprogressDir=$tasksDir.inprogress
 args=$@
 

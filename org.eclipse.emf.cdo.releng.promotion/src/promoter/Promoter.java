@@ -83,7 +83,7 @@ public class Promoter
   public List<Task> performTasks()
   {
     List<Task> tasks = new ArrayList<Task>();
-    File taskFolder = new File(PromoterConfig.INSTANCE.getWorkingArea(), "tasks.inprogress");
+    File taskFolder = new File(PromoterConfig.INSTANCE.getWorkingArea(), "public/tasks.inprogress");
     if (taskFolder.isDirectory())
     {
       try
