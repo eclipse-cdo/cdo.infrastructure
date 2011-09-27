@@ -58,7 +58,7 @@ class Drop
 		$this->td($this->train);
 
 		$visibility = $this->visible ? "Hide" : "Show";
-		$this->td('<a href="?'.$visbility.'='.$this->qualifier.'">'.$visibility.'</a>');
+		$this->td('<a href="?'.$visibility.'='.$this->qualifier.'">'.$visibility.'</a>');
 		$this->td('<a href="?Delete='.$this->qualifier.'"><img src="images/delete.gif"></a>');
 		echo '</tr>';
 	}
