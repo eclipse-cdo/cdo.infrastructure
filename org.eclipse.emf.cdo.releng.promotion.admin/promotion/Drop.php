@@ -60,7 +60,7 @@ class Drop
 		$this->td('<a href="?Label='.$this->qualifier.'" title="Change label"><img src="images/edit.png"></a>');
 
 		$intrain = in_array($this->train, $this->project->trains);
-		if ($intrain)
+		if ($intrain && $this->staged)
 		{
 			$this->td('<a href="https://hudson.eclipse.org/hudson/job/'.$this->train.'.runAggregator">'.ucfirst($this->train).'</a>');
 		}
