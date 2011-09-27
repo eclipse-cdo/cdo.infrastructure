@@ -60,37 +60,8 @@ class Project
 		return $streams;
 	}
 
-	function process()
-	{
-		if (isset($_GET["Stage"]))
-		{
-			$drop = $this->getDrop($_GET["Stage"]);
-			$drop->stage();
-		}
-
-		if (isset($_GET["Hide"]))
-		{
-			$drop = $this->getDrop($_GET["Hide"]);
-			$drop->hide();
-		}
-
-		if (isset($_GET["Show"]))
-		{
-			$drop = $this->getDrop($_GET["Show"]);
-			$drop->show();
-		}
-
-		if (isset($_GET["Delete"]))
-		{
-			$drop = $this->getDrop($_GET["Delete"]);
-			$drop->delete();
-		}
-	}
-
 	function generate()
 	{
-		echo '<center><font face="Helvetica,Arial">';
-		echo "<h1>".$this->name." Promotion Admin</h1>";
 		echo '<p><a href="'.$_SERVER['PHP_SELF'].'">Reload Page</a></p>';
 
 		echo '<table border="1" cellpadding="8">';
@@ -107,7 +78,6 @@ class Project
 		}
 
 		echo '</table>';
-		echo '</font></center>';
 	}
 
 	private function addDrop($qualifier)

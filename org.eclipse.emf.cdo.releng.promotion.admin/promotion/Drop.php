@@ -57,7 +57,7 @@ class Drop
 		echo '<tr>';
 		$this->td('<a href="'.$href.'">'.$this->qualifier.'</a>');
 		$this->td($this->label);
-		$this->td('<a href="?Label='.$this->qualifier.'" title="Change label"><img src="images/edit.png"></a>');
+		$this->td('<a href="?action=Label&drop='.$this->qualifier.'" title="Change label"><img src="images/edit.png"></a>');
 
 		$intrain = in_array($this->train, $this->project->trains);
 		if ($intrain && $this->staged)
@@ -76,11 +76,11 @@ class Drop
 		}
 		else
 		{
-			$this->td('<a href="?Stage='.$this->qualifier.'" title="Stage"><img src="images/stage.png"></a>');
+			$this->td('<a href="?action=Stage&drop='.$this->qualifier.'" title="Stage"><img src="images/stage.png"></a>');
 		}
 
 		$visibility = $this->visible ? "Hide" : "Show";
-		$this->td('<a href="?'.$visibility.'='.$this->qualifier.'" title="'.$visibility.'"><img src="images/'.$visibility.'.png"></a>');
+		$this->td('<a href="?action='.$visibility.'&drop='.$this->qualifier.'" title="'.$visibility.'"><img src="images/'.$visibility.'.png"></a>');
 
 		if ($this->staged || $this->type == "R")
 		{
@@ -88,7 +88,7 @@ class Drop
 		}
 		else
 		{
-			$this->td('<a href="?Delete='.$this->qualifier.'" title="Delete"><img src="images/delete.gif"></a>');
+			$this->td('<a href="?action=Delete&drop='.$this->qualifier.'" title="Delete"><img src="images/delete.gif"></a>');
 		}
 
 		echo '</tr>';
