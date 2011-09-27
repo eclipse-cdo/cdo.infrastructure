@@ -69,7 +69,7 @@ class Project
 		foreach ($this->getStreams() as $stream => $v)
 		{
 			echo '<tr>';
-			echo '<td colspan="6"><h2>'.$stream.' Stream</h2></td>';
+			echo '<th colspan="6"><font size="+2">'.$stream.' Stream</font></th>';
 			echo '</tr>';
 
 			echo '<tr>';
