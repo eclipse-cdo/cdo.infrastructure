@@ -6,6 +6,7 @@ class Drop
 {
 	public $project;
 	public $qualifier;
+	public $type;
 	public $path;
 	public $visible;
 	public $staged;
@@ -17,6 +18,7 @@ class Drop
 	{
 		$this->project = $project;
 		$this->qualifier = $qualifier;
+		$this->type = substr($qualifier, 0, 1);
 
 		$this->path = $this->project->path . "/" . $this->qualifier;
 		$this->visible = !is_file($this->path . "/.invisible");
@@ -79,7 +81,7 @@ class Drop
 		$visibility = $this->visible ? "Hide" : "Show";
 		$this->td('<a href="?'.$visibility.'='.$this->qualifier.'">'.$visibility.'</a>');
 
-		if ($this->staged)
+		if ($this->staged || $this->type == "R")
 		{
 			$this->td();
 		}
