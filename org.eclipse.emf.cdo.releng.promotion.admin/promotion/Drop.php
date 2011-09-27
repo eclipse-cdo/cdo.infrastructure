@@ -68,16 +68,13 @@ class Drop
 			$this->td(ucfirst($this->train));
 		}
 
-		if ($this->staged)
+		if ($this->staged || !$intrain)
 		{
 			$this->td();
 		}
 		else
 		{
-			if ($intrain)
-			{
-				$this->td('<a href="?Stage='.$this->qualifier.'">Stage</a>');
-			}
+			$this->td('<a href="?Stage='.$this->qualifier.'">Stage</a>');
 		}
 
 		$visibility = $this->visible ? "Hide" : "Show";
