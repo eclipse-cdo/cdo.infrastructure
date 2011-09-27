@@ -62,7 +62,7 @@ class Drop
 		$intrain = in_array($this->train, $this->project->trains);
 		if ($intrain && $this->staged)
 		{
-			$this->td('<a href="https://hudson.eclipse.org/hudson/job/'.$this->train.'.runAggregator">'.ucfirst($this->train).'</a>');
+			$this->td('<a href="https://hudson.eclipse.org/hudson/job/'.$this->train.'.runAggregator" title="Jump to aggregator">'.ucfirst($this->train).'</a>');
 		}
 		else
 		{
