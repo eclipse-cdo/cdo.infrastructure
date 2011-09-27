@@ -94,26 +94,6 @@ class Drop
 		echo '</tr>';
 	}
 
-	function stage()
-	{
-		echo $this->qualifier." staged";
-	}
-
-	function hide()
-	{
-		echo $this->qualifier." invisible";
-	}
-
-	function show()
-	{
-		echo $this->qualifier." visible";
-	}
-
-	function delete()
-	{
-		echo $this->qualifier." deleted";
-	}
-
 	private function td($str = "&nbsp;")
 	{
 		if ($str == "")
