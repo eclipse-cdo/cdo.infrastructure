@@ -25,10 +25,10 @@ echo '</font></center>';
 
 function Label($drop)
 {
-	echo '<h2>'.$drop->qualifier.'</h2>';
+	echo '<h2>Drop '.$drop->qualifier.'</h2>';
 	echo '<form method="GET">';
 	echo '<input name="drop" type="hidden" value="'.$drop->qualifier.'"></input>';
-	echo 'Label: <input name="" type="text" value="'.$drop->label.'"></input><br>';
+	echo '<p>Label: <input name="" type="text" value="'.$drop->label.'"></input></p>';
 	echo '<input name="action" type="submit"></input>&nbsp;';
 	echo '</form>';
 }
