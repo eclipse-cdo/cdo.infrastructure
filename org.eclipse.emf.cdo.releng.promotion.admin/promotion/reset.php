@@ -11,6 +11,9 @@ deleteFolder("$publicFolder/tasks");
 deleteFolder("$publicFolder/tasks.tmp");
 deleteFolder("$publicFolder/tasks.inprogress");
 
+echo "<p>Done.</p>";
+
+
 function deleteFolder($tmpPath)
 {
 	if (!is_dir($tmpPath))
