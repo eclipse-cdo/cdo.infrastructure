@@ -67,12 +67,12 @@ class Run
 
 	function __construct($head)
 	{
-		$this->head = htmlspecialchars(str_replace("\n", "", $head));
+		$this->head = str_replace("\n", "", htmlspecialchars($head));
 	}
 
 	function addBody($line)
 	{
-		$this->body[count($this->body)] = htmlspecialchars(str_replace("\n", "<br>", $line));
+		$this->body[count($this->body)] = str_replace("\n", "<br>", htmlspecialchars($line));
 		if (strpos($line, "No new builds or tasks have been found") !== false)
 		{
 			$this->noop = true;
