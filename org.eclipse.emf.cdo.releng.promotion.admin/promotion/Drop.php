@@ -56,7 +56,8 @@ class Drop
 
 		echo '<tr>';
 		$this->td('<a href="'.$href.'">'.$this->qualifier.'</a>');
-		$this->td($this->label.'&nbsp;<a href="?Label='.$this->qualifier.'"><img src="images/edit.png"></a>');
+		$this->td($this->label);
+		$this->td('<a href="?Label='.$this->qualifier.'"><img src="images/edit.png"></a>');
 
 		$intrain = in_array($this->train, $this->project->trains);
 		if ($intrain)
