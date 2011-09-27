@@ -121,7 +121,7 @@ class Drop
 			$str = "&nbsp;";
 		}
 
-		echo '<td bgcolor="'.($this->staged ? "#EEEEEE" : "#FFFFFF").'">';
+		echo '<td align="center" bgcolor="'.($this->staged ? "#EEEEEE" : "#FFFFFF").'">';
 		if ($this->staged) echo "<b>";
 		if (!$this->visible) echo "<i>";
 		echo $str;
