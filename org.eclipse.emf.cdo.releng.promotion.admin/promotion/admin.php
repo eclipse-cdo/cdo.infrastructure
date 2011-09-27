@@ -4,16 +4,15 @@ ini_set('display_errors', true);
 require_once 'Project.php';
 require_once 'Drop.php';
 
-
-$cdo = new Project("CDO", "/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops", array("indigo", "juno"));
-
 echo '<center><font face="Helvetica,Arial">';
-echo "<h1>".$this->name." Promotion Admin</h1>";
+echo "<h1>CDO Promotion Admin</h1>";
+
+$cdo = new Project("/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops", array("indigo", "juno"));
 
 if (isset($_GET["action"]))
 {
 	$action = $_GET["action"];
-	$drop = $this->getDrop($_GET["drop"]);
+	$drop = $cdo->getDrop($_GET["drop"]);
 
 	$action($drop);
 }

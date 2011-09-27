@@ -4,15 +4,13 @@ require_once 'Drop.php';
 
 class Project
 {
-	public $name;
 	public $path;
 	public $trains;
 	public $drops = array();
 	private $dropsByQualifier = array();
 
-	function __construct($name, $path, $trains)
+	function __construct($path, $trains)
 	{
-		$this->name = $name;
 		$this->path = $path;
 		$this->trains = $trains;
 
