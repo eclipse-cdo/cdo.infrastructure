@@ -28,24 +28,24 @@ function deleteFolder($tmpPath)
 	{
 		if($tmp != '..' && $tmp != '.' && $tmp != '')
 		{
-			if (is_writeable($tmpPath.DS.$tmp) && is_file($tmpPath.DS.$tmp))
+			if (is_writeable($tmpPath."/".$tmp) && is_file($tmpPath."/".$tmp))
 			{
-				unlink($tmpPath.DS.$tmp);
+				unlink($tmpPath."/".$tmp);
 			}
-			elseif (!is_writeable($tmpPath.DS.$tmp) && is_file($tmpPath.DS.$tmp))
+			elseif (!is_writeable($tmpPath."/".$tmp) && is_file($tmpPath."/".$tmp))
 			{
-				chmod($tmpPath.DS.$tmp, 0666);
-				unlink($tmpPath.DS.$tmp);
+				chmod($tmpPath."/".$tmp, 0666);
+				unlink($tmpPath."/".$tmp);
 			}
 
-			if (is_writeable($tmpPath.DS.$tmp) && is_dir($tmpPath.DS.$tmp))
+			if (is_writeable($tmpPath."/".$tmp) && is_dir($tmpPath."/".$tmp))
 			{
-				deleteFolder($tmpPath.DS.$tmp);
+				deleteFolder($tmpPath."/".$tmp);
 			}
-			elseif (!is_writeable($tmpPath.DS.$tmp) && is_dir($tmpPath.DS.$tmp))
+			elseif (!is_writeable($tmpPath."/".$tmp) && is_dir($tmpPath."/".$tmp))
 			{
-				chmod($tmpPath.DS.$tmp, 0777);
-				deleteFolder($tmpPath.DS.$tmp);
+				chmod($tmpPath."/".$tmp, 0777);
+				deleteFolder($tmpPath."/".$tmp);
 			}
 		}
 	}
