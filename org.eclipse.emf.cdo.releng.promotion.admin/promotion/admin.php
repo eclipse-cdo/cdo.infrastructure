@@ -16,14 +16,15 @@ if (isset($_GET["action"]))
 
 	$action($drop);
 }
-else
+
+if (strpos($action, "Edit") != 0)
 {
 	$cdo->generate();
 }
 
 echo '</font></center>';
 
-function Label($drop)
+function EditLabel($drop)
 {
 	echo '<h2>Drop '.$drop->qualifier.'</h2>';
 	echo '<form method="GET">';
@@ -31,6 +32,12 @@ function Label($drop)
 	echo '<p>Label: <input name="value" type="text" value="'.$drop->label.'"></input></p>';
 	echo '<input name="action" type="submit" value="ChangeLabel"></input>&nbsp;';
 	echo '</form>';
+}
+
+
+function ChangeLabel($drop)
+{
+	echo 'Label changed<br>';
 }
 
 ?>
