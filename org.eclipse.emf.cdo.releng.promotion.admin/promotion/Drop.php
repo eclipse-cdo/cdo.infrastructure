@@ -57,14 +57,27 @@ class Drop
 		$this->td('<a href="'.$href.'">'.$this->qualifier.'</a>');
 		$this->td($this->label);
 
-		$this->td('<a href="https://hudson.eclipse.org/hudson/job/'.$this->train.'.runAggregator">'.ucfirst($this->train).'</a>');
+		$intrain = in_array($this->train, $this->project->trains);
+		if ($intrain)
+		{
+			$this->td('<a href="https://hudson.eclipse.org/hudson/job/'.$this->train.'.runAggregator">'.ucfirst($this->train).'</a>');
+		}
+		else
+		{
+
+			$this->td(ucfirst($this->train));
+		}
+
 		if ($this->staged)
 		{
 			$this->td();
 		}
 		else
 		{
-			$this->td('<a href="?Stage='.$this->qualifier.'">Stage</a>');
+			if ($intrain)
+			{
+				$this->td('<a href="?Stage='.$this->qualifier.'">Stage</a>');
+			}
 		}
 
 		$visibility = $this->visible ? "Hide" : "Show";

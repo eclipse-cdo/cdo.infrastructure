@@ -6,13 +6,15 @@ class Project
 {
 	public $name;
 	public $path;
+	public $trains;
 	public $drops = array();
 	private $dropsByQualifier = array();
 
-	function __construct($name, $path)
+	function __construct($name, $path, $trains)
 	{
 		$this->name = $name;
 		$this->path = $path;
+		$this->trains = $trains;
 
 		$d = dir($this->path);
 		while (false !== ($entry = $d->read()))
