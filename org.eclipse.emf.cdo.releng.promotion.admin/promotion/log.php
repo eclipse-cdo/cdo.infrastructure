@@ -72,7 +72,7 @@ class Run
 
 	function addBody($line)
 	{
-		$this->body[count($this->body)] = str_replace("\n", "<br>", htmlspecialchars($line));
+		$this->body[count($this->body)] = str_replace("\n", "<br>", str_replace("\t", "&nbsp;&nbsp;&nbsp;", htmlspecialchars($line)));
 		if (strpos($line, "No new builds or tasks have been found") !== false)
 		{
 			$this->noop = true;
