@@ -55,14 +55,14 @@ class Drop
 		$href = 'http://www.eclipse.org/cdo/downloads/#'.str_replace('-', '_', $this->qualifier);
 
 		echo '<tr>';
-		$this->td('<a href="'.$href.'">'.$this->qualifier.'</a>');
+		$this->td('<a href="'.$href.'" title="Jump to downloads page">'.$this->qualifier.'</a>');
 		$this->td($this->label);
 		$this->td('<a href="?action=EditLabel&drop='.$this->qualifier.'" title="Change label"><img src="images/edit.png"></a>');
 
 		$intrain = in_array($this->train, $this->project->trains);
 		if ($intrain && $this->staged)
 		{
-			$this->td('<a href="https://hudson.eclipse.org/hudson/job/'.$this->train.'.runAggregator" title="Jump to aggregator">'.ucfirst($this->train).'</a>');
+			$this->td('<a href="https://hudson.eclipse.org/hudson/job/'.$this->train.'.runAggregator" title="Jump to aggregator page">'.ucfirst($this->train).'</a>');
 		}
 		else
 		{
@@ -76,11 +76,11 @@ class Drop
 		}
 		else
 		{
-			$this->td('<a href="?action=Stage&drop='.$this->qualifier.'" title="Stage"><img src="images/stage.png"></a>');
+			$this->td('<a href="?action=Stage&drop='.$this->qualifier.'" title="Stage this drop"><img src="images/stage.png"></a>');
 		}
 
 		$visibility = $this->visible ? "Hide" : "Show";
-		$this->td('<a href="?action='.$visibility.'&drop='.$this->qualifier.'" title="'.$visibility.'"><img src="images/'.$visibility.'.png"></a>');
+		$this->td('<a href="?action='.$visibility.'&drop='.$this->qualifier.'" title="'.$visibility.' this drop"><img src="images/'.$visibility.'.png"></a>');
 
 		if ($this->staged || $this->type == "R")
 		{
@@ -88,7 +88,7 @@ class Drop
 		}
 		else
 		{
-			$this->td('<a href="?action=AskDelete&drop='.$this->qualifier.'" title="Delete"><img src="images/delete.gif"></a>');
+			$this->td('<a href="?action=AskDelete&drop='.$this->qualifier.'" title="Delete this drop"><img src="images/delete.gif"></a>');
 		}
 
 		echo '</tr>';
