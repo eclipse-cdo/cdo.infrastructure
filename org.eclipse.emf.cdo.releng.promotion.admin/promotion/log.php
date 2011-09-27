@@ -87,11 +87,19 @@ class Run
 		{
 			echo '<font color="#444444">';
 		}
+		else
+		{
+			echo '<b>';
+		}
 
 		echo $this->head;
 		if ($this->noop)
 		{
 			echo '</font>';
+		}
+		else
+		{
+			echo '</b>';
 		}
 
 		echo '</a>';
