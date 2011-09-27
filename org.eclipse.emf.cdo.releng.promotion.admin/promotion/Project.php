@@ -33,10 +33,8 @@ class Project
 		return $this->dropsByQualifier[$qualifier];
 	}
 
-	function generate()
+	function process()
 	{
-		echo "<h1>".$this->name." Promotion Admin</h1>";
-
 		if (isset($_GET["Stage"]))
 		{
 			$drop = $this->getDrop($_GET["Stage"]);
@@ -60,16 +58,28 @@ class Project
 			$drop = $this->getDrop($_GET["Delete"]);
 			$drop->delete();
 		}
+	}
 
+	function generate()
+	{
+		echo "<h1>".$this->name." Promotion Admin</h1>";
 		echo '<p><a href="'.$_SERVER['PHP_SELF'].'">Reload Page</a></p>';
 
-		echo '<table border="1" cellpadding="8">';
-		foreach ($this->drops as $drop)
+		foreach ($this->getStreams() as $stream)
 		{
-			$drop->generate();
-		}
+			echo "<h2>".$stream." Stream</h2>";
+			echo '<table border="1" cellpadding="8">';
 
-		echo '</table>';
+			foreach ($this->drops as $drop)
+			{
+				if ($drop->stream == $stream)
+				{
+					$drop->generate();
+				}
+			}
+
+			echo '</table>';
+		}
 	}
 
 	private function addDrop($qualifier)
@@ -78,6 +88,30 @@ class Project
 		$this->drops[count($this->drops)] = $drop;
 		$this->dropsByQualifier[$drop->qualifier] = $drop;
 		return $drop;
+	}
+
+	private function getStreams()
+	{
+		$streams = array();
+		foreach ($this->drops as $drop)
+		{
+			$streams[$drop->stream] = true;
+		}
+
+		uksort($streams, "cmpStreams");
+		return $streams;
+	}
+
+	private function cmpStreams($a, $b)
+	{
+		$a = explode(".", $a);
+		$b = explode(".", $b);
+
+		if (intval($a[0]) > intval($b[0])) return -1;
+		if (intval($a[0]) < intval($b[0])) return 1;
+		if (intval($a[1]) > intval($b[1])) return -1;
+		if (intval($a[1]) < intval($b[1])) return 1;
+		return 0;
 	}
 }
 
