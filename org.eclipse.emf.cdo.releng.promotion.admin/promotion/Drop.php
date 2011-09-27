@@ -57,7 +57,7 @@ class Drop
 		echo '<tr>';
 		$this->td('<a href="'.$href.'" title="Jump to downloads page">'.$this->qualifier.'</a>');
 		$this->td($this->label);
-		$this->td('<a href="?action=EditLabel&drop='.$this->qualifier.'" title="Change label"><img src="images/edit.png"></a>');
+		$this->td('<a href="?action=EditLabel&drop='.$this->qualifier.'" title="Change drop label"><img src="images/edit.png"></a>');
 
 		$intrain = in_array($this->train, $this->project->trains);
 		if ($intrain && $this->staged)
