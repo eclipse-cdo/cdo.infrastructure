@@ -11,4 +11,4 @@ svn update
 chmod u+x *.sh promoter/*.sh
 
 cd config
-../promoter/reset.sh
+#../promoter/reset.sh

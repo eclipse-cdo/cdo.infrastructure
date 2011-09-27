@@ -48,21 +48,28 @@ function ChangeLabel($drop)
 {
 	$value = $_GET["value"];
 
+	$publicFolder = "/tmp/promotion.emf.cdo/public";
+	$tmpFolder = "$publicFolder/tasks.tmp";
+
 	$attempt = 0;
-	while (!mkdir("/tmp/promotion.emf.cdo/public/tasks.tmp"))
+	while (!mkdir($tmpFolder))
 	{
 		sleep(1);
-		echo "Attempt to create /tmp/promotion.emf.cdo/public/tasks.tmp (".(++$attempt).")<br>";
+		echo "Attempt to create $tmpFolder (".(++$attempt).")<br>";
 	}
 
+	chmod($tmpFolder, 0777);
+
 	$start = time();
-	file_put_contents("/tmp/promotion.emf.cdo/public/tasks.tmp/$start.task", "ChangeLabel\n$drop->qualifier\n$value");
+	$taskFile = "$tmpFolder/$start.task";
+	file_put_contents($taskFile, "ChangeLabel\n$drop->qualifier\n$value");
+	chmod($taskFile, 0666);
 
 	$attempt = 0;
-	while (!rename("/tmp/promotion.emf.cdo/public/tasks.tmp", "/tmp/promotion.emf.cdo/public/tasks"))
+	while (!rename($tmpFolder, "$publicFolder/tasks"))
 	{
 		sleep(1);
-		echo "Attempt to rename /tmp/promotion.emf.cdo/public/tasks.tmp (".(++$attempt).")<br>";
+		echo "Attempt to rename $tmpFolder (".(++$attempt).")<br>";
 	}
 
 	return true;
