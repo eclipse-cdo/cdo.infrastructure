@@ -35,7 +35,6 @@ class Project
 	{
 		echo "<h1>".$this->name." Promotion Admin</h1>";
 
-		$qualifier = $_GET["Hide"];
 		if (isset($_GET["Hide"]))
 		{
 			$drop = $this->getDrop($_GET["Hide"]);
