@@ -56,16 +56,10 @@ class Drop
 		$this->td('<a href="'.$href.'">'.$this->qualifier.'</a>');
 		$this->td($this->label);
 		$this->td($this->train);
-		if ($this->visible)
-		{
-			$this->td('<a href="hide.php">Hide</a>');
-		}
-		else
-		{
-			$this->td('<a href="show.php">Show</a>');
-		}
 
-		$this->td('<a href="delete.php">Delete</a>');
+		$visibility = $this->visible ? "Hide" : "Show";
+		$this->td('<a href="?'.$visbility.'='.$this->qualifier.'">'.$visibility.'</a>');
+		$this->td('<a href="?Delete='.$this->qualifier.'"><img src="images/delete.gif"></a>');
 		echo '</tr>';
 	}
 
