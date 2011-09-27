@@ -7,6 +7,15 @@ echo '<font face="Helvetica,Arial">';
 echo "<h1>$logfile</h1>";
 echo "</font>\n\n";
 
+echo ("<script type=\"text/javascript\">\n");
+echo ("  function toggle(id)\n");
+echo ("  {\n");
+echo ("    e = document.getElementById(id);\n");
+echo ("    e.style.display = (e.style.display == \"\" ? \"none\" : \"\");\n");
+echo ("  }\n");
+echo ("</script>\n");
+echo ("\n");
+
 $runs = array();
 $run = null;
 
