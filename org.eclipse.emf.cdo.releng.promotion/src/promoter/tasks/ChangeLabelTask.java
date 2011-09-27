@@ -29,11 +29,18 @@ public class ChangeLabelTask extends Task
   protected boolean execute(String[] args) throws Exception
   {
     String qualifier = args[1];
-    String label = "web.label=" + args[2];
 
     File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), qualifier);
     File file = new File(drop, "web.properties");
-    IO.writeFile(file, label.getBytes());
+    if (args.length >= 3)
+    {
+      String label = "web.label=" + args[2];
+      IO.writeFile(file, label.getBytes());
+    }
+    else
+    {
+      IO.delete(file);
+    }
 
     return true; // Order recomposition
   }
