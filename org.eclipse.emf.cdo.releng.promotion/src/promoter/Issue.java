@@ -19,10 +19,13 @@ public class Issue
 
   private String title;
 
-  public Issue(String id, String title)
+  private String severity;
+
+  public Issue(String id, String title, String severity)
   {
     this.id = id;
     this.title = title;
+    this.severity = severity;
   }
 
   public final String getID()
@@ -33,6 +36,11 @@ public class Issue
   public final String getTitle()
   {
     return title;
+  }
+
+  public final String getSeverity()
+  {
+    return severity;
   }
 
   @Override

@@ -24,11 +24,15 @@ import java.util.regex.Pattern;
  */
 public class Bugzilla extends IssueManager
 {
-  public static final String SERVER = "https://bugs.eclipse.org/bugs/show_bug.cgi?id=";
+  public static final String SERVER = "https://bugs.eclipse.org/";
 
   private static final int RETRIES = 3;
 
   private static final Pattern TITLE_PATTERN = Pattern.compile("\\s*<title>Bug ([0-9]*) &ndash; (.*)</title>");
+
+  private static final Pattern SEVERITY_PATTERN = Pattern.compile(
+      "\\s*<select id=\"bug_severity\" .*<option value=\"(.*?)\".*?selected=\"selected\">.*?</option>\\s*?</select>",
+      Pattern.MULTILINE | Pattern.DOTALL);
 
   public Bugzilla()
   {
@@ -62,9 +66,8 @@ public class Bugzilla extends IssueManager
   @Override
   protected Issue doGetIssue(String id)
   {
-    // return new Issue(id, "This is a bugzilla");
-
     final String[] title = { null };
+    final StringBuilder builder = new StringBuilder();
 
     for (int i = 0; i < RETRIES; i++)
     {
@@ -78,11 +81,13 @@ public class Bugzilla extends IssueManager
             String line;
             while ((line = reader.readLine()) != null)
             {
+              builder.append(line);
+              builder.append("\n");
+
               Matcher matcher = TITLE_PATTERN.matcher(line);
               if (matcher.matches())
               {
                 title[0] = matcher.group(2);
-                return;
               }
             }
           }
@@ -90,7 +95,14 @@ public class Bugzilla extends IssueManager
 
         if (title[0] != null)
         {
-          return new Issue(id, title[0]);
+          String severity = "";
+          Matcher matcher = SEVERITY_PATTERN.matcher(builder.toString());
+          if (matcher.matches())
+          {
+            severity = matcher.group(1);
+          }
+
+          return new Issue(id, title[0], severity);
         }
       }
       catch (Exception ex)

@@ -37,11 +37,18 @@ public abstract class IssueManager extends PromoterComponent implements Comparat
     File file = new File(issuesFolder, id);
     if (file.isFile())
     {
-      return new Issue(id, IO.readTextFile(file));
+      String content = IO.readTextFile(file);
+      String[] lines = content.split("\n");
+      if (lines.length == 2)
+      {
+        return new Issue(id, lines[0], lines[1]);
+      }
     }
 
     Issue issue = doGetIssue(id);
-    IO.writeFile(file, issue.getTitle().getBytes());
+
+    String content = issue.getTitle() + "\n" + issue.getSeverity();
+    IO.writeFile(file, content.getBytes());
 
     return issue;
   }
