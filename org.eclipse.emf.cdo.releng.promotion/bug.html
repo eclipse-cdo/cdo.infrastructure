@@ -1,0 +1,3088 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                      "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <title>Bug 351078 &ndash; [DB] Support raw replication in HorizontalBranchingMappingStrategyWithRanges</title>
+
+
+<link rel="Top" href="https://bugs.eclipse.org/bugs/">
+
+  
+
+
+  
+    <link rel="Show" title="Dependency Tree"
+          href="showdependencytree.cgi?id=351078&amp;hide_resolved=1">
+
+      <link rel="Show" title="Votes (0)"
+            href="votes.cgi?action=show_bug&amp;bug_id=351078">
+
+      <link rel="Show" title="Bug Activity"
+            href="show_activity.cgi?id=351078">
+      <link rel="Show" title="Printer-Friendly Version"
+            href="show_bug.cgi?format=multiple&amp;id=351078">
+
+
+  
+    <link rel="Saved&nbsp;Searches" title="My Bugs"
+          href="buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&email1=stepper%40esc-net.de&emailtype1=exact&emailassigned_to1=1&emailreporter1=1">
+
+    <link rel="Saved&nbsp;Searches" 
+          title="CDO ASSIGNED"
+          href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=CDO%20ASSIGNED">
+    <link rel="Saved&nbsp;Searches" 
+          title="CDO-FIXED"
+          href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=CDO-FIXED">
+    <link rel="Saved&nbsp;Searches" 
+          title="CDO/Netj ASSIGNED Bugzillas"
+          href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=CDO%2FNetj%20ASSIGNED%20Bugzillas">
+    <link rel="Saved&nbsp;Searches" 
+          title="Galileo-BugFixes"
+          href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=Galileo-BugFixes">
+
+    <link rel="Saved&nbsp;Searches" 
+          title="Galileo-Enhancements"
+          href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=Galileo-Enhancements">
+    <link rel="Saved&nbsp;Searches" 
+          title="IPLOG"
+          href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=IPLOG">
+    <link rel="Saved&nbsp;Searches" 
+          title="MylynBuild"
+          href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=MylynBuild">
+    <link rel="Saved&nbsp;Searches" 
+          title="NEEDS_DOC"
+          href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=NEEDS_DOC">
+    <link rel="Saved&nbsp;Searches" 
+          title="Net4j ASSIGNED"
+          href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=Net4j%20ASSIGNED">
+    <link rel="Saved&nbsp;Searches" 
+          title="NET4J-FIXED"
+          href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=NET4J-FIXED">
+    <link rel="Saved&nbsp;Searches" 
+          title="NO-CC"
+          href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=NO-CC">
+    <link rel="Saved&nbsp;Searches" 
+          title="OFFLINE"
+          href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=OFFLINE">
+    <link rel="Saved&nbsp;Searches" 
+          title="OPEN-BUGS"
+          href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=OPEN-BUGS">
+
+
+    
+
+    
+      <link href="skins/standard/global.css"
+            rel="stylesheet"
+            type="text/css">
+      <link href="skins/standard/yui/calendar.css"
+            rel="stylesheet"
+            type="text/css">
+      <link href="skins/standard/show_bug.css"
+            rel="stylesheet"
+            type="text/css">
+    <!--[if lte IE 7]>
+      
+      <link href="skins/standard/IE-fixes.css"
+            rel="stylesheet"
+            type="text/css">
+    <![endif]-->
+
+    
+        <link href="skins/standard/global.css"
+              rel="stylesheet"
+              title="Classic"
+              type="text/css">
+        <link href="skins/standard/yui/calendar.css"
+              rel="stylesheet"
+              title="Classic"
+              type="text/css">
+        <link href="skins/standard/show_bug.css"
+              rel="stylesheet"
+              title="Classic"
+              type="text/css">
+
+      <!--[if lte IE 7]>
+      
+        <link href="skins/standard/IE-fixes.css"
+              rel="stylesheet"
+              title="Classic"
+              type="text/css">
+      <![endif]-->
+
+    
+
+    
+
+    
+        <link href="skins/custom/global.css" rel="stylesheet" type="text/css">
+        <link href="skins/custom/yui/calendar.css" rel="stylesheet" type="text/css">
+        <link href="skins/custom/show_bug.css" rel="stylesheet" type="text/css">
+    <!--[if lte IE 7]>
+      
+      <link href="skins/custom/IE-fixes.css"
+            rel="stylesheet"
+            type="text/css">
+    <![endif]-->
+
+    <script src="js/yui/yahoo-dom-event.js" type="text/javascript"></script>
+    <script src="js/yui/cookie.js" type="text/javascript"></script>
+
+    <script src="js/global.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    <!--
+        YAHOO.namespace('bugzilla');
+        if (YAHOO.env.ua.gecko) {
+            YAHOO.util.Event._simpleRemove(window, "unload", 
+                                           YAHOO.util.Event._unload);
+        }
+        
+        function unhide_language_selector() { 
+            YAHOO.util.Dom.removeClass(
+                'lang_links_container', 'bz_default_hidden'
+            ); 
+        } 
+        YAHOO.util.Event.onDOMReady(unhide_language_selector);
+
+        
+        var BUGZILLA = {
+            param: {
+                cookiepath: '\/bugs'
+            },
+
+            string: {
+                attach_desc_required:
+                    'You must enter a Description for this attachment.'
+            }
+        };
+    // -->
+    </script>
+
+        <script src="js/util.js" type="text/javascript"></script>
+        <script src="js/field.js" type="text/javascript"></script>
+        <script src="js/yui/calendar.js" type="text/javascript"></script>
+
+    
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+                       title="Bugzilla" href="./search_plugin.cgi">
+    <link rel="shortcut icon" href="images/favicon.ico" >
+  </head>
+
+
+
+  <body onload=""
+        class="bugs-eclipse-org-bugs bz_bug bz_status_ASSIGNED bz_product_EMF bz_component_cdo.db bz_bug_351078">
+
+
+
+<div id="header">
+<!-- 1.0@bugzilla.org -->
+
+
+
+<link media="screen" href="/bz.css" type="text/css" rel="stylesheet">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-image: url(/header_bg.jpg);"><tr><td><img src="/header_logo.gif" width="240" height="68" border="0" /></td>
+<td width="360" valign="top" align="right" style="background-image: url(/header_right_bg.jpg); background-repeat: no-repeat;">
+<a href="http://www.eclipse.org/org/foundation/contact.php" class="header-global-links" style="color: #3D4A68;">Contact</a> &#160; <img src="/eclipse.org-common/themes/Phoenix/images/global_links_divider.gif" height="10" width="3" /> &#160; <a href="http://www.eclipse.org/legal/" class="header-global-links" style="color: #3D4A68;">Legal</a> &#160; &#160; &#160;</td></tr></table>
+<div id="header-icons"><a href="http://www.eclipse.org/"><img src="/eclipse_home_icon.png" width="28" height="28" alt="Eclipse Home" title="Eclipse Home"/></a><a href="http://wiki.eclipse.org/"><img src="/eclipse.org-common/themes/Phoenix/images/Icon_wiki.png" width="28" height="28" alt="Eclipse Wiki"/></a><a href="http://marketplace.eclipse.org/"><img src="/plugin_icon.png" width="28" height="28" alt="Eclipse Marketplace" title="Eclipse Marketplace"/></a></div>
+
+<table border="0" cellspacing="0" cellpadding="0" id="titles">
+<tr>
+    <td id="title">
+      <p>Bugzilla &ndash; Bug&nbsp;351078</p>
+    </td>
+
+    <td id="subtitle">
+      <p class="subheader">[DB] Support raw replication in HorizontalBranchingMappingStrategyWithRanges</p>
+
+    </td>
+
+    <td id="information">
+      <p class="header_addl_info">Last modified: 2011-09-16 00:44:41 EDT</p>
+    </td>
+</tr>
+</table>
+
+<table id="lang_links_container" cellpadding="0" cellspacing="0"
+       class="bz_default_hidden"><tr><td>
+</td></tr></table>
+<ul class="links">
+  <li><a href="./">Home</a></li>
+
+  <li><span class="separator">| </span><a href="enter_bug.cgi">New</a></li>
+  <li><span class="separator">| </span><a href="query.cgi">Search</a></li>
+
+  <li class="form">
+    <span class="separator">| </span>
+    <form action="buglist.cgi" method="get"
+        onsubmit="if (this.quicksearch.value == '')
+                  { alert('Please enter one or more search terms first.');
+                    return false; } return true;">
+    <input class="txt" type="text" id="quicksearch_top" name="quicksearch">
+
+    <input class="btn" type="submit" value="Find" id="find_top"></form></li>
+
+  <li><span class="separator">| </span><a href="report.cgi">Reports</a></li>
+
+  <li>
+      <span class="separator">| </span>
+        <a href="request.cgi?requester=stepper%40esc-net.de&amp;requestee=stepper%40esc-net.de&amp;do_union=1&amp;group=type&amp;action=queue">My Requests</a></li>
+
+    <li><span class="separator">| </span><a href="votes.cgi?action=show_user">My&nbsp;Votes</a></li>
+
+    <li><span class="separator">| </span><a href="userprefs.cgi">Preferences</a></li>
+<li>
+        <span class="separator">| </span>
+        <a href="http://www.bugzilla.org/docs/3.4/en/html/bug_page.html" target="_blank">Help</a>
+
+      </li>
+
+    <li>
+      <span class="separator">| </span>
+        <a href="index.cgi?logout=1">Log&nbsp;out</a>
+        stepper&#64;esc-net.de</li>
+  <span class="separator">| </span>
+
+  <li><a href="http://www.eclipse.org/legal/termsofuse.php">Terms of Use</a></li>
+  <span class="separator">| </span>
+  <li><a href="http://www.eclipse.org/legal/copyright.php">Copyright Agent</a></li>
+</ul>
+</div> 
+
+<div id="bugzilla-body">
+
+<div class="navigation">
+  <b>Bug List:</b>
+
+
+      (This bug is not in your last search results)
+
+  &nbsp;&nbsp;<a href="buglist.cgi?regetlastlist=1">Show last search results</a>
+</div>
+<script type="text/javascript">
+  <!--
+  
+  /* Outputs a link to call replyToComment(); used to reduce HTML output */
+  function addReplyLink(id, real_id) {
+      /* XXX this should really be updated to use the DOM Core's
+       * createElement, but finding a container isn't trivial.
+       */
+        document.write('[<a href="#add_comment" onclick="replyToComment(' + 
+                       id + ',' + real_id + '); return false;">reply<' + '/a>]');
+  }
+
+  /* Adds the reply text to the `comment' textarea */
+  function replyToComment(id, real_id) {
+      var prefix = "(In reply to comment #" + id + ")\n";
+      var replytext = "";
+        /* pre id="comment_name_N" */
+        var text_elem = document.getElementById('comment_text_'+id);
+        var text = getText(text_elem);
+
+        /* make sure we split on all newlines -- IE or Moz use \r and \n
+         * respectively.
+         */
+        text = text.split(/\r|\n/);
+
+        for (var i=0; i < text.length; i++) {
+            replytext += "> " + text[i] + "\n"; 
+        }
+
+        replytext = prefix + replytext + "\n";
+
+
+      /* <textarea id="comment"> */
+      var textarea = document.getElementById('comment');
+      textarea.value += replytext;
+
+      textarea.focus();
+  }
+
+  if (typeof Node == 'undefined') {
+      /* MSIE doesn't define Node, so provide a compatibility object */
+      window.Node = {
+          TEXT_NODE: 3,
+          ENTITY_REFERENCE_NODE: 5
+      };
+  }
+
+  /* Concatenates all text from element's childNodes. This is used
+   * instead of innerHTML because we want the actual text (and
+   * innerText is non-standard).
+   */
+  function getText(element) {
+      var child, text = "";
+      for (var i=0; i < element.childNodes.length; i++) {
+          child = element.childNodes[i];
+          var type = child.nodeType;
+          if (type == Node.TEXT_NODE || type == Node.ENTITY_REFERENCE_NODE) {
+              text += child.nodeValue;
+          } else {
+              /* recurse into nodes of other types */
+              text += getText(child);
+          }
+      }
+      return text;
+  }
+
+
+  //-->
+  </script>
+
+<form name="changeform" method="post" action="process_bug.cgi">
+
+  <input type="hidden" name="delta_ts" value="2011-09-16 00:44:41">
+  <input type="hidden" name="longdesclength" value="13">
+  <input type="hidden" name="id" value="351078">
+
+  <input type="hidden" name="token" value="1317170766-f563fc096f6b3dd3abab16d6b46aa2a4">
+<div class="bz_alias_short_desc_container edit_form"><div class="knob-buttons">
+      <input type="submit" value="Save Changes" 
+             id="commit_top">
+    </div>
+     <a href="show_bug.cgi?id=351078"><b>Bug&nbsp;351078</b></a> -<span id="summary_alias_container" class="bz_default_hidden"> 
+      <span id="short_desc_nonedit_display">[DB] Support raw replication in HorizontalBranchingMappingStrategyWithRanges</span>
+        <small class="editme">(<a href="#" id="editme_action">edit</a>)</small>
+
+     </span>
+  
+       
+    <div id="summary_alias_input">
+      <table id="summary">  
+        
+        <tr>
+          <td>
+            <label accesskey="s" for="short_desc"><u>S</u>ummary</label>:
+          </td>
+          <td><input id="short_desc" name="short_desc" class="text_input"
+              value="[DB] Support raw replication in HorizontalBranchingMappingStrategyWithRanges" size="80" maxlength="255" spellcheck="true">
+          </td>
+
+        </tr>
+      </table>
+    </div>
+  </div>
+  <script type="text/javascript">
+    hideAliasAndSummary('[DB] Support raw replication in HorizontalBranchingMappingStrategyWithRanges', '');
+  </script>
+  <table class="edit_form">
+    <tr>
+      
+      <td id="bz_show_bug_column_1" class="bz_show_bug_column">     
+        <table>
+
+          <tr>
+    <td class="field_label">
+      <b><a href="page.cgi?id=fields.html#status">Status</a></b>:
+    </td>
+    <td id="bz_field_status">
+      <span id="static_bug_status">ASSIGNED
+          (<a href="#add_comment" 
+              onclick="window.setTimeout(function() { document.getElementById('bug_status').focus(); }, 10)">edit</a>)
+      </span>
+    </td>
+
+  </tr>
+          <tr>
+    <td colspan="2" class="bz_section_spacer"></td>
+  </tr>
+          <tr><th class="field_label "
+      id="field_label_product">
+      <label for="product">
+        <a href="describecomponents.cgi">Product:</a></label>
+  </th>
+
+<td class="field_value "
+    id="field_container_product" >
+        <select id="product" 
+                name="product" 
+                >
+            <option value="ACTF"
+                    id="v98_product"
+              >ACTF</option>
+            <option value="Aether"
+                    id="v224_product"
+              >Aether</option>
+            <option value="AJDT"
+                    id="v6_product"
+              >AJDT</option>
+            <option value="Amalgam"
+                    id="v105_product"
+              >Amalgam</option>
+            <option value="AMP"
+                    id="v141_product"
+              >AMP</option>
+
+            <option value="Apogee"
+                    id="v66_product"
+              >Apogee</option>
+            <option value="Apricot"
+                    id="v215_product"
+              >Apricot</option>
+            <option value="AspectJ"
+                    id="v10_product"
+              >AspectJ</option>
+            <option value="ATF"
+                    id="v56_product"
+              >ATF</option>
+            <option value="Babel"
+                    id="v97_product"
+              >Babel</option>
+            <option value="BIRT"
+                    id="v24_product"
+              >BIRT</option>
+
+            <option value="Blinki"
+                    id="v145_product"
+              >Blinki</option>
+            <option value="BPEL"
+                    id="v49_product"
+              >BPEL</option>
+            <option value="BPMN"
+                    id="v131_product"
+              >BPMN</option>
+            <option value="BPMN2Modeler"
+                    id="v217_product"
+              >BPMN2Modeler</option>
+            <option value="Buckminster"
+                    id="v33_product"
+              >Buckminster</option>
+            <option value="CDT"
+                    id="v4_product"
+              >CDT</option>
+
+            <option value="CDTK"
+                    id="v179_product"
+              >CDTK</option>
+            <option value="Cobol"
+                    id="v60_product"
+              >Cobol</option>
+            <option value="Community"
+                    id="v22_product"
+              >Community</option>
+            <option value="Cosmos"
+                    id="v72_product"
+              >Cosmos</option>
+            <option value="Dali JPA Tools"
+                    id="v47_product"
+              >Dali JPA Tools</option>
+            <option value="Dash"
+                    id="v50_product"
+              >Dash</option>
+
+            <option value="Dash Athena"
+                    id="v147_product"
+              >Dash Athena</option>
+            <option value="Data Tools"
+                    id="v36_product"
+              >Data Tools</option>
+            <option value="DD"
+                    id="v62_product"
+              >DD</option>
+            <option value="DLTK"
+                    id="v70_product"
+              >DLTK</option>
+            <option value="DSDP"
+                    id="v37_product"
+              >DSDP</option>
+            <option value="e4"
+                    id="v130_product"
+              >e4</option>
+
+            <option value="eBAM"
+                    id="v173_product"
+              >eBAM</option>
+            <option value="eBPM"
+                    id="v172_product"
+              >eBPM</option>
+            <option value="ECF"
+                    id="v25_product"
+              >ECF</option>
+            <option value="EclipseLink"
+                    id="v94_product"
+              >EclipseLink</option>
+            <option value="EDT"
+                    id="v188_product"
+              >EDT</option>
+            <option value="EGit"
+                    id="v142_product"
+              >EGit</option>
+
+            <option value="EMF"
+                    id="v8_product"
+              
+                selected="selected">EMF</option>
+            <option value="EMFT"
+                    id="v42_product"
+              >EMFT</option>
+            <option value="EMFT.b3"
+                    id="v157_product"
+              >EMFT.b3</option>
+            <option value="EMFT.Doc2Model"
+                    id="v152_product"
+              >EMFT.Doc2Model</option>
+            <option value="EMFT.emf-store"
+                    id="v205_product"
+              >EMFT.emf-store</option>
+            <option value="EMFT.emfclient"
+                    id="v198_product"
+              >EMFT.emfclient</option>
+
+            <option value="EMFT.facet"
+                    id="v187_product"
+              >EMFT.facet</option>
+            <option value="EMFT.Featuremodel"
+                    id="v149_product"
+              >EMFT.Featuremodel</option>
+            <option value="EMFT.Henshin"
+                    id="v148_product"
+              >EMFT.Henshin</option>
+            <option value="EMFT.js4emf"
+                    id="v190_product"
+              >EMFT.js4emf</option>
+            <option value="EMFT.MTF"
+                    id="v155_product"
+              >EMFT.MTF</option>
+            <option value="EMFT.Refactor"
+                    id="v151_product"
+              >EMFT.Refactor</option>
+
+            <option value="EPF"
+                    id="v51_product"
+              >EPF</option>
+            <option value="EPP"
+                    id="v88_product"
+              >EPP</option>
+            <option value="Equinox"
+                    id="v11_product"
+              >Equinox</option>
+            <option value="ERCP"
+                    id="v23_product"
+              >ERCP</option>
+            <option value="ESL"
+                    id="v144_product"
+              >ESL</option>
+            <option value="Examples"
+                    id="v110_product"
+              >Examples</option>
+
+            <option value="Faceted Project Framework"
+                    id="v135_product"
+              >Faceted Project Framework</option>
+            <option value="gEclipse"
+                    id="v68_product"
+              >gEclipse</option>
+            <option value="GEF"
+                    id="v5_product"
+              >GEF</option>
+            <option value="GEF3D"
+                    id="v133_product"
+              >GEF3D</option>
+            <option value="Gemini"
+                    id="v160_product"
+              >Gemini</option>
+            <option value="Gemini.Blueprint"
+                    id="v180_product"
+              >Gemini.Blueprint</option>
+
+            <option value="Gemini.DBaccess"
+                    id="v181_product"
+              >Gemini.DBaccess</option>
+            <option value="Gemini.JPA"
+                    id="v183_product"
+              >Gemini.JPA</option>
+            <option value="Gemini.Managment"
+                    id="v184_product"
+              >Gemini.Managment</option>
+            <option value="Gemini.Naming"
+                    id="v182_product"
+              >Gemini.Naming</option>
+            <option value="Gemini.Web"
+                    id="v185_product"
+              >Gemini.Web</option>
+            <option value="GMP"
+                    id="v177_product"
+              >GMP</option>
+
+            <option value="GMT"
+                    id="v12_product"
+              >GMT</option>
+            <option value="Gyrex"
+                    id="v128_product"
+              >Gyrex</option>
+            <option value="Hibachi"
+                    id="v99_product"
+              >Hibachi</option>
+            <option value="Higgins"
+                    id="v30_product"
+              >Higgins</option>
+            <option value="Hudson"
+                    id="v220_product"
+              >Hudson</option>
+            <option value="Hyades"
+                    id="v13_product"
+              >Hyades</option>
+
+            <option value="IAM"
+                    id="v113_product"
+              >IAM</option>
+            <option value="IDE4EDU"
+                    id="v137_product"
+              >IDE4EDU</option>
+            <option value="IMP"
+                    id="v101_product"
+              >IMP</option>
+            <option value="Incubator"
+                    id="v109_product"
+              >Incubator</option>
+            <option value="Java Server Faces"
+                    id="v46_product"
+              >Java Server Faces</option>
+            <option value="JDT"
+                    id="v3_product"
+              >JDT</option>
+
+            <option value="JEE-Config"
+                    id="v221_product"
+              >JEE-Config</option>
+            <option value="Jetty"
+                    id="v138_product"
+              >Jetty</option>
+            <option value="JGit"
+                    id="v153_product"
+              >JGit</option>
+            <option value="JSDT"
+                    id="v158_product"
+              >JSDT</option>
+            <option value="Jubula"
+                    id="v200_product"
+              >Jubula</option>
+            <option value="JWT"
+                    id="v86_product"
+              >JWT</option>
+
+            <option value="Kepler"
+                    id="v102_product"
+              >Kepler</option>
+            <option value="Koneki"
+                    id="v214_product"
+              >Koneki</option>
+            <option value="Libra"
+                    id="v207_product"
+              >Libra</option>
+            <option value="Linux Tools"
+                    id="v69_product"
+              >Linux Tools</option>
+            <option value="Lyo"
+                    id="v219_product"
+              >Lyo</option>
+            <option value="m2e"
+                    id="v111_product"
+              >m2e</option>
+
+            <option value="M2M"
+                    id="v71_product"
+              >M2M</option>
+            <option value="M2T"
+                    id="v87_product"
+              >M2T</option>
+            <option value="Magrove"
+                    id="v171_product"
+              >Magrove</option>
+            <option value="MAT"
+                    id="v108_product"
+              >MAT</option>
+            <option value="MDT"
+                    id="v67_product"
+              >MDT</option>
+            <option value="MDT.Etrice"
+                    id="v193_product"
+              >MDT.Etrice</option>
+
+            <option value="MDT.MoDisco"
+                    id="v189_product"
+              >MDT.MoDisco</option>
+            <option value="MDT.RMF"
+                    id="v222_product"
+              >MDT.RMF</option>
+            <option value="Modeling"
+                    id="v63_product"
+              >Modeling</option>
+            <option value="MPC"
+                    id="v168_product"
+              >MPC</option>
+            <option value="MTJ"
+                    id="v53_product"
+              >MTJ</option>
+            <option value="Mylyn"
+                    id="v31_product"
+              >Mylyn</option>
+
+            <option value="Mylyn Builds"
+                    id="v197_product"
+              >Mylyn Builds</option>
+            <option value="Mylyn Commons"
+                    id="v201_product"
+              >Mylyn Commons</option>
+            <option value="Mylyn Context"
+                    id="v202_product"
+              >Mylyn Context</option>
+            <option value="Mylyn Docs"
+                    id="v199_product"
+              >Mylyn Docs</option>
+            <option value="Mylyn Docs Intent"
+                    id="v212_product"
+              >Mylyn Docs Intent</option>
+            <option value="Mylyn Incubator"
+                    id="v204_product"
+              >Mylyn Incubator</option>
+
+            <option value="Mylyn Reviews"
+                    id="v166_product"
+              >Mylyn Reviews</option>
+            <option value="Mylyn Tasks"
+                    id="v203_product"
+              >Mylyn Tasks</option>
+            <option value="Mylyn Versions"
+                    id="v196_product"
+              >Mylyn Versions</option>
+            <option value="NAB"
+                    id="v54_product"
+              >NAB</option>
+            <option value="Nebula"
+                    id="v57_product"
+              >Nebula</option>
+            <option value="Objectteams"
+                    id="v156_product"
+              >Objectteams</option>
+
+            <option value="OFMP"
+                    id="v107_product"
+              >OFMP</option>
+            <option value="OHF"
+                    id="v48_product"
+              >OHF</option>
+            <option value="Orbit"
+                    id="v65_product"
+              >Orbit</option>
+            <option value="Orion"
+                    id="v218_product"
+              >Orion</option>
+            <option value="ORMF"
+                    id="v115_product"
+              >ORMF</option>
+            <option value="OSEE"
+                    id="v95_product"
+              >OSEE</option>
+
+            <option value="Pave"
+                    id="v146_product"
+              >Pave</option>
+            <option value="PDE"
+                    id="v2_product"
+              >PDE</option>
+            <option value="PDT"
+                    id="v55_product"
+              >PDT</option>
+            <option value="PDT.Incubator"
+                    id="v150_product"
+              >PDT.Incubator</option>
+            <option value="Phoenix"
+                    id="v35_product"
+              >Phoenix</option>
+            <option value="Platform"
+                    id="v1_product"
+              >Platform</option>
+
+            <option value="PMF"
+                    id="v143_product"
+              >PMF</option>
+            <option value="PTP"
+                    id="v27_product"
+              >PTP</option>
+            <option value="RAP"
+                    id="v61_product"
+              >RAP</option>
+            <option value="Rat"
+                    id="v213_product"
+              >Rat</option>
+            <option value="Recommenders"
+                    id="v206_product"
+              >Recommenders</option>
+            <option value="Remus"
+                    id="v175_product"
+              >Remus</option>
+
+            <option value="Riena"
+                    id="v104_product"
+              >Riena</option>
+            <option value="RTP"
+                    id="v208_product"
+              >RTP</option>
+            <option value="RTSC"
+                    id="v114_product"
+              >RTSC</option>
+            <option value="Sapphire"
+                    id="v194_product"
+              >Sapphire</option>
+            <option value="SCA"
+                    id="v132_product"
+              >SCA</option>
+            <option value="Scout"
+                    id="v174_product"
+              >Scout</option>
+
+            <option value="Sequoyah"
+                    id="v89_product"
+              >Sequoyah</option>
+            <option value="Sisu"
+                    id="v223_product"
+              >Sisu</option>
+            <option value="Skalli"
+                    id="v210_product"
+              >Skalli</option>
+            <option value="Sketch"
+                    id="v176_product"
+              >Sketch</option>
+            <option value="Smila"
+                    id="v116_product"
+              >Smila</option>
+            <option value="SOA"
+                    id="v52_product"
+              >SOA</option>
+
+            <option value="SOA Platform"
+                    id="v154_product"
+              >SOA Platform</option>
+            <option value="SOC"
+                    id="v91_product"
+              >SOC</option>
+            <option value="Stardust"
+                    id="v216_product"
+              >Stardust</option>
+            <option value="STEM"
+                    id="v139_product"
+              >STEM</option>
+            <option value="Subversive"
+                    id="v85_product"
+              >Subversive</option>
+            <option value="Swordfish"
+                    id="v96_product"
+              >Swordfish</option>
+
+            <option value="SWTBot"
+                    id="v134_product"
+              >SWTBot</option>
+            <option value="Target Management"
+                    id="v41_product"
+              >Target Management</option>
+            <option value="TCF"
+                    id="v192_product"
+              >TCF</option>
+            <option value="Tigerstripe"
+                    id="v103_product"
+              >Tigerstripe</option>
+            <option value="TMF"
+                    id="v106_product"
+              >TMF</option>
+            <option value="TMW"
+                    id="v191_product"
+              >TMW</option>
+
+            <option value="Tools"
+                    id="v129_product"
+              >Tools</option>
+            <option value="TPTP Agent Controller"
+                    id="v81_product"
+              >TPTP Agent Controller</option>
+            <option value="TPTP ASF"
+                    id="v93_product"
+              >TPTP ASF</option>
+            <option value="TPTP Build to Manage"
+                    id="v79_product"
+              >TPTP Build to Manage</option>
+            <option value="TPTP Common Logging"
+                    id="v82_product"
+              >TPTP Common Logging</option>
+            <option value="TPTP GLA"
+                    id="v83_product"
+              >TPTP GLA</option>
+
+            <option value="TPTP Line Coverage"
+                    id="v80_product"
+              >TPTP Line Coverage</option>
+            <option value="TPTP Log Analyzer"
+                    id="v76_product"
+              >TPTP Log Analyzer</option>
+            <option value="TPTP Probe Instrumentation"
+                    id="v78_product"
+              >TPTP Probe Instrumentation</option>
+            <option value="TPTP Profiling"
+                    id="v74_product"
+              >TPTP Profiling</option>
+            <option value="TPTP Release Engineering"
+                    id="v84_product"
+              >TPTP Release Engineering</option>
+            <option value="TPTP Resource Monitoring"
+                    id="v75_product"
+              >TPTP Resource Monitoring</option>
+
+            <option value="TPTP Static Analysis"
+                    id="v77_product"
+              >TPTP Static Analysis</option>
+            <option value="TPTP Testing"
+                    id="v73_product"
+              >TPTP Testing</option>
+            <option value="Tycho"
+                    id="v186_product"
+              >Tycho</option>
+            <option value="UOMo"
+                    id="v195_product"
+              >UOMo</option>
+            <option value="VE"
+                    id="v16_product"
+              >VE</option>
+            <option value="Virgo"
+                    id="v167_product"
+              >Virgo</option>
+
+            <option value="VTP"
+                    id="v28_product"
+              >VTP</option>
+            <option value="Web Tools"
+                    id="v20_product"
+              >Web Tools</option>
+            <option value="WindowBuilder"
+                    id="v209_product"
+              >WindowBuilder</option>
+            <option value="Woolsey"
+                    id="v170_product"
+              >Woolsey</option>
+            <option value="Working Groups"
+                    id="v140_product"
+              >Working Groups</option>
+            <option value="WTP Common Tools"
+                    id="v119_product"
+              >WTP Common Tools</option>
+
+            <option value="WTP Datatools"
+                    id="v126_product"
+              >WTP Datatools</option>
+            <option value="WTP EJB Tools"
+                    id="v123_product"
+              >WTP EJB Tools</option>
+            <option value="WTP Incubator"
+                    id="v117_product"
+              >WTP Incubator</option>
+            <option value="WTP Java EE Tools"
+                    id="v122_product"
+              >WTP Java EE Tools</option>
+            <option value="WTP Releng"
+                    id="v124_product"
+              >WTP Releng</option>
+            <option value="WTP ServerTools"
+                    id="v118_product"
+              >WTP ServerTools</option>
+
+            <option value="WTP Source Editing"
+                    id="v120_product"
+              >WTP Source Editing</option>
+            <option value="WTP Webservices"
+                    id="v121_product"
+              >WTP Webservices</option>
+            <option value="WTP Website"
+                    id="v125_product"
+              >WTP Website</option>
+            <option value="z_Archived"
+                    id="v43_product"
+              >z_Archived</option>
+        </select>
+        
+
+        <script type="text/javascript">
+        <!--
+          initHidingOptionsForIE('product');
+          
+        //-->
+        </script>
+
+</td>
+    </tr>
+        
+    
+    
+    <tr>
+      <td class="field_label">
+        <label for="component" accesskey="m">
+          <b><a href="describecomponents.cgi?product=EMF">
+            Co<u>m</u>ponent</a>:
+          </b>
+
+        </label>
+      </td><td>
+      <select id="component" name="component">
+          <option value="cdo.core">cdo.core
+          </option>
+          <option value="cdo.dawn">cdo.dawn
+          </option>
+          <option value="cdo.db" selected>cdo.db
+          </option>
+          <option value="cdo.docs">cdo.docs
+          </option>
+
+          <option value="cdo.hibernate">cdo.hibernate
+          </option>
+          <option value="cdo.net4j">cdo.net4j
+          </option>
+          <option value="cdo.net4j.db">cdo.net4j.db
+          </option>
+          <option value="cdo.net4j.ui">cdo.net4j.ui
+          </option>
+          <option value="cdo.objy">cdo.objy
+          </option>
+          <option value="cdo.releng">cdo.releng
+          </option>
+
+          <option value="cdo.ui">cdo.ui
+          </option>
+          <option value="Compare">Compare
+          </option>
+          <option value="Core">Core
+          </option>
+          <option value="Doc">Doc
+          </option>
+          <option value="Edit">Edit
+          </option>
+          <option value="EMFIndex.Core">EMFIndex.Core
+          </option>
+
+          <option value="EMFIndex.Doc">EMFIndex.Doc
+          </option>
+          <option value="EMFIndex.UI">EMFIndex.UI
+          </option>
+          <option value="Mapping">Mapping
+          </option>
+          <option value="MXF.Core">MXF.Core
+          </option>
+          <option value="MXF.Editor">MXF.Editor
+          </option>
+          <option value="Query">Query
+          </option>
+
+          <option value="Query2">Query2
+          </option>
+          <option value="Releng">Releng
+          </option>
+          <option value="SDO">SDO
+          </option>
+          <option value="Teneo">Teneo
+          </option>
+          <option value="Tools">Tools
+          </option>
+          <option value="Transaction">Transaction
+          </option>
+
+          <option value="Validation">Validation
+          </option>
+          <option value="Website">Website
+          </option>
+          <option value="XML/XMI">XML/XMI
+          </option>
+      </select>
+  </td>
+    </tr>
+    <tr>
+
+      <td class="field_label">
+        <label for="version"><b>Version</b></label>:
+      </td>
+<td>
+      <select id="version" name="version">
+          <option value="0.2.0">0.2.0
+          </option>
+          <option value="1.0">1.0
+          </option>
+          <option value="1.1">1.1
+          </option>
+
+          <option value="1.2">1.2
+          </option>
+          <option value="1.3">1.3
+          </option>
+          <option value="1.4">1.4
+          </option>
+          <option value="1.5">1.5
+          </option>
+          <option value="2.0">2.0
+          </option>
+          <option value="2.0.1">2.0.1
+          </option>
+
+          <option value="2.0.2">2.0.2
+          </option>
+          <option value="2.0.3">2.0.3
+          </option>
+          <option value="2.1">2.1
+          </option>
+          <option value="2.2">2.2
+          </option>
+          <option value="2.2.1">2.2.1
+          </option>
+          <option value="2.2.2">2.2.2
+          </option>
+
+          <option value="2.2.3">2.2.3
+          </option>
+          <option value="2.3.0">2.3.0
+          </option>
+          <option value="2.4.0">2.4.0
+          </option>
+          <option value="2.5.0">2.5.0
+          </option>
+          <option value="2.6.0">2.6.0
+          </option>
+          <option value="2.7.0">2.7.0
+          </option>
+
+          <option value="2.7.1">2.7.1
+          </option>
+          <option value="2.8.0">2.8.0
+          </option>
+          <option value="3.0">3.0
+          </option>
+          <option value="3.0.1">3.0.1
+          </option>
+          <option value="4.0">4.0
+          </option>
+          <option value="4.0.1">4.0.1
+          </option>
+
+          <option value="4.0.2">4.0.2
+          </option>
+          <option value="4.1" selected>4.1
+          </option>
+          <option value="unspecified">unspecified
+          </option>
+      </select>
+  </td>
+    </tr>
+        
+    
+        
+    <tr>
+
+      <td class="field_label">
+        <label for="rep_platform" accesskey="h"><b>Platform</b></label>:
+      </td>
+      <td class="field_value"><select id="rep_platform" 
+                name="rep_platform" 
+                >
+            <option value="All"
+                    id="v1_rep_platform"
+              >All</option>
+            <option value="Macintosh"
+                    id="v3_rep_platform"
+              >Macintosh</option>
+            <option value="Other"
+                    id="v4_rep_platform"
+              >Other</option>
+
+            <option value="PC"
+                    id="v2_rep_platform"
+              
+                selected="selected">PC</option>
+            <option value="Power PC"
+                    id="v5_rep_platform"
+              >Power PC</option>
+            <option value="Sun"
+                    id="v6_rep_platform"
+              >Sun</option>
+        </select>
+        
+
+        <script type="text/javascript">
+        <!--
+          initHidingOptionsForIE('rep_platform');
+          
+        //-->
+        </script>
+       <select id="op_sys" 
+                name="op_sys" 
+                >
+            <option value="All"
+                    id="v1_op_sys"
+              >All</option>
+
+            <option value="AIX GTK"
+                    id="v37_op_sys"
+              >AIX GTK</option>
+            <option value="AIX Motif"
+                    id="v6_op_sys"
+              >AIX Motif</option>
+            <option value="HP-UX"
+                    id="v7_op_sys"
+              >HP-UX</option>
+            <option value="HP-UX GTK"
+                    id="v38_op_sys"
+              >HP-UX GTK</option>
+            <option value="iOS"
+                    id="v39_op_sys"
+              >iOS</option>
+            <option value="Linux"
+                    id="v4_op_sys"
+              
+                selected="selected">Linux</option>
+
+            <option value="Linux-GTK"
+                    id="v8_op_sys"
+              >Linux-GTK</option>
+            <option value="Linux-Motif"
+                    id="v9_op_sys"
+              >Linux-Motif</option>
+            <option value="Linux Qt"
+                    id="v35_op_sys"
+              >Linux Qt</option>
+            <option value="Mac OS X"
+                    id="v10_op_sys"
+              >Mac OS X</option>
+            <option value="Mac OS X - Cocoa"
+                    id="v32_op_sys"
+              >Mac OS X - Cocoa</option>
+            <option value="Neutrino"
+                    id="v11_op_sys"
+              >Neutrino</option>
+
+            <option value="other"
+                    id="v5_op_sys"
+              >other</option>
+            <option value="QNX-Photon"
+                    id="v12_op_sys"
+              >QNX-Photon</option>
+            <option value="Solaris"
+                    id="v13_op_sys"
+              >Solaris</option>
+            <option value="Solaris-GTK"
+                    id="v14_op_sys"
+              >Solaris-GTK</option>
+            <option value="Solaris-Motif"
+                    id="v15_op_sys"
+              >Solaris-Motif</option>
+            <option value="SymbianOS-Series 80"
+                    id="v16_op_sys"
+              >SymbianOS-Series 80</option>
+
+            <option value="SymbianOS S60"
+                    id="v31_op_sys"
+              >SymbianOS S60</option>
+            <option value="Symbian Qt"
+                    id="v36_op_sys"
+              >Symbian Qt</option>
+            <option value="Unix All"
+                    id="v17_op_sys"
+              >Unix All</option>
+            <option value="Windows All"
+                    id="v2_op_sys"
+              >Windows All</option>
+            <option value="Windows 95"
+                    id="v20_op_sys"
+              >Windows 95</option>
+            <option value="Windows 98"
+                    id="v21_op_sys"
+              >Windows 98</option>
+
+            <option value="Windows 2000"
+                    id="v18_op_sys"
+              >Windows 2000</option>
+            <option value="Windows Server 2003"
+                    id="v19_op_sys"
+              >Windows Server 2003</option>
+            <option value="Windows Server 2008"
+                    id="v34_op_sys"
+              >Windows Server 2008</option>
+            <option value="Windows 7"
+                    id="v33_op_sys"
+              >Windows 7</option>
+            <option value="Windows CE"
+                    id="v22_op_sys"
+              >Windows CE</option>
+            <option value="Windows ME"
+                    id="v23_op_sys"
+              >Windows ME</option>
+
+            <option value="Windows Mobile 2003"
+                    id="v24_op_sys"
+              >Windows Mobile 2003</option>
+            <option value="Windows Mobile 5.0"
+                    id="v28_op_sys"
+              >Windows Mobile 5.0</option>
+            <option value="Windows NT"
+                    id="v25_op_sys"
+              >Windows NT</option>
+            <option value="Windows XP"
+                    id="v26_op_sys"
+              >Windows XP</option>
+            <option value="Windows Vista"
+                    id="v29_op_sys"
+              >Windows Vista</option>
+            <option value="Windows Vista-WPF"
+                    id="v30_op_sys"
+              >Windows Vista-WPF</option>
+
+        </select>
+        
+
+        <script type="text/javascript">
+        <!--
+          initHidingOptionsForIE('op_sys');
+          
+        //-->
+        </script>
+       <script type="text/javascript">
+         assignToDefaultOnChange(['product', 'component']);
+       </script>
+      </td>
+    </tr>
+          <tr>
+    <td colspan="2" class="bz_section_spacer"></td>
+  </tr>
+
+          
+          <tr>
+      <td class="field_label">
+        <label for="priority" accesskey="i">
+          <b><a href="page.cgi?id=fields.html#importance"><u>I</u>mportance</a></b></label>:
+      </td>
+      <td><select id="priority" 
+                name="priority" 
+                >
+            <option value="P1"
+                    id="v1_priority"
+              >P1</option>
+            <option value="P2"
+                    id="v2_priority"
+              >P2</option>
+
+            <option value="P3"
+                    id="v3_priority"
+              
+                selected="selected">P3</option>
+            <option value="P4"
+                    id="v4_priority"
+              >P4</option>
+            <option value="P5"
+                    id="v5_priority"
+              >P5</option>
+        </select>
+        
+
+        <script type="text/javascript">
+        <!--
+          initHidingOptionsForIE('priority');
+          
+        //-->
+        </script>
+       <select id="bug_severity" 
+                name="bug_severity" 
+                >
+            <option value="blocker"
+                    id="v1_bug_severity"
+              >blocker</option>
+
+            <option value="critical"
+                    id="v2_bug_severity"
+              >critical</option>
+            <option value="major"
+                    id="v3_bug_severity"
+              >major</option>
+            <option value="normal"
+                    id="v4_bug_severity"
+              >normal</option>
+            <option value="minor"
+                    id="v5_bug_severity"
+              >minor</option>
+            <option value="trivial"
+                    id="v6_bug_severity"
+              >trivial</option>
+            <option value="enhancement"
+                    id="v7_bug_severity"
+              
+                selected="selected">enhancement</option>
+
+        </select>
+        
+
+        <script type="text/javascript">
+        <!--
+          initHidingOptionsForIE('bug_severity');
+          
+        //-->
+        </script>
+          <span id="votes_container">    
+          (<a href="votes.cgi?action=show_user&amp;bug_id=351078#vote_351078">vote</a>)
+          </span>  
+      </td>
+    </tr>
+
+      <tr>
+
+        <td class="field_label">
+          <label for="target_milestone">
+              <a href="page.cgi?id=fields.html#target_milestone">
+            Target&nbsp;Milestone</a></label>:
+        </td><td>
+      <select id="target_milestone" name="target_milestone">
+          <option value="---" selected>---
+          </option>
+          <option value="Past">Past
+          </option>
+
+          <option value="M1">M1
+          </option>
+          <option value="M2">M2
+          </option>
+          <option value="M3">M3
+          </option>
+          <option value="M4">M4
+          </option>
+          <option value="M5">M5
+          </option>
+          <option value="M6">M6
+          </option>
+
+          <option value="M7">M7
+          </option>
+          <option value="RC">RC
+          </option>
+          <option value="RC1">RC1
+          </option>
+          <option value="RC2">RC2
+          </option>
+          <option value="RC3">RC3
+          </option>
+          <option value="RC4">RC4
+          </option>
+
+          <option value="RC5">RC5
+          </option>
+          <option value="SR1">SR1
+          </option>
+          <option value="SR2">SR2
+          </option>
+          <option value="Callisto">Callisto
+          </option>
+          <option value="Europa">Europa
+          </option>
+          <option value="Ganymede">Ganymede
+          </option>
+
+          <option value="Galileo">Galileo
+          </option>
+          <option value="Helios">Helios
+          </option>
+          <option value="Future">Future
+          </option>
+      </select>
+  </td>
+      </tr>            
+          
+          <tr>
+      <td class="field_label">
+
+        <b><a href="page.cgi?id=fields.html#assigned_to">Assigned To</a></b>:
+      </td>
+      <td>
+          <div id="bz_assignee_edit_container" class="bz_default_hidden">
+            <span><span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span>
+              (<a href="#" id="bz_assignee_edit_action">edit</a>)
+            </span>
+
+          </div>
+          <div id="bz_assignee_input"><input
+  name="assigned_to"
+  value="stepper&#64;esc-net.de" size="30"  id="assigned_to" 
+>
+            <br>
+            <input type="checkbox" id="set_default_assignee" name="set_default_assignee" value="1">
+            <label id="set_default_assignee_label" for="set_default_assignee">Reset Assignee to default</label>
+          </div>
+          <script type="text/javascript">
+           hideEditableField('bz_assignee_edit_container', 
+                             'bz_assignee_input', 
+                             'bz_assignee_edit_action', 
+                             'assigned_to', 
+                             'stepper\x40esc-net.de' );
+           initDefaultCheckbox('assignee');                  
+          </script>
+      </td>
+
+    </tr>
+
+    <tr>
+      <td class="field_label">
+        <label for="qa_contact" accesskey="q"><b><u>Q</u>A Contact</b></label>:
+      </td>
+      <td>
+           <div id="bz_qa_contact_edit_container" class="bz_default_hidden">
+            <span>
+
+              <span id="bz_qa_contact_edit_display"><span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span></span>
+              (<a href="#" id="bz_qa_contact_edit_action">edit</a>)
+            </span>
+          </div>
+          <div id="bz_qa_contact_input"><input
+  name="qa_contact"
+  value="stepper&#64;esc-net.de" size="30"  id="qa_contact" 
+>
+            <br>
+            <input type="checkbox" id="set_default_qa_contact" name="set_default_qa_contact" value="1">
+
+            <label for="set_default_qa_contact" id="set_default_qa_contact_label">Reset QA Contact to default</label>
+          </div>
+          <script type="text/javascript">
+              hideEditableField('bz_qa_contact_edit_container', 
+                                 'bz_qa_contact_input', 
+                                 'bz_qa_contact_edit_action', 
+                                 'qa_contact', 
+                                 'stepper\x40esc-net.de');
+            initDefaultCheckbox('qa_contact');
+          </script>
+      </td>
+    </tr>
+          <tr>
+    <td colspan="2" class="bz_section_spacer"></td>
+  </tr>
+
+          <tr>
+    <td class="field_label">
+      <label for="bug_file_loc" accesskey="u"><b>
+          <u>U</u>RL</b></label>:
+    </td>
+    <td>
+        <span id="bz_url_edit_container" class="bz_default_hidden"> 
+        (<a href="#" id="bz_url_edit_action">edit</a>)</span>
+
+      <span id="bz_url_input_area"><input id="bug_file_loc" name="bug_file_loc" class="text_input"
+              value="" size="40">
+      </span>
+        <script type="text/javascript">
+          hideEditableField('bz_url_edit_container', 
+                            'bz_url_input_area', 
+                            'bz_url_edit_action', 
+                            'bug_file_loc', 
+                            "");
+        </script>
+    </td>
+  </tr>
+  
+    <tr>
+      <td class="field_label">
+        <label for="status_whiteboard" accesskey="w"><b><u>W</u>hiteboard</b></label>:
+      </td><td colspan="2">
+
+       <input id="status_whiteboard" name="status_whiteboard" class="text_input"
+              value="" size="40">  
+  </td>
+    </tr>
+  
+    <tr>
+      <td class="field_label">
+        <label for="keywords" accesskey="k">
+          <b><a href="describekeywords.cgi"><u>K</u>eywords</a></b></label>:
+      </td><td colspan="2">
+       <input id="keywords" name="keywords" class="text_input"
+              value="" size="40">  
+  </td>
+
+    </tr>
+          <tr>
+    <td colspan="2" class="bz_section_spacer"></td>
+  </tr>
+          
+          <tr><th class="field_label">
+    <label for="dependson">Depends&nbsp;on</label>:
+  </th>
+  <td>    
+    <span id="dependson_input_area">
+
+        <input name="dependson" id="dependson"
+               class="text_input"
+               value="">
+    </span>
+    
+      <span id="dependson_edit_container" class="edit_me bz_default_hidden" >
+        (<a href="#" id="dependson_edit_action">edit</a>)
+      </span>
+      <script type="text/javascript">
+        hideEditableField('dependson_edit_container', 
+                          'dependson_input_area', 
+                          'dependson_edit_action', 
+                          'dependson', 
+                          "");
+      </script>
+  </td>
+  </tr>
+
+  
+  <tr><th class="field_label">
+    <label for="blocked" accesskey="b"><u>B</u>locks</label>:
+  </th>
+  <td>    
+    <span id="blocked_input_area">
+        <input name="blocked" id="blocked"
+               class="text_input"
+               value="">
+    </span>
+    
+      <span id="blocked_edit_container" class="edit_me bz_default_hidden" >
+        (<a href="#" id="blocked_edit_action">edit</a>)
+      </span>
+
+      <script type="text/javascript">
+        hideEditableField('blocked_edit_container', 
+                          'blocked_input_area', 
+                          'blocked_edit_action', 
+                          'blocked', 
+                          "");
+      </script>
+  </td>
+  
+  <tr>
+    <th>&nbsp;</th>
+  
+    <td colspan="2" align="left" id="show_dependency_tree_or_graph">
+      Show dependency <a href="showdependencytree.cgi?id=351078&amp;hide_resolved=1">tree</a>
+  
+    </td>
+
+  </tr>
+          
+        </table>
+      </td>
+      <td>
+        <div class="bz_column_spacer">&nbsp;</div>
+      </td>
+      
+      <td id="bz_show_bug_column_2" class="bz_show_bug_column">
+        <table cellpadding="3" cellspacing="1">
+        <tr>
+
+    <td class="field_label">
+      <b>Reported</b>:
+    </td>
+    <td>2011-07-04 08:13 EDT by <span class="vcard"><a class="email" href="mailto:cyril.jaquier&#64;bluewin.ch" title="Cyril Jaquier &lt;cyril.jaquier&#64;bluewin.ch&gt;"> <span class="fn">Cyril Jaquier</span></a>
+</span>
+    </td>
+  </tr>
+  
+  <tr>
+
+    <td class="field_label">
+      <b> Modified</b>:
+    </td>
+    <td>2011-09-16 00:44 EDT 
+      (<a href="show_activity.cgi?id=351078">History</a>)
+    </td>
+  
+  </tr>
+         <tr>
+      <td class="field_label">
+
+        <label for="newcc" accesskey="a"><b>CC List</b>:</label>
+      </td>
+      <td>
+        <span id="cc_edit_area_showhide_container" class="bz_default_hidden">
+          (<a href="#" id="cc_edit_area_showhide">edit</a>)
+        </span>
+        <div id="cc_edit_area">
+
+          <br>
+            <div>
+              <div><label for="cc"><b>Add </b></label><input
+  name="newcc"
+  value="" size="30"  id="newcc" 
+></div>
+            </div>
+            <select id="cc" name="cc" multiple="multiple" size="5">
+                <option value="pascal.lehmann&#64;ruag.com">pascal.lehmann&#64;ruag.com</option>
+                <option value="stepper&#64;esc-net.de">stepper&#64;esc-net.de</option>
+
+                <option value="sw2312+bugs&#64;googlemail.com">sw2312+bugs&#64;googlemail.com</option>
+                <option value="szbardy&#64;b2international.com">szbardy&#64;b2international.com</option>
+            </select>
+              <br>
+              <input type="checkbox" id="removecc" name="removecc"><label for="removecc">Remove selected CCs</label>
+              <br>
+
+        </div>
+      </td>
+    </tr>
+         <tr>
+    <td colspan="2" class="bz_section_spacer"></td>
+  </tr>
+<tr><th class="field_label "
+      id="field_label_see_also">
+      <label for="see_also">
+        <a href="page.cgi?id=fields.html#see_also">See Also:</a></label>
+
+  </th>
+
+<td class="field_value "
+    id="field_container_see_also" >
+
+         <label for="see_also">
+           <strong>Add Bug URLs:</strong>
+         </label><br>
+         <input type="text" id="see_also" size="40"
+                class="text_input" name="see_also"></td>
+    </tr> 
+         
+         <tr>
+
+    <td colspan="2" class="bz_section_spacer"></td>
+  </tr>
+         
+                <tr>
+      <td class="field_label flags_label">
+        <label><b>Flags:</b></label>
+      </td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td colspan="2"><script type="text/javascript" src="js/flag.js"></script>
+
+<table id="flags">
+
+  
+    
+    
+    
+    
+<tr>
+    <td>&nbsp;</td>
+    <td>
+
+      <label title="Documentation updated" for="flag_type-4">documentation</label>
+
+    </td>
+    <td>
+      <select id="flag_type-4" name="flag_type-4"
+              title="Documentation updated"
+              onchange="toggleRequesteeField(this);"
+              class="flag_select flag_type-4">
+        <option value="X"></option>
+          <option value="+">+</option>
+          <option value="-">-</option>
+      </select>
+    </td>
+
+      <td>
+      </td>
+  </tr>
+    
+    
+    
+    
+<tr>
+    <td>&nbsp;</td>
+    <td>
+
+      <label title="Used to tag plan items against the release in which they're planned (i.e. Galileo this time around). This is necessary for bug-based plans to retain information about bugs that were deferred from one release and then get committed for a subsequent release - e.g. a bug that was deferred from ganymede but committed for galileo would have both 'galileo' and 'ganymede' flags on it." for="flag_type-9">galileo</label>
+    </td>
+
+    <td>
+      <select id="flag_type-9" name="flag_type-9"
+              title="Used to tag plan items against the release in which they're planned (i.e. Galileo this time around). This is necessary for bug-based plans to retain information about bugs that were deferred from one release and then get committed for a subsequent release - e.g. a bug that was deferred from ganymede but committed for galileo would have both 'galileo' and 'ganymede' flags on it."
+              onchange="toggleRequesteeField(this);"
+              class="flag_select flag_type-9">
+        <option value="X"></option>
+          <option value="+">+</option>
+          <option value="-">-</option>
+      </select>
+    </td>
+      <td>
+
+      </td>
+  </tr>
+    
+    
+    
+    
+<tr>
+    <td>&nbsp;</td>
+    <td>
+
+      <label title="Used to tag plan items against the release in which they're planned (i.e. Helios this time around). This is necessary for bug-based plans to retain information about bugs that were deferred from one release and then get committed for a subsequent release - e.g. a bug that was deferred from ganymede but committed for galileo would have both 'galileo' and 'ganymede' flags on it." for="flag_type-10">helios</label>
+    </td>
+    <td>
+
+      <select id="flag_type-10" name="flag_type-10"
+              title="Used to tag plan items against the release in which they're planned (i.e. Helios this time around). This is necessary for bug-based plans to retain information about bugs that were deferred from one release and then get committed for a subsequent release - e.g. a bug that was deferred from ganymede but committed for galileo would have both 'galileo' and 'ganymede' flags on it."
+              onchange="toggleRequesteeField(this);"
+              class="flag_select flag_type-10">
+        <option value="X"></option>
+          <option value="+">+</option>
+          <option value="-">-</option>
+      </select>
+    </td>
+      <td>
+      </td>
+
+  </tr>
+    
+    
+    
+    
+<tr>
+    <td>&nbsp;</td>
+    <td>
+
+      <label title="Used to tag plan items against the release in which they're planned (i.e. Indigo this time around). This is necessary for bug-based plans to retain information about bugs that were deferred from one release and then get committed for a subsequent release - e.g. a bug that was deferred from ganymede but committed for galileo would have both 'galileo' and 'ganymede' flags on it." for="flag_type-11">indigo</label>
+    </td>
+    <td>
+      <select id="flag_type-11" name="flag_type-11"
+              title="Used to tag plan items against the release in which they're planned (i.e. Indigo this time around). This is necessary for bug-based plans to retain information about bugs that were deferred from one release and then get committed for a subsequent release - e.g. a bug that was deferred from ganymede but committed for galileo would have both 'galileo' and 'ganymede' flags on it."
+              onchange="toggleRequesteeField(this);"
+              class="flag_select flag_type-11">
+
+        <option value="X"></option>
+          <option value="+">+</option>
+          <option value="-">-</option>
+      </select>
+    </td>
+      <td>
+      </td>
+  </tr>
+
+    
+    
+    
+    
+<tr>
+    <td>&nbsp;</td>
+    <td>
+
+      <label title="Set to + to flag the bug for the IP log. This is a committers-only flag for bugs." for="flag_type-8">iplog</label>
+    </td>
+    <td>
+      <select id="flag_type-8" name="flag_type-8"
+              title="Set to + to flag the bug for the IP log. This is a committers-only flag for bugs."
+              onchange="toggleRequesteeField(this);"
+              class="flag_select flag_type-8">
+        <option value="X"></option>
+
+          <option value="+">+</option>
+          <option value="-">-</option>
+      </select>
+    </td>
+      <td>
+      </td>
+  </tr>
+    
+    
+    
+    
+
+<tr>
+    <td>&nbsp;</td>
+    <td>
+
+      <label title="Used to tag plan items against the release in which they're planned (i.e. Juno this time around). This is necessary for bug-based plans to retain information about bugs that were deferred from one release and then get committed for a subsequent release - e.g. a bug that was deferred from ganymede but committed for galileo would have both 'galileo' and 'ganymede' flags on it." for="flag_type-12">juno</label>
+    </td>
+    <td>
+      <select id="flag_type-12" name="flag_type-12"
+              title="Used to tag plan items against the release in which they're planned (i.e. Juno this time around). This is necessary for bug-based plans to retain information about bugs that were deferred from one release and then get committed for a subsequent release - e.g. a bug that was deferred from ganymede but committed for galileo would have both 'galileo' and 'ganymede' flags on it."
+              onchange="toggleRequesteeField(this);"
+              class="flag_select flag_type-12">
+        <option value="X"></option>
+
+          <option value="+">+</option>
+          <option value="-">-</option>
+      </select>
+    </td>
+      <td>
+      </td>
+  </tr>
+    
+    
+    
+    
+
+<tr>
+    <td>&nbsp;</td>
+    <td>
+
+      <label title="Code has PMC/Project Lead approval" for="flag_type-2">pmc_approved</label>
+    </td>
+    <td>
+      <select id="flag_type-2" name="flag_type-2"
+              title="Code has PMC/Project Lead approval"
+              onchange="toggleRequesteeField(this);"
+              class="flag_select flag_type-2">
+        <option value="X"></option>
+
+          <option value="?">?</option>
+          <option value="+">+</option>
+          <option value="-">-</option>
+      </select>
+    </td>
+      <td>
+          <span style="white-space: nowrap;">
+
+              (<input type="text" class="requestee" maxlength="255"
+                      id="requestee_type-2"
+                      name="requestee_type-2">)
+          </span>
+      </td>
+  </tr>
+    
+    
+      <tr>
+        <td>stepper:
+        </td>
+        <td>
+          <label title="Code review needed"
+                 for="flag-45665">review</label>
+
+        </td>
+        <td>
+          <select id="flag-45665" name="flag-45665" 
+                  title="Code review needed"
+                  onchange="toggleRequesteeField(this);"
+                  class="flag_select flag_type-1">
+            
+              <option value="X"></option>
+                <option value="?" >?</option>
+                <option value="+" >+</option>
+                <option value="-" selected>-</option>
+
+          </select>
+        </td>
+          <td>
+              <span style="white-space: nowrap;">
+                  (<input type="text" class="requestee" maxlength="255"
+                          id="requestee-45665"
+                          name="requestee-45665">)
+              </span>
+          </td>
+      </tr>
+    
+    
+
+  
+        <tr><td colspan="3"><hr></td></tr>
+
+<tr>
+    <td colspan="2">
+addl.
+      <label title="Code review needed" for="flag_type-1">review</label>
+    </td>
+    <td>
+      <select id="flag_type-1" name="flag_type-1"
+              title="Code review needed"
+              onchange="toggleRequesteeField(this);"
+              class="flag_select flag_type-1">
+        <option value="X"></option>
+          <option value="?">?</option>
+
+          <option value="+">+</option>
+          <option value="-">-</option>
+      </select>
+    </td>
+      <td>
+          <span style="white-space: nowrap;">
+              (<input type="text" class="requestee" maxlength="255"
+                      id="requestee_type-1"
+                      name="requestee_type-1">)
+          </span>
+
+      </td>
+  </tr>
+</table>
+      </td>
+    </tr>
+
+        </table>
+      </td>
+    </tr>
+    <tr>
+
+      <td colspan="3">
+          <hr id="bz_top_half_spacer">
+      </td>
+    </tr>
+  </table>
+
+  <table id="bz_big_form_parts" cellspacing="0" cellpadding="0"><tr>
+  <td>
+
+    
+
+<script type="text/javascript">
+<!--
+function toggle_display(link) {
+    var table = document.getElementById("attachment_table");
+    // Store current height for scrolling later
+    var originalHeight = table.offsetHeight;
+    var rows = YAHOO.util.Dom.getElementsByClassName(
+        'bz_tr_obsolete', 'tr', table);
+
+    for (var i = 0; i < rows.length; i++) {
+        bz_toggleClass(rows[i], 'bz_default_hidden');
+    }
+
+    if (YAHOO.util.Dom.hasClass(rows[0], 'bz_default_hidden')) {
+        link.innerHTML = "Show Obsolete";
+    }
+    else {
+        link.innerHTML = "Hide Obsolete";
+    }
+
+    var newHeight = table.offsetHeight;
+    // This scrolling makes the window appear to not move at all.
+    window.scrollBy(0, newHeight - originalHeight);
+
+    return false;
+}
+//-->
+</script>
+
+<br>
+<table id="attachment_table" cellspacing="0" cellpadding="4">
+  <tr>
+    <th colspan="3" align="left">
+      <a name="a0" id="a0">Attachments</a>
+    </th>
+  </tr>
+
+      <tr class="bz_contenttype_text_plain bz_patch bz_tr_obsolete bz_default_hidden">
+        <td valign="top">
+            <a name="a1" href="attachment.cgi?id=203203"
+               title="View the content of the attachment">
+          <b><span class="bz_obsolete">Patch v1</span></b></a>
+
+          <span class="bz_attach_extra_info">
+              (68.94 KB,
+                patch)
+
+            <br>
+            <a href="#attach_203203"
+               title="Go to the comment associated with the attachment">2011-09-12 23:52 EDT</a>,
+
+<span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span>
+          </span>
+        </td>
+
+          <td class="bz_attach_flags" valign="top">
+              <i>no flags</i>
+          </td>
+
+        <td valign="top">
+          <a href="attachment.cgi?id=203203&amp;action=edit">Details</a>
+            | <a href="attachment.cgi?id=203203&amp;action=diff">Diff</a>
+        </td>
+      </tr>
+      <tr class="bz_contenttype_text_plain bz_patch bz_tr_obsolete bz_default_hidden">
+        <td valign="top">
+
+            <a name="a2" href="attachment.cgi?id=203205"
+               title="View the content of the attachment">
+          <b><span class="bz_obsolete">Patch v2 - ready to be committed</span></b></a>
+
+          <span class="bz_attach_extra_info">
+              (68.97 KB,
+                patch)
+
+            <br>
+            <a href="#attach_203205"
+               title="Go to the comment associated with the attachment">2011-09-13 00:20 EDT</a>,
+<span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+
+</span>
+          </span>
+        </td>
+
+          <td class="bz_attach_flags" valign="top">
+              <i>no flags</i>
+          </td>
+
+        <td valign="top">
+          <a href="attachment.cgi?id=203205&amp;action=edit">Details</a>
+
+            | <a href="attachment.cgi?id=203205&amp;action=diff">Diff</a>
+        </td>
+      </tr>
+      <tr class="bz_contenttype_text_plain bz_patch">
+        <td valign="top">
+            <a name="a3" href="attachment.cgi?id=203208"
+               title="View the content of the attachment">
+          <b>Patch v3</b></a>
+
+          <span class="bz_attach_extra_info">
+              (71.75 KB,
+                patch)
+
+            <br>
+            <a href="#attach_203208"
+               title="Go to the comment associated with the attachment">2011-09-13 01:47 EDT</a>,
+<span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span>
+          </span>
+        </td>
+
+          <td class="bz_attach_flags" valign="top">
+              <i>no flags</i>
+          </td>
+
+        <td valign="top">
+          <a href="attachment.cgi?id=203208&amp;action=edit">Details</a>
+            | <a href="attachment.cgi?id=203208&amp;action=diff">Diff</a>
+
+        </td>
+      </tr>
+
+  <tr class="bz_attach_footer">
+    <td colspan="3">
+        <span class="bz_attach_view_hide">
+            <a href="#a0" onclick="return toggle_display(this);">Show
+              Obsolete</a> (2)
+            <a href="attachment.cgi?bugid=351078&amp;action=viewall">View All</a>
+
+        </span>
+      <a href="attachment.cgi?bugid=351078&amp;action=enter">Add an attachment</a>
+      (proposed patch, testcase, etc.)
+    </td>
+  </tr>
+</table>
+<br>
+<div class="bz_section_additional_comments">
+    <a name="add_comment"></a>
+      <label for="comment" accesskey="c"><b>Additional 
+        <u>C</u>omments</b></label>:
+
+
+      <!-- This table keeps the submit button aligned with the box. -->
+
+      <table><tr><td><textarea name="comment" id="comment"
+            rows="10"
+          cols="80"
+            onFocus="this.rows=25"></textarea>
+        <br><div class="knob-buttons">
+      <input type="submit" value="Save Changes" 
+             id="commit">
+    </div>
+
+        <table class="status" cellspacing="0" cellpadding="0">
+          <tr>
+            <td class="field_label">
+              <b><a href="page.cgi?id=fields.html#status">Status</a></b>:
+            </td>
+
+            <td>
+              <a name="bug_status_bottom"></a><div id="status"><select id="bug_status" 
+                name="bug_status" 
+                >
+            <option value="NEW"
+                    id="v2_bug_status"
+              >NEW</option>
+            <option value="ASSIGNED"
+                    id="v3_bug_status"
+              
+                selected="selected">ASSIGNED</option>
+            <option value="RESOLVED"
+                    id="v5_bug_status"
+              >RESOLVED</option>
+            <option value="CLOSED"
+                    id="v7_bug_status"
+              >CLOSED</option>
+        </select>
+
+        
+
+        <script type="text/javascript">
+        <!--
+          initHidingOptionsForIE('bug_status');
+          
+        //-->
+        </script>
+
+    <noscript><br>resolved&nbsp;as&nbsp;</noscript>
+
+  <span id="resolution_settings"><select id="resolution" 
+                name="resolution" 
+                >
+            <option value="FIXED"
+                    id="v2_resolution"
+              >FIXED</option>
+            <option value="INVALID"
+                    id="v3_resolution"
+              >INVALID</option>
+            <option value="WONTFIX"
+                    id="v4_resolution"
+              >WONTFIX</option>
+
+            <option value="DUPLICATE"
+                    id="v7_resolution"
+              >DUPLICATE</option>
+            <option value="WORKSFORME"
+                    id="v8_resolution"
+              >WORKSFORME</option>
+            <option value="NOT_ECLIPSE"
+                    id="v10_resolution"
+              >NOT_ECLIPSE</option>
+        </select>
+        
+
+        <script type="text/javascript">
+        <!--
+          initHidingOptionsForIE('resolution');
+          
+        //-->
+        </script>
+  </span>
+
+    <noscript><br> duplicate</noscript>
+    <span id="duplicate_settings">of
+      <span id="dup_id_container" class="bz_default_hidden">&lt;missing bug number&gt;
+        (<a href="#" id="dup_id_edit_action">edit</a>)
+      </span
+      ><input id="dup_id" name="dup_id" size="6"
+              value="">
+    </span>
+    <div id="dup_id_discoverable" class="bz_default_hidden">
+      <a href="#" id="dup_id_discoverable_action">Mark as Duplicate</a>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+  var close_status_array = [
+      'RESOLVED',
+      'CLOSED'
+  ];
+  YAHOO.util.Dom.removeClass('dup_id_discoverable', 'bz_default_hidden');
+  hideEditableField( "dup_id_container", "dup_id", 'dup_id_edit_action',
+                     'dup_id', '' )
+  showHideStatusItems( "",  ['',
+                             'ASSIGNED']);
+  YAHOO.util.Event.addListener( 'bug_status', "change", showHideStatusItems,
+                                ['',
+                                 'ASSIGNED']);
+  YAHOO.util.Event.addListener( 'resolution', "change", showDuplicateItem);
+  YAHOO.util.Event.addListener( 'dup_id_discoverable_action',
+                                'click',
+                                setResolutionToDuplicate,
+                                'CLOSED');
+  YAHOO.util.Event.addListener( window, 'load',  showHideStatusItems,
+                              ['',
+                               'ASSIGNED'] );
+
+</script>
+            </td>
+          </tr>
+        </table>
+      </td></tr></table>
+
+    
+  </div>
+
+  </td>
+  <td>
+  </td>
+  </tr></table>
+
+  
+  <div id="comments"><script type="text/javascript">
+  <!--
+  function updateCommentPrivacy(checkbox, id) {
+    var comment_elem = document.getElementById('comment_text_'+id).parentNode;
+    if (checkbox.checked) {
+      if (!comment_elem.className.match('bz_private')) {
+        comment_elem.className = comment_elem.className.concat(' bz_private');
+      }
+    }
+    else {
+      comment_elem.className =
+        comment_elem.className.replace(/(\s*|^)bz_private(\s*|$)/, '$2');
+    }
+  }
+
+  /* The functions below expand and collapse comments  */
+
+  function toggle_comment_display(link, comment_id) {
+    var comment = document.getElementById('comment_text_' + comment_id);
+    var re = new RegExp(/\bcollapsed\b/);
+    if (comment.className.match(re))
+        expand_comment(link, comment);
+    else
+        collapse_comment(link, comment);
+  }
+
+  function toggle_all_comments(action) {
+    var num_comments = 13;
+
+    // If for some given ID the comment doesn't exist, this doesn't mean
+    // there are no more comments, but that the comment is private and
+    // the user is not allowed to view it.
+
+    for (var id = 0; id < num_comments; id++) {
+        var comment = document.getElementById('comment_text_' + id);
+        if (!comment)
+            continue;
+
+        var link = document.getElementById('comment_link_' + id);
+        if (action == 'collapse')
+            collapse_comment(link, comment);
+        else
+            expand_comment(link, comment);
+    }
+  }
+
+  function collapse_comment(link, comment) {
+    link.innerHTML = "[+]";
+    link.title = "Expand the comment.";
+    YAHOO.util.Dom.addClass(comment, 'collapsed');
+  }
+
+  function expand_comment(link, comment) {
+    link.innerHTML = "[-]";
+    link.title = "Collapse the comment";
+    YAHOO.util.Dom.removeClass(comment, 'collapsed');
+  }
+
+  /* This way, we are sure that browsers which do not support JS
+   * won't display this link  */
+
+  function addCollapseLink(count) {
+    document.write(' <a href="#" class="bz_collapse_comment"' +
+                   ' id="comment_link_' + count +
+                   '" onclick="toggle_comment_display(this, ' +  count +
+                   '); return false;" title="Collapse the comment.">[-]<\/a> ');
+  }
+  //-->
+  </script>
+
+
+
+
+
+
+
+<!-- This auto-sizes the comments and positions the collapse/expand links 
+     to the right. -->
+<table class="bz_comment_table" cellpadding="0" cellspacing="0"><tr>
+<td>
+<div class="bz_comment bz_first_comment">
+
+      <div class="bz_first_comment_head">
+
+          <span class="bz_comment_actions">
+            <script type="text/javascript"><!--
+              addReplyLink(0, 1959839);
+              addCollapseLink(0); // -->
+            </script>
+          </span>
+
+
+        <span class="bz_comment_number">
+          <a name="c0" 
+             href="show_bug.cgi?id=351078#c0">Description</a>
+        </span>
+
+        <span class="bz_comment_user"><span class="vcard"><a class="email" href="mailto:cyril.jaquier&#64;bluewin.ch" title="Cyril Jaquier &lt;cyril.jaquier&#64;bluewin.ch&gt;"> <span class="fn">Cyril Jaquier</span></a>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2011-07-04 08:13:30 EDT
+        </span>
+      </div>
+
+
+
+<pre class="bz_comment_text"  id="comment_text_0">Build Identifier: 4.0 GA
+
+HorizontalBranchingMappingStrategyWithRanges does not implement:
+
+rawImportUnreviseNewRevisions
+rawImportReviseOldRevisions
+
+and thus raw replication is not working with this mapping strategy.
+
+Reproducible: Always</pre>
+
+    </div>
+  <div class="bz_comment">
+
+      <div class="bz_comment_head">
+
+          <span class="bz_comment_actions">
+            <script type="text/javascript"><!--
+              addReplyLink(1, 1959844);
+              addCollapseLink(1); // -->
+            </script>
+          </span>
+
+
+        <span class="bz_comment_number">
+          <a name="c1" 
+             href="show_bug.cgi?id=351078#c1">Comment 1</a>
+        </span>
+
+        <span class="bz_comment_user"><span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+
+        </span>
+
+        <span class="bz_comment_time">
+          2011-07-04 08:24:04 EDT
+        </span>
+      </div>
+
+
+
+<pre class="bz_comment_text"  id="comment_text_1">Hi Stefan, this may have to be implemented by me, but I have almost no
+knowledge about the ranges baes mapping strategies...</pre>
+    </div>
+
+  <div class="bz_comment">
+
+      <div class="bz_comment_head">
+
+          <span class="bz_comment_actions">
+            <script type="text/javascript"><!--
+              addReplyLink(2, 1992361);
+              addCollapseLink(2); // -->
+            </script>
+          </span>
+
+
+        <span class="bz_comment_number">
+
+          <a name="c2" 
+             href="show_bug.cgi?id=351078#c2">Comment 2</a>
+        </span>
+
+        <span class="bz_comment_user"><span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2011-09-12 23:22:40 EDT
+        </span>
+      </div>
+
+
+
+<pre class="bz_comment_text"  id="comment_text_2">Committed revision 9062:
+- trunk/plugins/org.eclipse.emf.cdo.server.db</pre>
+    </div>
+  <div class="bz_comment">
+
+      <div class="bz_comment_head">
+
+          <span class="bz_comment_actions">
+            <script type="text/javascript"><!--
+              addReplyLink(3, 1992363);
+              addCollapseLink(3); // -->
+            </script>
+          </span>
+
+
+        <span class="bz_comment_number">
+          <a name="c3" 
+             href="show_bug.cgi?id=351078#c3">Comment 3</a>
+
+        </span>
+
+        <span class="bz_comment_user"><span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+
+          2011-09-12 23:39:24 EDT
+        </span>
+      </div>
+
+
+
+<pre class="bz_comment_text"  id="comment_text_3">Committed revision 9063:
+- trunk/plugins/org.eclipse.emf.cdo.tests</pre>
+    </div>
+  <div class="bz_comment">
+
+      <div class="bz_comment_head">
+
+          <span class="bz_comment_actions">
+            <script type="text/javascript"><!--
+              addReplyLink(4, 1992371);
+              addCollapseLink(4); // -->
+            </script>
+          </span>
+
+
+        <span class="bz_comment_number">
+          <a name="c4" 
+             href="show_bug.cgi?id=351078#c4">Comment 4</a>
+        </span>
+
+        <span class="bz_comment_user"><span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2011-09-12 23:52:15 EDT
+        </span>
+
+      </div>
+
+
+
+<pre class="bz_comment_text"  id="comment_text_4">Created <span class="bz_obsolete"><a href="attachment.cgi?id=203203&amp;action=diff" name="attach_203203" title="Patch v1">attachment 203203</a> <a href="attachment.cgi?id=203203&amp;action=edit" title="Patch v1">[details]</a></span>
+Patch v1
+
+1) UnsupportedOperationExceptions because rawImportUnreviseNewRevisions() and
+rawImportReviseOldRevisions() are not properly overridden. I fixed this by
+changing the inheritance hierarchy from
+
+        AbstractHorizontalMappingStrategy
+            HorizontalAuditMappingStrategy
+            HorizontalAuditMappingStrategyWithRanges
+            HorizontalBranchingMappingStrategy
+            HorizontalBranchingMappingStrategyWithRanges
+
+to
+
+        AbstractHorizontalMappingStrategy
+            HorizontalAuditMappingStrategy
+                HorizontalAuditMappingStrategyWithRanges
+            HorizontalBranchingMappingStrategy
+                HorizontalBranchingMappingStrategyWithRanges
+
+2) The list joins for range-based list mappings are different
+
+3) The main challenge is that the range-based list mappings change DB values
+(namely the CDO_VERSION_REMOVED field) in the *past*. This has no precendence
+in replicated scenarios and causes deep impact especially in:
+        a) DBUtil.deserializeTable (a new row handler for post processing is
+needed, additional serializeTable/deserializeTable methods are needed to keep
+APIs compatible) and in 
+        b) all DBTypes (the transferred values must be returned for possible
+post processing, entire new methods are needed to keep APIs compatible, i.e.
+readValueWithResult/writeValueWithResult).</pre>
+    </div>
+  <div class="bz_comment">
+
+      <div class="bz_comment_head">
+
+          <span class="bz_comment_actions">
+            <script type="text/javascript"><!--
+              addReplyLink(5, 1992373);
+              addCollapseLink(5); // -->
+            </script>
+          </span>
+
+
+        <span class="bz_comment_number">
+          <a name="c5" 
+             href="show_bug.cgi?id=351078#c5">Comment 5</a>
+
+        </span>
+
+        <span class="bz_comment_user"><span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+
+          2011-09-12 23:58:12 EDT
+        </span>
+      </div>
+
+
+
+<pre class="bz_comment_text"  id="comment_text_5">Stefan, please review. I'll try to hunt down a new regression in
+OfflineTest.testDisconnectAndSyncAddition(). All other tests are passing...</pre>
+    </div>
+  <div class="bz_comment">
+
+      <div class="bz_comment_head">
+
+          <span class="bz_comment_actions">
+            <script type="text/javascript"><!--
+              addReplyLink(6, 1992378);
+              addCollapseLink(6); // -->
+            </script>
+          </span>
+
+
+        <span class="bz_comment_number">
+          <a name="c6" 
+             href="show_bug.cgi?id=351078#c6">Comment 6</a>
+        </span>
+
+        <span class="bz_comment_user"><span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2011-09-13 00:20:33 EDT
+        </span>
+
+      </div>
+
+
+
+<pre class="bz_comment_text"  id="comment_text_6">Created <span class="bz_obsolete"><a href="attachment.cgi?id=203205&amp;action=diff" name="attach_203205" title="Patch v2 - ready to be committed">attachment 203205</a> <a href="attachment.cgi?id=203205&amp;action=edit" title="Patch v2 - ready to be committed">[details]</a></span>
+Patch v2 - ready to be committed
+
+Regression fixed.</pre>
+    </div>
+  <div class="bz_comment">
+
+      <div class="bz_comment_head">
+
+          <span class="bz_comment_actions">
+            <script type="text/javascript"><!--
+              addReplyLink(7, 1992397);
+              addCollapseLink(7); // -->
+            </script>
+          </span>
+
+
+        <span class="bz_comment_number">
+          <a name="c7" 
+             href="show_bug.cgi?id=351078#c7">Comment 7</a>
+
+        </span>
+
+        <span class="bz_comment_user"><span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+
+          2011-09-13 01:47:19 EDT
+        </span>
+      </div>
+
+
+
+<pre class="bz_comment_text"  id="comment_text_7">Created <span class=""><a href="attachment.cgi?id=203208&amp;action=diff" name="attach_203208" title="Patch v3">attachment 203208</a> <a href="attachment.cgi?id=203208&amp;action=edit" title="Patch v3">[details]</a></span>
+Patch v3</pre>
+    </div>
+
+  <div class="bz_comment">
+
+      <div class="bz_comment_head">
+
+          <span class="bz_comment_actions">
+            <script type="text/javascript"><!--
+              addReplyLink(8, 1992398);
+              addCollapseLink(8); // -->
+            </script>
+          </span>
+
+
+        <span class="bz_comment_number">
+
+          <a name="c8" 
+             href="show_bug.cgi?id=351078#c8">Comment 8</a>
+        </span>
+
+        <span class="bz_comment_user"><span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2011-09-13 01:49:39 EDT
+        </span>
+      </div>
+
+
+
+<pre class="bz_comment_text"  id="comment_text_8">Committed revision 9067:
+- trunk/plugins/org.eclipse.emf.cdo.server.db
+- trunk/plugins/org.eclipse.emf.cdo.tests
+- trunk/plugins/org.eclipse.emf.cdo.tests.db
+- trunk/plugins/org.eclipse.net4j.db
+- trunk/plugins/org.eclipse.net4j.tests</pre>
+    </div>
+  <div class="bz_comment">
+
+      <div class="bz_comment_head">
+
+          <span class="bz_comment_actions">
+            <script type="text/javascript"><!--
+              addReplyLink(9, 1992399);
+              addCollapseLink(9); // -->
+            </script>
+          </span>
+
+
+        <span class="bz_comment_number">
+          <a name="c9" 
+             href="show_bug.cgi?id=351078#c9">Comment 9</a>
+
+        </span>
+
+        <span class="bz_comment_user"><span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+
+          2011-09-13 01:50:55 EDT
+        </span>
+      </div>
+
+
+
+<pre class="bz_comment_text"  id="comment_text_9">I've committed patch v3 because I need a clean workspace and all tests are now
+passing. Stefan, I'm not resolving this bug until after your review ;-)</pre>
+    </div>
+  <div class="bz_comment">
+
+      <div class="bz_comment_head">
+
+          <span class="bz_comment_actions">
+            <script type="text/javascript"><!--
+              addReplyLink(10, 1992771);
+              addCollapseLink(10); // -->
+            </script>
+          </span>
+
+
+        <span class="bz_comment_number">
+          <a name="c10" 
+             href="show_bug.cgi?id=351078#c10">Comment 10</a>
+        </span>
+
+        <span class="bz_comment_user"><span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2011-09-13 11:26:15 EDT
+        </span>
+
+      </div>
+
+
+
+<pre class="bz_comment_text"  id="comment_text_10">After talking to Stefan it turned out that my implementation does not yet
+consider index positions that have been removed entirely, as opposed to those
+that have been just added or moved within the list. Will work on a fix
+tomorrow...</pre>
+    </div>
+  <div class="bz_comment">
+
+      <div class="bz_comment_head">
+
+          <span class="bz_comment_actions">
+
+            <script type="text/javascript"><!--
+              addReplyLink(11, 1994711);
+              addCollapseLink(11); // -->
+            </script>
+          </span>
+
+
+        <span class="bz_comment_number">
+          <a name="c11" 
+             href="show_bug.cgi?id=351078#c11">Comment 11</a>
+        </span>
+
+        <span class="bz_comment_user"><span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2011-09-15 23:52:11 EDT
+        </span>
+      </div>
+
+
+<pre class="bz_comment_text"  id="comment_text_11">Committed revision 9120:
+- trunk/plugins/org.eclipse.emf.cdo.tests</pre>
+    </div>
+  <div class="bz_comment">
+
+      <div class="bz_comment_head">
+
+          <span class="bz_comment_actions">
+            <script type="text/javascript"><!--
+              addReplyLink(12, 1994715);
+              addCollapseLink(12); // -->
+            </script>
+
+          </span>
+
+
+        <span class="bz_comment_number">
+          <a name="c12" 
+             href="show_bug.cgi?id=351078#c12">Comment 12</a>
+        </span>
+
+        <span class="bz_comment_user"><span class="vcard"><a class="email" href="mailto:stepper&#64;esc-net.de" title="Eike Stepper &lt;stepper&#64;esc-net.de&gt;"> <span class="fn">Eike Stepper</span></a>
+</span>
+
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2011-09-16 00:44:41 EDT
+        </span>
+      </div>
+
+
+<pre class="bz_comment_text"  id="comment_text_12">Committed revision 9121:
+- trunk/plugins/org.eclipse.emf.cdo.tests</pre>
+    </div>
+  
+
+  
+
+</td>
+<td>
+    <ul class="bz_collapse_expand_comments">
+      <li><a href="#" onclick="toggle_all_comments('collapse'); 
+                               return false;">Collapse All Comments</a></li>
+      <li><a href="#" onclick="toggle_all_comments('expand');
+                               return false;">Expand All Comments</a></li>
+    </ul>
+
+</td>
+</tr></table>
+  </div>
+
+</form>
+
+<hr>
+<ul class="related_actions">
+    <li><a href="show_bug.cgi?format=multiple&amp;id=351078">Format For Printing</a></li>
+    <li>&nbsp;-&nbsp;<a href="show_bug.cgi?ctype=xml&amp;id=351078">XML</a></li>
+    <li>&nbsp;-&nbsp;<a href="enter_bug.cgi?cloned_bug_id=351078">Clone This Bug</a></li>
+
+    
+    <li>&nbsp;-&nbsp;<a href="#">Top of page </a></li>
+    </ul>        
+
+
+<div class="navigation">
+  <b>Bug List:</b>
+
+
+      (This bug is not in your last search results)
+
+  &nbsp;&nbsp;<a href="buglist.cgi?regetlastlist=1">Show last search results</a>
+</div>
+
+<br>
+</div>
+
+
+
+<div id="footer">
+  <div class="intro"></div>
+
+
+
+
+<ul id="useful-links">
+  <li id="links-actions"><ul class="links">
+  <li><a href="./">Home</a></li>
+
+  <li><span class="separator">| </span><a href="enter_bug.cgi">New</a></li>
+  <li><span class="separator">| </span><a href="query.cgi">Search</a></li>
+
+  <li class="form">
+    <span class="separator">| </span>
+    <form action="buglist.cgi" method="get"
+        onsubmit="if (this.quicksearch.value == '')
+                  { alert('Please enter one or more search terms first.');
+                    return false; } return true;">
+    <input class="txt" type="text" id="quicksearch_bottom" name="quicksearch">
+
+    <input class="btn" type="submit" value="Find" id="find_bottom"></form></li>
+
+  <li><span class="separator">| </span><a href="report.cgi">Reports</a></li>
+
+  <li>
+      <span class="separator">| </span>
+        <a href="request.cgi?requester=stepper%40esc-net.de&amp;requestee=stepper%40esc-net.de&amp;do_union=1&amp;group=type&amp;action=queue">My Requests</a></li>
+
+    <li><span class="separator">| </span><a href="votes.cgi?action=show_user">My&nbsp;Votes</a></li>
+
+    <li><span class="separator">| </span><a href="userprefs.cgi">Preferences</a></li>
+<li>
+        <span class="separator">| </span>
+        <a href="http://www.bugzilla.org/docs/3.4/en/html/bug_page.html" target="_blank">Help</a>
+
+      </li>
+
+    <li>
+      <span class="separator">| </span>
+        <a href="index.cgi?logout=1">Log&nbsp;out</a>
+        stepper&#64;esc-net.de</li>
+  <span class="separator">| </span>
+
+  <li><a href="http://www.eclipse.org/legal/termsofuse.php">Terms of Use</a></li>
+  <span class="separator">| </span>
+  <li><a href="http://www.eclipse.org/legal/copyright.php">Copyright Agent</a></li>
+</ul>
+  </li>
+
+  
+    
+    <li id="links-saved">
+      <ul class="links">
+
+          <li><a href="buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&email1=stepper%40esc-net.de&emailtype1=exact&emailassigned_to1=1&emailreporter1=1">My Bugs</a></li>
+
+            <li><span class="separator">| </span>
+            <a href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=CDO-FIXED">CDO-FIXED</a></li>
+            <li><span class="separator">| </span>
+            <a href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=Galileo-BugFixes">Galileo-BugFixes</a></li>
+            <li><span class="separator">| </span>
+
+            <a href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=Galileo-Enhancements">Galileo-Enhancements</a></li>
+            <li><span class="separator">| </span>
+            <a href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=IPLOG">IPLOG</a></li>
+            <li><span class="separator">| </span>
+            <a href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=MylynBuild">MylynBuild</a></li>
+            <li><span class="separator">| </span>
+
+            <a href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=NEEDS_DOC">NEEDS_DOC</a></li>
+            <li><span class="separator">| </span>
+            <a href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=NET4J-FIXED">NET4J-FIXED</a></li>
+            <li><span class="separator">| </span>
+            <a href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=NO-CC">NO-CC</a></li>
+            <li><span class="separator">| </span>
+
+            <a href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=OFFLINE">OFFLINE</a></li>
+            <li><span class="separator">| </span>
+            <a href="buglist.cgi?cmdtype=runnamed&amp;namedcmd=OPEN-BUGS">OPEN-BUGS</a></li>
+      </ul>
+    </li>
+
+  
+<li id="links-special">
+    <script type="text/javascript">
+      <!--
+      function update_text() {
+        // 'lob' means list_of_bugs.
+        var lob_action = document.getElementById('lob_action');
+        var action = lob_action.options[lob_action.selectedIndex].value;
+        var text = document.getElementById('lob_direction');
+        var new_query_text = document.getElementById('lob_new_query_text');
+
+        if (action == "add") {
+          text.innerHTML = "to";
+          new_query_text.style.display = 'inline';
+        }
+        else {
+          text.innerHTML = "from";
+          new_query_text.style.display = 'none';
+        }
+      }
+
+      function manage_old_lists() {
+        var old_lists = document.getElementById('lob_oldqueryname');
+        // If there is no saved searches available, returns.
+        if (!old_lists) return;
+
+        var new_query = document.getElementById('lob_newqueryname').value;
+
+        if (new_query != "") {
+          old_lists.disabled = true;
+        }
+        else {
+          old_lists.disabled = false;
+        }
+      }
+      //-->
+    </script>
+
+    
+    <div class="label"></div>
+    <ul class="links"><li class="form">
+      <form id="list_of_bugs" action="buglist.cgi" method="get">
+        <input type="hidden" name="cmdtype" value="doit">
+        <input type="hidden" name="remtype" value="asnamed">
+        <input type="hidden" name="list_of_bugs" value="1">
+        <select id="lob_action" name="action" onchange="update_text();">
+          <option value="add">Add</option>
+
+        </select>
+
+          <a href="http://www.bugzilla.org/docs/3.4/en/html/query.html#individual-buglists">the named tag</a>
+
+        <span id="lob_new_query_text">
+          <input class="txt" type="text" id="lob_newqueryname"
+                 size="20" maxlength="64" name="newqueryname"
+                 onkeyup="manage_old_lists();">
+        </span>
+        <span id="lob_direction">to</span>
+        bugs
+        <input type="text" name="bug_ids" size="12" maxlength="80" value="351078">
+
+        <input type="submit" value="Commit" id="commit_list_of_bugs">
+      </form>
+    </li></ul>
+  </li>
+
+  
+</ul>
+
+  <div class="outro"></div>
+</div>
+
+
+</body>
+</html>

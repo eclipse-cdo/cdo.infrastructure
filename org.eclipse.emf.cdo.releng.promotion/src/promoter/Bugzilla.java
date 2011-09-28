@@ -30,9 +30,7 @@ public class Bugzilla extends IssueManager
 
   private static final Pattern TITLE_PATTERN = Pattern.compile("\\s*<title>Bug ([0-9]*) &ndash; (.*)</title>");
 
-  private static final Pattern SEVERITY_PATTERN = Pattern.compile(
-      ".*<select id=\"bug_severity\" .*<option value=\"(.*?)\".*?selected=\"selected\">.*?</option>\\s*?</select>.*",
-      Pattern.MULTILINE | Pattern.DOTALL);
+  private static final Pattern SEVERITY_PATTERN = Pattern.compile("<option value=\"(.+?)\"");
 
   public Bugzilla()
   {
@@ -67,7 +65,7 @@ public class Bugzilla extends IssueManager
   protected Issue doGetIssue(String id)
   {
     final String[] title = { null };
-    final StringBuilder builder = new StringBuilder();
+    final String[] severity = { null };
 
     for (int i = 0; i < RETRIES; i++)
     {
@@ -77,32 +75,66 @@ public class Bugzilla extends IssueManager
         {
           public void handleInput(InputStream in) throws IOException
           {
+            boolean inSeverity = false;
+            String option = null;
+
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             String line;
             while ((line = reader.readLine()) != null)
             {
-              builder.append(line);
-              builder.append("\n");
-
-              Matcher matcher = TITLE_PATTERN.matcher(line);
-              if (matcher.matches())
+              if (title[0] == null)
               {
-                title[0] = matcher.group(2);
+                Matcher matcher = TITLE_PATTERN.matcher(line);
+                if (matcher.matches())
+                {
+                  title[0] = matcher.group(2);
+                }
+              }
+
+              if (severity[0] == null)
+              {
+                line = line.trim();
+                if (line.startsWith("<select id=\"bug_severity\""))
+                {
+                  inSeverity = true;
+                }
+                else if (inSeverity)
+                {
+                  if (option != null)
+                  {
+                    if (line.startsWith("selected=\"selected\""))
+                    {
+                      severity[0] = option;
+                    }
+                  }
+                  else
+                  {
+                    Matcher matcher = SEVERITY_PATTERN.matcher(line);
+                    if (matcher.matches())
+                    {
+                      option = matcher.group(1);
+                    }
+                  }
+
+                  if (line.equals("</select>"))
+                  {
+                    inSeverity = false;
+                    option = null;
+                  }
+                }
+              }
+
+              if (title[0] != null && severity[0] != null)
+              {
+                return;
               }
             }
           }
         });
 
-        if (title[0] != null)
+        if (title[0] != null && severity[0] != null)
         {
-          String severity = "";
-          Matcher matcher = SEVERITY_PATTERN.matcher(builder.toString());
-          if (matcher.matches())
-          {
-            severity = matcher.group(1);
-          }
-
-          return new Issue(id, title[0], severity);
+          return new Issue(id, title[0], severity[0]);
         }
       }
       catch (Exception ex)
