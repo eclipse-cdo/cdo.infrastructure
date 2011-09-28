@@ -59,14 +59,14 @@ public abstract class IssueManager extends PromoterComponent implements Comparat
     return issue;
   }
 
-  private boolean isCaching()
-  {
-    return false;
-  }
-
   public abstract String parseID(String message);
 
   public abstract String getURL(Issue issue);
 
   protected abstract Issue doGetIssue(String id);
+
+  protected boolean isCaching()
+  {
+    return true;
+  }
 }

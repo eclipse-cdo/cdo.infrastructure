@@ -13,7 +13,6 @@ package promoter;
 import promoter.util.IO;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -69,14 +68,14 @@ public class Bugzilla extends IssueManager
         IO.readURL(SERVER + id, handler);
 
         String title = handler.getTitle();
-        String severity = handler.getSeverity();
-        if (severity == null)
-        {
-          severity = "";
-        }
-
         if (title != null)
         {
+          String severity = handler.getSeverity();
+          if (severity == null)
+          {
+            severity = "";
+          }
+
           return new Issue(id, title, severity);
         }
       }
@@ -105,14 +104,9 @@ public class Bugzilla extends IssueManager
 
   public static void main(String[] args)
   {
-    BugHandler handler = new BugHandler();
-    IO.readFile(new File("bug.html"), handler);
-
-    String title = handler.getTitle();
-    System.out.println(title);
-
-    String severity = handler.getSeverity();
-    System.out.println(severity);
+    Issue issue = new Bugzilla().doGetIssue("355921");
+    System.out.println(issue.getTitle());
+    System.out.println(issue.getSeverity());
   }
 
   /**
@@ -121,8 +115,6 @@ public class Bugzilla extends IssueManager
   private static final class BugHandler implements IO.InputHandler
   {
     private static final Pattern TITLE_PATTERN = Pattern.compile("\\s*<title>Bug ([0-9]*) &ndash; (.*)</title>");
-
-    private static final Pattern SEVERITY_PATTERN = Pattern.compile("<option value=\"(.+?)\"");
 
     private String title;
 
@@ -144,8 +136,7 @@ public class Bugzilla extends IssueManager
 
     public void handleInput(InputStream in) throws IOException
     {
-      boolean inSeverity = false;
-      String option = null;
+      int inSeverity = -1;
 
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       String line;
@@ -163,31 +154,18 @@ public class Bugzilla extends IssueManager
         if (severity == null)
         {
           line = line.trim();
-          if (line.startsWith("<select id=\"bug_severity\""))
+          if (line.endsWith("<u>I</u>mportance</a></b></label>:"))
           {
-            inSeverity = true;
+            inSeverity = 0;
           }
-          else if (inSeverity)
+          else if (inSeverity != -1)
           {
-            if (option != null)
-            {
-              if (line.startsWith("selected=\"selected\""))
-              {
-                severity = option;
-              }
-            }
+            ++inSeverity;
+          }
 
-            Matcher matcher = SEVERITY_PATTERN.matcher(line);
-            if (matcher.matches())
-            {
-              option = matcher.group(1);
-            }
-
-            if (line.equals("</select>"))
-            {
-              inSeverity = false;
-              option = null;
-            }
+          if (inSeverity == 3)
+          {
+            severity = line;
           }
         }
 
