@@ -34,23 +34,34 @@ public abstract class IssueManager extends PromoterComponent implements Comparat
       issuesFolder.mkdirs();
     }
 
-    File file = new File(issuesFolder, id);
-    if (file.isFile())
+    File file = null;
+    if (isCaching())
     {
-      String content = IO.readTextFile(file);
-      String[] lines = content.split("\n");
-      if (lines.length == 2)
+      file = new File(issuesFolder, id);
+      if (file.isFile())
       {
-        return new Issue(id, lines[0], lines[1]);
+        String content = IO.readTextFile(file);
+        String[] lines = content.split("\n");
+        if (lines.length == 2)
+        {
+          return new Issue(id, lines[0], lines[1]);
+        }
       }
     }
 
     Issue issue = doGetIssue(id);
-
-    String content = issue.getTitle() + "\n" + issue.getSeverity();
-    IO.writeFile(file, content.getBytes());
+    if (issue != null && file != null)
+    {
+      String content = issue.getTitle() + "\n" + issue.getSeverity();
+      IO.writeFile(file, content.getBytes());
+    }
 
     return issue;
+  }
+
+  private boolean isCaching()
+  {
+    return false;
   }
 
   public abstract String parseID(String message);

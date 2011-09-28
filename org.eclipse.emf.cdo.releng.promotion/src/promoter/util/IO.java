@@ -497,6 +497,24 @@ public final class IO
     }
   }
 
+  public static void readFile(File file, InputHandler handler)
+  {
+    FileInputStream input = openInputStream(file);
+
+    try
+    {
+      handler.handleInput(input);
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      close(input);
+    }
+  }
+
   public static void readURL(String url, InputHandler handler)
   {
     InputStream input = null;

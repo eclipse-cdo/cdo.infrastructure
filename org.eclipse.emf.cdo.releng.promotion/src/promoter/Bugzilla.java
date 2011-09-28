@@ -13,6 +13,7 @@ package promoter;
 import promoter.util.IO;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,10 +28,6 @@ public class Bugzilla extends IssueManager
   public static final String SERVER = "https://bugs.eclipse.org/";
 
   private static final int RETRIES = 3;
-
-  private static final Pattern TITLE_PATTERN = Pattern.compile("\\s*<title>Bug ([0-9]*) &ndash; (.*)</title>");
-
-  private static final Pattern SEVERITY_PATTERN = Pattern.compile("<option value=\"(.+?)\"");
 
   public Bugzilla()
   {
@@ -64,77 +61,23 @@ public class Bugzilla extends IssueManager
   @Override
   protected Issue doGetIssue(String id)
   {
-    final String[] title = { null };
-    final String[] severity = { null };
-
     for (int i = 0; i < RETRIES; i++)
     {
       try
       {
-        IO.readURL(SERVER + id, new IO.InputHandler()
+        BugHandler handler = new BugHandler();
+        IO.readURL(SERVER + id, handler);
+
+        String title = handler.getTitle();
+        String severity = handler.getSeverity();
+        if (severity == null)
         {
-          public void handleInput(InputStream in) throws IOException
-          {
-            boolean inSeverity = false;
-            String option = null;
+          severity = "";
+        }
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            String line;
-            while ((line = reader.readLine()) != null)
-            {
-              if (title[0] == null)
-              {
-                Matcher matcher = TITLE_PATTERN.matcher(line);
-                if (matcher.matches())
-                {
-                  title[0] = matcher.group(2);
-                }
-              }
-
-              if (severity[0] == null)
-              {
-                line = line.trim();
-                if (line.startsWith("<select id=\"bug_severity\""))
-                {
-                  inSeverity = true;
-                }
-                else if (inSeverity)
-                {
-                  if (option != null)
-                  {
-                    if (line.startsWith("selected=\"selected\""))
-                    {
-                      severity[0] = option;
-                    }
-                  }
-                  else
-                  {
-                    Matcher matcher = SEVERITY_PATTERN.matcher(line);
-                    if (matcher.matches())
-                    {
-                      option = matcher.group(1);
-                    }
-                  }
-
-                  if (line.equals("</select>"))
-                  {
-                    inSeverity = false;
-                    option = null;
-                  }
-                }
-              }
-
-              if (title[0] != null && severity[0] != null)
-              {
-                return;
-              }
-            }
-          }
-        });
-
-        if (title[0] != null && severity[0] != null)
+        if (title != null)
         {
-          return new Issue(id, title[0], severity[0]);
+          return new Issue(id, title, severity);
         }
       }
       catch (Exception ex)
@@ -158,5 +101,101 @@ public class Bugzilla extends IssueManager
   public int compare(Issue i1, Issue i2)
   {
     return new Integer(i1.getID()).compareTo(new Integer(i2.getID()));
+  }
+
+  public static void main(String[] args)
+  {
+    BugHandler handler = new BugHandler();
+    IO.readFile(new File("bug.html"), handler);
+
+    String title = handler.getTitle();
+    System.out.println(title);
+
+    String severity = handler.getSeverity();
+    System.out.println(severity);
+  }
+
+  /**
+   * @author Eike Stepper
+   */
+  private static final class BugHandler implements IO.InputHandler
+  {
+    private static final Pattern TITLE_PATTERN = Pattern.compile("\\s*<title>Bug ([0-9]*) &ndash; (.*)</title>");
+
+    private static final Pattern SEVERITY_PATTERN = Pattern.compile("<option value=\"(.+?)\"");
+
+    private String title;
+
+    private String severity;
+
+    public BugHandler()
+    {
+    }
+
+    public final String getTitle()
+    {
+      return title;
+    }
+
+    public final String getSeverity()
+    {
+      return severity;
+    }
+
+    public void handleInput(InputStream in) throws IOException
+    {
+      boolean inSeverity = false;
+      String option = null;
+
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+      String line;
+      while ((line = reader.readLine()) != null)
+      {
+        if (title == null)
+        {
+          Matcher matcher = TITLE_PATTERN.matcher(line);
+          if (matcher.matches())
+          {
+            title = matcher.group(2);
+          }
+        }
+
+        if (severity == null)
+        {
+          line = line.trim();
+          if (line.startsWith("<select id=\"bug_severity\""))
+          {
+            inSeverity = true;
+          }
+          else if (inSeverity)
+          {
+            if (option != null)
+            {
+              if (line.startsWith("selected=\"selected\""))
+              {
+                severity = option;
+              }
+            }
+
+            Matcher matcher = SEVERITY_PATTERN.matcher(line);
+            if (matcher.matches())
+            {
+              option = matcher.group(1);
+            }
+
+            if (line.equals("</select>"))
+            {
+              inSeverity = false;
+              option = null;
+            }
+          }
+        }
+
+        if (title != null && severity != null)
+        {
+          return;
+        }
+      }
+    }
   }
 }
