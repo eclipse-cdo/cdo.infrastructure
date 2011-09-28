@@ -22,7 +22,7 @@ args=$@
 
 CriticalSection ()
 {
-	if echo "$args" | grep -q '--force'
+	if echo "$args" | grep -q -e '--force'
 	then
 		##############
 		CheckPromotion
