@@ -31,7 +31,7 @@ public class Bugzilla extends IssueManager
   private static final Pattern TITLE_PATTERN = Pattern.compile("\\s*<title>Bug ([0-9]*) &ndash; (.*)</title>");
 
   private static final Pattern SEVERITY_PATTERN = Pattern.compile(
-      "\\s*<select id=\"bug_severity\" .*<option value=\"(.*?)\".*?selected=\"selected\">.*?</option>\\s*?</select>",
+      ".*<select id=\"bug_severity\" .*<option value=\"(.*?)\".*?selected=\"selected\">.*?</option>\\s*?</select>.*",
       Pattern.MULTILINE | Pattern.DOTALL);
 
   public Bugzilla()
