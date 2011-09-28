@@ -22,6 +22,13 @@ args=$@
 
 CriticalSection ()
 {
+	if [ "$args" -eq "--force" ]
+	then
+		##############
+		CheckPromotion
+		##############
+	fi
+
 	# Check working area for new tasks.
 	if [ -d "$tasksDir" ]
 	then
