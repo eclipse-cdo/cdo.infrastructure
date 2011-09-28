@@ -220,7 +220,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
           {
             if (issues.add(issue))
             {
-              System.out.println("   " + issue.getID() + ": " + issue.getTitle());
+              System.out.println("   " + issue.getID() + ": " + issue.getTitle() + " --> " + issue.getSeverity());
             }
           }
         }
