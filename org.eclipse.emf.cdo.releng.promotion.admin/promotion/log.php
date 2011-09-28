@@ -44,7 +44,10 @@ echo "<tt>\n\n";
 $id = 0;
 foreach ($runs as $run)
 {
-	$run->generate(++$id);
+	if (!$run->noop || isset($_GET["showall"]))
+	{
+		$run->generate(++$id);
+	}
 }
 
 echo "</tt>\n";
