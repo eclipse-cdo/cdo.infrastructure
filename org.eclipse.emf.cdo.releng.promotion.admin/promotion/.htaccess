@@ -1,6 +1,4 @@
 AuthType Basic
 AuthName "CDO Promotion Admin"
 AuthUserFile /opt/public/modeling/emf/cdo/.htpasswd
-Order Allow,Deny
-Allow from 178.8.212.93
 require valid-user
