@@ -1,0 +1,5 @@
+AuthType Basic
+AuthName "CDO Promotion Admin"
+AuthUserFile /opt/public/modeling/emf/cdo/htpasswd
+Order Allow,Deny
+require valid-user
