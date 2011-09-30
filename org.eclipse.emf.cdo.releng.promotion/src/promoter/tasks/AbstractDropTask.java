@@ -10,7 +10,8 @@
  */
 package promoter.tasks;
 
-import promoter.util.IO;
+import promoter.PromoterConfig;
+import promoter.Task;
 
 import java.io.File;
 import java.util.List;
@@ -18,18 +19,21 @@ import java.util.List;
 /**
  * @author Eike Stepper
  */
-public class HideTask extends AbstractDropTask
+public abstract class AbstractDropTask extends Task
 {
-  public HideTask()
+  public AbstractDropTask()
   {
   }
 
   @Override
-  protected boolean execute(File drop, List<String> args)
+  protected final boolean execute(List<String> args) throws Exception
   {
-    File file = new File(drop, ".invisible");
-    IO.emptyFile(file);
+    String qualifier = args.remove(0);
+    System.out.println("   Drop = " + qualifier);
 
-    return true; // Order recomposition
+    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), qualifier);
+    return execute(drop, args);
   }
+
+  protected abstract boolean execute(File drop, List<String> args);
 }

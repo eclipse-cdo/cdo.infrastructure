@@ -28,7 +28,8 @@ echo '</font></center>';
 
 function scheduleTask($task)
 {
-	$publicFolder = "/tmp/promotion.emf.cdo/public";
+	$workingArea = "/tmp/promotion.emf.cdo";
+	$publicFolder = "$workingArea/public";
 	$tmpFolder = "$publicFolder/tasks.tmp";
 
 	$attempt = 0;
@@ -45,6 +46,9 @@ function scheduleTask($task)
 	file_put_contents($taskFile, $task);
 	chmod($taskFile, 0666);
 
+	$touchpoint = "$workingArea/touchpoint";
+	$timestamp = is_file($touchpoint) ? filemtime($touchpoint) : 0;
+
 	$attempt = 0;
 	while (!rename($tmpFolder, "$publicFolder/tasks"))
 	{
@@ -52,7 +56,25 @@ function scheduleTask($task)
 		echo "Attempt to rename $tmpFolder (".(++$attempt).")<br>";
 	}
 
-	return true;
+	$attempt = 0;
+	while (!isFinished($touchpoint, $timestamp))
+	{
+		sleep(1);
+		echo "Waiting for promoter to finish (".(++$attempt).")<br>";
+	}
+
+	echo '<p>Promoter finished. <a href="'.$_SERVER['PHP_SELF'].'">Return</a>...</p>';
+	return false;
+}
+
+function isFinished($touchpoint, $timestamp)
+{
+	if ($timestamp == 0)
+	{
+		return is_file($touchpoint);
+	}
+
+	return filemtime($touchpoint) != $timestamp;
 }
 
 function Cancel($drop)

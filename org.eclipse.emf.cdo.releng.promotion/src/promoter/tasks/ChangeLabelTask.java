@@ -10,36 +10,36 @@
  */
 package promoter.tasks;
 
-import promoter.PromoterConfig;
-import promoter.Task;
 import promoter.util.IO;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * @author Eike Stepper
  */
-public class ChangeLabelTask extends Task
+public class ChangeLabelTask extends AbstractDropTask
 {
   public ChangeLabelTask()
   {
   }
 
   @Override
-  protected boolean execute(String[] args) throws Exception
+  protected boolean execute(File drop, List<String> args)
   {
-    String qualifier = args[1];
-
-    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), qualifier);
     File file = new File(drop, "web.properties");
-    if (args.length >= 3)
+    if (args.isEmpty())
     {
-      String label = "web.label=" + args[2];
-      IO.writeFile(file, label.getBytes());
+      System.out.println("   Label = <unlabelled>");
+      IO.delete(file);
     }
     else
     {
-      IO.delete(file);
+      String label = args.remove(0);
+      System.out.println("   Label = " + label);
+
+      String content = "web.label=" + label;
+      IO.writeFile(file, content.getBytes());
     }
 
     return true; // Order recomposition

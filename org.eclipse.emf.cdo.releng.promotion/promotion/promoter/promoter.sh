@@ -124,12 +124,13 @@ lockFile=$workingArea/promoter.lock
 
 if ( set -o noclobber; echo "$$" > "$lockFile" ) 2> /dev/null; 
 then
-  trap 'rm -f "$lockFile"; rm -rf "$inprogressDir"; exit $?' INT TERM EXIT
+  trap 'touch "$workingArea/touchpoint"; rm -f "$lockFile"; rm -rf "$inprogressDir"; exit $?' INT TERM EXIT
 
 	###############
 	CriticalSection
 	###############
 		
+  touch "$workingArea/touchpoint" 
   rm -f "$lockFile"
   trap - INT TERM EXIT
 fi 

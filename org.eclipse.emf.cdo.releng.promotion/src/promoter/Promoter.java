@@ -16,6 +16,7 @@ import promoter.util.XMLOutput;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -94,11 +95,15 @@ public class Promoter
           if (file.isFile() && file.getName().endsWith(".task"))
           {
             String content = IO.readTextFile(file);
-            String[] args = content.split("\n");
+            List<String> args = new ArrayList<String>(Arrays.asList(content.split("\n")));
+            String type = args.remove(0);
 
-            Task task = createComponent("promoter.tasks." + args[0] + "Task");
+            Task task = createComponent("promoter.tasks." + type + "Task");
+            System.out.println("Performing " + task);
+
             if (task.execute(args))
             {
+              System.out.println("   Ordering recomposition...");
               tasks.add(task);
             }
           }

@@ -570,6 +570,11 @@ public final class IO
     }
   }
 
+  public static void emptyFile(File file)
+  {
+    writeFile(file, new byte[0]);
+  }
+
   public static boolean equals(InputStream stream1, InputStream stream2)
   {
     try

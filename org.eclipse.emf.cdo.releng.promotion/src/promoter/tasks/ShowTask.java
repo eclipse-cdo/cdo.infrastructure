@@ -10,27 +10,23 @@
  */
 package promoter.tasks;
 
-import promoter.PromoterConfig;
-import promoter.Task;
 import promoter.util.IO;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * @author Eike Stepper
  */
-public class ShowTask extends Task
+public class ShowTask extends AbstractDropTask
 {
   public ShowTask()
   {
   }
 
   @Override
-  protected boolean execute(String[] args) throws Exception
+  protected boolean execute(File drop, List<String> args)
   {
-    String qualifier = args[1];
-
-    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), qualifier);
     File file = new File(drop, ".invisible");
     IO.delete(file);
 

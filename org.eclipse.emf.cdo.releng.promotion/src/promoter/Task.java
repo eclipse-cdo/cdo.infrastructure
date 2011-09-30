@@ -10,6 +10,8 @@
  */
 package promoter;
 
+import java.util.List;
+
 /**
  * @author Eike Stepper
  */
@@ -31,5 +33,5 @@ public abstract class Task extends PromoterComponent
     this.id = id;
   }
 
-  protected abstract boolean execute(String[] args) throws Exception;
+  protected abstract boolean execute(List<String> args) throws Exception;
 }
