@@ -30,14 +30,14 @@ public class StageTask extends AbstractDropTask
     String train = args.remove(0);
     System.out.println("   Train = " + train);
 
-    String old = args.remove(0);
-    System.out.println("   Old = " + old);
-
     File file = new File(drop, ".staged");
     IO.emptyFile(file);
 
-    if (old != null && old.length() != 0)
+    if (!args.isEmpty())
     {
+      String old = args.remove(0);
+      System.out.println("   Old = " + old);
+
       File oldDrop = getDrop(old);
       File oldFile = new File(oldDrop, ".staged");
       if (oldFile.isFile())
