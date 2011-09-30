@@ -77,7 +77,12 @@ class Drop
 		else
 		{
 			$old = $this->project->getStagedDrop($this->train);
-			$this->td('<a href="?action=AskStage&drop='.$this->qualifier.'&train='.$this->train.'&old='.$old->qualifier.'" title="Stage this drop"><img src="images/stage.png"></a>');
+			if ($old)
+			{
+				$old = $old->qualifier;
+			}
+
+			$this->td('<a href="?action=AskStage&drop='.$this->qualifier.'&train='.$this->train.'&old='.$old.'" title="Stage this drop"><img src="images/stage.png"></a>');
 		}
 
 		$visibility = $this->visible ? "Hide" : "Show";
