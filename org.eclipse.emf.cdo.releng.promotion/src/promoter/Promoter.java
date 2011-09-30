@@ -99,7 +99,9 @@ public class Promoter
             String type = args.remove(0);
 
             Task task = createComponent("promoter.tasks." + type + "Task");
-            System.out.println("Performing " + task);
+
+            System.out.println();
+            System.out.println("Performing " + task.getClass().getName());
 
             if (task.execute(args))
             {

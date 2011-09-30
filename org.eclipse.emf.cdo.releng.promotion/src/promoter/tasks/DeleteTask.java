@@ -18,16 +18,17 @@ import java.util.List;
 /**
  * @author Eike Stepper
  */
-public class HideTask extends AbstractDropTask
+public class DeleteTask extends AbstractDropTask
 {
-  public HideTask()
+  public DeleteTask()
   {
   }
 
   @Override
   protected boolean execute(File drop, List<String> args)
   {
-    IO.delete(drop);
+    File file = new File(drop, ".invisible");
+    IO.emptyFile(file);
 
     return true; // Order recomposition
   }
