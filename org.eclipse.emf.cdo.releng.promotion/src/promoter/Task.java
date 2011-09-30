@@ -10,6 +10,7 @@
  */
 package promoter;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -34,4 +35,9 @@ public abstract class Task extends PromoterComponent
   }
 
   protected abstract boolean execute(List<String> args) throws Exception;
+
+  public static File getDrop(String qualifier)
+  {
+    return new File(PromoterConfig.INSTANCE.getDropsArea(), qualifier);
+  }
 }

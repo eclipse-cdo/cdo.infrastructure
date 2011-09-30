@@ -10,7 +10,6 @@
  */
 package promoter.tasks;
 
-import promoter.PromoterConfig;
 import promoter.Task;
 
 import java.io.File;
@@ -31,7 +30,7 @@ public abstract class AbstractDropTask extends Task
     String qualifier = args.remove(0);
     System.out.println("   Drop = " + qualifier);
 
-    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), qualifier);
+    File drop = getDrop(qualifier);
     return execute(drop, args);
   }
 

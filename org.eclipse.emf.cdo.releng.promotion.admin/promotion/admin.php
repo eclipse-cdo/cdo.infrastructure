@@ -143,6 +143,26 @@ function Hide($drop)
 	return scheduleTask("Hide", "$drop->qualifier");
 }
 
+function AskStage($drop)
+{
+	echo '<h2>Drop '.$drop->qualifier.'</h2>';
+	echo '<form method="GET">';
+	echo '<input name="drop" type="hidden" value="'.$drop->qualifier.'"></input>';
+	echo '<input name="train" type="hidden" value="'.$_GET["train"].'"></input>';
+	echo '<input name="old" type="hidden" value="'.$_GET["old"].'"></input>';
+	echo '<p>Are you sure to stage drop '.$drop->qualifier.' for '.$_GET["train"].'?</p>';
+	echo '<input name="action" type="submit" value="Stage"></input>';
+	echo '&nbsp;';
+	echo '<input name="action" type="submit" value="Cancel"></input>';
+	echo '</form>';
+	return false;
+}
+
+function Stage($drop)
+{
+	return scheduleTask("Stage", "$drop->qualifier\n".$_GET["train"]."\n".$_GET["old"]);
+}
+
 function AskDelete($drop)
 {
 	echo '<h2>Drop '.$drop->qualifier.'</h2>';

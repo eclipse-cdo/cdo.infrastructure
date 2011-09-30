@@ -27,8 +27,7 @@ public class DeleteTask extends AbstractDropTask
   @Override
   protected boolean execute(File drop, List<String> args)
   {
-    File file = new File(drop, ".invisible");
-    IO.emptyFile(file);
+    IO.delete(drop);
 
     return true; // Order recomposition
   }

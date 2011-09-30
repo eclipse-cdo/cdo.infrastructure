@@ -8,6 +8,7 @@ class Project
 	public $trains;
 	public $drops = array();
 	private $dropsByQualifier = array();
+	private $stagedDropsByTrain = array();
 
 	function __construct($path, $trains)
 	{
@@ -29,6 +30,11 @@ class Project
 	function getDrop($qualifier)
 	{
 		return $this->dropsByQualifier[$qualifier];
+	}
+
+	function getStagedDrop($train)
+	{
+		return $this->stagedDropsByTrain[$train];
 	}
 
 	function getDrops($stream)
@@ -60,8 +66,6 @@ class Project
 
 	function generate()
 	{
-		// 		echo '<p><a href="'.$_SERVER['PHP_SELF'].'">Reload Page</a></p>';
-
 		echo '<table border="1" cellpadding="8">';
 		foreach ($this->getStreams() as $stream => $v)
 		{
@@ -83,6 +87,7 @@ class Project
 		$drop = new Drop($this, $qualifier);
 		$this->drops[count($this->drops)] = $drop;
 		$this->dropsByQualifier[$drop->qualifier] = $drop;
+		$this->stagedDropsByTrain[$drop->train] = $drop;
 		return $drop;
 	}
 }

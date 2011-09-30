@@ -47,7 +47,7 @@ public class Promoter
     BuildCopier buildCopier = createBuildCopier();
     List<BuildInfo> builds = buildCopier.copyBuilds();
 
-    List<Task> tasks = performTasks();
+    List<Task> tasks = performTasks(builds);
 
     if (builds.isEmpty() && tasks.isEmpty())
     {
@@ -81,7 +81,7 @@ public class Promoter
     System.out.println();
   }
 
-  public List<Task> performTasks()
+  public List<Task> performTasks(List<BuildInfo> builds)
   {
     List<Task> tasks = new ArrayList<Task>();
     File publicFolder = new File(PromoterConfig.INSTANCE.getWorkingArea(), "public");

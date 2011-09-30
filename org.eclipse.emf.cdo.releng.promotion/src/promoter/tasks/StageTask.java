@@ -18,17 +18,27 @@ import java.util.List;
 /**
  * @author Eike Stepper
  */
-public class HideTask extends AbstractDropTask
+public class StageTask extends AbstractDropTask
 {
-  public HideTask()
+  public StageTask()
   {
   }
 
   @Override
   protected boolean execute(File drop, List<String> args)
   {
-    File file = new File(drop, ".invisible");
+    String train = args.remove(0);
+    System.out.println("   Train = " + train);
+
+    String old = args.remove(0);
+    System.out.println("   Old = " + old);
+
+    File file = new File(drop, ".staged");
     IO.emptyFile(file);
+
+    File oldDrop = getDrop(old);
+    File oldFile = new File(oldDrop, ".staged");
+    IO.delete(oldFile);
 
     return true; // Order recomposition
   }
