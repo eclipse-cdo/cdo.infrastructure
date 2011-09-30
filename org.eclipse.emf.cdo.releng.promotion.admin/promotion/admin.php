@@ -36,6 +36,19 @@ else
 
 echo '</font></center>';
 
+
+function status($msg)
+{
+		echo "$msg<br>";
+		for ($i = 0; $i < 150; $i++)
+		{
+			echo "          ";
+		}
+
+		echo "\n";
+		flush();
+}
+
 function scheduleTask($task)
 {
 	$workingArea = "/tmp/promotion.emf.cdo";
@@ -46,14 +59,11 @@ function scheduleTask($task)
 	while (!mkdir($tmpFolder))
 	{
 		sleep(1);
-		echo "Attempt to create $tmpFolder (".(++$attempt).")<br>\n";
-		flush();
+		status("Attempt to create $tmpFolder (".(++$attempt).")");
 	}
 
 	chmod($tmpFolder, 0777);
-	echo "<p>Created $tmpFolder<p>\n";
-	flush();
-
+	status("Created $tmpFolder");
 
 	$start = time();
 	$taskFile = "$tmpFolder/$start.task";
@@ -67,23 +77,19 @@ function scheduleTask($task)
 	while (!rename($tmpFolder, "$publicFolder/tasks"))
 	{
 		sleep(1);
-		echo "Attempt to rename $tmpFolder (".(++$attempt).")<br>\n";
-		flush();
+		status("Attempt to rename $tmpFolder (".(++$attempt).")");
 	}
 
-	echo "<p>Renamed $tmpFolder</p>\n";
-	flush();
+	status("Renamed $tmpFolder");
 
 	$attempt = 0;
 	while (!isFinished($touchpoint, $timestamp))
 	{
 		sleep(1);
-		echo "Waiting for promoter to finish (".(++$attempt).")<br>";
-		flush();
+		status("Waiting for promoter to finish (".(++$attempt).")");
 	}
 
-	echo '<p>Promoter finished. <a href="'.$_SERVER['PHP_SELF'].'">Return</a>...</p>'."\n";
-	flush();
+	status('Promoter finished. <a href="'.$_SERVER['PHP_SELF'].'">Return</a>...');
 	return false;
 }
 
