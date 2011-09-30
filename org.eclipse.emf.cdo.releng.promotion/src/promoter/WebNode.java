@@ -230,8 +230,10 @@ public class WebNode implements Comparable<WebNode>
 
     out.println(prefix(level)
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/internet-web-browser.png\"/></td><td><b><a href=\""
-        + http() + "drops/" + buildInfo.getQualifier()
-        + "/index.html\">Contents</a></b> for use with a web browser.</td><td class=\"file-size level"
+        + http()
+        + "drops/"
+        + buildInfo.getQualifier()
+        + "/index.html\">Contents</a></b> to browse the contained features and plugins.</td><td class=\"file-size level"
         + (repository.getPathLevel() + 1) + "\"></td></tr>");
 
     generateDropHelp(out, level, buildInfo);
