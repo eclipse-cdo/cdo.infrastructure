@@ -38,7 +38,10 @@ public class StageTask extends AbstractDropTask
 
     File oldDrop = getDrop(old);
     File oldFile = new File(oldDrop, ".staged");
-    IO.delete(oldFile);
+    if (oldFile.isFile())
+    {
+      IO.delete(oldFile);
+    }
 
     return true; // Order recomposition
   }
