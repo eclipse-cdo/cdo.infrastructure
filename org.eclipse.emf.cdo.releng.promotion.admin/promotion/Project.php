@@ -87,7 +87,12 @@ class Project
 		$drop = new Drop($this, $qualifier);
 		$this->drops[count($this->drops)] = $drop;
 		$this->dropsByQualifier[$drop->qualifier] = $drop;
-		$this->stagedDropsByTrain[$drop->train] = $drop;
+
+		if ($drop->staged)
+		{
+			$this->stagedDropsByTrain[$drop->train] = $drop;
+		}
+
 		return $drop;
 	}
 }

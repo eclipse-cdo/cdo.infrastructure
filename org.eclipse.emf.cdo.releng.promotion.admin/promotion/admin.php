@@ -60,7 +60,7 @@ function scheduleTask($task, $args)
 	$attempt = 0;
 	while (!mkdir($tmpFolder))
 	{
-		sleep(1);
+		sleep(2);
 		status("Attempt to create $tmpFolder (".(++$attempt).")");
 	}
 
@@ -79,7 +79,7 @@ function scheduleTask($task, $args)
 	$attempt = 0;
 	while (!rename($tmpFolder, "$publicFolder/tasks"))
 	{
-		sleep(1);
+		sleep(2);
 		status("Attempt to rename $tmpFolder (".(++$attempt).")");
 	}
 
@@ -88,7 +88,7 @@ function scheduleTask($task, $args)
 	$attempt = 0;
 	while (!isFinished($touchpoint, $timestamp))
 	{
-		sleep(1);
+		sleep(2);
 		status("Waiting for promoter to finish (".(++$attempt).")");
 	}
 
