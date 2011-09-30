@@ -90,7 +90,8 @@ function scheduleTask($task)
 		status("Waiting for promoter to finish (".(++$attempt).")");
 	}
 
-	status('Promoter finished. <a href="'.$_SERVER['PHP_SELF'].'">Return</a>...');
+	status("Promoter finished");
+	status('<a href="'.$_SERVER['PHP_SELF'].'">Return</a>');
 	return false;
 }
 
@@ -126,20 +127,17 @@ function EditLabel($drop)
 function ChangeLabel($drop)
 {
 	$value = $_GET["value"];
-	scheduleTask("ChangeLabel\n$drop->qualifier\n$value");
-	return true;
+	return scheduleTask("ChangeLabel\n$drop->qualifier\n$value");
 }
 
 function Show($drop)
 {
-	scheduleTask("Show\n$drop->qualifier");
-	return true;
+	return scheduleTask("Show\n$drop->qualifier");
 }
 
 function Hide($drop)
 {
-	scheduleTask("Hide\n$drop->qualifier");
-	return true;
+	return scheduleTask("Hide\n$drop->qualifier");
 }
 
 function AskDelete($drop)
@@ -157,8 +155,7 @@ function AskDelete($drop)
 
 function Delete($drop)
 {
-	scheduleTask("Delete\n$drop->qualifier");
-	return true;
+	return scheduleTask("Delete\n$drop->qualifier");
 }
 
 ?>
