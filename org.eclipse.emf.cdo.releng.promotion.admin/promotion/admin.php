@@ -39,14 +39,14 @@ echo '</font></center>';
 
 function status($msg)
 {
-		echo "$msg<br>";
-		for ($i = 0; $i < 150; $i++)
-		{
-			echo "          ";
-		}
+	echo "$msg<br>";
+	for ($i = 0; $i < 150; $i++)
+	{
+		echo "          ";
+	}
 
-		echo "\n";
-		flush();
+	echo "\n";
+	flush();
 }
 
 function scheduleTask($task)
@@ -71,7 +71,7 @@ function scheduleTask($task)
 	chmod($taskFile, 0666);
 
 	$touchpoint = "$workingArea/touchpoint";
-	$timestamp = is_file($touchpoint) ? filemtime($touchpoint) : 0;
+	$timestamp = filemtime($touchpoint);
 
 	$attempt = 0;
 	while (!rename($tmpFolder, "$publicFolder/tasks"))
@@ -95,11 +95,13 @@ function scheduleTask($task)
 
 function isFinished($touchpoint, $timestamp)
 {
-	if ($timestamp == 0)
+	if (!$timestamp)
 	{
+		status("$touchpoint created?");
 		return is_file($touchpoint);
 	}
 
+	status("$touchpoint modified?");
 	return filemtime($touchpoint) != $timestamp;
 }
 
