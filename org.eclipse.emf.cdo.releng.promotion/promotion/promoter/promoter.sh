@@ -120,17 +120,18 @@ CheckPromotion ()
 #########################################################
 
 mkdir -p "$workingArea"
-lockFile=$workingArea/promoter.lock
+touch "$workingArea/touchpoint.start" 
 
+lockFile=$workingArea/promoter.lock
 if ( set -o noclobber; echo "$$" > "$lockFile" ) 2> /dev/null; 
 then
-  trap 'touch "$workingArea/touchpoint"; rm -f "$lockFile"; rm -rf "$inprogressDir"; exit $?' INT TERM EXIT
+  trap 'touch "$workingArea/touchpoint.finish"; rm -f "$lockFile"; rm -rf "$inprogressDir"; exit $?' INT TERM EXIT
 
 	###############
 	CriticalSection
 	###############
 		
-  touch "$workingArea/touchpoint" 
+  touch "$workingArea/touchpoint.finish" 
   rm -f "$lockFile"
   trap - INT TERM EXIT
 fi 

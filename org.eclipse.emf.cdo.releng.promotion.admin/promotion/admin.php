@@ -73,8 +73,12 @@ function scheduleTask($task, $args)
 	chmod($taskFile, 0666);
 
 	clearstatcache();
-	$touchpoint = "$workingArea/touchpoint";
-	$timestamp = filemtime($touchpoint);
+
+	$touchpointStart = "$workingArea/touchpoint.start";
+	$timeStart = filemtime($touchpointStart);
+
+	$touchpointFinish = "$workingArea/touchpoint.finish";
+	$timeFinish = filemtime($touchpointFinish);
 
 	$attempt = 0;
 	while (!rename($tmpFolder, "$publicFolder/tasks"))
@@ -84,9 +88,20 @@ function scheduleTask($task, $args)
 	}
 
 	status("Renamed to $publicFolder/tasks");
+	status("");
 
 	$attempt = 0;
-	while (!isFinished($touchpoint, $timestamp))
+	while (!isTouched($touchpointStart, $timeStart))
+	{
+		sleep(2);
+		status("Waiting for promoter to start (".(++$attempt).")");
+	}
+
+	status("Promoter started");
+	status("");
+
+	$attempt = 0;
+	while (!isTouched($touchpointFinish, $timeFinish))
 	{
 		sleep(2);
 		status("Waiting for promoter to finish (".(++$attempt).")");
@@ -94,11 +109,11 @@ function scheduleTask($task, $args)
 
 	status("Promoter finished");
 	status("");
-	status('<a href="index.html" target="_parent">Return</a>');
+	status('<b><a href="index.html" target="_parent">Return</a></b>');
 	return false;
 }
 
-function isFinished($touchpoint, $timestamp)
+function isTouched($touchpoint, $timestamp)
 {
 	clearstatcache();
 	if (!$timestamp)
