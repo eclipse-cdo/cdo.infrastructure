@@ -49,8 +49,10 @@ function status($msg)
 	flush();
 }
 
-function scheduleTask($task)
+function scheduleTask($task, $args)
 {
+	status("Scheduling task $task (".str_replace("\n", ", ", $args).")");
+
 	$workingArea = "/tmp/promotion.emf.cdo";
 	$publicFolder = "$workingArea/public";
 	$tmpFolder = "$publicFolder/tasks.tmp";
@@ -67,7 +69,7 @@ function scheduleTask($task)
 
 	$start = time();
 	$taskFile = "$tmpFolder/$start.task";
-	file_put_contents($taskFile, $task);
+	file_put_contents($taskFile, "$task\n$args");
 	chmod($taskFile, 0666);
 
 	clearstatcache();
@@ -92,7 +94,7 @@ function scheduleTask($task)
 
 	status("Promoter finished");
 	status("");
-	status('<a href="'.$_SERVER['PHP_SELF'].'" target="_parent">Return</a>');
+	status('<a href="index.html" target="_parent">Return</a>');
 	return false;
 }
 
@@ -128,17 +130,17 @@ function EditLabel($drop)
 function ChangeLabel($drop)
 {
 	$value = $_GET["value"];
-	return scheduleTask("ChangeLabel\n$drop->qualifier\n$value");
+	return scheduleTask("ChangeLabel", "$drop->qualifier\n$value");
 }
 
 function Show($drop)
 {
-	return scheduleTask("Show\n$drop->qualifier");
+	return scheduleTask("Show", "$drop->qualifier");
 }
 
 function Hide($drop)
 {
-	return scheduleTask("Hide\n$drop->qualifier");
+	return scheduleTask("Hide", "$drop->qualifier");
 }
 
 function AskDelete($drop)
@@ -156,7 +158,7 @@ function AskDelete($drop)
 
 function Delete($drop)
 {
-	return scheduleTask("Delete\n$drop->qualifier");
+	return scheduleTask("Delete", "$drop->qualifier");
 }
 
 ?>
