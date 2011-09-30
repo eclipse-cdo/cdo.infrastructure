@@ -15,7 +15,7 @@ require_once 'Project.php';
 require_once 'Drop.php';
 
 echo '<center><font face="Helvetica,Arial">';
-echo "<h1>CDO Promotion Admin</h1>";
+echo '<h1><a href="index.html" target="_parent">CDO Promotion Admin</a></h1>';
 
 $cdo = new Project("/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops", array("indigo", "juno"));
 
