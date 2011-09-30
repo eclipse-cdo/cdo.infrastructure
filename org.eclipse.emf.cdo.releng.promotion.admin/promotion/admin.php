@@ -91,6 +91,7 @@ function scheduleTask($task)
 	}
 
 	status("Promoter finished");
+	status("");
 	status('<a href="'.$_SERVER['PHP_SELF'].'">Return</a>');
 	return false;
 }
