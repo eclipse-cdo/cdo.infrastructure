@@ -26,6 +26,35 @@ else
 
 echo '</font></center>';
 
+function scheduleTask($task)
+{
+	$publicFolder = "/tmp/promotion.emf.cdo/public";
+	$tmpFolder = "$publicFolder/tasks.tmp";
+
+	$attempt = 0;
+	while (!mkdir($tmpFolder))
+	{
+		sleep(1);
+		echo "Attempt to create $tmpFolder (".(++$attempt).")<br>";
+	}
+
+	chmod($tmpFolder, 0777);
+
+	$start = time();
+	$taskFile = "$tmpFolder/$start.task";
+	file_put_contents($taskFile, $task);
+	chmod($taskFile, 0666);
+
+	$attempt = 0;
+	while (!rename($tmpFolder, "$publicFolder/tasks"))
+	{
+		sleep(1);
+		echo "Attempt to rename $tmpFolder (".(++$attempt).")<br>";
+	}
+
+	return true;
+}
+
 function Cancel($drop)
 {
 	return true;
@@ -47,31 +76,19 @@ function EditLabel($drop)
 function ChangeLabel($drop)
 {
 	$value = $_GET["value"];
+	scheduleTask("ChangeLabel\n$drop->qualifier\n$value");
+	return true;
+}
 
-	$publicFolder = "/tmp/promotion.emf.cdo/public";
-	$tmpFolder = "$publicFolder/tasks.tmp";
+function Show($drop)
+{
+	scheduleTask("Show\n$drop->qualifier");
+	return true;
+}
 
-	$attempt = 0;
-	while (!mkdir($tmpFolder))
-	{
-		sleep(1);
-		echo "Attempt to create $tmpFolder (".(++$attempt).")<br>";
-	}
-
-	chmod($tmpFolder, 0777);
-
-	$start = time();
-	$taskFile = "$tmpFolder/$start.task";
-	file_put_contents($taskFile, "ChangeLabel\n$drop->qualifier\n$value");
-	chmod($taskFile, 0666);
-
-	$attempt = 0;
-	while (!rename($tmpFolder, "$publicFolder/tasks"))
-	{
-		sleep(1);
-		echo "Attempt to rename $tmpFolder (".(++$attempt).")<br>";
-	}
-
+function Hide($drop)
+{
+	scheduleTask("Hide\n$drop->qualifier");
 	return true;
 }
 
@@ -90,7 +107,7 @@ function AskDelete($drop)
 
 function Delete($drop)
 {
-	echo 'Drop deleted<br>';
+	scheduleTask("Delete\n$drop->qualifier");
 	return true;
 }
 
