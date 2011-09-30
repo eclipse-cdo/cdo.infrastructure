@@ -72,6 +72,7 @@ function scheduleTask($task)
 
 	$touchpoint = "$workingArea/touchpoint";
 	$timestamp = filemtime($touchpoint);
+	status("$touchpoint --> $timestamp");
 
 	$attempt = 0;
 	while (!rename($tmpFolder, "$publicFolder/tasks"))
@@ -97,11 +98,10 @@ function isFinished($touchpoint, $timestamp)
 {
 	if (!$timestamp)
 	{
-		status("$touchpoint created?");
 		return is_file($touchpoint);
 	}
 
-	status("$touchpoint modified?");
+	status("$touchpoint --> ".filemtime($touchpoint));
 	return filemtime($touchpoint) != $timestamp;
 }
 
