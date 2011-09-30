@@ -34,7 +34,12 @@ class Project
 
 	function getStagedDrop($train)
 	{
-		return $this->stagedDropsByTrain[$train];
+		if (array_key_exists($train, $this->stagedDropsByTrain))
+		{
+			return $this->stagedDropsByTrain[$train];
+		}
+
+		return false;
 	}
 
 	function getDrops($stream)
