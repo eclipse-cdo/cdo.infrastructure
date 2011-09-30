@@ -36,10 +36,14 @@ function scheduleTask($task)
 	while (!mkdir($tmpFolder))
 	{
 		sleep(1);
-		echo "Attempt to create $tmpFolder (".(++$attempt).")<br>";
+		echo "Attempt to create $tmpFolder (".(++$attempt).")<br>\n";
+		flush();
 	}
 
 	chmod($tmpFolder, 0777);
+	echo "<p>Created $tmpFolder<p>\n";
+	flush();
+
 
 	$start = time();
 	$taskFile = "$tmpFolder/$start.task";
@@ -53,17 +57,23 @@ function scheduleTask($task)
 	while (!rename($tmpFolder, "$publicFolder/tasks"))
 	{
 		sleep(1);
-		echo "Attempt to rename $tmpFolder (".(++$attempt).")<br>";
+		echo "Attempt to rename $tmpFolder (".(++$attempt).")<br>\n";
+		flush();
 	}
+
+	echo "<p>Renamed $tmpFolder</p>\n";
+	flush();
 
 	$attempt = 0;
 	while (!isFinished($touchpoint, $timestamp))
 	{
 		sleep(1);
 		echo "Waiting for promoter to finish (".(++$attempt).")<br>";
+		flush();
 	}
 
-	echo '<p>Promoter finished. <a href="'.$_SERVER['PHP_SELF'].'">Return</a>...</p>';
+	echo '<p>Promoter finished. <a href="'.$_SERVER['PHP_SELF'].'">Return</a>...</p>'."\n";
+	flush();
 	return false;
 }
 
