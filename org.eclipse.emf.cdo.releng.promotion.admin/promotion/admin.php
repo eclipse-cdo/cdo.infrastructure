@@ -70,9 +70,9 @@ function scheduleTask($task)
 	file_put_contents($taskFile, $task);
 	chmod($taskFile, 0666);
 
+	clearstatcache();
 	$touchpoint = "$workingArea/touchpoint";
 	$timestamp = filemtime($touchpoint);
-	status("$touchpoint --> $timestamp");
 
 	$attempt = 0;
 	while (!rename($tmpFolder, "$publicFolder/tasks"))
@@ -96,12 +96,12 @@ function scheduleTask($task)
 
 function isFinished($touchpoint, $timestamp)
 {
+	clearstatcache();
 	if (!$timestamp)
 	{
 		return is_file($touchpoint);
 	}
 
-	status("$touchpoint --> ".filemtime($touchpoint));
 	return filemtime($touchpoint) != $timestamp;
 }
 
