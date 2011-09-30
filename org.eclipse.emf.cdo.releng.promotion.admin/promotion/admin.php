@@ -83,7 +83,7 @@ function scheduleTask($task, $args)
 		status("Attempt to rename $tmpFolder (".(++$attempt).")");
 	}
 
-	status("Renamed $tmpFolder");
+	status("Renamed to $publicFolder/tasks");
 
 	$attempt = 0;
 	while (!isFinished($touchpoint, $timestamp))
