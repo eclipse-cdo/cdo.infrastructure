@@ -55,14 +55,14 @@ class Drop
 		$href = 'http://www.eclipse.org/cdo/downloads/#'.str_replace('-', '_', $this->qualifier);
 
 		echo '<tr>';
-		$this->td('<a href="'.$href.'" title="Jump to downloads page">'.$this->qualifier.'</a>');
+		$this->td('<a href="'.$href.'" title="Jump to downloads page" target="_blank">'.$this->qualifier.'</a>');
 		$this->td($this->label);
 		$this->td('<a href="?action=EditLabel&drop='.$this->qualifier.'" title="Change drop label"><img src="images/edit.png"></a>');
 
 		$intrain = in_array($this->train, $this->project->trains);
 		if ($intrain && $this->staged)
 		{
-			$this->td('<a href="https://hudson.eclipse.org/hudson/job/'.$this->train.'.runAggregator" title="Jump to aggregator page">'.ucfirst($this->train).'</a>');
+			$this->td('<a href="https://hudson.eclipse.org/hudson/job/'.$this->train.'.runAggregator" title="Jump to aggregator page" target="_blank">'.ucfirst($this->train).'</a>');
 		}
 		else
 		{
