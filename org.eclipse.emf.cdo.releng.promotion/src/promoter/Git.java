@@ -67,6 +67,7 @@ public class Git extends SourceCodeManager
         String to = "drops/" + tag;
         String from = branch;
 
+        @SuppressWarnings("resource")
         PrintStream stream = new PrintStream(out);
         // create the tag
         stream.println(GIT_BINARY + " tag -a -m \"" + message + "\" \"" + to + "\" \"" + from + "\"");
@@ -92,6 +93,7 @@ public class Git extends SourceCodeManager
           String range = fromRevision + ".." + toRevision;
           System.out.println("Getting log entries for " + branch + " (" + range + ")");
 
+          @SuppressWarnings("resource")
           PrintStream stream = new PrintStream(out);
           stream.println(GIT_BINARY + " log " + (withPaths ? "--name-only " : "") + " --format=\"" + OUTPUT_FORMAT
               + "\" " + range + " > " + outFile);

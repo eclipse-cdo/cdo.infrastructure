@@ -68,8 +68,16 @@ public class Promoter
     Ant<Entry<List<BuildInfo>, WebNode>> ant = createAnt();
     Entry<List<BuildInfo>, WebNode> result = ant.run();
 
-    ReleaseNotesGenerator releaseNotesGenerator = createReleaseNotesGenerator();
-    releaseNotesGenerator.generateReleaseNotes(result.getKey());
+    try
+    {
+      ReleaseNotesGenerator releaseNotesGenerator = createReleaseNotesGenerator();
+      releaseNotesGenerator.generateReleaseNotes(result.getKey());
+    }
+    catch (Exception ex)
+    {
+      ex.printStackTrace();
+      System.out.println();
+    }
 
     WebNode webNode = result.getValue();
     if (webNode != null)
