@@ -45,7 +45,17 @@ public class Promoter
   public void run()
   {
     BuildCopier buildCopier = createBuildCopier();
-    List<BuildInfo> builds = buildCopier.copyBuilds();
+    List<BuildInfo> builds = new ArrayList<BuildInfo>();
+
+    try
+    {
+      builds = buildCopier.copyBuilds();
+    }
+    catch (Exception ex)
+    {
+      ex.printStackTrace();
+      System.out.println();
+    }
 
     List<Task> tasks = performTasks(builds);
 
