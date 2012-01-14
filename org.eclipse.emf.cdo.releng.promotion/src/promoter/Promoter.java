@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2011 Eike Stepper (Berlin, Germany) and others.
+ * Copyright (c) 2004 - 2012 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,17 @@ public class Promoter
   public void run()
   {
     BuildCopier buildCopier = createBuildCopier();
-    List<BuildInfo> builds = buildCopier.copyBuilds();
+    List<BuildInfo> builds = new ArrayList<BuildInfo>();
+
+    try
+    {
+      builds = buildCopier.copyBuilds();
+    }
+    catch (Exception ex)
+    {
+      ex.printStackTrace();
+      System.out.println();
+    }
 
     List<Task> tasks = performTasks(builds);
 
