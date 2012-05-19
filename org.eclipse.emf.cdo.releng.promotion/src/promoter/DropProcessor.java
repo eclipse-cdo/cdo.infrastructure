@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
@@ -125,13 +125,16 @@ public class DropProcessor extends PromoterComponent
       return null;
     }
 
-    File categoriesJAR = new File(categories, "content.jar");
-    File categoriesXML = new File(categories, "content.xml");
-
     File contentJAR = new File(drop, "content.jar");
     File contentXML = new File(drop, "content.xml");
 
     unzip(xml, drop, contentJAR, contentXML);
+
+    File categoriesJAR = new File(categories, "content.jar");
+    File categoriesXML = new File(categories, "content.xml");
+
+    File categoriesJAR2 = new File(categories, "artifacts.jar");
+    File categoriesXML2 = new File(categories, "artifacts.xml");
 
     // Transform
     xml.element("xslt");
@@ -176,10 +179,23 @@ public class DropProcessor extends PromoterComponent
     xml.attribute("replace", "${" + sizeProperty + "}");
     xml.attribute("byline", true);
 
-    zip(xml, categories, categoriesJAR, categoriesXML);
+    xml.element("copy");
+    xml.attribute("file", categoriesXML);
+    xml.attribute("tofile", categoriesXML2);
 
+    xml.element("replaceregexp");
+    xml.attribute("file", categoriesXML2);
+    xml.attribute("match", "org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository");
+    xml.attribute("replace", "org.eclipse.equinox.p2.artifact.repository.simpleRepository");
+    xml.attribute("byline", true);
+
+    zip(xml, categories, categoriesJAR, categoriesXML);
     xml.element("delete");
     xml.attribute("file", categoriesXML);
+
+    zip(xml, categories, categoriesJAR2, categoriesXML2);
+    xml.element("delete");
+    xml.attribute("file", categoriesXML2);
 
     return contentXML;
   }
