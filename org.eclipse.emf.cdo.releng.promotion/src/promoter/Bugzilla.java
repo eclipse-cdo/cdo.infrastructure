@@ -156,6 +156,7 @@ public class Bugzilla extends IssueManager
         if (severity == null)
         {
           line = line.trim();
+          System.out.println(line);
           if (!inSeverity && line.indexOf("<select id=\"bug_severity\"") != -1)
           {
             System.out.println("SELECT");
