@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
@@ -27,10 +27,9 @@ public class Git extends SourceCodeManager
 {
   public static final String GIT_BINARY = "/usr/local/bin/git";
 
-  // TODO Make GIT_REPO configurable
-  public static final String GIT_REPO = "ssh://USER@git.eclipse.org/gitroot/cdo/org.eclipse.emf.cdo.git";
+  public static final String GIT_REPO = "ssh://estepper@git.eclipse.org/gitroot/cdo/org.eclipse.emf.cdo.git";
 
-  // TODO the symbolic name (alternatively: the URL) of the upstream (main) Git repository
+  // The symbolic name (alternatively: the URL) of the upstream (main) Git repository
   public static final String REMOTE_GIT = "origin";
 
   // the following makes Git output
@@ -49,12 +48,6 @@ public class Git extends SourceCodeManager
   }
 
   @Override
-  public String getNextRevision(String revision)
-  {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
   public void setTag(final String branch, final String tag)
   {
     IO.executeProcess("/bin/bash", new OutputHandler()
@@ -69,9 +62,11 @@ public class Git extends SourceCodeManager
 
         @SuppressWarnings("resource")
         PrintStream stream = new PrintStream(out);
-        // create the tag
+
+        // Create the tag
         stream.println(GIT_BINARY + " tag -a -m \"" + message + "\" \"" + to + "\" \"" + from + "\"");
-        // push the tag
+
+        // Push the tag
         stream.println(GIT_BINARY + " push \"" + REMOTE_GIT + "\" \"" + to + "\"");
         stream.flush();
       }
@@ -114,6 +109,7 @@ public class Git extends SourceCodeManager
         {
           return; // empty log
         }
+
         if (!line.equals("--BEGIN-COMMIT--"))
         {
           throw new IllegalStateException("Read unexpected line " + line + " at beginning of file "
@@ -149,11 +145,13 @@ public class Git extends SourceCodeManager
               handler.handleLogEntry(logEntry);
               break processing; // end of file reached
             }
+
             if (line.equals("--BEGIN-COMMIT--"))
             {
               handler.handleLogEntry(logEntry);
               break summaryReading; // end of summary section reached
             }
+
             if (line.trim().length() == 0)
             {
               continue; // read over empty lines
