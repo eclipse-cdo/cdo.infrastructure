@@ -24,7 +24,9 @@ import java.util.regex.Pattern;
  */
 public class Bugzilla extends IssueManager
 {
-  public static final String SERVER = "https://bugs.eclipse.org/bugs/show_bug.cgi?id=";
+  public static final String SERVER = "https://bugs.eclipse.org/";
+
+  public static final String XML = SERVER + "bugs/show_bug.cgi?ctype=xml&id=";
 
   private static final int RETRIES = 3;
 
@@ -65,8 +67,8 @@ public class Bugzilla extends IssueManager
       try
       {
         BugHandler handler = new BugHandler();
-        System.out.println("BUGZILLA --> " + SERVER + id); // TODO
-        IO.readURL(SERVER + id, handler);
+        System.out.println("BUGZILLA --> " + XML + id); // TODO
+        IO.readURL(XML + id, handler);
 
         String title = handler.getTitle();
         if (title != null)
@@ -115,9 +117,9 @@ public class Bugzilla extends IssueManager
    */
   private static final class BugHandler implements IO.InputHandler
   {
-    private static final Pattern TITLE_PATTERN = Pattern.compile("\\s*<title>Bug ([0-9]*) &ndash; (.*)</title>");
+    private static final Pattern TITLE_PATTERN = Pattern.compile("<short_desc>(.*)</short_desc>");
 
-    private static final Pattern SEVERITY_PATTERN = Pattern.compile("selected=\"selected\">([a-zA-Z0-9]*)</option>");
+    private static final Pattern SEVERITY_PATTERN = Pattern.compile("<bug_severity>(.*)</bug_severity>");
 
     private String title;
 
@@ -139,39 +141,27 @@ public class Bugzilla extends IssueManager
 
     public void handleInput(InputStream in) throws IOException
     {
-      boolean inSeverity = false;
-
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       String line;
       while ((line = reader.readLine()) != null)
       {
+        line = line.trim();
+
         if (title == null)
         {
           Matcher matcher = TITLE_PATTERN.matcher(line);
           if (matcher.matches())
           {
-            title = matcher.group(2);
+            title = matcher.group(1);
           }
         }
 
         if (severity == null)
         {
-          line = line.trim();
-          System.out.println(line);
-          if (!inSeverity && line.indexOf("<select id=\"bug_severity\"") != -1)
+          Matcher matcher = SEVERITY_PATTERN.matcher(line);
+          if (matcher.matches())
           {
-            System.out.println("SELECT");
-            inSeverity = true;
-          }
-
-          if (inSeverity)
-          {
-            Matcher matcher = SEVERITY_PATTERN.matcher(line);
-            if (matcher.matches())
-            {
-              System.out.println("OPTION");
-              severity = matcher.group(1);
-            }
+            severity = matcher.group(1);
           }
         }
 
