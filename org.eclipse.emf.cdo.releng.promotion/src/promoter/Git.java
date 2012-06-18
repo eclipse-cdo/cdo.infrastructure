@@ -129,7 +129,8 @@ public class Git extends SourceCodeManager
 
         // first line successfully read. Start processing of log entries:
 
-        processing: for (;;)
+        processing: //
+        for (;;)
         {
           String commitHash = readLineSafe(bufferedReader);
           logEntry = new LogEntry(commitHash);
@@ -148,7 +149,10 @@ public class Git extends SourceCodeManager
             messageString.append("\n");
           }
 
-          summaryReading: for (;;)
+          logEntry.setMessage(messageString.toString());
+
+          summaryReading: //
+          for (;;)
           {
             line = bufferedReader.readLine();
             if (line == null)
