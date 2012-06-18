@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
@@ -116,6 +116,8 @@ public class Bugzilla extends IssueManager
   {
     private static final Pattern TITLE_PATTERN = Pattern.compile("\\s*<title>Bug ([0-9]*) &ndash; (.*)</title>");
 
+    private static final Pattern SEVERITY_PATTERN = Pattern.compile("<option value=\"([^\"]*)\"");
+
     private String title;
 
     private String severity;
@@ -154,7 +156,7 @@ public class Bugzilla extends IssueManager
         if (severity == null)
         {
           line = line.trim();
-          if (line.endsWith("<u>I</u>mportance</a></b></label>:"))
+          if (line.equals("<select id=\"bug_severity\""))
           {
             inSeverity = 0;
           }
@@ -165,7 +167,11 @@ public class Bugzilla extends IssueManager
 
           if (inSeverity == 3)
           {
-            severity = line;
+            Matcher matcher = SEVERITY_PATTERN.matcher(line);
+            if (matcher.matches())
+            {
+              severity = matcher.group(1);
+            }
           }
         }
 
