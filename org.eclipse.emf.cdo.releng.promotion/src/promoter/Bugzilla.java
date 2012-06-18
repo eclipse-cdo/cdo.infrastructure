@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  */
 public class Bugzilla extends IssueManager
 {
-  public static final String SERVER = "https://bugs.eclipse.org/";
+  public static final String SERVER = "http://bugs.eclipse.org/";
 
   private static final int RETRIES = 3;
 
