@@ -156,8 +156,9 @@ public class Bugzilla extends IssueManager
         if (severity == null)
         {
           line = line.trim();
-          if (line.equals("<select id=\"bug_severity\""))
+          if (!inSeverity && line.indexOf("<select id=\"bug_severity\"") != -1)
           {
+            System.out.println("SELECT");
             inSeverity = true;
           }
 
@@ -166,6 +167,7 @@ public class Bugzilla extends IssueManager
             Matcher matcher = SEVERITY_PATTERN.matcher(line);
             if (matcher.matches())
             {
+              System.out.println("OPTION");
               severity = matcher.group(1);
             }
           }
