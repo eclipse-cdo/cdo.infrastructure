@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 
-#################################
-# Initially on build.eclipse.org:
-# cd ~; rm -rf promotion; svn checkout https://dev.eclipse.org/svnroot/modeling/org.eclipse.emf.cdo/infrastructure/org.eclipse.emf.cdo.releng.promotion/promotion; cd promotion
-#################################
+cd ~
 
-cd ~/promotion
+rm -rf cdo.infrastructure
+git clone git://git.eclipse.org/gitroot/cdo/cdo.infrastructure.git
 
-svn update
-chmod u+x *.sh promoter/*.sh
+rm -rf promotion
+cp -a cdo.infrastructure/org.eclipse.emf.cdo.releng.promotion/promotion promotion
 
-cd config
-#../promoter/reset.sh
+chmod u+x promotion/*.sh promotion/promoter/*.sh
+
