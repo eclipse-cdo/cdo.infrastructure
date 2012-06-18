@@ -213,6 +213,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
         {
           return;
         }
+
         String message = logEntry.getMessage();
         String id = issueManager.parseID(message);
         if (id != null && id.length() != 0)
@@ -223,11 +224,10 @@ public class ReleaseNotesGenerator extends PromoterComponent
             if (issues.add(issue))
             {
               System.out.println("   " + issue.getID() + ": " + issue.getTitle() + " --> " + issue.getSeverity());
+              done = true; // TODO
             }
           }
         }
-
-        done = true; // TODO
       }
     });
 
