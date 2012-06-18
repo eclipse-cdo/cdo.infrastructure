@@ -116,7 +116,7 @@ public class Bugzilla extends IssueManager
   {
     private static final Pattern TITLE_PATTERN = Pattern.compile("\\s*<title>Bug ([0-9]*) &ndash; (.*)</title>");
 
-    private static final Pattern SEVERITY_PATTERN = Pattern.compile("<option value=\"([a-zA-Z0-9]*)\"");
+    private static final Pattern SEVERITY_PATTERN = Pattern.compile("selected=\"selected\">([a-zA-Z0-9]*)</option>");
 
     private String title;
 
@@ -138,7 +138,7 @@ public class Bugzilla extends IssueManager
 
     public void handleInput(InputStream in) throws IOException
     {
-      int inSeverity = -1;
+      boolean inSeverity = false;
 
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       String line;
@@ -158,14 +158,10 @@ public class Bugzilla extends IssueManager
           line = line.trim();
           if (line.equals("<select id=\"bug_severity\""))
           {
-            inSeverity = 0;
-          }
-          else if (inSeverity != -1)
-          {
-            ++inSeverity;
+            inSeverity = true;
           }
 
-          if (inSeverity == 3)
+          if (inSeverity)
           {
             Matcher matcher = SEVERITY_PATTERN.matcher(line);
             if (matcher.matches())
