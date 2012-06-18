@@ -25,9 +25,7 @@ import java.io.PrintStream;
  */
 public class Git extends SourceCodeManager
 {
-  public static final String GIT_BINARY = "/usr/local/bin/git";
-
-  public static final String GIT_REPO = "ssh://estepper@git.eclipse.org/gitroot/cdo/org.eclipse.emf.cdo.git";
+  public static final String GIT_BINARY = "cd ~estepper/cdo.git;\n/usr/local/bin/git";
 
   // The symbolic name (alternatively: the URL) of the upstream (main) Git repository
   public static final String REMOTE_GIT = "origin";
@@ -43,8 +41,21 @@ public class Git extends SourceCodeManager
   // for each history entry
   public static final String OUTPUT_FORMAT = "--BEGIN-COMMIT--%n%h%n%cn%n%ci%n%B%n--BEGIN-SUMMARY--%n";
 
+  private boolean fetched;
+
   public Git()
   {
+  }
+
+  private void fetchIfNeeded(PrintStream stream)
+  {
+    if (!fetched)
+    {
+      stream.println(GIT_BINARY + " fetch --tags");
+      stream.flush();
+
+      fetched = true;
+    }
   }
 
   @Override
@@ -54,20 +65,19 @@ public class Git extends SourceCodeManager
     {
       public void handleOutput(OutputStream out) throws IOException
       {
+        PrintStream stream = new PrintStream(out);
+        fetchIfNeeded(stream);
+
         String message = "Tagging " + branch + " as drops/" + tag;
         System.out.println(message);
 
-        String to = "drops/" + tag;
-        String from = branch;
-
-        @SuppressWarnings("resource")
-        PrintStream stream = new PrintStream(out);
+        String ref = "drops/" + tag;
 
         // Create the tag
-        stream.println(GIT_BINARY + " tag -a -m \"" + message + "\" \"" + to + "\" \"" + from + "\"");
+        stream.println(GIT_BINARY + " tag -a -m \"" + message + "\" \"" + ref + "\" \"" + branch + "\"");
 
         // Push the tag
-        stream.println(GIT_BINARY + " push \"" + REMOTE_GIT + "\" \"" + to + "\"");
+        stream.println(GIT_BINARY + " push \"" + REMOTE_GIT + "\" \"" + ref + "\"");
         stream.flush();
       }
     });
@@ -85,11 +95,12 @@ public class Git extends SourceCodeManager
       {
         public void handleOutput(OutputStream out) throws IOException
         {
+          PrintStream stream = new PrintStream(out);
+          fetchIfNeeded(stream);
+
           String range = fromRevision + ".." + toRevision;
           System.out.println("Getting log entries for " + branch + " (" + range + ")");
 
-          @SuppressWarnings("resource")
-          PrintStream stream = new PrintStream(out);
           stream.println(GIT_BINARY + " log " + (withPaths ? "--name-only " : "") + " --format=\"" + OUTPUT_FORMAT
               + "\" " + range + " > " + outFile);
           stream.flush();
