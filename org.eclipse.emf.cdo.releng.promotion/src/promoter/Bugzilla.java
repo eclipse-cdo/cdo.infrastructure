@@ -67,7 +67,6 @@ public class Bugzilla extends IssueManager
       try
       {
         BugHandler handler = new BugHandler();
-        System.out.println("BUGZILLA --> " + XML + id); // TODO
         IO.readURL(XML + id, handler);
 
         String title = handler.getTitle();

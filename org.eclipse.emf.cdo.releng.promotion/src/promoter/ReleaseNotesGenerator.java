@@ -205,15 +205,8 @@ public class ReleaseNotesGenerator extends PromoterComponent
     final Set<Issue> issues = new HashSet<Issue>();
     scm.handleLogEntries(branch, fromRevision, toRevision, false, new LogEntryHandler()
     {
-      boolean done; // TODO
-
       public void handleLogEntry(LogEntry logEntry)
       {
-        if (done) // TODO
-        {
-          return;
-        }
-
         String message = logEntry.getMessage();
         String id = issueManager.parseID(message);
         if (id != null && id.length() != 0)
@@ -224,7 +217,6 @@ public class ReleaseNotesGenerator extends PromoterComponent
             if (issues.add(issue))
             {
               System.out.println("   " + issue.getID() + ": " + issue.getTitle() + " --> " + issue.getSeverity());
-              done = true; // TODO
             }
           }
         }

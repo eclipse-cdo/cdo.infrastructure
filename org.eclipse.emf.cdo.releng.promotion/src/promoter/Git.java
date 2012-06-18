@@ -25,7 +25,10 @@ import java.io.PrintStream;
  */
 public class Git extends SourceCodeManager
 {
-  public static final String GIT_BINARY = "cd ~estepper/cdo.git;\n/usr/local/bin/git";
+  // TODO Make CLONE configurable
+  public static final String CLONE = "cd ~estepper/cdo.git;\n";
+
+  public static final String GIT_BINARY = CLONE + "/usr/local/bin/git";
 
   // The symbolic name (alternatively: the URL) of the upstream (main) Git repository
   public static final String REMOTE_GIT = "origin";
