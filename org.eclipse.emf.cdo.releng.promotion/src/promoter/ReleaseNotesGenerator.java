@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
@@ -21,7 +21,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -147,13 +146,10 @@ public class ReleaseNotesGenerator extends PromoterComponent
   protected BuildInfo[] getBuildInfos(ReleaseNotesStream stream)
   {
     List<BuildInfo> buildInfos = stream.getBuildInfos();
-    Collections.sort(buildInfos, new Comparator<BuildInfo>()
-    {
-      public int compare(BuildInfo bi1, BuildInfo bi2)
-      {
-        return new Integer(bi1.getRevision()).compareTo(new Integer(bi2.getRevision()));
-      }
-    });
+    Collections.sort(buildInfos/*
+                                * , new Comparator<BuildInfo>() { public int compare(BuildInfo bi1, BuildInfo bi2) {
+                                * return new Integer(bi1.getRevision()).compareTo(new Integer(bi2.getRevision())); } }
+                                */);
 
     return buildInfos.toArray(new BuildInfo[buildInfos.size()]);
   }
