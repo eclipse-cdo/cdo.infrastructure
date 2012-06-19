@@ -194,15 +194,12 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("<br/>The last relevant commit is " + toRevision + ".");
       out.println("</p>");
 
-      out.println("<div style=\"margin-left:40px;\">");
       out.print("<img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\">&nbsp;");
       out.println("<a href=\"http://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_')
           + "\">Downloads for CDO " + qualifier + "</a>");
-      out.println("</div>");
 
       previousBuildNote(out, buildInfo, previousBuildInfo);
 
-      out.println("<div style=\"margin-left:40px;\">");
       out.println("<h3>Table of Contents</h3>");
       out.println("<ul>");
       for (IssueComponent component : components)
@@ -211,7 +208,6 @@ public class ReleaseNotesGenerator extends PromoterComponent
       }
 
       out.println("</ul>");
-      out.println("</div>");
 
       for (IssueComponent component : components)
       {
