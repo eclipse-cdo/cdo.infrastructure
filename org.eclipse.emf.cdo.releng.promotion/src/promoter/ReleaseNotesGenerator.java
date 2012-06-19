@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -170,6 +171,15 @@ public class ReleaseNotesGenerator extends PromoterComponent
         component.addIssue(issue);
       }
 
+      for (Iterator<IssueComponent> it = components.iterator(); it.hasNext();)
+      {
+        IssueComponent component = it.next();
+        if (component.isEmpty())
+        {
+          it.remove();
+        }
+      }
+
       out = new PrintStream(relnotesHTML);
 
       String qualifier = buildInfo.getQualifier();
@@ -208,27 +218,29 @@ public class ReleaseNotesGenerator extends PromoterComponent
       previousBuildNote(out, buildInfo, previousBuildInfo);
       out.println("</p>");
 
-      // out.println("<p>");
-      // out.print("<img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\">&nbsp;");
-      // out.println("<a href=\"http://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_')
-      // + "\">Downloads for CDO " + qualifier + "</a>");
-      // out.println("</p>");
-
-      out.println("<h3>Table of Contents</h3>");
-      out.println("<ul>");
-      for (IssueComponent component : components)
+      if (!components.isEmpty())
       {
-        component.renderTOC(out);
+        out.println("<h3>Table of Contents</h3>");
+        out.println("<ul>");
+        for (IssueComponent component : components)
+        {
+          component.renderTOC(out);
+        }
+
+        out.println("</ul>");
+
+        for (IssueComponent component : components)
+        {
+          component.renderHTML(out);
+        }
+
+        previousBuildNote(out, buildInfo, previousBuildInfo);
       }
-
-      out.println("</ul>");
-
-      for (IssueComponent component : components)
+      else
       {
-        component.renderHTML(out);
+        out.println("<h3>This build does not contain any tracked enhancements or bug fixes.</h3>");
+        out.println("It may contain other changes, though.");
       }
-
-      previousBuildNote(out, buildInfo, previousBuildInfo);
 
       out.println("</body>");
       out.println("</html>");
@@ -413,6 +425,11 @@ public class ReleaseNotesGenerator extends PromoterComponent
       return name;
     }
 
+    public boolean isEmpty()
+    {
+      return enhancements.isEmpty() && fixes.isEmpty();
+    }
+
     public void addIssue(Issue issue)
     {
       if (issueManager.getSeverity(issue) == 0)
@@ -427,7 +444,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
     public void renderTOC(PrintStream out)
     {
-      if (enhancements.isEmpty() && fixes.isEmpty())
+      if (isEmpty())
       {
         return;
       }
@@ -438,7 +455,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
     public void renderHTML(PrintStream out)
     {
-      if (enhancements.isEmpty() && fixes.isEmpty())
+      if (isEmpty())
       {
         return;
       }
