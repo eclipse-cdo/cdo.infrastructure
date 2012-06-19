@@ -198,8 +198,8 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/modeling/includes/downloads.css\"/>");
       out.println("</head>");
       out.println();
-      out.println("<body>");
-      out.println("<basefont face=\"Arial\">");
+      out.println("<body bgcolor=\"#FFFFFF\">");
+      out.println("<div style=\"margin:20px;\">");
       out.println("<h1>" + title + "</h1>");
 
       out.println("<p>");
@@ -220,17 +220,18 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
       out.println("</p>");
 
-      out.println("<p>");
-      out.print("&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\">&nbsp;");
+      out.println("<div style=\"margin-left:40px;\">");
+      out.print("<img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\">&nbsp;");
       out.println("<a href=\"http://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_')
           + "\">Downloads for " + qualifier + "</a>");
-      out.println("</p>");
+      out.println("</div>");
 
       for (IssueComponent component : components)
       {
         component.renderHTML(out);
       }
 
+      out.println("</div>");
       out.println("</body>");
       out.println("</html>");
     }
