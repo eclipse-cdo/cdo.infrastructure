@@ -434,7 +434,8 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
         out.print("&nbsp;&nbsp;&nbsp;&nbsp;");
         out.print("<img=\"" + severity + ".gif\" alt=\"" + severity + "\"/>&nbsp;");
-        out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title + "<br/>");
+        out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title);
+        out.println("<br/>");
       }
     }
   }
