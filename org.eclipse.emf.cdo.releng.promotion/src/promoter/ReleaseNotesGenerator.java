@@ -189,7 +189,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("  <title>Release Notes for CDO " + qualifier + "</title>");
       out.println("</head>");
       out.println();
-      out.println("<body style=\"font-family:Arial;\">");
+      out.println("<body style=\"font-family:Arial; font-size:small;\">");
       out.println("<h1>Release Notes for CDO <a href=\"http://www.eclipse.org/cdo/downloads/#"
           + qualifier.replace('-', '_') + "\">" + qualifier + "</a></h1>");
 
@@ -502,7 +502,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
         String title = issue.getTitle().replaceAll("<", "&lt;").replaceAll("\"", "&quot;");
 
         out.print("<img src=\"../../images/" + severity + ".gif\" alt=\"" + severity + "\">&nbsp;");
-        out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title);
+        out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;<b>" + title + "</b>");
         out.print("&nbsp;&nbsp;<font color=\"#666666\"><i>" + issue.getVersion() + "</i></font>");
         out.println("<br/>");
       }
