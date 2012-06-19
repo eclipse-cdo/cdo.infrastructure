@@ -398,7 +398,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
         return;
       }
 
-      out.println("<a name=\"" + name + "\"/>");
+      out.println("<a name=\"" + name + "\"></a>");
       out.println("<h2>" + label + "</h2>");
 
       if (!enhancements.isEmpty())
