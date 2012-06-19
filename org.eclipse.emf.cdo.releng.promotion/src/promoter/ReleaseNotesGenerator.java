@@ -74,7 +74,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
     File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), qualifier);
     File relnotesXML = new File(drop, "relnotes.xml");
     File relnotesHTML = new File(drop, "relnotes.html");
-    // if (!relnotesXML.exists() || !relnotesHTML.exists()) // XXX
+    if (!relnotesXML.exists() || !relnotesHTML.exists())
     {
       System.out.println();
       System.out.println("Generating release notes for " + qualifier);
@@ -503,8 +503,8 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
         out.print("<img src=\"../../images/" + severity + ".gif\" alt=\"" + severity + "\">&nbsp;");
         out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title);
-        out.print("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"#aaaaaa\"><i>"
-            + issue.getStatus().toLowerCase().replace(':', '-') + " in " + issue.getVersion() + "</i></font>");
+        out.print("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"#aaaaaa\"><i>" + issue.getStatus().toLowerCase() + " in "
+            + issue.getVersion() + "</i></font>");
         out.println("<br/>");
       }
     }
