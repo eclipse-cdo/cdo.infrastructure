@@ -214,7 +214,7 @@ public class Bugzilla extends IssueManager
         {
           if (resolution.length() != 0)
           {
-            status += ":" + resolution;
+            status += ":" + resolution.toLowerCase();
           }
 
           issue = new Issue(id, title, severity, component, version, status);

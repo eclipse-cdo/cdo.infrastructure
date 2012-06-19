@@ -503,10 +503,33 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
         out.print("<img src=\"../../images/" + severity + ".gif\" alt=\"" + severity + "\">&nbsp;");
         out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title);
-        out.print("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"#888888\"><i>" + issue.getStatus() + " in "
+        out.print("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"#888888\"><i>" + cap(issue.getStatus().toLowerCase()) + " in "
             + issue.getVersion() + "</i></font>");
         out.println("<br/>");
       }
+    }
+
+    private String cap(String str)
+    {
+      if (str == null || str.length() == 0)
+      {
+        return str;
+      }
+
+      char first = str.charAt(0);
+      if (Character.isUpperCase(first))
+      {
+        return str;
+      }
+
+      if (str.length() == 1)
+      {
+        return str.toUpperCase();
+      }
+
+      StringBuilder builder = new StringBuilder(str);
+      builder.setCharAt(0, Character.toUpperCase(first));
+      return builder.toString();
     }
   }
 }
