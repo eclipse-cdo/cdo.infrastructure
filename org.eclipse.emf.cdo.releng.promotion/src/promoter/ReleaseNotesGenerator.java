@@ -204,7 +204,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("</p>");
 
       out.println("<p>");
-      out.print("&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/>&nbsp;");
+      out.print("&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"></img>&nbsp;");
       out.println("<a href=\"http://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_')
           + "\">Downloads for " + qualifier + "</a>");
       out.println("</p>");
@@ -433,7 +433,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
         String title = issue.getTitle().replaceAll("<", "&lt;").replaceAll("\"", "&quot;");
 
         out.print("&nbsp;&nbsp;&nbsp;&nbsp;");
-        out.print("<img=\"" + severity + ".gif\" alt=\"" + severity + "\"/>&nbsp;");
+        out.print("<img=\"" + severity + ".gif\" alt=\"" + severity + "\"></img>&nbsp;");
         out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title);
         out.println("<br/>");
       }
