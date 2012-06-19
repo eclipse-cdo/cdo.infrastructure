@@ -179,12 +179,12 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("<!DOCTYPE html>");
       out.println("<html>");
       out.println("<head>");
-      out.println("  <title>Release Notes of CDO " + qualifier + "</title>");
+      out.println("  <title>Release Notes for CDO " + qualifier + "</title>");
       out.println("</head>");
       out.println();
       out.println("<body style=\"font-family:Arial;\">");
       out.println("<div>");
-      out.println("<h1>Release Notes of CDO <a href=\"http://www.eclipse.org/cdo/downloads/#"
+      out.println("<h1>Release Notes for CDO <a href=\"http://www.eclipse.org/cdo/downloads/#"
           + qualifier.replace('-', '_') + "\">" + qualifier + "</a></h1>");
 
       out.println("<p>");
@@ -197,10 +197,21 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("<div style=\"margin-left:40px;\">");
       out.print("<img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\">&nbsp;");
       out.println("<a href=\"http://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_')
-          + "\">Downloads for " + qualifier + "</a>");
+          + "\">Downloads for CDO " + qualifier + "</a>");
       out.println("</div>");
 
       previousBuildNote(out, buildInfo, previousBuildInfo);
+
+      out.println("<div style=\"margin-left:40px;\">");
+      out.println("<h3>Table of Contents</h3>");
+      out.println("<ul>");
+      for (IssueComponent component : components)
+      {
+        component.renderTOC(out);
+      }
+
+      out.println("</ul>");
+      out.println("</div>");
 
       for (IssueComponent component : components)
       {
@@ -402,6 +413,17 @@ public class ReleaseNotesGenerator extends PromoterComponent
       {
         fixes.add(issue);
       }
+    }
+
+    public void renderTOC(PrintStream out)
+    {
+      if (enhancements.isEmpty() && fixes.isEmpty())
+      {
+        return;
+      }
+
+      out.println("<a name=\"" + name + "\"></a>");
+      out.println("<li><a href=\"#" + name + "\">" + label + "</a>");
     }
 
     public void renderHTML(PrintStream out)
