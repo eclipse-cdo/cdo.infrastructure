@@ -173,23 +173,23 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out = new PrintStream(relnotesHTML);
 
       String qualifier = buildInfo.getQualifier();
-      String title = "Release Notes of CDO " + qualifier + " (" + buildInfo.getStream() + ")";
       String branch = buildInfo.getBranch();
       String branchURL = "http://git.eclipse.org/c/cdo/cdo.git/?h=" + branch.replaceAll("/", "%2F");
 
       out.println("<!DOCTYPE html>");
       out.println("<html>");
       out.println("<head>");
-      out.println("  <title>" + title + "</title>");
+      out.println("  <title>Release Notes of CDO " + qualifier + "</title>");
       out.println("</head>");
       out.println();
       out.println("<body style=\"font-family:Arial;\">");
       out.println("<div>");
-      out.println("<h1>" + title + "</h1>");
+      out.println("<h1>Release Notes of CDO <a href=\"http://www.eclipse.org/cdo/downloads/#"
+          + qualifier.replace('-', '_') + "\">" + qualifier + "</a></h1>");
 
       out.println("<p>");
-      out.println("These release notes have been generated from commits to the <a href=\"" + branchURL + "\">" + branch
-          + "</a> branch.");
+      out.println("These release notes have been generated from commits to the <a href=\"" + branchURL + "\">"
+          + buildInfo.getStream() + "</a> stream.");
       out.println("<br/>The first relevant commit is " + fromRevision + ".");
       out.println("<br/>The last relevant commit is " + toRevision + ".");
       out.println("</p>");
