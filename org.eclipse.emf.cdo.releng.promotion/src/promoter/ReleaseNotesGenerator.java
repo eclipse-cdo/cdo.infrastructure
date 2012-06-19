@@ -176,13 +176,14 @@ public class ReleaseNotesGenerator extends PromoterComponent
       String branch = buildInfo.getBranch();
       String branchURL = "http://git.eclipse.org/c/cdo/cdo.git/?h=" + branch.replaceAll("/", "%2F");
 
+      out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
       out.println("<html>");
       out.println("<head>");
       out.println("<title>" + title + "</title>");
       out.println("</head>");
       out.println();
       out.println("<body>");
-      out.println("<<basefont face=\"arial\">");
+      out.println("<basefont face=\"Arial\">");
       out.println("<h1>" + title + "</h1>");
 
       out.println("<p>");
