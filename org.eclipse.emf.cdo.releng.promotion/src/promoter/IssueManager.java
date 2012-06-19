@@ -61,6 +61,6 @@ public abstract class IssueManager extends PromoterComponent implements Comparat
 
   protected boolean isCaching()
   {
-    return true;
+    return false;
   }
 }

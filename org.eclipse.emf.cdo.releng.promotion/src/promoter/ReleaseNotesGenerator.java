@@ -502,8 +502,9 @@ public class ReleaseNotesGenerator extends PromoterComponent
         String title = issue.getTitle().replaceAll("<", "&lt;").replaceAll("\"", "&quot;");
 
         out.print("<img src=\"../../images/" + severity + ".gif\" alt=\"" + severity + "\">&nbsp;");
-        out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;<b>" + title + "</b>");
-        out.print("&nbsp;&nbsp;<font color=\"#666666\"><i>" + issue.getVersion() + "</i></font>");
+        out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title);
+        out.print("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"#888888\"><i>" + issue.getVersion() + "&nbsp;&nbsp;"
+            + issue.getStatus() + "</i></font>");
         out.println("<br/>");
       }
     }

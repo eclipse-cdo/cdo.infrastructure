@@ -29,13 +29,16 @@ public class Issue
 
   private String version;
 
-  public Issue(String id, String title, String severity, String component, String version)
+  private String status;
+
+  public Issue(String id, String title, String severity, String component, String version, String status)
   {
     this.id = id;
     this.title = title;
     this.severity = severity;
     this.component = component;
     this.version = version;
+    this.status = status;
   }
 
   public Issue(File file)
@@ -63,6 +66,11 @@ public class Issue
     if (lines.length > 3)
     {
       version = lines[3];
+    }
+
+    if (lines.length > 4)
+    {
+      status = lines[4];
     }
   }
 
@@ -95,6 +103,11 @@ public class Issue
   public String getVersion()
   {
     return version;
+  }
+
+  public String getStatus()
+  {
+    return status;
   }
 
   @Override

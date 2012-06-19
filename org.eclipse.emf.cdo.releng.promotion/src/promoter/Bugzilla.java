@@ -158,6 +158,8 @@ public class Bugzilla extends IssueManager
       String severity = null;
       String component = null;
       String version = null;
+      String status = null;
+      String resolution = null;
 
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       String line;
@@ -190,9 +192,32 @@ public class Bugzilla extends IssueManager
           version = match(line, "version");
         }
 
-        if (id != null && title != null && severity != null && component != null && version != null)
+        if (status == null)
         {
-          issue = new Issue(id, title, severity, component, version);
+          status = match(line, "bug_status");
+        }
+
+        if (resolution == null)
+        {
+          if ("<resolution/>".equals(line))
+          {
+            resolution = "";
+          }
+          else
+          {
+            resolution = match(line, "resolution");
+          }
+        }
+
+        if (id != null && title != null && severity != null && component != null && version != null && status != null
+            && resolution != null)
+        {
+          if (resolution.length() != 0)
+          {
+            status += "|" + resolution;
+          }
+
+          issue = new Issue(id, title, severity, component, version, status);
           break;
         }
       }
