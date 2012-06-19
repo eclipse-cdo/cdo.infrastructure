@@ -476,7 +476,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
         out.print("<img src=\"../../images/" + severity + ".gif\" alt=\"" + severity + "\">&nbsp;");
         out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title);
-        out.print("&nbsp;&nbsp;<font color=\"#222222\"><i>v" + issue.getVersion() + "</i></font>");
+        out.print("&nbsp;&nbsp;<font color=\"#666666\"><i>" + issue.getVersion() + "</i></font>");
         out.println("<br/>");
       }
     }
