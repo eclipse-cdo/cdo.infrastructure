@@ -38,17 +38,17 @@ public class Subversion extends SourceCodeManager
   }
 
   @Override
-  public void setTag(final String branch, final String tag)
+  public void setTag(final String branch, final String revision, final String qualifier)
   {
     IO.executeProcess("/bin/bash", new OutputHandler()
     {
       public void handleOutput(OutputStream out) throws IOException
       {
-        String message = "Tagging " + branch + " as drop-" + tag;
+        String message = "Tagging " + branch + " as drop-" + qualifier;
         System.out.println(message);
 
         String from = SVN_ROOT + branch;
-        String to = SVN_ROOT + "tags/drop-" + tag;
+        String to = SVN_ROOT + "tags/drop-" + qualifier;
 
         PrintStream stream = new PrintStream(out);
         stream.println(SVN_BINARY + " cp -m \"" + message + "\" \"" + from + "\" \"" + to + "\"");

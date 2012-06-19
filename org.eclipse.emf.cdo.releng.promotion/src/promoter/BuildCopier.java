@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
@@ -190,7 +190,7 @@ public class BuildCopier extends PromoterComponent
     SourceCodeManager scm = getPromoter().createSourceCodeManager();
     if (scm != null)
     {
-      scm.setTag(buildInfo.getBranch(), buildInfo.getQualifier());
+      scm.setTag(buildInfo.getBranch(), buildInfo.getRevision(), buildInfo.getQualifier());
     }
   }
 

@@ -62,7 +62,7 @@ public class Git extends SourceCodeManager
   }
 
   @Override
-  public void setTag(final String branch, final String tag)
+  public void setTag(final String branch, final String revision, final String qualifier)
   {
     IO.executeProcess("/bin/bash", new OutputHandler()
     {
@@ -71,16 +71,15 @@ public class Git extends SourceCodeManager
         PrintStream stream = new PrintStream(out);
         fetchIfNeeded(stream);
 
-        String message = "Tagging " + branch + " as drops/" + tag;
-        System.out.println(message);
-
-        String ref = "drops/" + tag;
+        String tag = "drops/" + qualifier;
+        System.out.println("Tagging " + revision + " in " + branch + " as " + tag);
 
         // Create the tag
-        stream.println(GIT_BINARY + " tag -a -m \"" + message + "\" \"" + ref + "\" \"" + branch + "\"");
+        String message = qualifier + " in " + branch;
+        stream.println(GIT_BINARY + " tag -a -m \"" + message + "\" \"" + tag + "\" \"" + revision + "\"");
 
         // Push the tag
-        stream.println(GIT_BINARY + " push \"" + REMOTE_GIT + "\" \"" + ref + "\"");
+        stream.println(GIT_BINARY + " push \"" + REMOTE_GIT + "\" \"" + tag + "\"");
         stream.flush();
       }
     });
