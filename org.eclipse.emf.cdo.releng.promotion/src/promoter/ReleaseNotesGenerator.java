@@ -456,7 +456,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
         String url = issueManager.getURL(issue);
         String title = issue.getTitle().replaceAll("<", "&lt;").replaceAll("\"", "&quot;");
 
-        out.print("<img=\"" + severity + ".gif\" alt=\"" + severity + "\">&nbsp;");
+        out.print("<img=\"../../images/" + severity + ".gif\" alt=\"" + severity + "\">&nbsp;");
         out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title);
         out.println("<br/>");
       }
