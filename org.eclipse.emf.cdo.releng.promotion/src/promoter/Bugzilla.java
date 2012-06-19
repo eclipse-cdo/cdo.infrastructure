@@ -16,8 +16,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Eike Stepper
@@ -68,18 +66,7 @@ public class Bugzilla extends IssueManager
       {
         BugHandler handler = new BugHandler();
         IO.readURL(XML + id, handler);
-
-        String title = handler.getTitle();
-        if (title != null)
-        {
-          String severity = handler.getSeverity();
-          if (severity == null)
-          {
-            severity = "";
-          }
-
-          return new Issue(id, title, severity);
-        }
+        return handler.getIssue();
       }
       catch (Exception ex)
       {
@@ -116,59 +103,73 @@ public class Bugzilla extends IssueManager
    */
   private static final class BugHandler implements IO.InputHandler
   {
-    private static final Pattern TITLE_PATTERN = Pattern.compile("<short_desc>(.*)</short_desc>");
-
-    private static final Pattern SEVERITY_PATTERN = Pattern.compile("<bug_severity>(.*)</bug_severity>");
-
-    private String title;
-
-    private String severity;
+    private Issue issue;
 
     public BugHandler()
     {
     }
 
-    public final String getTitle()
+    public final Issue getIssue()
     {
-      return title;
-    }
-
-    public final String getSeverity()
-    {
-      return severity;
+      return issue;
     }
 
     public void handleInput(InputStream in) throws IOException
     {
+      String id = null;
+      String title = null;
+      String severity = null;
+      String component = null;
+
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       String line;
       while ((line = reader.readLine()) != null)
       {
         line = line.trim();
 
+        if (id == null)
+        {
+          id = match(line, "bug_id");
+        }
+
         if (title == null)
         {
-          Matcher matcher = TITLE_PATTERN.matcher(line);
-          if (matcher.matches())
-          {
-            title = matcher.group(1);
-          }
+          title = match(line, "short_desc");
         }
 
         if (severity == null)
         {
-          Matcher matcher = SEVERITY_PATTERN.matcher(line);
-          if (matcher.matches())
-          {
-            severity = matcher.group(1);
-          }
+          severity = match(line, "bug_severity");
         }
 
-        if (title != null && severity != null)
+        if (component == null)
         {
-          return;
+          component = match(line, "component");
+        }
+
+        if (id != null && title != null && severity != null && component != null)
+        {
+          issue = new Issue(id, title, severity, component);
+          break;
         }
       }
+    }
+
+    private String match(String line, String element)
+    {
+      String start = "<" + element + ">";
+      if (line.startsWith(start))
+      {
+        line = line.substring(start.length());
+
+        String end = "</" + element + ">";
+        if (line.endsWith(end))
+        {
+          return line.substring(0, line.length() - end.length());
+        }
+      }
+
+      return null;
     }
   }
 }

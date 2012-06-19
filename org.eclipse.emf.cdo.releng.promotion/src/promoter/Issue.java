@@ -4,11 +4,15 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
 package promoter;
+
+import promoter.util.IO;
+
+import java.io.File;
 
 /**
  * @author Eike Stepper
@@ -21,11 +25,43 @@ public class Issue
 
   private String severity;
 
-  public Issue(String id, String title, String severity)
+  private String component;
+
+  public Issue(String id, String title, String severity, String component)
   {
     this.id = id;
     this.title = title;
     this.severity = severity;
+    this.component = component;
+  }
+
+  public Issue(File file)
+  {
+    id = file.getName();
+
+    String content = IO.readTextFile(file);
+    String[] lines = content.split("\n");
+
+    if (lines.length > 0)
+    {
+      title = lines[0];
+    }
+
+    if (lines.length > 1)
+    {
+      severity = lines[1];
+    }
+
+    if (lines.length > 2)
+    {
+      component = lines[2];
+    }
+  }
+
+  public void write(File file)
+  {
+    String content = title + "\n" + severity + "\n" + component;
+    IO.writeFile(file, content.getBytes());
   }
 
   public final String getID()
@@ -41,6 +77,11 @@ public class Issue
   public final String getSeverity()
   {
     return severity;
+  }
+
+  public String getComponent()
+  {
+    return component;
   }
 
   @Override
