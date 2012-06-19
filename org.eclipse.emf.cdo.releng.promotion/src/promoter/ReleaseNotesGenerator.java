@@ -180,7 +180,9 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("<head>");
       out.println("<title>" + title + "</title>");
       out.println("</head>");
-      out.println("<body font=\"face:Arial\">");
+      out.println();
+      out.println("<body>");
+      out.println("<<basefont face=\"arial\">");
       out.println("<h1>" + title + "</h1>");
 
       out.println("<p>");
@@ -428,11 +430,11 @@ public class ReleaseNotesGenerator extends PromoterComponent
       {
         String severity = issue.getSeverity();
         String url = issueManager.getURL(issue);
+        String title = issue.getTitle().replaceAll("<", "&lt;").replaceAll("\"", "&quot;");
 
         out.print("&nbsp;&nbsp;&nbsp;&nbsp;");
         out.print("<img=\"" + severity + ".gif\" alt=\"" + severity + "\"/>&nbsp;");
-        out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;");
-        out.println(issue.getTitle().replaceAll("<", "&lt;") + "<br/>");
+        out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title + "<br/>");
       }
     }
   }
