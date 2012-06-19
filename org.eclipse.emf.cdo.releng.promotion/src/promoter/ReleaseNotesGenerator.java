@@ -73,7 +73,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
     File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), qualifier);
     File relnotesXML = new File(drop, "relnotes.xml");
     File relnotesHTML = new File(drop, "relnotes.html");
-    // if (!relnotesXML.exists() || !relnotesHTML.exists()) // XXX
+    if (!relnotesXML.exists() || !relnotesHTML.exists())
     {
       System.out.println();
       System.out.println("Generating release notes for " + qualifier);
