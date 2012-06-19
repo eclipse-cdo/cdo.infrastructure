@@ -192,20 +192,15 @@ public class ReleaseNotesGenerator extends PromoterComponent
           + "</a> branch.");
       out.println("<br/>The first relevant commit is " + fromRevision + ".");
       out.println("<br/>The last relevant commit is " + toRevision + ".");
-
-      if (previousBuildInfo == null)
-      {
-        out.println("<br/>This is the first build of the " + buildInfo.getStream() + " stream.");
-      }
-
       out.println("</p>");
 
-      previousBuildNote(out, buildInfo, previousBuildInfo);
       out.println("<div style=\"margin-left:40px;\">");
       out.print("<img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\">&nbsp;");
       out.println("<a href=\"http://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_')
           + "\">Downloads for " + qualifier + "</a>");
       out.println("</div>");
+
+      previousBuildNote(out, buildInfo, previousBuildInfo);
 
       for (IssueComponent component : components)
       {
@@ -213,6 +208,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       }
 
       previousBuildNote(out, buildInfo, previousBuildInfo);
+
       out.println("</div>");
       out.println("</body>");
       out.println("</html>");
@@ -458,7 +454,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
         out.print("<img src=\"../../images/" + severity + ".gif\" alt=\"" + severity + "\">&nbsp;");
         out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title);
-        out.print("&nbsp; (" + issue.getVersion() + ")");
+        out.print("&nbsp; [v" + issue.getVersion() + "]");
         out.println("<br/>");
       }
     }
