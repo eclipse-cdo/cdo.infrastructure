@@ -179,7 +179,23 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("<!DOCTYPE html>");
       out.println("<html>");
       out.println("<head>");
-      out.println("<title>" + title + "</title>");
+      out.println("  <title>" + title + "</title>");
+      out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/yui/2.6.0/build/reset-fonts-grids/reset-fonts-grids.css\" media=\"screen\" />");
+      out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/yui/2.6.0/build/menu/assets/skins/sam/menu.css\" media=\"screen\" />");
+      out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/reset.css\" media=\"screen\"/>");
+      out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/layout.css\" media=\"screen\" />");
+      out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/header.css\" media=\"screen\" />");
+      out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/footer.css\" media=\"screen\" />");
+      out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/visual.css\" media=\"screen\" />");
+      out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/print.css\" media=\"print\" />");
+      out.println("  <!--[if lte IE 7]>  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/ie_style.css\" media=\"screen\"/> <![endif]-->");
+      out.println("  <!--[if IE 6]>  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/ie6_style.css\" media=\"screen\"/> <![endif]-->");
+      out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/home/content/nova.css\"/>");
+      out.println("  <!--[if IE 6]> <link rel=\"stylesheet\" type=\"text/css\" href=\"/home/content/ie6_nova.css\" media=\"screen\"/> <![endif]-->");
+      out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/cdo/_projectCommon/styles.css\" media=\"screen\"/>");
+      out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/cdo/downloads/_styles.css\" media=\"screen\"/>");
+      out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/modeling/includes/common.css\"/>");
+      out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/modeling/includes/downloads.css\"/>");
       out.println("</head>");
       out.println();
       out.println("<body>");
@@ -401,6 +417,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
       out.println("<a name=\"" + name + "\"></a>");
       out.println("<h2>" + label + "</h2>");
+      out.println("<div style=\"margin-left:40px;\">");
 
       if (!enhancements.isEmpty())
       {
@@ -423,6 +440,8 @@ public class ReleaseNotesGenerator extends PromoterComponent
         out.println("<h3>Bug Fixes</h3>");
         renderHTML(out, fixes);
       }
+
+      out.println("</div>");
     }
 
     private void renderHTML(PrintStream out, List<Issue> issues)
