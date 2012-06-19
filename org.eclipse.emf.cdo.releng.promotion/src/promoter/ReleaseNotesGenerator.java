@@ -73,7 +73,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
     File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), qualifier);
     File relnotesXML = new File(drop, "relnotes.xml");
     File relnotesHTML = new File(drop, "relnotes.html");
-    if (!relnotesXML.exists() || !relnotesHTML.exists())
+    // if (!relnotesXML.exists() || !relnotesHTML.exists())
     {
       System.out.println();
       System.out.println("Generating release notes for " + qualifier);
@@ -431,12 +431,12 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
       out.println("<a name=\"" + name + "\"></a>");
       out.println("<h2>" + label + "</h2>");
-      out.println("<div style=\"margin-left:40px;\">");
+      out.println("<div style=\"margin-left:20px;\">");
 
       if (!enhancements.isEmpty())
       {
         out.println("<h3>Enhancements</h3>");
-        out.println("<div style=\"margin-left:40px;\">");
+        out.println("<div style=\"margin-left:20px;\">");
         renderHTML(out, enhancements);
         out.println("</div>");
       }
@@ -454,7 +454,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
         });
 
         out.println("<h3>Bug Fixes</h3>");
-        out.println("<div style=\"margin-left:40px;\">");
+        out.println("<div style=\"margin-left:20px;\">");
         renderHTML(out, fixes);
         out.println("</div>");
       }
