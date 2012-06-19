@@ -191,15 +191,14 @@ public class ReleaseNotesGenerator extends PromoterComponent
           + buildInfo.getStream() + "</a> stream.");
       out.println("<br/>The first relevant commit is " + fromRevision + ".");
       out.println("<br/>The last relevant commit is " + toRevision + ".");
-      out.println("</p>");
-
-      out.println("<p>");
-      out.print("<img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\">&nbsp;");
-      out.println("<a href=\"http://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_')
-          + "\">Downloads for CDO " + qualifier + "</a>");
-      out.println("</p>");
-
       previousBuildNote(out, buildInfo, previousBuildInfo);
+      out.println("</p>");
+
+      // out.println("<p>");
+      // out.print("<img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\">&nbsp;");
+      // out.println("<a href=\"http://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_')
+      // + "\">Downloads for CDO " + qualifier + "</a>");
+      // out.println("</p>");
 
       out.println("<h3>Table of Contents</h3>");
       out.println("<ul>");
@@ -232,7 +231,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
   protected void previousBuildNote(PrintStream out, BuildInfo buildInfo, BuildInfo previousBuildInfo)
   {
-    out.println("<p>");
+    out.print("<br/>");
     if (previousBuildInfo != null)
     {
       String q = previousBuildInfo.getQualifier();
@@ -243,8 +242,6 @@ public class ReleaseNotesGenerator extends PromoterComponent
     {
       out.println("This is the first build of the " + buildInfo.getStream() + " stream.");
     }
-
-    out.println("</p>");
   }
 
   protected IssueComponent addIssueComponent(List<IssueComponent> components, String name, String label)
