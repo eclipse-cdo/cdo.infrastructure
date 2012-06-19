@@ -55,6 +55,8 @@ public abstract class IssueManager extends PromoterComponent implements Comparat
 
   public abstract String getURL(Issue issue);
 
+  public abstract Integer getSeverity(Issue issue);
+
   protected abstract Issue doGetIssue(String id);
 
   protected boolean isCaching()

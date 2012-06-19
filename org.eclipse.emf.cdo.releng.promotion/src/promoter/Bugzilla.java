@@ -86,6 +86,43 @@ public class Bugzilla extends IssueManager
     return SERVER + issue.getID();
   }
 
+  @Override
+  public Integer getSeverity(Issue issue)
+  {
+    String severity = issue.getSeverity();
+    if ("trivial".equals(severity))
+    {
+      return 1;
+    }
+
+    if ("minor".equals(severity))
+    {
+      return 2;
+    }
+
+    if ("normal".equals(severity))
+    {
+      return 3;
+    }
+
+    if ("major".equals(severity))
+    {
+      return 4;
+    }
+
+    if ("critical".equals(severity))
+    {
+      return 5;
+    }
+
+    if ("blocker".equals(severity))
+    {
+      return 6;
+    }
+
+    return 0;
+  }
+
   public int compare(Issue i1, Issue i2)
   {
     return new Integer(i1.getID()).compareTo(new Integer(i2.getID()));

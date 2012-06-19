@@ -18,14 +18,18 @@ import promoter.util.XMLOutput;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * @author Eike Stepper
@@ -66,62 +70,149 @@ public class ReleaseNotesGenerator extends PromoterComponent
   protected void generateReleaseNotes(ReleaseNotesStream stream, BuildInfo[] buildInfos, int i)
   {
     BuildInfo buildInfo = buildInfos[i];
+    String qualifier = buildInfo.getQualifier();
 
-    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
-    File relnotes = new File(drop, "relnotes.xml");
-    if (!relnotes.exists())
+    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), qualifier);
+    File relnotesXML = new File(drop, "relnotes.xml");
+    File relnotesHTML = new File(drop, "relnotes.html");
+    // if (!relnotesXML.exists() || !relnotesHTML.exists()) // XXX
     {
       System.out.println();
-      System.out.println("Generating release notes for " + buildInfo.getQualifier());
+      System.out.println("Generating release notes for " + qualifier);
 
       BuildInfo previousBuildInfo = getPreviousBuildInfo(buildInfos, i);
       String fromRevision = previousBuildInfo == null ? stream.getFirstRevision() : previousBuildInfo.getRevision();
       String toRevision = buildInfo.getRevision();
 
-      OutputStream out = null;
+      List<Issue> issues = new ArrayList<Issue>(getIssues(buildInfo, fromRevision, toRevision));
+      sortIssues(issues);
 
-      try
-      {
-        out = new FileOutputStream(relnotes);
-        XMLOutput xml = new XMLOutput(out);
+      generateReleaseNotesXML(stream, buildInfo, previousBuildInfo, fromRevision, toRevision, issues, relnotesXML);
 
-        xml.element("relnotes");
-        xml.attribute("stream", stream.getName());
-        xml.attribute("drop", buildInfo.getQualifier());
-        xml.attribute("revision", toRevision);
-        if (previousBuildInfo != null)
-        {
-          xml.attribute("previousDrop", previousBuildInfo.getQualifier());
-        }
-
-        xml.attribute("previousRevision", fromRevision);
-        xml.push();
-
-        List<Issue> issues = new ArrayList<Issue>(getIssues(buildInfo, fromRevision, toRevision));
-        sortIssues(issues);
-
-        for (Issue issue : issues)
-        {
-          xml.element("issue");
-          xml.attribute("url", issueManager.getURL(issue));
-          xml.attribute("id", issue.getID());
-          xml.attribute("title", issue.getTitle());
-          xml.attribute("severity", issue.getSeverity());
-          xml.attribute("component", issue.getComponent());
-        }
-
-        xml.pop();
-        xml.done();
-      }
-      catch (Exception ex)
-      {
-        throw new RuntimeException(ex);
-      }
-      finally
-      {
-        IO.close(out);
-      }
+      generateReleaseNotesHTML(buildInfo, qualifier, relnotesHTML, fromRevision, toRevision, issues);
     }
+  }
+
+  protected void generateReleaseNotesXML(ReleaseNotesStream stream, BuildInfo buildInfo, BuildInfo previousBuildInfo,
+      String fromRevision, String toRevision, List<Issue> issues, File relnotesXML)
+  {
+    OutputStream out = null;
+
+    try
+    {
+      out = new FileOutputStream(relnotesXML);
+      XMLOutput xml = new XMLOutput(out);
+
+      xml.element("relnotes");
+      xml.attribute("stream", stream.getName());
+      xml.attribute("drop", buildInfo.getQualifier());
+      xml.attribute("revision", toRevision);
+      if (previousBuildInfo != null)
+      {
+        xml.attribute("previousDrop", previousBuildInfo.getQualifier());
+      }
+
+      xml.attribute("previousRevision", fromRevision);
+      xml.push();
+
+      for (Issue issue : issues)
+      {
+        xml.element("issue");
+        xml.attribute("url", issueManager.getURL(issue));
+        xml.attribute("id", issue.getID());
+        xml.attribute("title", issue.getTitle());
+        xml.attribute("severity", issue.getSeverity());
+        xml.attribute("component", issue.getComponent());
+      }
+
+      xml.pop();
+      xml.done();
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      IO.close(out);
+    }
+  }
+
+  protected void generateReleaseNotesHTML(BuildInfo buildInfo, String qualifier, File relnotesHTML,
+      String fromRevision, String toRevision, List<Issue> issues)
+  {
+    PrintStream out = null;
+
+    try
+    {
+      SortedMap<String, IssueComponent> components = new TreeMap<String, IssueComponent>();
+      addIssueComponent(components, "cdo.core", "CDO Model Repository (Core)");
+      addIssueComponent(components, "cdo.legacy", "CDO Model Repository (Core)");
+      addIssueComponent(components, "cdo.ui", "CDO Model Repository (Core)");
+      addIssueComponent(components, "cdo.db", "CDO Model Repository (Core)");
+      addIssueComponent(components, "cdo.hibernate", "CDO Model Repository (Core)");
+      addIssueComponent(components, "cdo.objy", "CDO Model Repository (Core)");
+      addIssueComponent(components, "cdo.dawn", "CDO Dawn");
+      addIssueComponent(components, "cdo.net4j", "Net4j Signalling Platform and Utilities");
+      addIssueComponent(components, "cdo.net4j.ui", "Net4j User Interface");
+      addIssueComponent(components, "cdo.net4j.db", "Net4j DB Framework");
+      addIssueComponent(components, "cdo.docs", "Documentation");
+      addIssueComponent(components, "cdo.releng", "Release Engineering");
+
+      for (Issue issue : issues)
+      {
+        String name = issue.getComponent();
+        IssueComponent component = components.get(name);
+        component.addIssue(issue);
+      }
+
+      out = new PrintStream(relnotesHTML);
+
+      String title = "Release Notes for CDO " + qualifier + " (" + buildInfo.getStream() + ")";
+      String branch = buildInfo.getBranch();
+      String branchURL = "http://git.eclipse.org/c/cdo/cdo.git/?h=" + branch.replaceAll("/", "%2F");
+
+      out.println("<html>");
+      out.println("<head>");
+      out.println("<title>" + title + "</title>");
+      out.println("</head>");
+      out.println("<body>");
+      out.println("<h1>" + title + "</h1>");
+
+      out.println("<p>");
+      out.println("These release notes have been generated from commits to the <a href=\"" + branchURL + "\"><b>"
+          + branch + "</b></a> branch.<br/>");
+      out.println("The relevant commits are between <b>" + fromRevision + "</b> and <b>" + toRevision + "</b>.<br/>");
+      out.println("</p>");
+
+      out.println("<p>");
+      out.print("&nbsp;&nbsp;&nbsp;&nbsp;");
+      out.println("<a href=\"http://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_')
+          + "\"><img src=\"http://www.eclipse.org/cdo/images/22x22/go-down.png\" alt=\"Download\"/>&nbsp;Download "
+          + qualifier + "</a>");
+      out.println("</p>");
+
+      for (IssueComponent component : components.values())
+      {
+        component.renderHTML(out);
+      }
+
+      out.println("</body>");
+      out.println("</html>");
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      IO.close(out);
+    }
+  }
+
+  protected void addIssueComponent(SortedMap<String, IssueComponent> components, String name, String label)
+  {
+    components.put(name, new IssueComponent(name, label));
   }
 
   protected Collection<ReleaseNotesStream> getStreams(List<BuildInfo> buildInfos)
@@ -230,5 +321,84 @@ public class ReleaseNotesGenerator extends PromoterComponent
   protected void sortIssues(List<Issue> issues)
   {
     Collections.sort(issues, issueManager);
+  }
+
+  /**
+   * @author Eike Stepper
+   */
+  private final class IssueComponent
+  {
+    private final String name;
+
+    private final String label;
+
+    private final List<Issue> enhancements = new ArrayList<Issue>();
+
+    private final List<Issue> fixes = new ArrayList<Issue>();
+
+    public IssueComponent(String name, String label)
+    {
+      this.name = name;
+      this.label = label;
+    }
+
+    public void addIssue(Issue issue)
+    {
+      if (issueManager.getSeverity(issue) == 0)
+      {
+        enhancements.add(issue);
+      }
+      else
+      {
+        fixes.add(issue);
+      }
+    }
+
+    public void renderHTML(PrintStream out)
+    {
+      if (enhancements.isEmpty() && fixes.isEmpty())
+      {
+        return;
+      }
+
+      out.println("<a name=\"" + name + "\"/>");
+      out.println("<h2>" + label + "</h2>");
+
+      if (!enhancements.isEmpty())
+      {
+        out.println("<h3>Enhancements</h3>");
+        renderHTML(out, enhancements);
+      }
+
+      if (!fixes.isEmpty())
+      {
+        Collections.sort(fixes, new Comparator<Issue>()
+        {
+          public int compare(Issue i1, Issue i2)
+          {
+            Integer s1 = issueManager.getSeverity(i1);
+            Integer s2 = issueManager.getSeverity(i2);
+            return -s1.compareTo(s2);
+          }
+        });
+
+        out.println("<h3>Bug Fixes</h3>");
+        renderHTML(out, fixes);
+      }
+    }
+
+    private void renderHTML(PrintStream out, List<Issue> issues)
+    {
+      for (Issue issue : issues)
+      {
+        String severity = issue.getSeverity();
+        String url = issueManager.getURL(issue);
+
+        out.print("&nbsp;&nbsp;&nbsp;&nbsp;");
+        out.print("<img=\"" + severity + ".gif\" alt=\"" + severity + "\"/>&nbsp;");
+        out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;");
+        out.println(issue.getTitle() + "<br/>");
+      }
+    }
   }
 }
