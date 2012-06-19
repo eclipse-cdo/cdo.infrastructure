@@ -157,6 +157,7 @@ public class Bugzilla extends IssueManager
       String title = null;
       String severity = null;
       String component = null;
+      String version = null;
 
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       String line;
@@ -184,9 +185,14 @@ public class Bugzilla extends IssueManager
           component = match(line, "component");
         }
 
-        if (id != null && title != null && severity != null && component != null)
+        if (version == null)
         {
-          issue = new Issue(id, title, severity, component);
+          version = match(line, "version");
+        }
+
+        if (id != null && title != null && severity != null && component != null && version != null)
+        {
+          issue = new Issue(id, title, severity, component, version);
           break;
         }
       }

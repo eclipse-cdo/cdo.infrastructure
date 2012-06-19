@@ -27,12 +27,15 @@ public class Issue
 
   private String component;
 
-  public Issue(String id, String title, String severity, String component)
+  private String version;
+
+  public Issue(String id, String title, String severity, String component, String version)
   {
     this.id = id;
     this.title = title;
     this.severity = severity;
     this.component = component;
+    this.version = version;
   }
 
   public Issue(File file)
@@ -56,11 +59,16 @@ public class Issue
     {
       component = lines[2];
     }
+
+    if (lines.length > 3)
+    {
+      version = lines[3];
+    }
   }
 
   public void write(File file)
   {
-    String content = title + "\n" + severity + "\n" + component;
+    String content = title + "\n" + severity + "\n" + component + "\n" + version;
     IO.writeFile(file, content.getBytes());
   }
 
@@ -82,6 +90,11 @@ public class Issue
   public String getComponent()
   {
     return component;
+  }
+
+  public String getVersion()
+  {
+    return version;
   }
 
   @Override

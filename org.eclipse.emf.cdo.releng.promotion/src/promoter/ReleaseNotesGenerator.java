@@ -120,6 +120,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
         xml.attribute("title", issue.getTitle());
         xml.attribute("severity", issue.getSeverity());
         xml.attribute("component", issue.getComponent());
+        xml.attribute("version", issue.getVersion());
       }
 
       xml.pop();
@@ -172,7 +173,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out = new PrintStream(relnotesHTML);
 
       String qualifier = buildInfo.getQualifier();
-      String title = "CDO Release Notes of " + qualifier + " (" + buildInfo.getStream() + ")";
+      String title = "Release Notes of CDO " + qualifier + " (" + buildInfo.getStream() + ")";
       String branch = buildInfo.getBranch();
       String branchURL = "http://git.eclipse.org/c/cdo/cdo.git/?h=" + branch.replaceAll("/", "%2F");
 
@@ -180,22 +181,6 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("<html>");
       out.println("<head>");
       out.println("  <title>" + title + "</title>");
-      // out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/yui/2.6.0/build/reset-fonts-grids/reset-fonts-grids.css\" media=\"screen\" />");
-      // out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/yui/2.6.0/build/menu/assets/skins/sam/menu.css\" media=\"screen\" />");
-      // out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/reset.css\" media=\"screen\"/>");
-      // out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/layout.css\" media=\"screen\" />");
-      // out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/header.css\" media=\"screen\" />");
-      // out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/footer.css\" media=\"screen\" />");
-      // out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/visual.css\" media=\"screen\" />");
-      // out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/print.css\" media=\"print\" />");
-      // out.println("  <!--[if lte IE 7]>  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/ie_style.css\" media=\"screen\"/> <![endif]-->");
-      // out.println("  <!--[if IE 6]>  <link rel=\"stylesheet\" type=\"text/css\" href=\"/eclipse.org-common/themes/Nova/css/ie6_style.css\" media=\"screen\"/> <![endif]-->");
-      // out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/home/content/nova.css\"/>");
-      // out.println("  <!--[if IE 6]> <link rel=\"stylesheet\" type=\"text/css\" href=\"/home/content/ie6_nova.css\" media=\"screen\"/> <![endif]-->");
-      // out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/cdo/_projectCommon/styles.css\" media=\"screen\"/>");
-      // out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/cdo/downloads/_styles.css\" media=\"screen\"/>");
-      // out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/modeling/includes/common.css\"/>");
-      // out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/modeling/includes/downloads.css\"/>");
       out.println("</head>");
       out.println();
       out.println("<body style=\"font-family:Arial;\">");
@@ -205,21 +190,17 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("<p>");
       out.println("These release notes have been generated from commits to the <a href=\"" + branchURL + "\">" + branch
           + "</a> branch.");
-      out.println("<br/>The relevant commits are between " + fromRevision + " and " + toRevision + ".");
+      out.println("<br/>The first relevant commit is " + fromRevision + ".");
+      out.println("<br/>The last relevant commit is " + toRevision + ".");
 
-      if (previousBuildInfo != null)
-      {
-        String q = previousBuildInfo.getQualifier();
-        out.println("<br/>The previous build of the " + buildInfo.getStream()
-            + " stream is <a href=\"http://www.eclipse.org/cdo/downloads/#" + q.replace('-', '_') + "\">" + q + "</a>.");
-      }
-      else
+      if (previousBuildInfo == null)
       {
         out.println("<br/>This is the first build of the " + buildInfo.getStream() + " stream.");
       }
 
       out.println("</p>");
 
+      previousBuildNote(out, buildInfo, previousBuildInfo);
       out.println("<div style=\"margin-left:40px;\">");
       out.print("<img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\">&nbsp;");
       out.println("<a href=\"http://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_')
@@ -231,6 +212,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
         component.renderHTML(out);
       }
 
+      previousBuildNote(out, buildInfo, previousBuildInfo);
       out.println("</div>");
       out.println("</body>");
       out.println("</html>");
@@ -243,6 +225,23 @@ public class ReleaseNotesGenerator extends PromoterComponent
     {
       IO.close(out);
     }
+  }
+
+  protected void previousBuildNote(PrintStream out, BuildInfo buildInfo, BuildInfo previousBuildInfo)
+  {
+    out.println("<p>");
+    if (previousBuildInfo != null)
+    {
+      String q = previousBuildInfo.getQualifier();
+      out.println("The previous build of the " + buildInfo.getStream()
+          + " stream is <a href=\"http://www.eclipse.org/cdo/downloads/#" + q.replace('-', '_') + "\">" + q + "</a>.");
+    }
+    else
+    {
+      out.println("This is the first build of the " + buildInfo.getStream() + " stream.");
+    }
+
+    out.println("</p>");
   }
 
   protected IssueComponent addIssueComponent(List<IssueComponent> components, String name, String label)
@@ -459,6 +458,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
         out.print("<img src=\"../../images/" + severity + ".gif\" alt=\"" + severity + "\">&nbsp;");
         out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title);
+        out.print("&nbsp; (" + issue.getVersion() + ")");
         out.println("<br/>");
       }
     }
