@@ -32,18 +32,14 @@ public abstract class IssueManager extends PromoterComponent implements Comparat
       issuesFolder.mkdirs();
     }
 
-    File file = null;
-    if (isCaching())
+    File file = new File(issuesFolder, id);
+    if (useCache() && file.isFile())
     {
-      file = new File(issuesFolder, id);
-      if (file.isFile())
-      {
-        return new Issue(file);
-      }
+      return new Issue(file);
     }
 
     Issue issue = doGetIssue(id);
-    if (issue != null && file != null)
+    if (issue != null)
     {
       issue.write(file);
     }
@@ -59,7 +55,7 @@ public abstract class IssueManager extends PromoterComponent implements Comparat
 
   protected abstract Issue doGetIssue(String id);
 
-  protected boolean isCaching()
+  protected boolean useCache()
   {
     return false;
   }
