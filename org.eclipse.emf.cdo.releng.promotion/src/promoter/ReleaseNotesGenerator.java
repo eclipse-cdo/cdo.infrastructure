@@ -186,10 +186,18 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("<p>");
       out.println("These release notes have been generated from commits to the <a href=\"http://www.eclipse.org/cdo/downloads/#releases_"
           + buildInfo.getStream().replace('.', '_') + "\">" + buildInfo.getStream() + " stream</a>.");
-      out.println("<br/>The first commit is " + fromRevision
-          + " in the <a href=\"http://git.eclipse.org/c/cdo/cdo.git/?h="
-          + previousBuildInfo.getBranch().replaceAll("/", "%2F") + "\">" + previousBuildInfo.getBranch()
-          + "</a> branch.");
+      out.print("<br/>The first commit is " + fromRevision);
+      if (previousBuildInfo != null)
+      {
+        out.println(" in the <a href=\"http://git.eclipse.org/c/cdo/cdo.git/?h="
+            + previousBuildInfo.getBranch().replaceAll("/", "%2F") + "\">" + previousBuildInfo.getBranch()
+            + "</a> branch.");
+      }
+      else
+      {
+        out.println(".");
+      }
+
       out.println("<br/>The last commit is " + toRevision + " in the <a href=\""
           + "http://git.eclipse.org/c/cdo/cdo.git/?h=" + buildInfo.getBranch().replaceAll("/", "%2F") + "\">"
           + buildInfo.getBranch() + "</a> branch.");
