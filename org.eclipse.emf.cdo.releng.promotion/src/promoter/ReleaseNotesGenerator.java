@@ -28,8 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
  * @author Eike Stepper
@@ -144,7 +142,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
     try
     {
-      SortedMap<String, IssueComponent> components = new TreeMap<String, IssueComponent>();
+      List<IssueComponent> components = new ArrayList<IssueComponent>();
       addIssueComponent(components, "cdo.core", "CDO Model Repository (Core)");
       addIssueComponent(components, "cdo.legacy", "CDO Model Repository (Legacy Mode)");
       addIssueComponent(components, "cdo.ui", "CDO Model Repository (User Interface)");
@@ -162,7 +160,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       for (Issue issue : issues)
       {
         String name = issue.getComponent();
-        IssueComponent component = components.get(name);
+        IssueComponent component = getIssueComponent(components, name);
         if (component == null)
         {
           component = other;
@@ -182,7 +180,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("<head>");
       out.println("<title>" + title + "</title>");
       out.println("</head>");
-      out.println("<body>");
+      out.println("<body font=\"face:Arial\">");
       out.println("<h1>" + title + "</h1>");
 
       out.println("<p>");
@@ -204,12 +202,12 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("</p>");
 
       out.println("<p>");
-      out.print("&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"http://www.eclipse.org/cdo/images/22x22/go-down.png\"/>&nbsp;");
+      out.print("&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/>&nbsp;");
       out.println("<a href=\"http://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_')
           + "\">Downloads for " + qualifier + "</a>");
       out.println("</p>");
 
-      for (IssueComponent component : components.values())
+      for (IssueComponent component : components)
       {
         component.renderHTML(out);
       }
@@ -227,11 +225,24 @@ public class ReleaseNotesGenerator extends PromoterComponent
     }
   }
 
-  protected IssueComponent addIssueComponent(SortedMap<String, IssueComponent> components, String name, String label)
+  protected IssueComponent addIssueComponent(List<IssueComponent> components, String name, String label)
   {
     IssueComponent component = new IssueComponent(name, label);
-    components.put(name, component);
+    components.add(component);
     return component;
+  }
+
+  protected IssueComponent getIssueComponent(List<IssueComponent> components, String name)
+  {
+    for (IssueComponent component : components)
+    {
+      if (component.getName().equals(name))
+      {
+        return component;
+      }
+    }
+
+    return null;
   }
 
   protected Collection<ReleaseNotesStream> getStreams(List<BuildInfo> buildInfos)
@@ -361,6 +372,11 @@ public class ReleaseNotesGenerator extends PromoterComponent
       this.label = label;
     }
 
+    public String getName()
+    {
+      return name;
+    }
+
     public void addIssue(Issue issue)
     {
       if (issueManager.getSeverity(issue) == 0)
@@ -416,7 +432,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
         out.print("&nbsp;&nbsp;&nbsp;&nbsp;");
         out.print("<img=\"" + severity + ".gif\" alt=\"" + severity + "\"/>&nbsp;");
         out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;");
-        out.println(issue.getTitle() + "<br/>");
+        out.println(issue.getTitle().replaceAll("<", "&lt;") + "<br/>");
       }
     }
   }
