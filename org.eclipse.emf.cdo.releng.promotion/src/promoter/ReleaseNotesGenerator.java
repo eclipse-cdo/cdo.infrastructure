@@ -184,8 +184,11 @@ public class ReleaseNotesGenerator extends PromoterComponent
           + qualifier.replace('-', '_') + "\">" + qualifier + "</a></h1>");
 
       out.println("<p>");
-      out.println("These release notes have been generated from commits to the <a href=\"http://www.eclipse.org/cdo/downloads/#releases_"
-          + buildInfo.getStream().replace('.', '_') + "\">" + buildInfo.getStream() + " stream</a>.");
+      out.println("These release notes have been generated from the commit log of the <a href=\"http://www.eclipse.org/cdo/downloads/#releases_"
+          + buildInfo.getStream().replace('.', '_')
+          + "\">"
+          + buildInfo.getStream()
+          + "</a> stream and the associated bugzillas.");
       out.print("<br/>The first commit is " + fromRevision);
       if (previousBuildInfo != null)
       {
@@ -195,7 +198,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       }
       else
       {
-        out.println(".");
+        out.println(" in the <a href=\"http://git.eclipse.org/c/cdo/cdo.git/?h=master\">master</a> branch.");
       }
 
       out.println("<br/>The last commit is " + toRevision + " in the <a href=\""
