@@ -173,9 +173,6 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out = new PrintStream(relnotesHTML);
 
       String qualifier = buildInfo.getQualifier();
-      String branch = buildInfo.getBranch();
-      String branchURL = "http://git.eclipse.org/c/cdo/cdo.git/?h=" + branch.replaceAll("/", "%2F");
-
       out.println("<!DOCTYPE html>");
       out.println("<html>");
       out.println("<head>");
@@ -187,10 +184,16 @@ public class ReleaseNotesGenerator extends PromoterComponent
           + qualifier.replace('-', '_') + "\">" + qualifier + "</a></h1>");
 
       out.println("<p>");
-      out.println("These release notes have been generated from commits to the <a href=\"" + branchURL + "\">"
-          + buildInfo.getStream() + "</a> stream.");
-      out.println("<br/>The first relevant commit is " + fromRevision + ".");
-      out.println("<br/>The last relevant commit is " + toRevision + ".");
+      out.println("These release notes have been generated from commits to the <a href=\"http://www.eclipse.org/cdo/downloads/#releases_"
+          + buildInfo.getStream().replace('.', '_') + "\">" + buildInfo.getStream() + " stream</a>.");
+      out.println("<br/>The first commit is " + fromRevision
+          + " in the <a href=\"http://git.eclipse.org/c/cdo/cdo.git/?h="
+          + previousBuildInfo.getBranch().replaceAll("/", "%2F") + "\">" + previousBuildInfo.getBranch()
+          + "</a> branch.");
+      out.println("<br/>The last commit is " + toRevision + " in the <a href=\""
+          + "http://git.eclipse.org/c/cdo/cdo.git/?h=" + buildInfo.getBranch().replaceAll("/", "%2F") + "\">"
+          + buildInfo.getBranch() + "</a> branch.");
+
       previousBuildNote(out, buildInfo, previousBuildInfo);
       out.println("</p>");
 
@@ -287,10 +290,13 @@ public class ReleaseNotesGenerator extends PromoterComponent
   protected BuildInfo[] getBuildInfos(ReleaseNotesStream stream)
   {
     List<BuildInfo> buildInfos = stream.getBuildInfos();
-    Collections.sort(buildInfos/*
-                                * , new Comparator<BuildInfo>() { public int compare(BuildInfo bi1, BuildInfo bi2) {
-                                * return new Integer(bi1.getRevision()).compareTo(new Integer(bi2.getRevision())); } }
-                                */);
+    Collections.sort(buildInfos, new Comparator<BuildInfo>()
+    {
+      public int compare(BuildInfo bi1, BuildInfo bi2)
+      {
+        return bi1.getTimestamp().compareTo(bi2.getTimestamp());
+      }
+    });
 
     return buildInfos.toArray(new BuildInfo[buildInfos.size()]);
   }
