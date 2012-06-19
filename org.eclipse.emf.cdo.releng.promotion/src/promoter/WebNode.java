@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
@@ -225,15 +225,13 @@ public class WebNode implements Comparable<WebNode>
         + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/package-x-generic.png\"/></td>"
         + "<td><b><a href=\"" + http() + "drops/" + buildInfo.getQualifier()
         + "\">Update&nbsp;Site</a></b> for use with <a href=\"" + HELP_TOPIC_URL
-        + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.</td>" + "<td class=\"file-size level"
-        + (repository.getPathLevel() + 1) + "\"></td></tr>");
+        + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> or a web browser.</td>"
+        + "<td class=\"file-size level" + (repository.getPathLevel() + 1) + "\"></td></tr>");
 
     out.println(prefix(level)
-        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/internet-web-browser.png\"/></td><td><b><a href=\""
-        + http()
-        + "drops/"
-        + buildInfo.getQualifier()
-        + "/index.html\">Contents</a></b> to browse the contained features and plugins.</td><td class=\"file-size level"
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/edit-paste.png\"/></td><td><b><a href=\""
+        + http() + "drops/" + buildInfo.getQualifier()
+        + "/relnotes.html\">Release Notes</a></b> to see what's in this build.</td><td class=\"file-size level"
         + (repository.getPathLevel() + 1) + "\"></td></tr>");
 
     generateDropHelp(out, level, buildInfo);
@@ -248,9 +246,9 @@ public class WebNode implements Comparable<WebNode>
 
     generateDropSeparator(out, level);
 
-    generateDropFile(out, level, buildInfo, "relnotes.xml", " for the release notes of this build.");
+    generateDropFile(out, level, buildInfo, "relnotes.xml", " for the change infos of this build.");
 
-    generateDropFile(out, level, buildInfo, "index.xml", " for detailed contents of this build.");
+    generateDropFile(out, level, buildInfo, "index.xml", " for contents of this build.");
 
     generateDropFile(out, level, buildInfo, "bookmarks.xml", " for the <a href=\"" + HELP_TOPIC_URL
         + "/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
@@ -286,7 +284,7 @@ public class WebNode implements Comparable<WebNode>
           + http()
           + "drops/"
           + buildInfo.getQualifier()
-          + "/help/index.html\">Documentation</a></b> to browse the online help center for this drop.</td><td class=\"file-size level"
+          + "/help/index.html\">Documentation</a></b> to browse the online help center of this build.</td><td class=\"file-size level"
           + (repository.getPathLevel() + 1) + "\"></td></tr>");
     }
   }
