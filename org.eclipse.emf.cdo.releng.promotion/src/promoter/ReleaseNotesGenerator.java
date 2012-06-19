@@ -172,7 +172,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out = new PrintStream(relnotesHTML);
 
       String qualifier = buildInfo.getQualifier();
-      String title = "Release Notes for CDO " + qualifier + " (" + buildInfo.getStream() + ")";
+      String title = "CDO Release Notes of " + qualifier + " (" + buildInfo.getStream() + ")";
       String branch = buildInfo.getBranch();
       String branchURL = "http://git.eclipse.org/c/cdo/cdo.git/?h=" + branch.replaceAll("/", "%2F");
 
@@ -198,8 +198,8 @@ public class ReleaseNotesGenerator extends PromoterComponent
       // out.println("  <link rel=\"stylesheet\" type=\"text/css\" href=\"/modeling/includes/downloads.css\"/>");
       out.println("</head>");
       out.println();
-      out.println("<body bgcolor=\"#FFFFFF\">");
-      out.println("<div style=\"margin:20px; font-face:Arial;\">");
+      out.println("<body style=\"font-family:Arial;\">");
+      out.println("<div>");
       out.println("<h1>" + title + "</h1>");
 
       out.println("<p>");
