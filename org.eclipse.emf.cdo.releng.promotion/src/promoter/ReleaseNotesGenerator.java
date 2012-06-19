@@ -157,7 +157,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       addIssueComponent(components, "cdo.net4j.db", "Net4j DB Framework");
       addIssueComponent(components, "cdo.docs", "Documentation");
       addIssueComponent(components, "cdo.releng", "Release Engineering");
-      IssueComponent other = addIssueComponent(components, null, "Other");
+      IssueComponent other = addIssueComponent(components, "", "Other");
 
       for (Issue issue : issues)
       {
