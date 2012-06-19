@@ -422,7 +422,9 @@ public class ReleaseNotesGenerator extends PromoterComponent
       if (!enhancements.isEmpty())
       {
         out.println("<h3>Enhancements</h3>");
+        out.println("<div style=\"margin-left:40px;\">");
         renderHTML(out, enhancements);
+        out.println("</div>");
       }
 
       if (!fixes.isEmpty())
@@ -438,7 +440,9 @@ public class ReleaseNotesGenerator extends PromoterComponent
         });
 
         out.println("<h3>Bug Fixes</h3>");
+        out.println("<div style=\"margin-left:40px;\">");
         renderHTML(out, fixes);
+        out.println("</div>");
       }
 
       out.println("</div>");
@@ -452,7 +456,6 @@ public class ReleaseNotesGenerator extends PromoterComponent
         String url = issueManager.getURL(issue);
         String title = issue.getTitle().replaceAll("<", "&lt;").replaceAll("\"", "&quot;");
 
-        out.print("&nbsp;&nbsp;&nbsp;&nbsp;");
         out.print("<img=\"" + severity + ".gif\" alt=\"" + severity + "\">&nbsp;");
         out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title);
         out.println("<br/>");
