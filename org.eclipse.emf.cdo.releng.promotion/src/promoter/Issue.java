@@ -76,7 +76,7 @@ public class Issue
 
   public void write(File file)
   {
-    String content = title + "\n" + severity + "\n" + component + "\n" + version;
+    String content = title + "\n" + severity + "\n" + component + "\n" + version + "\n" + status;
     IO.writeFile(file, content.getBytes());
   }
 
