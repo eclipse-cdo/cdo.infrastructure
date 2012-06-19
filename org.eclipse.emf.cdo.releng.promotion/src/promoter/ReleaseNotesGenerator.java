@@ -87,14 +87,13 @@ public class ReleaseNotesGenerator extends PromoterComponent
       List<Issue> issues = new ArrayList<Issue>(getIssues(buildInfo, fromRevision, toRevision));
       sortIssues(issues);
 
-      generateReleaseNotesXML(stream, buildInfo, previousBuildInfo, fromRevision, toRevision, issues, relnotesXML);
-
-      generateReleaseNotesHTML(buildInfo, qualifier, relnotesHTML, fromRevision, toRevision, issues);
+      generateReleaseNotesXML(buildInfo, previousBuildInfo, fromRevision, toRevision, issues, relnotesXML);
+      generateReleaseNotesHTML(buildInfo, previousBuildInfo, fromRevision, toRevision, issues, relnotesHTML);
     }
   }
 
-  protected void generateReleaseNotesXML(ReleaseNotesStream stream, BuildInfo buildInfo, BuildInfo previousBuildInfo,
-      String fromRevision, String toRevision, List<Issue> issues, File relnotesXML)
+  protected void generateReleaseNotesXML(BuildInfo buildInfo, BuildInfo previousBuildInfo, String fromRevision,
+      String toRevision, List<Issue> issues, File relnotesXML)
   {
     OutputStream out = null;
 
@@ -104,7 +103,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       XMLOutput xml = new XMLOutput(out);
 
       xml.element("relnotes");
-      xml.attribute("stream", stream.getName());
+      xml.attribute("stream", buildInfo.getStream());
       xml.attribute("drop", buildInfo.getQualifier());
       xml.attribute("revision", toRevision);
       if (previousBuildInfo != null)
@@ -138,8 +137,8 @@ public class ReleaseNotesGenerator extends PromoterComponent
     }
   }
 
-  protected void generateReleaseNotesHTML(BuildInfo buildInfo, String qualifier, File relnotesHTML,
-      String fromRevision, String toRevision, List<Issue> issues)
+  protected void generateReleaseNotesHTML(BuildInfo buildInfo, BuildInfo previousBuildInfo, String fromRevision,
+      String toRevision, List<Issue> issues, File relnotesHTML)
   {
     PrintStream out = null;
 
@@ -158,16 +157,23 @@ public class ReleaseNotesGenerator extends PromoterComponent
       addIssueComponent(components, "cdo.net4j.db", "Net4j DB Framework");
       addIssueComponent(components, "cdo.docs", "Documentation");
       addIssueComponent(components, "cdo.releng", "Release Engineering");
+      IssueComponent other = addIssueComponent(components, null, "Other");
 
       for (Issue issue : issues)
       {
         String name = issue.getComponent();
         IssueComponent component = components.get(name);
+        if (component == null)
+        {
+          component = other;
+        }
+
         component.addIssue(issue);
       }
 
       out = new PrintStream(relnotesHTML);
 
+      String qualifier = buildInfo.getQualifier();
       String title = "Release Notes for CDO " + qualifier + " (" + buildInfo.getStream() + ")";
       String branch = buildInfo.getBranch();
       String branchURL = "http://git.eclipse.org/c/cdo/cdo.git/?h=" + branch.replaceAll("/", "%2F");
@@ -180,16 +186,27 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("<h1>" + title + "</h1>");
 
       out.println("<p>");
-      out.println("These release notes have been generated from commits to the <a href=\"" + branchURL + "\"><b>"
-          + branch + "</b></a> branch.<br/>");
-      out.println("The relevant commits are between <b>" + fromRevision + "</b> and <b>" + toRevision + "</b>.<br/>");
+      out.println("These release notes have been generated from commits to the <a href=\"" + branchURL + "\">" + branch
+          + "</a> branch.");
+      out.println("<br/>The relevant commits are between " + fromRevision + " and " + toRevision + ".");
+
+      if (previousBuildInfo != null)
+      {
+        String q = previousBuildInfo.getQualifier();
+        out.println("<br/>The previous build of the " + buildInfo.getStream()
+            + " stream is <a href=\"http://www.eclipse.org/cdo/downloads/#" + q.replace('-', '_') + "\">" + q + "</a>.");
+      }
+      else
+      {
+        out.println("<br/>This is the first build of the " + buildInfo.getStream() + " stream.");
+      }
+
       out.println("</p>");
 
       out.println("<p>");
-      out.print("&nbsp;&nbsp;&nbsp;&nbsp;");
+      out.print("&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"http://www.eclipse.org/cdo/images/22x22/go-down.png\"/>&nbsp;");
       out.println("<a href=\"http://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_')
-          + "\"><img src=\"http://www.eclipse.org/cdo/images/22x22/go-down.png\" alt=\"Download\"/>&nbsp;Download "
-          + qualifier + "</a>");
+          + "\">Downloads for " + qualifier + "</a>");
       out.println("</p>");
 
       for (IssueComponent component : components.values())
@@ -210,9 +227,11 @@ public class ReleaseNotesGenerator extends PromoterComponent
     }
   }
 
-  protected void addIssueComponent(SortedMap<String, IssueComponent> components, String name, String label)
+  protected IssueComponent addIssueComponent(SortedMap<String, IssueComponent> components, String name, String label)
   {
-    components.put(name, new IssueComponent(name, label));
+    IssueComponent component = new IssueComponent(name, label);
+    components.put(name, component);
+    return component;
   }
 
   protected Collection<ReleaseNotesStream> getStreams(List<BuildInfo> buildInfos)
