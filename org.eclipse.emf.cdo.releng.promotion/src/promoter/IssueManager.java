@@ -57,6 +57,6 @@ public abstract class IssueManager extends PromoterComponent implements Comparat
 
   protected boolean useCache()
   {
-    return false;
+    return true; // XXX
   }
 }

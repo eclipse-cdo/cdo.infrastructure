@@ -148,7 +148,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       addIssueComponent(components, "cdo.core", "CDO Model Repository (Core)");
       addIssueComponent(components, "cdo.legacy", "CDO Model Repository (Legacy Mode)");
       addIssueComponent(components, "cdo.ui", "CDO Model Repository (User Interface)");
-      addIssueComponent(components, "cdo.db", "CDO Model Repository (JDB Support)");
+      addIssueComponent(components, "cdo.db", "CDO Model Repository (JDBC Support)");
       addIssueComponent(components, "cdo.hibernate", "CDO Model Repository (Hibernate Support)");
       addIssueComponent(components, "cdo.objy", "CDO Model Repository (Objectivity Support)");
       addIssueComponent(components, "cdo.dawn", "CDO Dawn");
