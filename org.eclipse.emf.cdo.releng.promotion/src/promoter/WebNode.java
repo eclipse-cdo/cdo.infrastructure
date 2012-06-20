@@ -246,7 +246,7 @@ public class WebNode implements Comparable<WebNode>
 
     generateDropSeparator(out, level);
 
-    generateDropFile(out, level, buildInfo, "index.xml", " for contents of this build.");
+    generateDropFile(out, level, buildInfo, "index.xml", " for the contents of this build.");
 
     generateDropFile(out, level, buildInfo, "relnotes.xml", " for the change infos of this build.");
 
