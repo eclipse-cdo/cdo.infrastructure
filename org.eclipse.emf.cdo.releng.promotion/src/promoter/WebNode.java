@@ -141,7 +141,7 @@ public class WebNode implements Comparable<WebNode>
         + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/22x22/package-x-generic.png\"/></td>"
         + "<td><b><a href=\"" + http() + "updates/" + repository.getPath()
         + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"" + HELP_TOPIC_URL
-        + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> but <b>not</b> with a web browser.</td>"
+        + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> or a web browser.</td>"
         + "<td class=\"file-size level" + repository.getPathLevel() + "\"></td></tr>");
 
     String apiBaselineURL = repository.getApiBaselineURL();
