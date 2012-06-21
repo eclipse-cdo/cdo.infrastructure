@@ -69,6 +69,13 @@ public class DuplicateTask extends AbstractDropTask
           xml.pop();
           xml.pop();
 
+          xml.element("move").attribute("todir", newQualifier + "/zips");
+          xml.push();
+          xml.element("fileset").attribute("dir", newQualifier + "/zips");
+          xml.element("mapper").attribute("type", "regexp").attribute("from", "(.*)" + qualifier + "(.*)")
+              .attribute("to", "\\1" + newQualifier + "\\2");
+          xml.pop();
+
           xml.element("delete").attribute("includeemptydirs", true).attribute("failonerror", false);
           xml.push();
           xml.element("fileset").attribute("dir", newQualifier);
