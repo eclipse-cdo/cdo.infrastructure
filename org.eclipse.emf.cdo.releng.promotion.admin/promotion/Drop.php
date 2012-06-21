@@ -88,6 +88,8 @@ class Drop
 		$visibility = $this->visible ? "Hide" : "Show";
 		$this->td('<a href="?action='.$visibility.'&drop='.$this->qualifier.'" title="'.$visibility.' this drop"><img src="images/'.$visibility.'.png"></a>');
 
+		$this->td('<a href="?action=AskCopy&drop='.$this->qualifier.'" title="Copy this drop"><img src="images/copy.gif"></a>');
+
 		if ($this->staged || $this->type == "R")
 		{
 			$this->td();

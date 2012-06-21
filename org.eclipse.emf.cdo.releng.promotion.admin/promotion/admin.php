@@ -17,7 +17,7 @@ require_once 'Drop.php';
 echo '<center><font face="Helvetica,Arial">';
 echo '<h1><a href="index.html" target="_parent">CDO Promotion Admin</a></h1>';
 
-$cdo = new Project("/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops", array("indigo", "juno"));
+$cdo = new Project("/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops", array("indigo", "juno", "kepler"));
 
 if (isset($_GET["action"]))
 {
@@ -176,6 +176,24 @@ function AskStage($drop)
 function Stage($drop)
 {
 	return scheduleTask("Stage", "$drop->qualifier\n".$_GET["train"]."\n".$_GET["old"]);
+}
+
+function AskCopy($drop)
+{
+	echo '<h2>Drop '.$drop->qualifier.'</h2>';
+	echo '<form method="GET">';
+	echo '<input name="drop" type="hidden" value="'.$drop->qualifier.'"></input>';
+	echo '<p>New Qualifier: <input name="newQualifier" type="text" value="'.$newQualifier.'"></input></p>';
+	echo '<input name="action" type="submit" value="Copy"></input>';
+	echo '&nbsp;';
+	echo '<input name="action" type="submit" value="Cancel"></input>';
+	echo '</form>';
+	return false;
+}
+
+function Copy($drop)
+{
+	return scheduleTask("Copy", "$drop->qualifier");
 }
 
 function AskDelete($drop)
