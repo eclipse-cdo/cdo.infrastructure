@@ -46,7 +46,7 @@ public class RepositoryComposer extends PromoterComponent
       {
         WebNode webNode = new WebNode(folder);
 
-        Repository repository = getRepository(folder, buildInfos);
+        Repository repository = createRepository(folder, buildInfos);
         if (repository != null)
         {
           repository.generate(xml);
@@ -72,7 +72,7 @@ public class RepositoryComposer extends PromoterComponent
     return null;
   }
 
-  protected Repository getRepository(File compositeDir, List<BuildInfo> buildInfos)
+  protected Repository createRepository(File compositeDir, List<BuildInfo> buildInfos)
   {
     Properties compositionProperties = Config.loadProperties(new File(compositeDir, "composition.properties"), false);
     String name = compositionProperties.getProperty("composite.name");
@@ -85,12 +85,12 @@ public class RepositoryComposer extends PromoterComponent
 
     File temp = PromoterConfig.INSTANCE.getCompositionTempArea();
     String path = compositeDir.getPath();
-    path = path.substring(path.indexOf("/") + 1);
+    path = path.substring(path.indexOf("/") + 1); // Assumes that this method is called only for 2. lvel repos
 
     String childLocations = compositionProperties.getProperty("child.locations");
     if (childLocations != null)
     {
-      repository = new Repository(temp, name, path);
+      repository = new Repository(this, temp, name, path);
 
       StringTokenizer tokenizer = new StringTokenizer(childLocations, ",");
       while (tokenizer.hasMoreTokens())
@@ -104,7 +104,7 @@ public class RepositoryComposer extends PromoterComponent
       String childJob = compositionProperties.getProperty("child.job");
       String childStream = compositionProperties.getProperty("child.stream");
       String childTypes = compositionProperties.getProperty("child.types");
-      repository = new Repository.Drops(temp, name, path, childJob, childStream, childTypes, buildInfos);
+      repository = new Repository.Drops(this, temp, name, path, childJob, childStream, childTypes, buildInfos);
     }
 
     repository.setProperties(compositionProperties);

@@ -28,7 +28,11 @@ import java.util.StringTokenizer;
  */
 public class Repository
 {
-  private static final boolean COMPRESS = false;
+  public static final boolean COMPRESS = false;
+
+  private static final String PARENT_DIRECTORY = "../";
+
+  private RepositoryComposer composer;
 
   private File base;
 
@@ -39,8 +43,6 @@ public class Repository
   private int pathLevel;
 
   private List<String> children = new ArrayList<String>();
-
-  private List<Repository> childRepositories = new ArrayList<Repository>();
 
   private String childRetention;
 
@@ -58,11 +60,12 @@ public class Repository
 
   private boolean webCollapsed;
 
-  public Repository(File base, String name, String path)
+  public Repository(RepositoryComposer composer, File base, String name, String path)
   {
     System.out.println();
     System.out.println("Generating repository " + name + ": " + new File(base, path).getAbsolutePath());
 
+    this.composer = composer;
     this.base = base;
     this.name = name;
     this.path = path;
@@ -73,6 +76,11 @@ public class Repository
       tokenizer.nextToken();
       ++pathLevel;
     }
+  }
+
+  public final RepositoryComposer getComposer()
+  {
+    return composer;
   }
 
   public final File getBase()
@@ -114,11 +122,6 @@ public class Repository
     {
       throw new RuntimeException(ex);
     }
-  }
-
-  public final List<Repository> getChildRepositories()
-  {
-    return childRepositories;
   }
 
   public String getChildRetention()
@@ -249,6 +252,11 @@ public class Repository
         out.println("<ul>");
         for (String child : children)
         {
+          while (child.startsWith(PARENT_DIRECTORY))
+          {
+            child = child.substring(PARENT_DIRECTORY.length());
+          }
+
           out.println("<li><a href=\"" + child + "/index.html\">" + child + "</a></li>");
         }
 
@@ -371,10 +379,10 @@ public class Repository
 
     private List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
 
-    public Drops(File base, String name, String path, String job, String stream, String types,
-        List<BuildInfo> buildInfos)
+    public Drops(RepositoryComposer composer, File base, String name, String path, String job, String stream,
+        String types, List<BuildInfo> buildInfos)
     {
-      super(base, name, path);
+      super(composer, base, name, path);
       this.job = job;
       this.stream = stream;
       this.types = types;
@@ -402,10 +410,10 @@ public class Repository
           continue;
         }
 
-        String child = "../";
+        String child = PARENT_DIRECTORY;
         for (int i = 0; i < getPathLevel(); i++)
         {
-          child += "../";
+          child += PARENT_DIRECTORY;
         }
 
         child += "drops/" + buildInfo.getQualifier();
