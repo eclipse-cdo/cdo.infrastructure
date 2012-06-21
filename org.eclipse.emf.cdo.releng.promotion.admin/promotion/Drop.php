@@ -62,6 +62,8 @@ class Drop
 		$visibility = $this->visible ? "Hide" : "Show";
 		$this->td('<a href="?action='.$visibility.'&drop='.$this->qualifier.'" title="'.$visibility.' this drop"><img src="images/'.$visibility.'.png"></a>');
 
+		$this->td('<a href="?action=AskDuplicate&drop='.$this->qualifier.'" title="Duplicate this drop"><img src="images/copy.gif"></a>');
+
 		$intrain = in_array($this->train, $this->project->trains);
 		if ($intrain && $this->staged)
 		{
@@ -87,8 +89,6 @@ class Drop
 
 			$this->td('<a href="?action=AskStage&drop='.$this->qualifier.'&train='.$this->train.'&old='.$old.'" title="Stage this drop"><img src="images/stage.png"></a>');
 		}
-
-		$this->td('<a href="?action=AskDuplicate&drop='.$this->qualifier.'" title="Duplicate this drop"><img src="images/copy.gif"></a>');
 
 		if ($this->staged || $this->type == "R")
 		{
