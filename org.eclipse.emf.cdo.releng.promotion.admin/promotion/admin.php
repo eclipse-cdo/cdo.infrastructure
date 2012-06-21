@@ -178,22 +178,22 @@ function Stage($drop)
 	return scheduleTask("Stage", "$drop->qualifier\n".$_GET["train"]."\n".$_GET["old"]);
 }
 
-function AskCopyDrop($drop)
+function AskDuplicate($drop)
 {
 	echo '<h2>Drop '.$drop->qualifier.'</h2>';
 	echo '<form method="GET">';
 	echo '<input name="drop" type="hidden" value="'.$drop->qualifier.'"></input>';
-	echo '<p>New Qualifier: <input name="newQualifier" type="text" value=""></input></p>';
-	echo '<input name="action" type="submit" value="CopyDrop"></input>';
+	echo '<p>New Qualifier: <input name="newQualifier" type="text" value="'.$drop->qualifier.'"></input></p>';
+	echo '<input name="action" type="submit" value="Duplicate"></input>';
 	echo '&nbsp;';
 	echo '<input name="action" type="submit" value="Cancel"></input>';
 	echo '</form>';
 	return false;
 }
 
-function CopyDrop($drop)
+function Duplicate($drop)
 {
-	return scheduleTask("CopyDrop", "$drop->qualifier");
+	return scheduleTask("Duplicate", "$drop->qualifier");
 }
 
 function AskDelete($drop)
