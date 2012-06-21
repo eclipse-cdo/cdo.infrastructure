@@ -183,7 +183,7 @@ function AskCopy($drop)
 	echo '<h2>Drop '.$drop->qualifier.'</h2>';
 	echo '<form method="GET">';
 	echo '<input name="drop" type="hidden" value="'.$drop->qualifier.'"></input>';
-	echo '<p>New Qualifier: <input name="newQualifier" type="text" value="'.$newQualifier.'"></input></p>';
+	echo '<p>New Qualifier: <input name="newQualifier" type="text" value=""></input></p>';
 	echo '<input name="action" type="submit" value="Copy"></input>';
 	echo '&nbsp;';
 	echo '<input name="action" type="submit" value="Cancel"></input>';
