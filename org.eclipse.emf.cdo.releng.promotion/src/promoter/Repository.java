@@ -252,12 +252,13 @@ public class Repository
         out.println("<ul>");
         for (String child : children)
         {
-          while (child.startsWith(PARENT_DIRECTORY))
+          String label = child;
+          while (label.startsWith(PARENT_DIRECTORY))
           {
-            child = child.substring(PARENT_DIRECTORY.length());
+            label = label.substring(PARENT_DIRECTORY.length());
           }
 
-          out.println("<li><a href=\"" + child + "/index.html\">" + child + "</a></li>");
+          out.println("<li><a href=\"" + child + "/index.html\">" + label + "</a></li>");
         }
 
         out.println("</ul>");
