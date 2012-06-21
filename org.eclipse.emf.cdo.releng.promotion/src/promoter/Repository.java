@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
@@ -28,6 +28,8 @@ import java.util.StringTokenizer;
  */
 public class Repository
 {
+  private static final boolean COMPRESS = false;
+
   private File base;
 
   private String name;
@@ -239,7 +241,7 @@ public class Repository
 
           repoXML.element("property");
           repoXML.attribute("name", "p2.compressed");
-          repoXML.attribute("value", true);
+          repoXML.attribute("value", COMPRESS);
 
           repoXML.element("property");
           repoXML.attribute("name", "p2.mirrorsURL");
@@ -260,17 +262,20 @@ public class Repository
           repoXML.pop();
           repoXML.done();
 
-          xml.element("zip");
-          xml.attribute("destfile", new File(folder, xmlName + ".jar"));
-          xml.attribute("update", false);
-          xml.push();
-          xml.element("fileset");
-          xml.attribute("dir", folder);
-          xml.push();
-          xml.element("include");
-          xml.attribute("name", xmlFile.getName());
-          xml.pop();
-          xml.pop();
+          if (COMPRESS)
+          {
+            xml.element("zip");
+            xml.attribute("destfile", new File(folder, xmlName + ".jar"));
+            xml.attribute("update", false);
+            xml.push();
+            xml.element("fileset");
+            xml.attribute("dir", folder);
+            xml.push();
+            xml.element("include");
+            xml.attribute("name", xmlFile.getName());
+            xml.pop();
+            xml.pop();
+          }
         }
         catch (Exception ex)
         {

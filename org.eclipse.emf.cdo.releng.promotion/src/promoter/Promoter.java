@@ -18,8 +18,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * @author Eike Stepper
@@ -75,13 +73,13 @@ public class Promoter
       System.out.println();
     }
 
-    Ant<Entry<List<BuildInfo>, WebNode>> ant = createAnt();
-    Entry<List<BuildInfo>, WebNode> result = ant.run();
+    Ant<AntResult> ant = createAnt();
+    AntResult result = ant.run();
 
     try
     {
       ReleaseNotesGenerator releaseNotesGenerator = createReleaseNotesGenerator();
-      releaseNotesGenerator.generateReleaseNotes(result.getKey());
+      releaseNotesGenerator.generateReleaseNotes(result.getBuildInfos());
     }
     catch (Exception ex)
     {
@@ -89,11 +87,11 @@ public class Promoter
       System.out.println();
     }
 
-    WebNode webNode = result.getValue();
-    if (webNode != null)
+    WebNode rootNode = result.getRootNode();
+    if (rootNode != null)
     {
       WebGenerator webGenerator = createWebGenerator();
-      webGenerator.generateWeb(webNode);
+      webGenerator.generateWeb(rootNode);
     }
 
     System.out.println();
@@ -182,7 +180,7 @@ public class Promoter
     return createComponent(WebGenerator.class);
   }
 
-  public Ant<Map.Entry<List<BuildInfo>, WebNode>> createAnt()
+  public Ant<AntResult> createAnt()
   {
     File script = new File(PromoterConfig.INSTANCE.getWorkingArea(), "promoter.ant");
     File basedir = PromoterConfig.INSTANCE.getDownloadsArea();
@@ -220,7 +218,33 @@ public class Promoter
   /**
    * @author Eike Stepper
    */
-  public class DefaultAnt extends Ant<Map.Entry<List<BuildInfo>, WebNode>>
+  public static class AntResult
+  {
+    private List<BuildInfo> buildInfos;
+
+    private WebNode rootNode;
+
+    public AntResult(List<BuildInfo> buildInfos, WebNode rootNode)
+    {
+      this.buildInfos = buildInfos;
+      this.rootNode = rootNode;
+    }
+
+    public List<BuildInfo> getBuildInfos()
+    {
+      return buildInfos;
+    }
+
+    public WebNode getRootNode()
+    {
+      return rootNode;
+    }
+  }
+
+  /**
+   * @author Eike Stepper
+   */
+  public class DefaultAnt extends Ant<AntResult>
   {
     public DefaultAnt(File script, File basedir)
     {
@@ -228,7 +252,7 @@ public class Promoter
     }
 
     @Override
-    protected Map.Entry<List<BuildInfo>, WebNode> create(XMLOutput xml) throws Exception
+    protected AntResult create(XMLOutput xml) throws Exception
     {
       DropProcessor dropProcessor = createDropProcessor();
       final List<BuildInfo> buildInfos = dropProcessor.processDrops(xml);
@@ -236,23 +260,7 @@ public class Promoter
       RepositoryComposer repositoryComposer = createRepositoryComposer();
       final WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, new File("composites"));
 
-      return new Map.Entry<List<BuildInfo>, WebNode>()
-      {
-        public List<BuildInfo> getKey()
-        {
-          return buildInfos;
-        }
-
-        public WebNode getValue()
-        {
-          return webNode;
-        }
-
-        public WebNode setValue(WebNode value)
-        {
-          throw new UnsupportedOperationException();
-        }
-      };
+      return new AntResult(buildInfos, webNode);
     }
   }
 }
