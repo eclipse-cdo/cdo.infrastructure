@@ -206,13 +206,74 @@ public class Repository
       }
     });
 
+    generateHTML(folder);
+
     generateXML(xml, folder, "compositeArtifacts", "compositeArtifactRepository",
         "org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository");
     generateXML(xml, folder, "compositeContent", "compositeMetadataRepository",
         "org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository");
   }
 
-  private void generateXML(final XMLOutput xml, final File folder, final String xmlName, final String entityName,
+  protected void generateHTML(File folder)
+  {
+    File htmlFile = new File(folder, "index.html");
+    PrintStream out = null;
+
+    try
+    {
+      out = new PrintStream(htmlFile);
+
+      String title = "CDO Composite Update Site (" + name + ")";
+
+      out.println("<!DOCTYPE html>");
+      out.println("<html>");
+      out.println("<head>");
+      out.println("  <title>" + title + "</title>");
+      out.println("</head>");
+      out.println();
+      out.println("<body style=\"font-family:Arial; font-size:small;\">");
+      out.println("<h1>" + title + "</h1>");
+      out.println("<p>");
+      out.println("<em>For information about CDO or Net4j, see their <a href=\"http://www.eclipse.org/cdo\">homepage</a> or <a");
+      out.println("href=\"http://wiki.eclipse.org/CDO\">wiki</a>.");
+      out.println("         <br> For information about installing or updating Eclipse software, see the");
+      out.println("         <a href=\"http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-124.htm\">");
+      out.println("           Eclipse Platform Help</a>.");
+      out.println("         <br> Some plugins require third party software from p2 repositories listed in this ");
+      out.println("         <a href=\"bookmarks.xml\">bookmarks.xml</a> file.</em>");
+      out.println("</p>");
+
+      if (!children.isEmpty())
+      {
+        out.println("<h3>Contents</h3>");
+        out.println("<ul>");
+        for (String child : children)
+        {
+          out.println("<li><a href=\"" + child + "/index.html\">" + child + "</a></li>");
+        }
+
+        out.println("</ul>");
+      }
+      else
+      {
+        out.println("<p><em>Currently this composite update site is empty.<br/>");
+        out.println("This may change in the future when new builds are promoted.</em></p>");
+      }
+
+      out.println("</body>");
+      out.println("</html>");
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      IO.close(out);
+    }
+  }
+
+  protected void generateXML(final XMLOutput xml, final File folder, final String xmlName, final String entityName,
       final String typeName)
   {
     final File xmlFile = new File(folder, xmlName + ".xml");
