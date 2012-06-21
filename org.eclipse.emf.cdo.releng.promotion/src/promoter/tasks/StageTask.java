@@ -10,6 +10,7 @@
  */
 package promoter.tasks;
 
+import promoter.BuildInfo;
 import promoter.util.IO;
 
 import java.io.File;
@@ -25,7 +26,7 @@ public class StageTask extends AbstractDropTask
   }
 
   @Override
-  protected boolean execute(File drop, List<String> args)
+  protected boolean execute(File drop, List<String> args, List<BuildInfo> builds)
   {
     String train = args.remove(0);
     System.out.println("   Train = " + train);

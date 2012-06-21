@@ -34,7 +34,7 @@ public abstract class Task extends PromoterComponent
     this.id = id;
   }
 
-  protected abstract boolean execute(List<String> args) throws Exception;
+  protected abstract boolean execute(List<String> args, List<BuildInfo> builds) throws Exception;
 
   public static File getDrop(String qualifier)
   {

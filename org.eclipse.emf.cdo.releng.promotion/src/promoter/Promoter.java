@@ -119,7 +119,7 @@ public class Promoter
             System.out.println();
             System.out.println("Performing " + task.getClass().getName());
 
-            if (task.execute(args))
+            if (task.execute(args, builds))
             {
               System.out.println("   Ordering recomposition...");
               tasks.add(task);
@@ -218,6 +218,29 @@ public class Promoter
   /**
    * @author Eike Stepper
    */
+  public class DefaultAnt extends Ant<AntResult>
+  {
+    public DefaultAnt(File script, File basedir)
+    {
+      super(PromoterConfig.INSTANCE.getDirectory("ANT_HOME"), script, basedir);
+    }
+  
+    @Override
+    protected AntResult create(XMLOutput xml) throws Exception
+    {
+      DropProcessor dropProcessor = createDropProcessor();
+      final List<BuildInfo> buildInfos = dropProcessor.processDrops(xml);
+  
+      RepositoryComposer repositoryComposer = createRepositoryComposer();
+      final WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, new File("composites"));
+  
+      return new AntResult(buildInfos, webNode);
+    }
+  }
+
+  /**
+   * @author Eike Stepper
+   */
   public static class AntResult
   {
     private List<BuildInfo> buildInfos;
@@ -238,29 +261,6 @@ public class Promoter
     public WebNode getRootNode()
     {
       return rootNode;
-    }
-  }
-
-  /**
-   * @author Eike Stepper
-   */
-  public class DefaultAnt extends Ant<AntResult>
-  {
-    public DefaultAnt(File script, File basedir)
-    {
-      super(PromoterConfig.INSTANCE.getDirectory("ANT_HOME"), script, basedir);
-    }
-
-    @Override
-    protected AntResult create(XMLOutput xml) throws Exception
-    {
-      DropProcessor dropProcessor = createDropProcessor();
-      final List<BuildInfo> buildInfos = dropProcessor.processDrops(xml);
-
-      RepositoryComposer repositoryComposer = createRepositoryComposer();
-      final WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, new File("composites"));
-
-      return new AntResult(buildInfos, webNode);
     }
   }
 }
