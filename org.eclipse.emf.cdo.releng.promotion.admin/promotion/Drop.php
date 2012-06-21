@@ -57,7 +57,7 @@ class Drop
 		echo '<tr>';
 		$this->td('<a href="'.$href.'" title="Jump to downloads page" target="_blank">'.$this->qualifier.'</a>');
 		$this->td($this->label);
-		$this->td('<a href="?action=EditLabel&drop='.$this->qualifier.'" title="Change drop label"><img src="images/edit.png"></a>');
+		$this->td('<a href="?action=EditLabel&drop='.$this->qualifier.'" title="Change drop label"><img src="images/edit.gif"></a>');
 
 		$visibility = $this->visible ? "Hide" : "Show";
 		$this->td('<a href="?action='.$visibility.'&drop='.$this->qualifier.'" title="'.$visibility.' this drop"><img src="images/'.$visibility.'.png"></a>');
