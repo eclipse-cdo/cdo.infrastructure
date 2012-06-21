@@ -52,7 +52,7 @@ class Drop
 
 	function generate()
 	{
-		$href = 'http://download.eclipse.org/modeling/emf/cdo/updates/index.html#'.str_replace('-', '_', $this->qualifier);
+		$href = 'http://www.eclipse.org/cdo/downloads/#'.str_replace('-', '_', $this->qualifier);
 
 		echo '<tr>';
 		$this->td('<a href="'.$href.'" title="Jump to downloads page" target="downloads">'.$this->qualifier.'</a>');
