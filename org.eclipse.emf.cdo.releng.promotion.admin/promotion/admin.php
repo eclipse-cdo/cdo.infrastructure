@@ -193,7 +193,8 @@ function AskDuplicate($drop)
 
 function Duplicate($drop)
 {
-	return scheduleTask("Duplicate", "$drop->qualifier");
+	$value = $_GET["newQualifier"];
+	return scheduleTask("Duplicate", "$drop->qualifier\n$value");
 }
 
 function AskDelete($drop)
