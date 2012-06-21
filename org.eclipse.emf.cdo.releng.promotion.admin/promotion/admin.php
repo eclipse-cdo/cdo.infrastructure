@@ -15,7 +15,7 @@ require_once 'Project.php';
 require_once 'Drop.php';
 
 echo '<center><font face="Helvetica,Arial">';
-echo '<h1><a href="admin.php" target="_parent">CDO Promotion Admin</a></h1>';
+echo '<h1><a href="index.html" target="_parent">CDO Promotion Admin</a></h1>';
 
 $cdo = new Project("/home/data/httpd/download.eclipse.org/modeling/emf/cdo/drops", array("indigo", "juno", "kepler"));
 
@@ -109,7 +109,7 @@ function scheduleTask($task, $args)
 
 	status("Promoter finished");
 	status("");
-	status('<b><a href="admin.php" target="_parent">Return</a></b>');
+	status('<b><a href="index.html" target="_parent">Return</a></b>');
 	return false;
 }
 
