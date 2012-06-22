@@ -112,7 +112,7 @@ class Drop
 		}
 
 		$build = "ll /shared/jobs/emf-cdo-integration/builds/".$this->number;
-		if (file_exists($build))
+		if (is_dir($build))
 		{
 			$this->td('<a href="https://hudson.eclipse.org/hudson/job/emf-cdo-integration/'.$this->number.'" title="Jump to Hudson build">'.$this->number.'</a>');
 		}
