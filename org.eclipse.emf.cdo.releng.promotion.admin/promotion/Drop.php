@@ -70,7 +70,7 @@ class Drop
 
 		if (is_dir("/shared/jobs/emf-cdo-integration/builds/".$this->number))
 		{
-			$this->td('<a href="https://hudson.eclipse.org/hudson/job/emf-cdo-integration/'.$this->number.'" title="Jump to Hudson build">'.$this->number.'</a>');
+			$this->td('<a href="https://hudson.eclipse.org/hudson/job/emf-cdo-integration/'.$this->number.'" title="Jump to Hudson build" target="_blank">'.$this->number.'</a>');
 		}
 		else
 		{
