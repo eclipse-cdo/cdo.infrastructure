@@ -9,6 +9,8 @@ $logfile = "/tmp/promotion.emf.cdo/promoter.log";
 //}
 
 $logsize = filesize($logfile);
+$del = "";
+
 //if ($logsize != 0)
 //{
 //	$del = '<a href="?delete" title="Delete log file"><img src="images/delete.gif"></a>';
