@@ -5,9 +5,9 @@ echo "<tt>\n\n";
 
 $logfile = "/tmp/promotion.emf.cdo/promoter.log";
 $content = file_get_contents($logfile);
-$content = str_replace('\n', '<br>', $content);
+$content = str_replace("\n", '<br>', $content);
 echo $content;
 
-echo "</tt>\n";
+echo "\n\n</tt>\n";
 
 ?>
