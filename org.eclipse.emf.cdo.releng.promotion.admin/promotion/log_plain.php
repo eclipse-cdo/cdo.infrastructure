@@ -3,16 +3,16 @@ ini_set('display_errors', true);
 
 $logfile = "/tmp/promotion.emf.cdo/promoter.log";
 
-if (isset($_GET["delete"]))
-{
-	unlink($logfile);
-}
+//if (isset($_GET["delete"]))
+//{
+//	unlink($logfile);
+//}
 
 $logsize = filesize($logfile);
-if ($logsize != 0)
-{
-	$del = '<a href="?delete" title="Delete log file"><img src="images/delete.gif"></a>';
-}
+//if ($logsize != 0)
+//{
+//	$del = '<a href="?delete" title="Delete log file"><img src="images/delete.gif"></a>';
+//}
 
 echo "<h3>Log Size: $logsize Bytes $del</h3>\n\n";
 echo "<tt>\n\n";
