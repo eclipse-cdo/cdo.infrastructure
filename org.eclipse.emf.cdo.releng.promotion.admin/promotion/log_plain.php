@@ -26,7 +26,9 @@ if ($logsize > 0)
 		$content = substr($content, 1);
 	}
 
+	$content = htmlspecialchars($content);
 	$content = str_replace("\n", '<br>', $content);
+	$content = str_replace(" ", '&nbsp;', $content);
 
 	echo "<tt>\n\n";
 	echo $content;
