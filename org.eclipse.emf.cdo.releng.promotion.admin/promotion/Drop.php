@@ -67,6 +67,16 @@ class Drop
 		$href = 'http://www.eclipse.org/cdo/downloads/#'.str_replace('-', '_', $this->qualifier);
 
 		echo '<tr>';
+
+		if (is_dir("/shared/jobs/emf-cdo-integration/builds/".$this->number))
+		{
+			$this->td('<a href="https://hudson.eclipse.org/hudson/job/emf-cdo-integration/'.$this->number.'" title="Jump to Hudson build">'.$this->number.'</a>');
+		}
+		else
+		{
+			$this->td($this->number);
+		}
+
 		$this->td('<a href="'.$href.'" title="Jump to downloads page" target="downloads">'.$this->qualifier.'</a>');
 		$this->td($this->label);
 		$this->td('<a href="?action=EditLabel&drop='.$this->qualifier.'" title="Change drop label"><img src="images/edit.gif"></a>');
@@ -109,15 +119,6 @@ class Drop
 		else
 		{
 			$this->td('<a href="?action=AskDelete&drop='.$this->qualifier.'" title="Delete this drop"><img src="images/delete.gif"></a>');
-		}
-
-		if (is_dir("/shared/jobs/emf-cdo-integration/builds/".$this->number))
-		{
-			$this->td('<a href="https://hudson.eclipse.org/hudson/job/emf-cdo-integration/'.$this->number.'" title="Jump to Hudson build">'.$this->number.'</a>');
-		}
-		else
-		{
-			$this->td($this->number);
 		}
 
 		echo '</tr>';
