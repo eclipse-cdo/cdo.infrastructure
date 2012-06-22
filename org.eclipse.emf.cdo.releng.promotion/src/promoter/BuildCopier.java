@@ -61,8 +61,11 @@ public class BuildCopier extends PromoterComponent
   protected void copyBuilds(File jobDir, Properties jobProperties, List<BuildInfo> buildInfos)
   {
     File buildsDir = new File(jobDir, "builds");
-    System.out.println();
-    System.out.println("Checking " + buildsDir);
+    if (getPromoter().isForce())
+    {
+      System.out.println();
+      System.out.println("Checking " + buildsDir);
+    }
 
     Set<Integer> excludedBuilds = new HashSet<Integer>();
     StringTokenizer tokenizer = new StringTokenizer(jobProperties.getProperty("excluded.builds", ""), ",;: \t\n\r\f");
@@ -86,7 +89,11 @@ public class BuildCopier extends PromoterComponent
         int buildNumber = Integer.parseInt(name);
         if (excludedBuilds.contains(buildNumber))
         {
-          System.out.println("Build " + buildNumber + " is excluded");
+          if (getPromoter().isForce())
+          {
+            System.out.println("Build " + buildNumber + " is excluded");
+          }
+
           continue;
         }
 
@@ -106,20 +113,33 @@ public class BuildCopier extends PromoterComponent
           }
           else
           {
-            System.out.println("Build " + buildNumber + " has no build info");
+            if (getPromoter().isForce())
+            {
+              System.out.println("Build " + buildNumber + " has no build info");
+            }
           }
         }
         else if ("FAILURE".equalsIgnoreCase(buildResult))
         {
-          System.out.println("Build " + buildNumber + " is failed");
+          if (getPromoter().isForce())
+          {
+            System.out.println("Build " + buildNumber + " is failed");
+          }
         }
         else if ("ABORTED".equalsIgnoreCase(buildResult))
         {
-          System.out.println("Build " + buildNumber + " is aborted");
+          if (getPromoter().isForce())
+          {
+            System.out.println("Build " + buildNumber + " is aborted");
+          }
         }
         else
         {
-          System.out.println("Build " + buildNumber + " is in progress");
+          if (getPromoter().isForce())
+          {
+            System.out.println("Build " + buildNumber + " is in progress");
+          }
+
           buildInProgress = true;
         }
 
@@ -174,11 +194,17 @@ public class BuildCopier extends PromoterComponent
         return true;
       }
 
-      System.out.println("Build " + buildInfo.getNumber() + " is already promoted");
+      if (getPromoter().isForce())
+      {
+        System.out.println("Build " + buildInfo.getNumber() + " is already promoted");
+      }
     }
     else
     {
-      System.out.println("Build " + buildInfo.getNumber() + " is not configured for promotion");
+      if (getPromoter().isForce())
+      {
+        System.out.println("Build " + buildInfo.getNumber() + " is not configured for promotion");
+      }
     }
 
     return false;

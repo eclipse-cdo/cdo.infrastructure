@@ -24,20 +24,16 @@ import java.util.List;
  */
 public class Promoter
 {
-  private static boolean force;
+  private boolean force;
 
-  public static void main(String[] args) throws Exception
+  public Promoter(boolean force)
   {
-    if (args != null && args.length != 0)
-    {
-      if ("--force".equals(args[0]))
-      {
-        force = true;
-      }
-    }
+    this.force = force;
+  }
 
-    Promoter main = new Promoter();
-    main.run();
+  public boolean isForce()
+  {
+    return force;
   }
 
   public void run()
@@ -59,13 +55,13 @@ public class Promoter
 
     if (builds.isEmpty() && tasks.isEmpty())
     {
-      System.out.println();
-      System.out.print("No new builds or tasks have been found.");
-
-      if (!force)
+      if (force)
       {
-        System.out.println(" Exiting...");
         System.out.println();
+        System.out.print("No new builds or tasks have been found.");
+      }
+      else
+      {
         return;
       }
 
@@ -215,6 +211,21 @@ public class Promoter
     }
   }
 
+  public static void main(String[] args) throws Exception
+  {
+    boolean force = false;
+    if (args != null && args.length != 0)
+    {
+      if ("--force".equals(args[0]))
+      {
+        force = true;
+      }
+    }
+
+    Promoter main = new Promoter(force);
+    main.run();
+  }
+
   /**
    * @author Eike Stepper
    */
@@ -224,16 +235,16 @@ public class Promoter
     {
       super(PromoterConfig.INSTANCE.getDirectory("ANT_HOME"), script, basedir);
     }
-  
+
     @Override
     protected AntResult create(XMLOutput xml) throws Exception
     {
       DropProcessor dropProcessor = createDropProcessor();
       final List<BuildInfo> buildInfos = dropProcessor.processDrops(xml);
-  
+
       RepositoryComposer repositoryComposer = createRepositoryComposer();
       final WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, new File("composites"));
-  
+
       return new AntResult(buildInfos, webNode);
     }
   }
