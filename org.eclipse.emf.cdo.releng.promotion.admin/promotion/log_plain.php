@@ -4,8 +4,8 @@
 echo "<tt>\n\n";
 
 $logfile = "/tmp/promotion.emf.cdo/promoter.log";
-$lines = file($logfile);
-echo $lines;
+$content = file_get_contents($logfile);
+echo $content;
 
 echo "</tt>\n";
 
