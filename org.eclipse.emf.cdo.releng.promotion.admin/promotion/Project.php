@@ -75,7 +75,7 @@ class Project
 		foreach ($this->getStreams() as $stream => $v)
 		{
 			echo '<tr>';
-			echo '<th colspan="8"><font size="+2">'.$stream.' Stream</font></th>';
+			echo '<th colspan="9"><font size="+2">'.$stream.' Stream</font></th>';
 			echo '</tr>';
 
 			foreach ($this->getDrops($stream) as $drop)

@@ -13,6 +13,8 @@ class Drop
 	public $label = "";
 	public $stream = "";
 	public $train = "";
+	public $job = "";
+	public $number = "";
 
 	function __construct($project, $qualifier)
 	{
@@ -46,6 +48,16 @@ class Drop
 			if (preg_match('@train="(.*?)"@s', $contents, $match))
 			{
 				$this->train = $match[1];
+			}
+
+			if (preg_match('@job="(.*?)"@s', $contents, $match))
+			{
+				$this->job = $match[1];
+			}
+
+			if (preg_match('@number="(.*?)"@s', $contents, $match))
+			{
+				$this->number = $match[1];
 			}
 		}
 	}
@@ -97,6 +109,16 @@ class Drop
 		else
 		{
 			$this->td('<a href="?action=AskDelete&drop='.$this->qualifier.'" title="Delete this drop"><img src="images/delete.gif"></a>');
+		}
+
+		$build = "ll /shared/jobs/emf-cdo-integration/builds/".$this->number;
+		if (file_exists($build))
+		{
+			$this->td('<a href="https://hudson.eclipse.org/hudson/job/emf-cdo-integration/'.$this->number'" title="Jump to Hudson build">'.$this->number.'</a>');
+		}
+		else
+		{
+			$this->td($this->number);
 		}
 
 		echo '</tr>';
