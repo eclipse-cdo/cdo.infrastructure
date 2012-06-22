@@ -8,7 +8,7 @@ $logfile = "/tmp/promotion.emf.cdo/promoter.log";
 //	unlink($logfile);
 //}
 
-$logsize = filesize($logfile);
+$logsize = file_exists($logfile) ? filesize($logfile) : 0;
 $del = "";
 
 //if ($logsize != 0)
@@ -17,18 +17,20 @@ $del = "";
 //}
 
 echo "<h3>Log Size: $logsize Bytes $del</h3>\n\n";
-echo "<tt>\n\n";
 
-$content = file_get_contents($logfile);
-
-while (substr($content, 0, 1) == "\n")
+if ($logsize > 0)
 {
-	$content = substr($content, 1);
+	$content = file_get_contents($logfile);
+	while (substr($content, 0, 1) == "\n")
+	{
+		$content = substr($content, 1);
+	}
+
+	$content = str_replace("\n", '<br>', $content);
+
+	echo "<tt>\n\n";
+	echo $content;
+	echo "\n\n</tt>\n";
 }
-
-$content = str_replace("\n", '<br>', $content);
-echo $content;
-
-echo "\n\n</tt>\n";
 
 ?>
