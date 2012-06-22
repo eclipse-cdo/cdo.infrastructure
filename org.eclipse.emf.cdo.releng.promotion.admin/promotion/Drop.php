@@ -111,8 +111,7 @@ class Drop
 			$this->td('<a href="?action=AskDelete&drop='.$this->qualifier.'" title="Delete this drop"><img src="images/delete.gif"></a>');
 		}
 
-		$build = "ll /shared/jobs/emf-cdo-integration/builds/".$this->number;
-		if (is_dir($build))
+		if (is_dir("/shared/jobs/emf-cdo-integration/builds/".$this->number))
 		{
 			$this->td('<a href="https://hudson.eclipse.org/hudson/job/emf-cdo-integration/'.$this->number.'" title="Jump to Hudson build">'.$this->number.'</a>');
 		}
