@@ -82,6 +82,7 @@ public class DuplicateTask extends AbstractDropTask
           xml.push();
           xml.element("include").attribute("name", "categories/");
           xml.element("include").attribute("name", "web.properties");
+          xml.element("include").attribute("name", "relnotes.*");
           xml.element("include").attribute("name", ".promoted");
           xml.element("include").attribute("name", ".mirrored");
           xml.element("include").attribute("name", ".staged");
