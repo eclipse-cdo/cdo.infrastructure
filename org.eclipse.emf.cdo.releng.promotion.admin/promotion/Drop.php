@@ -64,7 +64,8 @@ class Drop
 
 	function generate()
 	{
-		$href = 'http://www.eclipse.org/cdo/downloads/#'.str_replace('-', '_', $this->qualifier);
+		//$href = 'http://www.eclipse.org/cdo/downloads/#'.str_replace('-', '_', $this->qualifier);
+		$href = 'http://download.eclipse.org/modeling/emf/cdo/drops/'.str_replace('-', '_', $this->qualifier);
 
 		echo '<tr>';
 
@@ -77,7 +78,7 @@ class Drop
 			$this->td($this->number);
 		}
 
-		$this->td('<a href="'.$href.'" title="Jump to downloads page" target="details">'.$this->qualifier.'</a>');
+		$this->td('<a href="'.$href.'" title="Jump to Update Site" target="details">'.$this->qualifier.'</a>');
 		$this->td($this->label);
 		$this->td('<a href="?action=EditLabel&drop='.$this->qualifier.'" title="Change drop label"><img src="images/edit.gif"></a>');
 
