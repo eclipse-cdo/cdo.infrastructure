@@ -65,7 +65,7 @@ class Drop
 	function generate()
 	{
 		//$href = 'http://www.eclipse.org/cdo/downloads/#'.str_replace('-', '_', $this->qualifier);
-		$href = 'http://download.eclipse.org/modeling/emf/cdo/drops/'.str_replace('-', '_', $this->qualifier);
+		$href = 'http://download.eclipse.org/modeling/emf/cdo/drops/'.$this->qualifier;
 
 		echo '<tr>';
 
