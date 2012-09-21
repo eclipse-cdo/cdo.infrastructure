@@ -85,7 +85,7 @@ public class RepositoryComposer extends PromoterComponent
 
     File temp = PromoterConfig.INSTANCE.getCompositionTempArea();
     String path = compositeDir.getPath();
-    path = path.substring(path.indexOf("/") + 1); // Assumes that this method is called only for 2. lvel repos
+    path = path.substring(path.indexOf("/") + 1); // Assumes that this method is called only for 2. level repos
 
     String childLocations = compositionProperties.getProperty("child.locations");
     if (childLocations != null)
