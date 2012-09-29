@@ -54,7 +54,7 @@ public class Git extends SourceCodeManager
   {
     if (!fetched)
     {
-      stream.println(GIT_BINARY + " fetch --tags");
+      stream.println(GIT_BINARY + " fetch");
       stream.flush();
 
       fetched = true;
