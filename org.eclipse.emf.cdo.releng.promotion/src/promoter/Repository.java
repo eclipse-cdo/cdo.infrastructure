@@ -209,17 +209,17 @@ public class Repository
       }
     });
 
-    IO.writeFile(new File(folder, "p2.index"), new IO.OutputHandler()
-    {
-      public void handleOutput(OutputStream out) throws IOException
-      {
-        PrintStream stream = new PrintStream(out);
-        stream.println("version = 1");
-        stream.println("metadata.repository.factory.order = compositeContent.xml,\\!");
-        stream.println("artifact.repository.factory.order = compositeArtifacts.xml,\\!");
-        stream.flush();
-      }
-    });
+    // IO.writeFile(new File(folder, "p2.index"), new IO.OutputHandler()
+    // {
+    // public void handleOutput(OutputStream out) throws IOException
+    // {
+    // PrintStream stream = new PrintStream(out);
+    // stream.println("version = 1");
+    // stream.println("metadata.repository.factory.order = compositeContent.xml,\\!");
+    // stream.println("artifact.repository.factory.order = compositeArtifacts.xml,\\!");
+    // stream.flush();
+    // }
+    // });
 
     generateHTML(folder);
 
