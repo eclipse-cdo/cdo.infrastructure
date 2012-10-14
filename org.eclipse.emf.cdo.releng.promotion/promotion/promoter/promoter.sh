@@ -70,6 +70,8 @@ CriticalSection ()
 
 CheckPromotion ()
 {
+	mkdir /tmp/promotion.emf.cdo
+
 	compositionTempFolder=$DOWNLOADS_HOME/$downloadsPath/$compositionTempPath
 	rm -rf "$compositionTempFolder"
 
@@ -84,9 +86,7 @@ CheckPromotion ()
   	classPromoter=promoter.Promoter
 	fi
 
-	############################################################################################################
   "$JAVA_HOME/bin/java" "-DpromoterInstallArea=$promoterInstallArea" -cp "$classPath" "$classPromoter" "$args"
-	############################################################################################################
 
   if [ -d "$compositionTempFolder" ]
   then
