@@ -114,9 +114,8 @@ CheckPromotion ()
 # Execute the critical section if a lock can be acquired.
 #########################################################
 
-if [ -d "$workingArea" ]
+if [ ! -d "$workingArea" ]
 then
-else
 	mkdir -p "$workingArea"
 fi
 
