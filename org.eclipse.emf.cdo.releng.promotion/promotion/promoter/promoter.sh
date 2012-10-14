@@ -70,8 +70,6 @@ CriticalSection ()
 
 CheckPromotion ()
 {
-	mkdir /tmp/promotion.emf.cdo
-
 	compositionTempFolder=$DOWNLOADS_HOME/$downloadsPath/$compositionTempPath
 	rm -rf "$compositionTempFolder"
 
@@ -116,7 +114,12 @@ CheckPromotion ()
 # Execute the critical section if a lock can be acquired.
 #########################################################
 
-mkdir -p "$workingArea"
+if [ -d "$workingArea" ]
+then
+else
+	mkdir -p "$workingArea"
+fi
+
 touch "$workingArea/touchpoint.start"
 
 lockFile=$workingArea/promoter.lock
