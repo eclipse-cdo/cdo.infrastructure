@@ -235,7 +235,7 @@ public class WebNode implements Comparable<WebNode>
         + (repository.getPathLevel() + 1) + "\"></td></tr>");
 
     out.println(prefix(level)
-        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/api/report.gif\"/></td><td><b><a href=\""
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/api/report.png\"/></td><td><b><a href=\""
         + http()
         + "drops/"
         + buildInfo.getQualifier()
