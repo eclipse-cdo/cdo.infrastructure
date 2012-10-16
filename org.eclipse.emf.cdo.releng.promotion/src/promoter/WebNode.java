@@ -229,9 +229,17 @@ public class WebNode implements Comparable<WebNode>
         + "<td class=\"file-size level" + (repository.getPathLevel() + 1) + "\"></td></tr>");
 
     out.println(prefix(level)
-        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/edit-paste.png\"/></td><td><b><a href=\""
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/api/change.gif\"/></td><td><b><a href=\""
         + http() + "drops/" + buildInfo.getQualifier()
         + "/relnotes.html\">Release Notes</a></b> to see what's in this build.</td><td class=\"file-size level"
+        + (repository.getPathLevel() + 1) + "\"></td></tr>");
+
+    out.println(prefix(level)
+        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/edit-paste.png\"/></td><td><b><a href=\""
+        + http()
+        + "drops/"
+        + buildInfo.getQualifier()
+        + "/api.html\">API Evolution Report</a></b> to see the API changes in this stream.</td><td class=\"file-size level"
         + (repository.getPathLevel() + 1) + "\"></td></tr>");
 
     generateDropHelp(out, level, buildInfo);
@@ -249,6 +257,8 @@ public class WebNode implements Comparable<WebNode>
     generateDropFile(out, level, buildInfo, "index.xml", " for the contents of this build.");
 
     generateDropFile(out, level, buildInfo, "relnotes.xml", " for the change infos of this build.");
+
+    generateDropFile(out, level, buildInfo, "api.xml", " for the API evolution report of this build.");
 
     generateDropFile(out, level, buildInfo, "bookmarks.xml", " for the <a href=\"" + HELP_TOPIC_URL
         + "/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
