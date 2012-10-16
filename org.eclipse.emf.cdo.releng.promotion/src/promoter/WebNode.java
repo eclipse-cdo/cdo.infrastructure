@@ -234,13 +234,17 @@ public class WebNode implements Comparable<WebNode>
         + "/relnotes.html\">Release Notes</a></b> to see what's in this build.</td><td class=\"file-size level"
         + (repository.getPathLevel() + 1) + "\"></td></tr>");
 
-    out.println(prefix(level)
-        + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/api/report.gif\"/></td><td><b><a href=\""
-        + http()
-        + "drops/"
-        + buildInfo.getQualifier()
-        + "/api.html\">API Evolution Report</a></b> to see the API changes in this stream.</td><td class=\"file-size level"
-        + (repository.getPathLevel() + 1) + "\"></td></tr>");
+    File apiHTML = getDropFile(buildInfo, "api.html");
+    if (apiHTML.isFile())
+    {
+      out.println(prefix(level)
+          + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/api/report.gif\"/></td><td><b><a href=\""
+          + http()
+          + "drops/"
+          + buildInfo.getQualifier()
+          + "/api.html\">API Evolution Report</a></b> to see the API changes in this stream.</td><td class=\"file-size level"
+          + (repository.getPathLevel() + 1) + "\"></td></tr>");
+    }
 
     generateDropHelp(out, level, buildInfo);
 
@@ -301,8 +305,7 @@ public class WebNode implements Comparable<WebNode>
 
   protected void generateDropDownload(PrintStream out, int level, BuildInfo buildInfo, String path, String description)
   {
-    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
-    File download = new File(drop, path);
+    File download = getDropFile(buildInfo, path);
     if (download.isFile())
     {
       out.println(prefix(level)
@@ -311,6 +314,13 @@ public class WebNode implements Comparable<WebNode>
           + new File(path).getName() + "</a>" + description + "</td><td class=\"file-size level"
           + (repository.getPathLevel() + 1) + "\">" + formatFileSize(download.getAbsolutePath()) + "</td></tr>");
     }
+  }
+
+  private File getDropFile(BuildInfo buildInfo, String path)
+  {
+    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
+    File download = new File(drop, path);
+    return download;
   }
 
   protected void generateDropZips(PrintStream out, int level, BuildInfo buildInfo)
