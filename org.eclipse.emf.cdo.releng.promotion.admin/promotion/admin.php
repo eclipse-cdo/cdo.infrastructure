@@ -53,7 +53,7 @@ function scheduleTask($task, $args)
 {
 	status("Scheduling task $task (".str_replace("\n", ", ", $args).")");
 
-	$workingArea = "/tmp/promotion.emf.cdo";
+	$workingArea = "/home/data/users/estepper/promotion.work";
 	$publicFolder = "$workingArea/public";
 	$tmpFolder = "$publicFolder/tasks.tmp";
 
