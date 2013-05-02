@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-#echo "Promotion failed: http://www.eclipse.org/cdo/downloads" | mail -s "Promotion Failed" -a /tmp/promotion.emf.cdo/promoter.ant -a ~/promotion.log stepper@esc-net.de
-
 ############################################################
 # THIS SCRIPT MUST BE EXECUTED IN THE PROJECT CONFIG AREA!!!
 ############################################################
