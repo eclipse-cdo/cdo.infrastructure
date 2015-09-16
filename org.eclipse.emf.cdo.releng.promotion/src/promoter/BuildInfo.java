@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
@@ -14,9 +14,9 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import promoter.util.XML;
-
 import java.io.File;
+
+import promoter.util.XML;
 
 /**
  * @author Eike Stepper
@@ -34,6 +34,8 @@ public final class BuildInfo implements Comparable<BuildInfo>
   private String qualifier;
 
   private String revision;
+
+  private String relnotesRevision;
 
   private String stream;
 
@@ -75,6 +77,16 @@ public final class BuildInfo implements Comparable<BuildInfo>
   public String getRevision()
   {
     return revision;
+  }
+
+  public String getRelnotesRevision()
+  {
+    if (relnotesRevision != null)
+    {
+      return relnotesRevision;
+    }
+
+    return getRevision();
   }
 
   public String getStream()
@@ -139,9 +151,9 @@ public final class BuildInfo implements Comparable<BuildInfo>
   @Override
   public String toString()
   {
-    return "BuildInfo [branch=" + branch + ", hudson=" + hudson + ", job=" + job + ", number=" + number
-        + ", qualifier=" + qualifier + ", revision=" + revision + ", stream=" + stream + ", timestamp=" + timestamp
-        + ", trigger=" + trigger + ", type=" + type + "]";
+    return "BuildInfo [branch=" + branch + ", hudson=" + hudson + ", job=" + job + ", number=" + number + ", qualifier="
+        + qualifier + ", revision=" + revision + ", stream=" + stream + ", timestamp=" + timestamp + ", trigger="
+        + trigger + ", type=" + type + "]";
   }
 
   public int compareTo(BuildInfo o)
@@ -204,6 +216,11 @@ public final class BuildInfo implements Comparable<BuildInfo>
     this.revision = revision;
   }
 
+  void setRelnotesRevision(String relnotesRevision)
+  {
+    this.relnotesRevision = relnotesRevision;
+  }
+
   void setStream(String stream)
   {
     this.stream = stream;
@@ -240,6 +257,7 @@ public final class BuildInfo implements Comparable<BuildInfo>
           result.setNumber(attributes.getValue("number"));
           result.setQualifier(attributes.getValue("qualifier"));
           result.setRevision(attributes.getValue("revision"));
+          result.setRelnotesRevision(attributes.getValue("relnotes"));
           result.setStream(attributes.getValue("stream"));
           result.setTimestamp(attributes.getValue("timestamp"));
           result.setTrigger(attributes.getValue("trigger"));

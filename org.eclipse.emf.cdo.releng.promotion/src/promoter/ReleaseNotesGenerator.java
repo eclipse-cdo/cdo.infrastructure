@@ -10,11 +10,6 @@
  */
 package promoter;
 
-import promoter.SourceCodeManager.LogEntry;
-import promoter.SourceCodeManager.LogEntryHandler;
-import promoter.util.IO;
-import promoter.util.XMLOutput;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -29,6 +24,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import promoter.SourceCodeManager.LogEntry;
+import promoter.SourceCodeManager.LogEntryHandler;
+import promoter.util.IO;
+import promoter.util.XMLOutput;
 
 /**
  * @author Eike Stepper
@@ -80,7 +80,8 @@ public class ReleaseNotesGenerator extends PromoterComponent
       System.out.println("Generating release notes for " + qualifier);
 
       BuildInfo previousBuildInfo = getPreviousBuildInfo(buildInfos, i);
-      String fromRevision = previousBuildInfo == null ? stream.getFirstRevision() : previousBuildInfo.getRevision();
+      String fromRevision = previousBuildInfo == null ? stream.getFirstRevision()
+          : previousBuildInfo.getRelnotesRevision();
       String toRevision = buildInfo.getRevision();
 
       List<Issue> issues = new ArrayList<Issue>(getIssues(buildInfo, fromRevision, toRevision));
@@ -194,11 +195,10 @@ public class ReleaseNotesGenerator extends PromoterComponent
           + qualifier.replace('-', '_') + "\">" + qualifier + "</a></h1>");
 
       out.println("<p>");
-      out.println("These release notes have been generated from the commit log of the <a href=\"http://www.eclipse.org/cdo/downloads/#releases_"
-          + buildInfo.getStream().replace('.', '_')
-          + "\">"
-          + buildInfo.getStream()
-          + "</a> stream and the associated bugzillas.");
+      out.println(
+          "These release notes have been generated from the commit log of the <a href=\"http://www.eclipse.org/cdo/downloads/#releases_"
+              + buildInfo.getStream().replace('.', '_') + "\">" + buildInfo.getStream()
+              + "</a> stream and the associated bugzillas.");
       out.print("<br/>The first commit is " + fromRevision);
       if (previousBuildInfo != null)
       {
@@ -211,9 +211,9 @@ public class ReleaseNotesGenerator extends PromoterComponent
         out.println(" in the <a href=\"http://git.eclipse.org/c/cdo/cdo.git/?h=master\">master</a> branch.");
       }
 
-      out.println("<br/>The last commit is " + toRevision + " in the <a href=\""
-          + "http://git.eclipse.org/c/cdo/cdo.git/?h=" + buildInfo.getBranch().replaceAll("/", "%2F") + "\">"
-          + buildInfo.getBranch() + "</a> branch.");
+      out.println(
+          "<br/>The last commit is " + toRevision + " in the <a href=\"" + "http://git.eclipse.org/c/cdo/cdo.git/?h="
+              + buildInfo.getBranch().replaceAll("/", "%2F") + "\">" + buildInfo.getBranch() + "</a> branch.");
 
       previousBuildNote(out, buildInfo, previousBuildInfo);
       out.println("</p>");
