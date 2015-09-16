@@ -404,10 +404,6 @@ public class Repository
 
       for (BuildInfo buildInfo : buildInfos)
       {
-        System.out.println(buildInfo);
-        System.out.println(buildInfo.getStream());
-        System.out.println();
-
         if (job != null && !buildInfo.getJob().equals(job))
         {
           continue;
