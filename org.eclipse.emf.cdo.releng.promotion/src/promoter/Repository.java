@@ -10,9 +10,6 @@
  */
 package promoter;
 
-import promoter.util.IO;
-import promoter.util.XMLOutput;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,6 +19,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+
+import promoter.util.IO;
+import promoter.util.XMLOutput;
 
 /**
  * @author Eike Stepper
@@ -249,10 +249,12 @@ public class Repository
       out.println("<body style=\"font-family:Arial; font-size:small;\">");
       out.println("<h1>" + title + "</h1>");
       out.println("<p>");
-      out.println("<em>For information about CDO or Net4j, see their <a href=\"http://www.eclipse.org/cdo\">homepage</a> or <a");
+      out.println(
+          "<em>For information about CDO or Net4j, see their <a href=\"http://www.eclipse.org/cdo\">homepage</a> or <a");
       out.println("href=\"http://wiki.eclipse.org/CDO\">wiki</a>.");
       out.println("         <br> For information about installing or updating Eclipse software, see the");
-      out.println("         <a href=\"http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-124.htm\">");
+      out.println(
+          "         <a href=\"http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-124.htm\">");
       out.println("           Eclipse Platform Help</a>.");
       out.println("         <br> Some plugins require third party software from p2 repositories listed in this ");
       out.println("         <a href=\"bookmarks.xml\">bookmarks.xml</a> file.</em>");
@@ -402,6 +404,10 @@ public class Repository
 
       for (BuildInfo buildInfo : buildInfos)
       {
+        System.out.println(buildInfo);
+        System.out.println(buildInfo.getStream());
+        System.out.println();
+
         if (job != null && !buildInfo.getJob().equals(job))
         {
           continue;
