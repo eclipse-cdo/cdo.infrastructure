@@ -14,21 +14,23 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import promoter.util.Config;
-import promoter.util.IO;
-import promoter.util.XML;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+
+import promoter.util.Config;
+import promoter.util.IO;
+import promoter.util.XML;
 
 /**
  * @author Eike Stepper
@@ -50,7 +52,7 @@ public class BuildCopier extends PromoterComponent
         if (!IO.isExcluded(jobName))
         {
           Properties jobProperties = Config.loadProperties(new File(jobDir, "promotion.properties"), false);
-          copyBuilds(new File(PromoterConfig.INSTANCE.getJobsHome(), jobName), jobProperties, buildInfos);
+          copyBuilds(jobName, jobProperties, buildInfos);
         }
       }
     }
@@ -58,13 +60,14 @@ public class BuildCopier extends PromoterComponent
     return buildInfos;
   }
 
-  protected void copyBuilds(File jobDir, Properties jobProperties, List<BuildInfo> buildInfos)
+  protected void copyBuilds(String jobName, Properties jobProperties, List<BuildInfo> buildInfos)
   {
-    File buildsDir = new File(jobDir, "builds");
+    String jobURL = PromoterConfig.INSTANCE.getJobsURL() + "/" + jobName;
+
     if (getPromoter().isForce())
     {
       System.out.println();
-      System.out.println("Checking " + buildsDir);
+      System.out.println("Checking builds of " + jobURL);
     }
 
     Set<Integer> excludedBuilds = new HashSet<Integer>();
@@ -78,85 +81,74 @@ public class BuildCopier extends PromoterComponent
     int nextBuildNumber = NO_BUILD;
     boolean buildInProgress = false;
 
-    File[] buildDirs = buildsDir.listFiles();
-    Arrays.sort(buildDirs);
-
-    for (File buildDir : buildDirs)
+    List<Integer> buildNumbers = getBuildNumbers(jobURL);
+    for (Integer buildNumber : buildNumbers)
     {
-      String name = buildDir.getName();
-      if (buildDir.isDirectory() && isNumber(name))
+      if (excludedBuilds.contains(buildNumber))
       {
-        int buildNumber = Integer.parseInt(name);
-        if (excludedBuilds.contains(buildNumber))
+        if (getPromoter().isForce())
         {
-          if (getPromoter().isForce())
-          {
-            System.out.println("Build " + buildNumber + " is excluded");
-          }
-
-          continue;
+          System.out.println("Build " + buildNumber + " is excluded");
         }
 
-        String buildResult = getBuildResult(buildDir);
-        File archiveDir = new File(buildDir, "archive");
-        if (("SUCCESS".equalsIgnoreCase(buildResult) || "UNSTABLE".equalsIgnoreCase(buildResult))
-            && archiveDir.isDirectory())
-        {
-          File buildInfoFile = new File(archiveDir, "build-info.xml");
-          if (buildInfoFile.isFile())
-          {
-            BuildInfo buildInfo = BuildInfo.read(buildInfoFile);
-            if (copyBuild(jobProperties, buildDir, buildInfo))
-            {
-              buildInfos.add(buildInfo);
-            }
-          }
-          else
-          {
-            if (getPromoter().isForce())
-            {
-              System.out.println("Build " + buildNumber + " has no build info");
-            }
-          }
-        }
-        else if ("FAILURE".equalsIgnoreCase(buildResult))
-        {
-          if (getPromoter().isForce())
-          {
-            System.out.println("Build " + buildNumber + " is failed");
-          }
-        }
-        else if ("ABORTED".equalsIgnoreCase(buildResult))
-        {
-          if (getPromoter().isForce())
-          {
-            System.out.println("Build " + buildNumber + " is aborted");
-          }
-        }
-        else
-        {
-          if (getPromoter().isForce())
-          {
-            System.out.println("Build " + buildNumber + " is in progress");
-          }
+        continue;
+      }
 
-          buildInProgress = true;
+      String buildURL = jobURL + "/" + buildNumber;
+      String buildResult = getBuildResult(buildURL);
+
+      if ("SUCCESS".equalsIgnoreCase(buildResult) || "UNSTABLE".equalsIgnoreCase(buildResult))
+      {
+        try
+        {
+          BuildInfo buildInfo = BuildInfo.read(new URL(buildURL + "artifact/build-info.xml"));
+          if (copyBuild(jobProperties, buildURL, buildInfo))
+          {
+            buildInfos.add(buildInfo);
+          }
+        }
+        catch (MalformedURLException ex)
+        {
+          throw new RuntimeException(ex);
+        }
+      }
+      else if ("FAILURE".equalsIgnoreCase(buildResult))
+      {
+        if (getPromoter().isForce())
+        {
+          System.out.println("Build " + buildNumber + " is failed");
+        }
+      }
+      else if ("ABORTED".equalsIgnoreCase(buildResult))
+      {
+        if (getPromoter().isForce())
+        {
+          System.out.println("Build " + buildNumber + " is aborted");
+        }
+      }
+      else
+      {
+        if (getPromoter().isForce())
+        {
+          System.out.println("Build " + buildNumber + " is in progress");
         }
 
-        if (!buildInProgress)
-        {
-          nextBuildNumber = buildNumber + 1;
-        }
+        buildInProgress = true;
+      }
+
+      if (!buildInProgress)
+      {
+        nextBuildNumber = buildNumber + 1;
       }
     }
 
     if (nextBuildNumber != NO_BUILD)
     {
-      storeNextBuildNumber(jobDir.getName(), nextBuildNumber);
+      storeNextBuildNumber(jobName, nextBuildNumber);
     }
   }
 
-  protected boolean copyBuild(Properties jobProperties, File buildDir, BuildInfo buildInfo)
+  protected boolean copyBuild(Properties jobProperties, String buildURL, BuildInfo buildInfo)
   {
     String buildType = buildInfo.getType();
     String autoPromote = jobProperties.getProperty("auto.promote", "IMSR");
@@ -174,8 +166,14 @@ public class BuildCopier extends PromoterComponent
         System.out.println("Build " + buildInfo.getNumber() + " is being copied to " + drop
             + (isVisible ? " (visible)" : " (invisible)"));
 
-        File archiveDir = new File(buildDir, "archive");
-        IO.copyTree(archiveDir, drop);
+        try
+        {
+          IO.unzip(new URL(buildURL + "/artifact/*zip*/archive.zip"), drop);
+        }
+        catch (MalformedURLException ex)
+        {
+          throw new RuntimeException(ex);
+        }
 
         // Handle old build results layout
         File siteP2 = new File(drop, "site.p2");
@@ -234,62 +232,117 @@ public class BuildCopier extends PromoterComponent
         });
   }
 
-  protected boolean isNumber(String str)
+  protected List<Integer> getBuildNumbers(String jobURL)
   {
-    for (char c : str.toCharArray())
+    final List<Integer> buildNumbers = new ArrayList<Integer>();
+
+    try
     {
-      if (!Character.isDigit(c))
+      XML.parseXML(new URL(jobURL + "/api/xml"), new DefaultHandler()
       {
-        return false;
-      }
+        private int level;
+
+        private boolean build;
+
+        private boolean number;
+
+        private StringBuilder builder = new StringBuilder();
+
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+        {
+          ++level;
+          if (level == 2 && "build".equalsIgnoreCase(qName))
+          {
+            build = true;
+          }
+
+          if (build && level == 3 && "number".equalsIgnoreCase(qName))
+          {
+            number = true;
+          }
+        }
+
+        @Override
+        public void endElement(String uri, String localName, String qName) throws SAXException
+        {
+          if (number)
+          {
+            buildNumbers.add(Integer.parseInt(builder.toString().trim()));
+            builder = new StringBuilder();
+          }
+
+          --level;
+          number = false;
+          build = false;
+        }
+
+        @Override
+        public void characters(char[] ch, int start, int length) throws SAXException
+        {
+          if (number)
+          {
+            builder.append(ch, start, length);
+          }
+        }
+      });
     }
-
-    return true;
-  }
-
-  protected String getBuildResult(File buildDir)
-  {
-    File file = new File(buildDir, "build.xml");
-    if (!file.exists() || !file.isFile())
+    catch (Exception ex)
     {
+      ex.printStackTrace();
       return null;
     }
 
+    Collections.sort(buildNumbers);
+    return buildNumbers;
+  }
+
+  protected String getBuildResult(String buildURL)
+  {
     final StringBuilder builder = new StringBuilder();
-    XML.parseXML(file, new DefaultHandler()
+
+    try
     {
-      private int level;
-
-      private boolean result;
-
-      @Override
-      public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+      XML.parseXML(new URL(buildURL + "/api/xml"), new DefaultHandler()
       {
-        if (++level == 2)
+        private int level;
+
+        private boolean result;
+
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
-          if ("result".equalsIgnoreCase(qName))
+          if (++level == 2)
           {
-            result = true;
+            if ("result".equalsIgnoreCase(qName))
+            {
+              result = true;
+            }
           }
         }
-      }
 
-      @Override
-      public void endElement(String uri, String localName, String qName) throws SAXException
-      {
-        --level;
-        result = false;
-      }
-
-      @Override
-      public void characters(char[] ch, int start, int length) throws SAXException
-      {
-        if (result)
+        @Override
+        public void endElement(String uri, String localName, String qName) throws SAXException
         {
-          builder.append(ch, start, length);
+          --level;
+          result = false;
         }
-      }
-    });
+
+        @Override
+        public void characters(char[] ch, int start, int length) throws SAXException
+        {
+          if (result)
+          {
+            builder.append(ch, start, length);
+          }
+        }
+      });
+    }
+    catch (Exception ex)
+    {
+      ex.printStackTrace();
+      return null;
+    }
 
     return builder.toString();
   }

@@ -33,6 +33,8 @@ import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collection;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * @author Eike Stepper
@@ -603,6 +605,84 @@ public final class IO
     catch (IOException ex)
     {
       throw new RuntimeException(ex);
+    }
+  }
+
+  public static void unzip(File zipFile, File targetFolder)
+  {
+    FileInputStream fis = openInputStream(zipFile);
+
+    try
+    {
+      unzip(fis, targetFolder);
+    }
+    finally
+    {
+      close(fis);
+    }
+  }
+
+  public static void unzip(URL url, File targetFolder)
+  {
+    InputStream in = null;
+
+    try
+    {
+      in = url.openStream();
+      unzip(in, targetFolder);
+    }
+    catch (IOException ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      IO.close(in);
+    }
+  }
+
+  public static void unzip(InputStream inputStream, File targetFolder)
+  {
+    final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+    ZipInputStream zis = null;
+
+    try
+    {
+      zis = new ZipInputStream(new BufferedInputStream(inputStream, DEFAULT_BUFFER_SIZE));
+
+      ZipEntry entry;
+      while ((entry = zis.getNextEntry()) != null)
+      {
+        String name = entry.getName();
+        File target = new File(targetFolder, name);
+
+        if (entry.isDirectory())
+        {
+          target.mkdirs();
+        }
+        else
+        {
+          target.getParentFile().mkdirs();
+          FileOutputStream out = openOutputStream(target);
+
+          try
+          {
+            copy(zis, out, buffer);
+          }
+          finally
+          {
+            close(out);
+          }
+        }
+      }
+    }
+    catch (IOException ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      close(zis);
     }
   }
 

@@ -15,6 +15,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.File;
+import java.net.URL;
 
 import promoter.util.XML;
 
@@ -245,6 +246,34 @@ public final class BuildInfo implements Comparable<BuildInfo>
   {
     final BuildInfo result = new BuildInfo();
     XML.parseXML(file, new DefaultHandler()
+    {
+      @Override
+      public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+      {
+        if ("build".equals(qName))
+        {
+          result.setBranch(attributes.getValue("branch"));
+          result.setHudson(attributes.getValue("hudson"));
+          result.setJob(attributes.getValue("job"));
+          result.setNumber(attributes.getValue("number"));
+          result.setQualifier(attributes.getValue("qualifier"));
+          result.setRevision(attributes.getValue("revision"));
+          result.setRelnotesRevision(attributes.getValue("relnotes"));
+          result.setStream(attributes.getValue("stream"));
+          result.setTimestamp(attributes.getValue("timestamp"));
+          result.setTrigger(attributes.getValue("trigger"));
+          result.setType(attributes.getValue("type"));
+        }
+      }
+    });
+
+    return result;
+  }
+
+  public static BuildInfo read(URL url)
+  {
+    final BuildInfo result = new BuildInfo();
+    XML.parseXML(url, new DefaultHandler()
     {
       @Override
       public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
