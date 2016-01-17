@@ -101,7 +101,7 @@ public class BuildCopier extends PromoterComponent
       {
         try
         {
-          BuildInfo buildInfo = BuildInfo.read(new URL(buildURL + "artifact/build-info.xml"));
+          BuildInfo buildInfo = BuildInfo.read(new URL(buildURL + "/artifact/build-info.xml"));
           if (copyBuild(jobProperties, buildURL, buildInfo))
           {
             buildInfos.add(buildInfo);
