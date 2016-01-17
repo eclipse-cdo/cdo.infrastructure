@@ -10,15 +10,15 @@
  */
 package promoter;
 
-import promoter.util.IO;
-import promoter.util.IO.OutputHandler;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+
+import promoter.util.IO;
+import promoter.util.IO.OutputHandler;
 
 /**
  * @author Stefan Winkler
@@ -64,25 +64,27 @@ public class Git extends SourceCodeManager
   @Override
   public void setTag(final String branch, final String revision, final String qualifier)
   {
-    IO.executeProcess("/bin/bash", new OutputHandler()
-    {
-      public void handleOutput(OutputStream out) throws IOException
-      {
-        PrintStream stream = new PrintStream(out);
-        fetchIfNeeded(stream);
+    // TODO No write access to direct Git anymore ;-(
 
-        String tag = "drops/" + qualifier;
-        System.out.println("Tagging " + revision + " in " + branch + " as " + tag);
-
-        // Create the tag
-        String message = qualifier + " in " + branch;
-        stream.println(GIT_BINARY + " tag -a -m \"" + message + "\" \"" + tag + "\" \"" + revision + "\"");
-
-        // Push the tag
-        stream.println(GIT_BINARY + " push \"" + REMOTE_GIT + "\" \"" + tag + "\"");
-        stream.flush();
-      }
-    });
+    // IO.executeProcess("/bin/bash", new OutputHandler()
+    // {
+    // public void handleOutput(OutputStream out) throws IOException
+    // {
+    // PrintStream stream = new PrintStream(out);
+    // fetchIfNeeded(stream);
+    //
+    // String tag = "drops/" + qualifier;
+    // System.out.println("Tagging " + revision + " in " + branch + " as " + tag);
+    //
+    // // Create the tag
+    // String message = qualifier + " in " + branch;
+    // stream.println(GIT_BINARY + " tag -a -m \"" + message + "\" \"" + tag + "\" \"" + revision + "\"");
+    //
+    // // Push the tag
+    // stream.println(GIT_BINARY + " push \"" + REMOTE_GIT + "\" \"" + tag + "\"");
+    // stream.flush();
+    // }
+    // });
   }
 
   @Override
@@ -125,8 +127,8 @@ public class Git extends SourceCodeManager
 
         if (!line.equals("--BEGIN-COMMIT--"))
         {
-          throw new IllegalStateException("Read unexpected line " + line + " at beginning of file "
-              + outFile.getAbsolutePath());
+          throw new IllegalStateException(
+              "Read unexpected line " + line + " at beginning of file " + outFile.getAbsolutePath());
         }
 
         // first line successfully read. Start processing of log entries:
