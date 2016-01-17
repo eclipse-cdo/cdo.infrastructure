@@ -608,13 +608,13 @@ public final class IO
     }
   }
 
-  public static void unzip(File zipFile, File targetFolder)
+  public static void unzip(File zipFile, File targetFolder, String prefix)
   {
     FileInputStream fis = openInputStream(zipFile);
 
     try
     {
-      unzip(fis, targetFolder);
+      unzip(fis, targetFolder, prefix);
     }
     finally
     {
@@ -622,14 +622,14 @@ public final class IO
     }
   }
 
-  public static void unzip(URL url, File targetFolder)
+  public static void unzip(URL url, File targetFolder, String prefix)
   {
     InputStream in = null;
 
     try
     {
       in = url.openStream();
-      unzip(in, targetFolder);
+      unzip(in, targetFolder, prefix);
     }
     catch (IOException ex)
     {
@@ -641,7 +641,7 @@ public final class IO
     }
   }
 
-  public static void unzip(InputStream inputStream, File targetFolder)
+  public static void unzip(InputStream inputStream, File targetFolder, String prefix)
   {
     final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
     ZipInputStream zis = null;
@@ -654,6 +654,22 @@ public final class IO
       while ((entry = zis.getNextEntry()) != null)
       {
         String name = entry.getName();
+        if (prefix != null)
+        {
+          if (name.startsWith(prefix))
+          {
+            name = name.substring(prefix.length());
+            if (name.length() == 0)
+            {
+              continue;
+            }
+          }
+          else
+          {
+            continue;
+          }
+        }
+
         File target = new File(targetFolder, name);
 
         if (entry.isDirectory())
