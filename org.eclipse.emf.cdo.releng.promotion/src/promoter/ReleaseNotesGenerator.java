@@ -326,12 +326,15 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
   protected BuildInfo getPreviousBuildInfo(BuildInfo[] buildInfos, int current)
   {
+    System.out.println("Current build: " + buildInfos[current]);
     String currentBuildType = buildInfos[current].getType();
     String previousBuildTypes = getPreviousBuildTypes(currentBuildType);
+    System.out.println("Previous types: " + previousBuildTypes);
 
     for (int i = current - 1; i >= 0; --i)
     {
       BuildInfo previousBuildInfo = buildInfos[i];
+      System.out.println("Previous build: " + previousBuildInfo);
       String previousBuildType = previousBuildInfo.getType();
       if (previousBuildTypes.contains(previousBuildType))
       {
