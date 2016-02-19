@@ -326,15 +326,12 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
   protected BuildInfo getPreviousBuildInfo(BuildInfo[] buildInfos, int current)
   {
-    System.out.println("Current build: " + buildInfos[current]);
     String currentBuildType = buildInfos[current].getType();
     String previousBuildTypes = getPreviousBuildTypes(currentBuildType);
-    System.out.println("Previous types: " + previousBuildTypes);
 
     for (int i = current - 1; i >= 0; --i)
     {
       BuildInfo previousBuildInfo = buildInfos[i];
-      System.out.println("Previous build: " + previousBuildInfo);
       String previousBuildType = previousBuildInfo.getType();
       if (previousBuildTypes.contains(previousBuildType))
       {
@@ -373,28 +370,31 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
   protected Set<Issue> getIssues(BuildInfo buildInfo, String fromRevision, String toRevision)
   {
-    String branch = buildInfo.getBranch();
-
     final Set<Issue> issues = new HashSet<Issue>();
-    scm.handleLogEntries(branch, fromRevision, toRevision, false, new LogEntryHandler()
+
+    if (!fromRevision.equals(toRevision))
     {
-      public void handleLogEntry(LogEntry logEntry)
+      String branch = buildInfo.getBranch();
+      scm.handleLogEntries(branch, fromRevision, toRevision, false, new LogEntryHandler()
       {
-        String message = logEntry.getMessage();
-        String id = issueManager.parseID(message);
-        if (id != null && id.length() != 0)
+        public void handleLogEntry(LogEntry logEntry)
         {
-          Issue issue = issueManager.getIssue(id);
-          if (issue != null)
+          String message = logEntry.getMessage();
+          String id = issueManager.parseID(message);
+          if (id != null && id.length() != 0)
           {
-            if (issues.add(issue))
+            Issue issue = issueManager.getIssue(id);
+            if (issue != null)
             {
-              System.out.println("   " + issue.getID() + ": " + issue.getTitle() + " --> " + issue.getSeverity());
+              if (issues.add(issue))
+              {
+                System.out.println("   " + issue.getID() + ": " + issue.getTitle() + " --> " + issue.getSeverity());
+              }
             }
           }
         }
-      }
-    });
+      });
+    }
 
     return issues;
   }
