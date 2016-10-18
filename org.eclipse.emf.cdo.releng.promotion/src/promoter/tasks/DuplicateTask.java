@@ -72,8 +72,7 @@ public class DuplicateTask extends AbstractDropTask
           xml.element("move").attribute("todir", newQualifier + "/zips");
           xml.push();
           xml.element("fileset").attribute("dir", newQualifier + "/zips");
-          xml.element("mapper").attribute("type", "regexp").attribute("from", "(.*)" + qualifier + "(.*)")
-              .attribute("to", "\\1" + newQualifier + "\\2");
+          xml.element("mapper").attribute("type", "regexp").attribute("from", "(.*)" + qualifier + "(.*)").attribute("to", "\\1" + newQualifier + "\\2");
           xml.pop();
 
           xml.element("delete").attribute("includeemptydirs", true).attribute("failonerror", false);
@@ -91,8 +90,7 @@ public class DuplicateTask extends AbstractDropTask
 
           xml.element("touch").attribute("file", newQualifier + "/.invisible");
 
-          xml.element("replaceregexp").attribute("match", qualifier).attribute("replace", newQualifier)
-              .attribute("byline", false).attribute("flags", "sg");
+          xml.element("replaceregexp").attribute("match", qualifier).attribute("replace", newQualifier).attribute("byline", false).attribute("flags", "sg");
           xml.push();
           xml.element("fileset").attribute("dir", newQualifier);
           xml.push();
@@ -101,8 +99,8 @@ public class DuplicateTask extends AbstractDropTask
           xml.pop();
           xml.pop();
 
-          xml.element("replaceregexp").attribute("match", "type=\"" + type + "\"")
-              .attribute("replace", "type=\"" + newType + "\"").attribute("byline", false).attribute("flags", "sg");
+          xml.element("replaceregexp").attribute("match", "type=\"" + type + "\"").attribute("replace", "type=\"" + newType + "\"").attribute("byline", false)
+              .attribute("flags", "sg");
           xml.push();
           xml.element("fileset").attribute("dir", newQualifier);
           xml.push();

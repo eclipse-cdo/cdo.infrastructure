@@ -80,8 +80,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       System.out.println("Generating release notes for " + qualifier);
 
       BuildInfo previousBuildInfo = getPreviousBuildInfo(buildInfos, i);
-      String fromRevision = previousBuildInfo == null ? stream.getFirstRevision()
-          : previousBuildInfo.getRelnotesRevision();
+      String fromRevision = previousBuildInfo == null ? stream.getFirstRevision() : previousBuildInfo.getRelnotesRevision();
       String toRevision = buildInfo.getRevision();
 
       List<Issue> issues = new ArrayList<Issue>(getIssues(buildInfo, fromRevision, toRevision));
@@ -92,8 +91,8 @@ public class ReleaseNotesGenerator extends PromoterComponent
     }
   }
 
-  protected void generateReleaseNotesXML(BuildInfo buildInfo, BuildInfo previousBuildInfo, String fromRevision,
-      String toRevision, List<Issue> issues, File relnotesXML)
+  protected void generateReleaseNotesXML(BuildInfo buildInfo, BuildInfo previousBuildInfo, String fromRevision, String toRevision, List<Issue> issues,
+      File relnotesXML)
   {
     OutputStream out = null;
 
@@ -138,8 +137,8 @@ public class ReleaseNotesGenerator extends PromoterComponent
     }
   }
 
-  protected void generateReleaseNotesHTML(BuildInfo buildInfo, BuildInfo previousBuildInfo, String fromRevision,
-      String toRevision, List<Issue> issues, File relnotesHTML)
+  protected void generateReleaseNotesHTML(BuildInfo buildInfo, BuildInfo previousBuildInfo, String fromRevision, String toRevision, List<Issue> issues,
+      File relnotesHTML)
   {
     PrintStream out = null;
 
@@ -191,29 +190,24 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("</head>");
       out.println();
       out.println("<body style=\"font-family:Arial; font-size:small;\">");
-      out.println("<h1>Release Notes for CDO <a href=\"http://www.eclipse.org/cdo/downloads/#"
-          + qualifier.replace('-', '_') + "\">" + qualifier + "</a></h1>");
+      out.println("<h1>Release Notes for CDO <a href=\"http://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_') + "\">" + qualifier + "</a></h1>");
 
       out.println("<p>");
-      out.println(
-          "These release notes have been generated from the commit log of the <a href=\"http://www.eclipse.org/cdo/downloads/#releases_"
-              + buildInfo.getStream().replace('.', '_') + "\">" + buildInfo.getStream()
-              + "</a> stream and the associated bugzillas.");
+      out.println("These release notes have been generated from the commit log of the <a href=\"http://www.eclipse.org/cdo/downloads/#releases_"
+          + buildInfo.getStream().replace('.', '_') + "\">" + buildInfo.getStream() + "</a> stream and the associated bugzillas.");
       out.print("<br/>The first commit is " + fromRevision);
       if (previousBuildInfo != null)
       {
-        out.println(" in the <a href=\"http://git.eclipse.org/c/cdo/cdo.git/?h="
-            + previousBuildInfo.getBranch().replaceAll("/", "%2F") + "\">" + previousBuildInfo.getBranch()
-            + "</a> branch.");
+        out.println(" in the <a href=\"http://git.eclipse.org/c/cdo/cdo.git/?h=" + previousBuildInfo.getBranch().replaceAll("/", "%2F") + "\">"
+            + previousBuildInfo.getBranch() + "</a> branch.");
       }
       else
       {
         out.println(" in the <a href=\"http://git.eclipse.org/c/cdo/cdo.git/?h=master\">master</a> branch.");
       }
 
-      out.println(
-          "<br/>The last commit is " + toRevision + " in the <a href=\"" + "http://git.eclipse.org/c/cdo/cdo.git/?h="
-              + buildInfo.getBranch().replaceAll("/", "%2F") + "\">" + buildInfo.getBranch() + "</a> branch.");
+      out.println("<br/>The last commit is " + toRevision + " in the <a href=\"" + "http://git.eclipse.org/c/cdo/cdo.git/?h="
+          + buildInfo.getBranch().replaceAll("/", "%2F") + "\">" + buildInfo.getBranch() + "</a> branch.");
 
       previousBuildNote(out, buildInfo, previousBuildInfo);
       out.println("</p>");
@@ -261,8 +255,8 @@ public class ReleaseNotesGenerator extends PromoterComponent
     if (previousBuildInfo != null)
     {
       String q = previousBuildInfo.getQualifier();
-      out.println("The previous build of the " + buildInfo.getStream()
-          + " stream is <a href=\"http://www.eclipse.org/cdo/downloads/#" + q.replace('-', '_') + "\">" + q + "</a>.");
+      out.println("The previous build of the " + buildInfo.getStream() + " stream is <a href=\"http://www.eclipse.org/cdo/downloads/#" + q.replace('-', '_')
+          + "\">" + q + "</a>.");
     }
     else
     {
@@ -506,8 +500,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
         out.print("<img src=\"../../images/" + severity + ".gif\" alt=\"" + severity + "\">&nbsp;");
         out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title);
-        out.print("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"#aaaaaa\"><i>" + issue.getStatus().toLowerCase() + " in "
-            + issue.getVersion() + "</i></font>");
+        out.print("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"#aaaaaa\"><i>" + issue.getStatus().toLowerCase() + " in " + issue.getVersion() + "</i></font>");
         out.println("<br/>");
       }
     }

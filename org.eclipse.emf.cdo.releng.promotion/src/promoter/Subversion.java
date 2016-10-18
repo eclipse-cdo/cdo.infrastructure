@@ -58,8 +58,7 @@ public class Subversion extends SourceCodeManager
   }
 
   @Override
-  public void handleLogEntries(final String branch, final String fromRevision, final String toRevision,
-      final boolean withPaths, final LogEntryHandler handler)
+  public void handleLogEntries(final String branch, final String fromRevision, final String toRevision, final boolean withPaths, final LogEntryHandler handler)
   {
     try
     {
@@ -73,8 +72,7 @@ public class Subversion extends SourceCodeManager
           System.out.println("Getting log entries for " + branch + " (" + range + ")");
 
           PrintStream stream = new PrintStream(out);
-          stream.println(SVN_BINARY + " log " + (withPaths ? "-v " : "") + "--xml -r " + range + " \"" + SVN_ROOT
-              + branch + "\" > " + xmlFile);
+          stream.println(SVN_BINARY + " log " + (withPaths ? "-v " : "") + "--xml -r " + range + " \"" + SVN_ROOT + branch + "\" > " + xmlFile);
           stream.flush();
         }
       });
@@ -88,8 +86,7 @@ public class Subversion extends SourceCodeManager
           private StringBuilder builder;
 
           @Override
-          public void startElement(String uri, String localName, String qName, Attributes attributes)
-              throws SAXException
+          public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
           {
             builder = new StringBuilder();
             if ("logentry".equalsIgnoreCase(qName))

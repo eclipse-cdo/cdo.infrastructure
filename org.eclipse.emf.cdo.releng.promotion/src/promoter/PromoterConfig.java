@@ -84,8 +84,7 @@ public final class PromoterConfig extends Config
 
   public String formatDownloadURL(String path)
   {
-    return "http://www.eclipse.org/downloads/download.php?file=/" + getDownloadsPath() + "/" + path
-        + "&amp;protocol=http";
+    return "http://www.eclipse.org/downloads/download.php?file=/" + getDownloadsPath() + "/" + path + "&amp;protocol=http";
   }
 
   public String formatDropURL(String path)

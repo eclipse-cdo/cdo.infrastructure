@@ -209,8 +209,7 @@ public class Bugzilla extends IssueManager
           }
         }
 
-        if (id != null && title != null && severity != null && component != null && version != null && status != null
-            && resolution != null)
+        if (id != null && title != null && severity != null && component != null && version != null && status != null && resolution != null)
         {
           if (resolution.length() != 0)
           {

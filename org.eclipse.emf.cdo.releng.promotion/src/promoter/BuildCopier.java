@@ -163,8 +163,7 @@ public class BuildCopier extends PromoterComponent
       if (!drop.exists())
       {
         boolean isVisible = autoVisible.contains(buildType);
-        System.out.println("Build " + buildInfo.getNumber() + " is being copied to " + drop
-            + (isVisible ? " (visible)" : " (invisible)"));
+        System.out.println("Build " + buildInfo.getNumber() + " is being copied to " + drop + (isVisible ? " (visible)" : " (invisible)"));
 
         try
         {
@@ -220,16 +219,15 @@ public class BuildCopier extends PromoterComponent
 
   protected void storeNextBuildNumber(String jobName, final int nextBuildNumber)
   {
-    IO.writeFile(new File(PromoterConfig.INSTANCE.getWorkingArea(), jobName + ".nextBuildNumber"),
-        new IO.OutputHandler()
-        {
-          public void handleOutput(OutputStream out) throws IOException
-          {
-            PrintStream stream = new PrintStream(out);
-            stream.println(nextBuildNumber);
-            stream.flush();
-          }
-        });
+    IO.writeFile(new File(PromoterConfig.INSTANCE.getWorkingArea(), jobName + ".nextBuildNumber"), new IO.OutputHandler()
+    {
+      public void handleOutput(OutputStream out) throws IOException
+      {
+        PrintStream stream = new PrintStream(out);
+        stream.println(nextBuildNumber);
+        stream.flush();
+      }
+    });
   }
 
   protected List<Integer> getBuildNumbers(String jobURL)

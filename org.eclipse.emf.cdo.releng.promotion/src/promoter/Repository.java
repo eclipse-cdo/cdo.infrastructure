@@ -249,12 +249,10 @@ public class Repository
       out.println("<body style=\"font-family:Arial; font-size:small;\">");
       out.println("<h1>" + title + "</h1>");
       out.println("<p>");
-      out.println(
-          "<em>For information about CDO or Net4j, see their <a href=\"http://www.eclipse.org/cdo\">homepage</a> or <a");
+      out.println("<em>For information about CDO or Net4j, see their <a href=\"http://www.eclipse.org/cdo\">homepage</a> or <a");
       out.println("href=\"http://wiki.eclipse.org/CDO\">wiki</a>.");
       out.println("         <br> For information about installing or updating Eclipse software, see the");
-      out.println(
-          "         <a href=\"http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-124.htm\">");
+      out.println("         <a href=\"http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-124.htm\">");
       out.println("           Eclipse Platform Help</a>.");
       out.println("         <br> Some plugins require third party software from p2 repositories listed in this ");
       out.println("         <a href=\"bookmarks.xml\">bookmarks.xml</a> file.</em>");
@@ -296,8 +294,7 @@ public class Repository
     }
   }
 
-  protected void generateXML(final XMLOutput xml, final File folder, final String xmlName, final String entityName,
-      final String typeName)
+  protected void generateXML(final XMLOutput xml, final File folder, final String xmlName, final String entityName, final String typeName)
   {
     final File xmlFile = new File(folder, xmlName + ".xml");
     IO.writeFile(xmlFile, new IO.OutputHandler()
@@ -394,8 +391,7 @@ public class Repository
 
     private List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
 
-    public Drops(RepositoryComposer composer, File base, String name, String path, String job, String stream,
-        String types, List<BuildInfo> buildInfos)
+    public Drops(RepositoryComposer composer, File base, String name, String path, String job, String stream, String types, List<BuildInfo> buildInfos)
     {
       super(composer, base, name, path);
       this.job = job;

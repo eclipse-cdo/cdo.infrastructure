@@ -152,9 +152,8 @@ public final class BuildInfo implements Comparable<BuildInfo>
   @Override
   public String toString()
   {
-    return "BuildInfo [branch=" + branch + ", hudson=" + hudson + ", job=" + job + ", number=" + number + ", qualifier="
-        + qualifier + ", revision=" + revision + ", relnotes=" + relnotesRevision + ", stream=" + stream
-        + ", timestamp=" + timestamp + ", trigger=" + trigger + ", type=" + type + "]";
+    return "BuildInfo [branch=" + branch + ", hudson=" + hudson + ", job=" + job + ", number=" + number + ", qualifier=" + qualifier + ", revision=" + revision
+        + ", relnotes=" + relnotesRevision + ", stream=" + stream + ", timestamp=" + timestamp + ", trigger=" + trigger + ", type=" + type + "]";
   }
 
   public int compareTo(BuildInfo o)

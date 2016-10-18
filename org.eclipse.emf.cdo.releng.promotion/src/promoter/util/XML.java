@@ -72,8 +72,7 @@ public final class XML
     }
   }
 
-  public static void parseXML(InputStream in, DefaultHandler handler)
-      throws ParserConfigurationException, SAXException, IOException
+  public static void parseXML(InputStream in, DefaultHandler handler) throws ParserConfigurationException, SAXException, IOException
   {
     if (parserFactory == null)
     {

@@ -88,8 +88,7 @@ public class Git extends SourceCodeManager
   }
 
   @Override
-  public void handleLogEntries(final String branch, final String fromRevision, final String toRevision,
-      final boolean withPaths, final LogEntryHandler handler)
+  public void handleLogEntries(final String branch, final String fromRevision, final String toRevision, final boolean withPaths, final LogEntryHandler handler)
   {
     try
     {
@@ -105,8 +104,7 @@ public class Git extends SourceCodeManager
           String range = fromRevision + ".." + toRevision;
           System.out.println("Getting log entries for " + branch + " (" + range + ")");
 
-          stream.println(GIT_BINARY + " log " + (withPaths ? "--name-only " : "") + " --format=\"" + OUTPUT_FORMAT
-              + "\" " + range + " > " + outFile);
+          stream.println(GIT_BINARY + " log " + (withPaths ? "--name-only " : "") + " --format=\"" + OUTPUT_FORMAT + "\" " + range + " > " + outFile);
           stream.flush();
         }
       });
@@ -127,8 +125,7 @@ public class Git extends SourceCodeManager
 
         if (!line.equals("--BEGIN-COMMIT--"))
         {
-          throw new IllegalStateException(
-              "Read unexpected line " + line + " at beginning of file " + outFile.getAbsolutePath());
+          throw new IllegalStateException("Read unexpected line " + line + " at beginning of file " + outFile.getAbsolutePath());
         }
 
         // first line successfully read. Start processing of log entries:
