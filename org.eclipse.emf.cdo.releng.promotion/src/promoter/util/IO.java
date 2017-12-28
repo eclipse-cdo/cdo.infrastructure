@@ -47,6 +47,12 @@ public final class IO
 
   public static final int DEFAULT_BUFFER_SIZE = 8192;
 
+  private static final char SEP = File.separatorChar;
+
+  private static final char SEP_UNIX = '/';
+
+  private static final char SEP_WINDOWS = '\\';
+
   private IO()
   {
   }
@@ -139,6 +145,38 @@ public final class IO
     }
 
     return false;
+  }
+
+  public static String makeRelative(File file, File toFolder)
+  {
+    String fileName = normalizeSeparator(file.getAbsolutePath());
+    String folderName = normalizeSeparator(toFolder.getAbsolutePath());
+    if (fileName.startsWith(folderName))
+    {
+      String relative = fileName.substring(folderName.length());
+      if (relative.startsWith(File.separator))
+      {
+        relative = relative.substring(1);
+      }
+
+      return relative;
+    }
+
+    throw new IllegalArgumentException("Different prefixes: " + fileName + " != " + folderName);
+  }
+
+  public static String normalizeSeparator(String string)
+  {
+    if (SEP == SEP_UNIX)
+    {
+      return string.replace(SEP_WINDOWS, SEP_UNIX);
+    }
+    else if (SEP == SEP_WINDOWS)
+    {
+      return string.replace(SEP_UNIX, SEP_WINDOWS);
+    }
+
+    return string;
   }
 
   public static FileInputStream openInputStream(String fileName)

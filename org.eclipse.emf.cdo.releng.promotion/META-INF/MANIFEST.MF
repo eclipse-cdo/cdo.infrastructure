@@ -12,3 +12,4 @@ Export-Package: promoter;version="4.0.0";x-internal:=true,
  promoter.tasks;version="4.1.0";x-internal:=true,
  promoter.util;version="4.0.0";x-internal:=true
 Bundle-ClassPath: .
+Automatic-Module-Name: org.eclipse.emf.cdo.releng.promotion

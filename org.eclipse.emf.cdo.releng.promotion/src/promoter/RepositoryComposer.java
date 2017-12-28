@@ -12,11 +12,6 @@ package promoter;
 
 import org.xml.sax.SAXException;
 
-import promoter.Repository.Drops;
-import promoter.util.Config;
-import promoter.util.IO;
-import promoter.util.XMLOutput;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,6 +22,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+
+import promoter.Repository.Drops;
+import promoter.util.Config;
+import promoter.util.IO;
+import promoter.util.XMLOutput;
 
 /**
  * @author Eike Stepper
@@ -141,10 +141,11 @@ public class RepositoryComposer extends PromoterComponent
       File folder = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), path);
       File link = new File(folder, "latest");
       File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), latest.getQualifier());
+      String relativeDrop = IO.makeRelative(drop, new File(PromoterConfig.INSTANCE.getCompositionArea(), path));
 
       xml.element("symlink");
       xml.attribute("link", link.getAbsolutePath());
-      xml.attribute("resource", drop.getAbsolutePath());
+      xml.attribute("resource", relativeDrop);
 
       File latestUrl = new File(folder, "latest.qualifier");
       appendFile(latestUrl, latest.getQualifier());

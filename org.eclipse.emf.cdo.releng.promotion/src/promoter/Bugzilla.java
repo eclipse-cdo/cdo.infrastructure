@@ -10,19 +10,19 @@
  */
 package promoter;
 
-import promoter.util.IO;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import promoter.util.IO;
 
 /**
  * @author Eike Stepper
  */
 public class Bugzilla extends IssueManager
 {
-  public static final String SERVER = "https://bugs.eclipse.org/";
+  public static final String SERVER = "http://bugs.eclipse.org/";
 
   public static final String XML = SERVER + "bugs/show_bug.cgi?ctype=xml&id=";
 
