@@ -47,12 +47,6 @@ public final class IO
 
   public static final int DEFAULT_BUFFER_SIZE = 8192;
 
-  private static final char SEP = File.separatorChar;
-
-  private static final char SEP_UNIX = '/';
-
-  private static final char SEP_WINDOWS = '\\';
-
   private IO()
   {
   }
@@ -147,36 +141,56 @@ public final class IO
     return false;
   }
 
-  public static String makeRelative(File file, File toFolder)
+  public static String makeRelative(String file, String folder)
   {
-    String fileName = normalizeSeparator(file.getAbsolutePath());
-    String folderName = normalizeSeparator(toFolder.getAbsolutePath());
-    if (fileName.startsWith(folderName))
+    file = file.replaceAll("\\\\", "/");
+    folder = folder.replaceAll("\\\\", "/");
+
+    if (folder.equals(file) == true)
     {
-      String relative = fileName.substring(folderName.length());
-      if (relative.startsWith(File.separator))
+      return ".";
+    }
+
+    String[] fileSegments = folder.split("/");
+    String[] folderSegments = file.split("/");
+
+    int length = Math.min(fileSegments.length, folderSegments.length);
+
+    int lastCommonRoot = -1;
+
+    for (int i = 0; i < length; i++)
+    {
+      if (fileSegments[i].equals(folderSegments[i]))
       {
-        relative = relative.substring(1);
+        lastCommonRoot = i;
       }
-
-      return relative;
+      else
+      {
+        break;
+      }
     }
 
-    throw new IllegalArgumentException("Different prefixes: " + fileName + " != " + folderName);
-  }
-
-  public static String normalizeSeparator(String string)
-  {
-    if (SEP == SEP_UNIX)
+    if (lastCommonRoot == -1)
     {
-      return string.replace(SEP_WINDOWS, SEP_UNIX);
-    }
-    else if (SEP == SEP_WINDOWS)
-    {
-      return string.replace(SEP_UNIX, SEP_WINDOWS);
+      return null;
     }
 
-    return string;
+    StringBuilder builder = new StringBuilder();
+    for (int i = lastCommonRoot + 1; i < fileSegments.length; i++)
+    {
+      if (fileSegments[i].length() > 0)
+      {
+        builder.append("../");
+      }
+    }
+
+    for (int i = lastCommonRoot + 1; i < folderSegments.length - 1; i++)
+    {
+      builder.append(folderSegments[i] + "/");
+    }
+
+    builder.append(folderSegments[folderSegments.length - 1]);
+    return builder.toString();
   }
 
   public static FileInputStream openInputStream(String fileName)

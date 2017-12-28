@@ -141,7 +141,7 @@ public class RepositoryComposer extends PromoterComponent
       File folder = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), path);
       File link = new File(folder, "latest");
       File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), latest.getQualifier());
-      String relativeDrop = IO.makeRelative(drop, new File(PromoterConfig.INSTANCE.getCompositionArea(), path));
+      String relativeDrop = IO.makeRelative(drop.getAbsolutePath(), new File(PromoterConfig.INSTANCE.getCompositionArea(), path).getAbsolutePath());
 
       xml.element("symlink");
       xml.attribute("link", link.getAbsolutePath());
