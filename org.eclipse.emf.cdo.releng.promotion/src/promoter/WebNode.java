@@ -10,9 +10,6 @@
  */
 package promoter;
 
-import promoter.util.Config;
-import promoter.util.FileSizeInserter;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -20,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+
+import promoter.util.Config;
+import promoter.util.FileSizeInserter;
 
 /**
  * @author Eike Stepper
@@ -213,6 +213,8 @@ public class WebNode implements Comparable<WebNode>
 
     generateDropHelp(out, level, buildInfo);
 
+    generateDropTests(out, level, buildInfo);
+
     generateDropSeparator(out, level);
 
     generateDropDownload(out, level, buildInfo, "zips/emf-cdo-" + buildInfo.getQualifier() + "-Site.zip",
@@ -236,6 +238,7 @@ public class WebNode implements Comparable<WebNode>
     generateDropFile(out, level, buildInfo, "build-info.xml", " for the parameters that produced this build.");
 
     generateDropFile(out, level, buildInfo, "test-report.xml", " for the test results of this build.");
+    generateDropFile(out, level, buildInfo, "tests/test-report.xml", " for the test results of this build.");
 
     generateDropSeparator(out, level);
 
@@ -260,6 +263,20 @@ public class WebNode implements Comparable<WebNode>
           + http() + "drops/" + buildInfo.getQualifier()
           + "/help/index.html\">Documentation</a></b> to browse the online help center of this build.</td><td class=\"file-size level"
           + (repository.getPathLevel() + 1) + "\"></td></tr>");
+    }
+  }
+
+  protected void generateDropTests(PrintStream out, int level, BuildInfo buildInfo)
+  {
+    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
+    File tests = new File(drop, "tests");
+    File index = new File(tests, "index.html");
+    if (index.isFile())
+    {
+      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/junit.png\"/></td><td><b><a href=\"" + http()
+          + "drops/" + buildInfo.getQualifier()
+          + "/tests/index.html\">Test Report</a></b> to explorer the quality of this build.</td><td class=\"file-size level" + (repository.getPathLevel() + 1)
+          + "\"></td></tr>");
     }
   }
 
