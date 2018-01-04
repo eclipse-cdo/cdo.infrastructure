@@ -202,6 +202,8 @@ public class WebNode implements Comparable<WebNode>
         + http() + "drops/" + buildInfo.getQualifier() + "/relnotes.html\">Release Notes</a></b> to see what's in this build.</td><td class=\"file-size level"
         + (repository.getPathLevel() + 1) + "\"></td></tr>");
 
+    generateDropHelp(out, level, buildInfo);
+
     File apiHTML = getDropFile(buildInfo, "api.html");
     if (apiHTML.isFile())
     {
@@ -212,8 +214,6 @@ public class WebNode implements Comparable<WebNode>
     }
 
     generateDropTests(out, level, buildInfo);
-
-    generateDropHelp(out, level, buildInfo);
 
     generateDropSeparator(out, level);
 
