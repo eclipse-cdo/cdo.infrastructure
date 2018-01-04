@@ -10,14 +10,14 @@
  */
 package promoter;
 
-import promoter.util.Ant;
-import promoter.util.IO;
-import promoter.util.XMLOutput;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import promoter.util.Ant;
+import promoter.util.IO;
+import promoter.util.XMLOutput;
 
 /**
  * @author Eike Stepper
@@ -216,6 +216,11 @@ public class Promoter
     boolean force = false;
     if (args != null && args.length != 0)
     {
+      for (String arg : args)
+      {
+        System.out.println(arg);
+      }
+
       if ("--force".equals(args[0]))
       {
         force = true;
