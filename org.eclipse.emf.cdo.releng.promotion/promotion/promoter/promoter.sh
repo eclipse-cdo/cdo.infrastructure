@@ -86,20 +86,27 @@ CheckPromotion ()
 
   if [ -d "$compositionTempFolder" ]
   then
-		compositionFolder=$DOWNLOADS_HOME/$downloadsPath/$compositionPath
-		tmpFolder=$compositionFolder.tmp
-
-  	if [ -d "$compositionFolder" ]
-	  then
-			mv -f "$compositionFolder" "$tmpFolder"
-		fi
-
-		mv -f "$compositionTempFolder" "$compositionFolder"
-
-  	if [ -d "$tmpFolder" ]
-	  then
-			rm -rf "$tmpFolder"
-		fi
+    if echo "$args" | grep -q -e '--dry'
+    then
+    		dryFolder=$compositionFolder.dry
+  			rm -rf "$dryFolder"
+    		mv -f "$compositionTempFolder" "$dryFolder"
+    else
+  		compositionFolder=$DOWNLOADS_HOME/$downloadsPath/$compositionPath
+  		tmpFolder=$compositionFolder.tmp
+  
+    	if [ -d "$compositionFolder" ]
+  	  then
+  			mv -f "$compositionFolder" "$tmpFolder"
+  		fi
+  
+  		mv -f "$compositionTempFolder" "$compositionFolder"
+  
+    	if [ -d "$tmpFolder" ]
+  	  then
+  			rm -rf "$tmpFolder"
+  		fi
+    fi
 	fi
 
   # Exit when done.

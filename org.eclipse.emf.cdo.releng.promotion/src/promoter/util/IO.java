@@ -118,11 +118,6 @@ public final class IO
       return true;
     }
 
-    if (".git".equalsIgnoreCase(name))
-    {
-      return true;
-    }
-
     if (".hg".equalsIgnoreCase(name))
     {
       return true;

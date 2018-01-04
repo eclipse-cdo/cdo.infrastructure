@@ -211,9 +211,9 @@ public class WebNode implements Comparable<WebNode>
           + "\"></td></tr>");
     }
 
-    generateDropHelp(out, level, buildInfo);
-
     generateDropTests(out, level, buildInfo);
+
+    generateDropHelp(out, level, buildInfo);
 
     generateDropSeparator(out, level);
 
@@ -325,8 +325,11 @@ public class WebNode implements Comparable<WebNode>
     String size = formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier() + "/" + path);
     if (size.length() > 0)
     {
+      int lastSlash = path.lastIndexOf('/');
+      String label = lastSlash == -1 ? path : path.substring(lastSlash + 1);
+
       out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
-          + http() + "drops/" + buildInfo.getQualifier() + "/" + path + "\">" + path + "</a>" + description + "</td><td class=\"file-size level"
+          + http() + "drops/" + buildInfo.getQualifier() + "/" + path + "\">" + label + "</a>" + description + "</td><td class=\"file-size level"
           + (repository.getPathLevel() + 1) + "\">" + size + "</td></tr>");
     }
   }
