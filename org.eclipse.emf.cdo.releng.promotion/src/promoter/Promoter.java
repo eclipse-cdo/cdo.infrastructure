@@ -214,16 +214,14 @@ public class Promoter
   public static void main(String[] args) throws Exception
   {
     boolean force = false;
-    if (args != null && args.length != 0)
+    if (args != null)
     {
       for (String arg : args)
       {
-        System.out.println(arg);
-      }
-
-      if ("--force".equals(args[0]))
-      {
-        force = true;
+        if ("--force".equals(arg))
+        {
+          force = true;
+        }
       }
     }
 

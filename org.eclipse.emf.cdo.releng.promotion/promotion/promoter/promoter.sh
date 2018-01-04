@@ -82,17 +82,19 @@ CheckPromotion ()
   	classPromoter=promoter.Promoter
 	fi
 
-  "$JAVA_HOME/bin/java" "-DpromoterInstallArea=$promoterInstallArea" -cp "$classPath" "$classPromoter" "$args"
+  "$JAVA_HOME/bin/java" "-DpromoterInstallArea=$promoterInstallArea" -cp "$classPath" "$classPromoter" $args
 
+	compositionFolder=$DOWNLOADS_HOME/$downloadsPath/$compositionPath
   if [ -d "$compositionTempFolder" ]
   then
     if echo "$args" | grep -q -e '--dry'
     then
     		dryFolder=$compositionFolder.dry
+    		echo "DRY: $dryFolder"
+    		
   			rm -rf "$dryFolder"
     		mv -f "$compositionTempFolder" "$dryFolder"
     else
-  		compositionFolder=$DOWNLOADS_HOME/$downloadsPath/$compositionPath
   		tmpFolder=$compositionFolder.tmp
   
     	if [ -d "$compositionFolder" ]
