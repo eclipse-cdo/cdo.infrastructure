@@ -165,6 +165,9 @@ public class Bugzilla extends IssueManager
       String line;
       while ((line = reader.readLine()) != null)
       {
+        int yyy;
+        System.out.println(line);
+
         line = line.trim();
 
         if (id == null)
