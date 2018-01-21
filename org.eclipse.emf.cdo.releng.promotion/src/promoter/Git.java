@@ -104,7 +104,10 @@ public class Git extends SourceCodeManager
           String range = fromRevision + ".." + toRevision;
           System.out.println("Getting log entries for " + branch + " (" + range + ")");
 
-          stream.println(GIT_BINARY + " log " + (withPaths ? "--name-only " : "") + " --format=\"" + OUTPUT_FORMAT + "\" " + range + " > " + outFile);
+          String command = GIT_BINARY + " log " + (withPaths ? "--name-only " : "") + " --format=\"" + OUTPUT_FORMAT + "\" " + range + " > " + outFile;
+          System.out.println(command);
+
+          stream.println(command);
           stream.flush();
         }
       });
@@ -116,11 +119,12 @@ public class Git extends SourceCodeManager
       {
         LogEntry logEntry;
 
-        // start of file. First line has to be "--BEGIN-COMMIT--"
+        // Start of file. First line has to be "--BEGIN-COMMIT--".
         String line = bufferedReader.readLine();
         if (line == null)
         {
-          return; // empty log
+          System.out.println("Empty log!");
+          return; // Empty log.
         }
 
         if (!line.equals("--BEGIN-COMMIT--"))
@@ -128,7 +132,7 @@ public class Git extends SourceCodeManager
           throw new IllegalStateException("Read unexpected line " + line + " at beginning of file " + outFile.getAbsolutePath());
         }
 
-        // first line successfully read. Start processing of log entries:
+        // First line successfully read. Start processing of log entries:
 
         processing: //
         for (;;)
@@ -142,7 +146,7 @@ public class Git extends SourceCodeManager
           String date = readLineSafe(bufferedReader);
           logEntry.setDate(date);
 
-          // new follows the message until the summary marker is read
+          // Now follows the message until the summary marker is read.
           StringBuilder messageString = new StringBuilder();
           while (!(line = readLineSafe(bufferedReader)).equals("--BEGIN-SUMMARY--"))
           {
@@ -159,21 +163,21 @@ public class Git extends SourceCodeManager
             if (line == null)
             {
               handler.handleLogEntry(logEntry);
-              break processing; // end of file reached
+              break processing; // End of file reached.
             }
 
             if (line.equals("--BEGIN-COMMIT--"))
             {
               handler.handleLogEntry(logEntry);
-              break summaryReading; // end of summary section reached
+              break summaryReading; // End of summary section reached.
             }
 
             if (line.trim().length() == 0)
             {
-              continue; // read over empty lines
+              continue; // Read over empty lines.
             }
 
-            // we are in the summary section. Read line should contain a path
+            // We are in the summary section. Read line should contain a path.
             logEntry.getPaths().add(line);
           }
         }
