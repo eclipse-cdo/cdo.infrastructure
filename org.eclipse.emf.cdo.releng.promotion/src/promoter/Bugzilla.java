@@ -209,6 +209,15 @@ public class Bugzilla extends IssueManager
           }
         }
 
+        int zzz;
+        System.out.println(id);
+        System.out.println(title);
+        System.out.println(severity);
+        System.out.println(component);
+        System.out.println(version);
+        System.out.println(status);
+        System.out.println(resolution);
+
         if (id != null && title != null && severity != null && component != null && version != null && status != null && resolution != null)
         {
           if (resolution.length() != 0)
