@@ -22,7 +22,7 @@ import promoter.util.IO;
  */
 public class Bugzilla extends IssueManager
 {
-  public static final String SERVER = "http://bugs.eclipse.org/";
+  public static final String SERVER = "https://bugs.eclipse.org/";
 
   public static final String XML = SERVER + "bugs/show_bug.cgi?ctype=xml&id=";
 
