@@ -105,9 +105,6 @@ public class Git extends SourceCodeManager
           System.out.println("Getting log entries for " + branch + " (" + range + ")");
 
           String command = GIT_BINARY + " log " + (withPaths ? "--name-only " : "") + " --format=\"" + OUTPUT_FORMAT + "\" " + range + " > " + outFile;
-          int zzz;
-          System.out.println(command);
-
           stream.println(command);
           stream.flush();
         }
@@ -124,8 +121,6 @@ public class Git extends SourceCodeManager
         String line = bufferedReader.readLine();
         if (line == null)
         {
-          int zzz;
-          System.out.println("Empty log!");
           return; // Empty log.
         }
 

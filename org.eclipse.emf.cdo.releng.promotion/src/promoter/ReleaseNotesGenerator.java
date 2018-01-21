@@ -375,9 +375,6 @@ public class ReleaseNotesGenerator extends PromoterComponent
         {
           String message = logEntry.getMessage();
           String id = issueManager.parseID(message);
-          int zzz;
-          System.out.println(message);
-          System.out.println(id);
           if (id != null && id.length() != 0)
           {
             Issue issue = issueManager.getIssue(id);

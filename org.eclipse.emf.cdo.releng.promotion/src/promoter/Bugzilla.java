@@ -165,9 +165,6 @@ public class Bugzilla extends IssueManager
       String line;
       while ((line = reader.readLine()) != null)
       {
-        int yyy;
-        System.out.println(line);
-
         line = line.trim();
 
         if (id == null)
@@ -211,15 +208,6 @@ public class Bugzilla extends IssueManager
             resolution = match(line, "resolution");
           }
         }
-
-        int zzz;
-        System.out.println(id);
-        System.out.println(title);
-        System.out.println(severity);
-        System.out.println(component);
-        System.out.println(version);
-        System.out.println(status);
-        System.out.println(resolution);
 
         if (id != null && title != null && severity != null && component != null && version != null && status != null && resolution != null)
         {
