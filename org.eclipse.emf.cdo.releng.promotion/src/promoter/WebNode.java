@@ -121,14 +121,14 @@ public class WebNode implements Comparable<WebNode>
 
     out.println(prefix(level) + "<li class=\"repo-item\"><a href=\"javascript:toggle('" + repoID + "')\" class=\"repo-label" + repository.getPathLevel() + "\">"
         + repository.getWebLabel() + "</a> <a name=\"" + repoName + "\" href=\"#" + repoName
-        + "\"><img src=\"http://www.eclipse.org/cdo/images/link_obj.gif\" alt=\"Permalink\" width=\"12\" height=\"12\"/></a>");
+        + "\"><img src=\"https://www.eclipse.org/cdo/images/link_obj.gif\" alt=\"Permalink\" width=\"12\" height=\"12\"/></a>");
 
     out.println(prefix(level++) + "<div class=\"repo" + repository.getPathLevel() + "\" id=\"repo_" + repoName + "\""
         + (repository.isWebCollapsed() || empty ? " style=\"display: none\"" : "") + ">");
 
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
-    out.println(prefix(level) + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/22x22/package-x-generic.png\"/></td>"
+    out.println(prefix(level) + "<tr class=\"repo-info\"><td><img src=\"https://www.eclipse.org/cdo/images/22x22/package-x-generic.png\"/></td>"
         + "<td><b><a href=\"" + http() + "updates/" + repository.getPath() + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\""
         + HELP_TOPIC_URL + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> or a web browser.</td>" + "<td class=\"file-size level"
         + repository.getPathLevel() + "\"></td></tr>");
@@ -136,7 +136,7 @@ public class WebNode implements Comparable<WebNode>
     String apiBaselineURL = repository.getApiBaselineURL();
     if (apiBaselineURL != null)
     {
-      out.println(prefix(level) + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/22x22/go-down.png\"/></td>" + "<td><a href=\""
+      out.println(prefix(level) + "<tr class=\"repo-info\"><td><img src=\"https://www.eclipse.org/cdo/images/22x22/go-down.png\"/></td>" + "<td><a href=\""
           + apiBaselineURL + "\">" + new File(apiBaselineURL).getName() + "</a> for use with <a href=\"" + HELP_TOPIC_URL
           + "/org.eclipse.pde.doc.user/tasks/api_tooling_baseline.htm\">API Tools</a>.</td>" + "<td class=\"file-size level" + repository.getPathLevel()
           + "\"><i>" + repository.getApiBaselineSize() + "</i></td></tr>");
@@ -145,14 +145,14 @@ public class WebNode implements Comparable<WebNode>
     String targetInfo = repository.getTargetInfo();
     if (targetInfo != null)
     {
-      out.println(prefix(level) + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/22x22/dialog-information.png\"/></td>" + "<td>"
+      out.println(prefix(level) + "<tr class=\"repo-info\"><td><img src=\"https://www.eclipse.org/cdo/images/22x22/dialog-information.png\"/></td>" + "<td>"
           + targetInfo + "</td>" + "<td class=\"file-size level" + repository.getPathLevel() + "\"><i>" + repository.getTargetVersions() + "</i></td></tr>");
     }
 
     String childRetention = repository.getChildRetention();
     if (childRetention != null)
     {
-      out.println(prefix(level) + "<tr class=\"repo-info\"><td><img src=\"http://www.eclipse.org/cdo/images/22x22/dialog-information.png\"/></td>" + "<td>"
+      out.println(prefix(level) + "<tr class=\"repo-info\"><td><img src=\"https://www.eclipse.org/cdo/images/22x22/dialog-information.png\"/></td>" + "<td>"
           + childRetention + "</td>" + "<td class=\"file-size level" + repository.getPathLevel() + "\"></td></tr>");
     }
 
@@ -187,18 +187,18 @@ public class WebNode implements Comparable<WebNode>
 
     out.println(prefix(level) + "<li class=\"repo-item\"><b><a href=\"javascript:toggle('" + dropID + "')\" class=\"drop-label\">" + dropLabel
         + "</a></b> <a name=\"" + dropName + "\" href=\"#" + dropName
-        + "\"><img src=\"http://www.eclipse.org/cdo/images/link_obj.gif\" alt=\"Permalink\" width=\"12\" height=\"12\"/></a>");
+        + "\"><img src=\"https://www.eclipse.org/cdo/images/link_obj.gif\" alt=\"Permalink\" width=\"12\" height=\"12\"/></a>");
 
     out.println(prefix(level++) + "<div class=\"drop\" id=\"" + dropID + "\"" + (firstDrop ? "" : " style=\"display: none\"") + ">");
 
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
-    out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/package-x-generic.png\"/></td>"
+    out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/package-x-generic.png\"/></td>"
         + "<td><b><a href=\"" + http() + "drops/" + buildInfo.getQualifier() + "\">Update&nbsp;Site</a></b> for use with <a href=\"" + HELP_TOPIC_URL
         + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> or a web browser.</td>" + "<td class=\"file-size level" + (repository.getPathLevel() + 1)
         + "\"></td></tr>");
 
-    out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/edit-paste.png\"/></td><td><b><a href=\""
+    out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/edit-paste.png\"/></td><td><b><a href=\""
         + http() + "drops/" + buildInfo.getQualifier() + "/relnotes.html\">Release Notes</a></b> to see what's in this build.</td><td class=\"file-size level"
         + (repository.getPathLevel() + 1) + "\"></td></tr>");
 
@@ -207,7 +207,7 @@ public class WebNode implements Comparable<WebNode>
     File apiHTML = getDropFile(buildInfo, "api.html");
     if (apiHTML.isFile())
     {
-      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/api/report.gif\"/></td><td><b><a href=\"" + http()
+      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/api/report.gif\"/></td><td><b><a href=\"" + http()
           + "drops/" + buildInfo.getQualifier()
           + "/api.html\">API Evolution Report</a></b> to see the API changes in this stream.</td><td class=\"file-size level" + (repository.getPathLevel() + 1)
           + "\"></td></tr>");
@@ -233,7 +233,7 @@ public class WebNode implements Comparable<WebNode>
     generateDropFile(out, level, buildInfo, "bookmarks.xml",
         " for the <a href=\"" + HELP_TOPIC_URL + "/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
 
-    generateDropFile(out, level, buildInfo, "bom.xml", " for the <a href=\"http://www.eclipse.org/buckminster\">bill of materials</a> of this build.");
+    generateDropFile(out, level, buildInfo, "bom.xml", " for the <a href=\"https://www.eclipse.org/buckminster\">bill of materials</a> of this build.");
 
     generateDropFile(out, level, buildInfo, "build-info.xml", " for the parameters that produced this build.");
 
@@ -259,7 +259,7 @@ public class WebNode implements Comparable<WebNode>
     File index = new File(help, "index.html");
     if (index.isFile())
     {
-      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/help-browser.png\"/></td><td><b><a href=\""
+      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/help-browser.png\"/></td><td><b><a href=\""
           + http() + "drops/" + buildInfo.getQualifier()
           + "/help/index.html\">Documentation</a></b> to browse the online help center of this build.</td><td class=\"file-size level"
           + (repository.getPathLevel() + 1) + "\"></td></tr>");
@@ -273,7 +273,7 @@ public class WebNode implements Comparable<WebNode>
     File index = new File(tests, "index.html");
     if (index.isFile())
     {
-      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/junit.png\"/></td><td><b><a href=\"" + http()
+      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/junit.png\"/></td><td><b><a href=\"" + http()
           + "drops/" + buildInfo.getQualifier()
           + "/tests/index.html\">Test Report</a></b> to explore the quality of this build.</td><td class=\"file-size level" + (repository.getPathLevel() + 1)
           + "\"></td></tr>");
@@ -285,7 +285,7 @@ public class WebNode implements Comparable<WebNode>
     File download = getDropFile(buildInfo, path);
     if (download.isFile())
     {
-      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
+      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
           + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/" + path) + "\">" + new File(path).getName() + "</a>" + description
           + "</td><td class=\"file-size level" + (repository.getPathLevel() + 1) + "\">" + formatFileSize(download.getAbsolutePath()) + "</td></tr>");
     }
@@ -328,7 +328,7 @@ public class WebNode implements Comparable<WebNode>
       int lastSlash = path.lastIndexOf('/');
       String label = lastSlash == -1 ? path : path.substring(lastSlash + 1);
 
-      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"http://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
+      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
           + http() + "drops/" + buildInfo.getQualifier() + "/" + path + "\">" + label + "</a>" + description + "</td><td class=\"file-size level"
           + (repository.getPathLevel() + 1) + "\">" + size + "</td></tr>");
     }

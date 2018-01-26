@@ -249,7 +249,7 @@ public class Repository
       out.println("<body style=\"font-family:Arial; font-size:small;\">");
       out.println("<h1>" + title + "</h1>");
       out.println("<p>");
-      out.println("<em>For information about CDO or Net4j, see their <a href=\"http://www.eclipse.org/cdo\">homepage</a> or <a");
+      out.println("<em>For information about CDO or Net4j, see their <a href=\"https://www.eclipse.org/cdo\">homepage</a> or <a");
       out.println("href=\"http://wiki.eclipse.org/CDO\">wiki</a>.");
       out.println("         <br> For information about installing or updating Eclipse software, see the");
       out.println("         <a href=\"http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-124.htm\">");

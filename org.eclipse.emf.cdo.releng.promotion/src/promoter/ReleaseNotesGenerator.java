@@ -190,10 +190,11 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.println("</head>");
       out.println();
       out.println("<body style=\"font-family:Arial; font-size:small;\">");
-      out.println("<h1>Release Notes for CDO <a href=\"http://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_') + "\">" + qualifier + "</a></h1>");
+      out.println(
+          "<h1>Release Notes for CDO <a href=\"https://www.eclipse.org/cdo/downloads/#" + qualifier.replace('-', '_') + "\">" + qualifier + "</a></h1>");
 
       out.println("<p>");
-      out.println("These release notes have been generated from the commit log of the <a href=\"http://www.eclipse.org/cdo/downloads/#releases_"
+      out.println("These release notes have been generated from the commit log of the <a href=\"https://www.eclipse.org/cdo/downloads/#releases_"
           + buildInfo.getStream().replace('.', '_') + "\">" + buildInfo.getStream() + "</a> stream and the associated bugzillas.");
       out.print("<br/>The first commit is " + fromRevision);
       if (previousBuildInfo != null)
@@ -255,7 +256,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
     if (previousBuildInfo != null)
     {
       String q = previousBuildInfo.getQualifier();
-      out.println("The previous build of the " + buildInfo.getStream() + " stream is <a href=\"http://www.eclipse.org/cdo/downloads/#" + q.replace('-', '_')
+      out.println("The previous build of the " + buildInfo.getStream() + " stream is <a href=\"https://www.eclipse.org/cdo/downloads/#" + q.replace('-', '_')
           + "\">" + q + "</a>.");
     }
     else
