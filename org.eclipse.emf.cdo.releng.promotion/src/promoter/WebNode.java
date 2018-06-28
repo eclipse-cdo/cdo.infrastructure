@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2012 Eike Stepper (Berlin, Germany) and others.
+ * Copyright (c) 2004 - 2012 Eike Stepper (Loehne, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -303,13 +303,17 @@ public class WebNode implements Comparable<WebNode>
     File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
     List<DropZip> dropZips = new ArrayList<DropZip>();
 
-    for (File file : new File(drop, "zips").listFiles())
+    File zipsFolder = new File(drop, "zips");
+    if (zipsFolder.isDirectory())
     {
-      String name = file.getName();
-      if (file.isFile() && name.endsWith(".zip") && !name.endsWith("-Site.zip"))
+      for (File file : zipsFolder.listFiles())
       {
-        DropZip dropZip = new DropZip(file);
-        dropZips.add(dropZip);
+        String name = file.getName();
+        if (file.isFile() && name.endsWith(".zip") && !name.endsWith("-Site.zip"))
+        {
+          DropZip dropZip = new DropZip(file);
+          dropZips.add(dropZip);
+        }
       }
     }
 
