@@ -12,6 +12,12 @@
 <project name="promoter" default="build">
 
 	<target name="build">
+		<delete>
+			<fileset dir=".">
+				<include name="bin/**" />
+				<exclude name="promoter.jar" />
+			</fileset>
+		</delete>
 		<mkdir dir="bin" />
 		<javac srcdir="src" destdir="bin" debug="on" includeantruntime="false" />
 		<jar destfile="promoter.jar" />
