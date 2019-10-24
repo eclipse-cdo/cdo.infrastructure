@@ -12,6 +12,7 @@
 <project name="promoter" default="build">
 
 	<target name="build">
+		<mkdir dir="bin" />
 		<javac srcdir="src" destdir="bin" debug="on" source="1.5" />
 		<jar destfile="promoter.jar" />
 	</target>
