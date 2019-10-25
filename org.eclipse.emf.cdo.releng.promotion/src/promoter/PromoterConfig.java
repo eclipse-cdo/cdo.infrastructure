@@ -19,7 +19,9 @@ import promoter.util.Config;
  */
 public final class PromoterConfig extends Config
 {
-  public static final PromoterConfig INSTANCE = new PromoterConfig("promoter.properties");
+  private static final String FILE = System.getProperty("promoter.properties", "promoter.properties");
+
+  public static final PromoterConfig INSTANCE = new PromoterConfig(FILE);
 
   private PromoterConfig(String filename)
   {
@@ -73,7 +75,7 @@ public final class PromoterConfig extends Config
 
   public File getInstallArea()
   {
-    String path = System.getProperty("promoterInstallArea");
+    String path = getProperty("promoterInstallArea");
     if (path == null)
     {
       throw new IllegalStateException("Install area not configured");

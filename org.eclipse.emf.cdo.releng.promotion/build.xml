@@ -11,6 +11,10 @@
 -->
 <project name="promoter" default="build">
 
+	<property environment="env" />
+	<echoproperties prefix="env."/>
+	<propertyfile file="config/promoter.properties" />
+
 	<target name="build">
 		<delete>
 			<fileset dir=".">
