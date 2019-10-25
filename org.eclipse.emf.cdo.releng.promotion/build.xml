@@ -32,8 +32,8 @@
 
 	<target name="promote" depends="build">
 		<java classpath="promoter.jar" classname="${config.classPromoter}">
-			<jvmarg value="-Dant.home=${env.ANT_HOME}" />
 			<jvmarg value="-DworkingArea=${env.WORKSPACE}" />
+			<jvmarg value="-Dant.home=${env.ANT_HOME}" />
 		</java>
 	</target>
 
