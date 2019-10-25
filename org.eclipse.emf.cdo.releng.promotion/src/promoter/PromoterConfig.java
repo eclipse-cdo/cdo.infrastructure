@@ -30,7 +30,7 @@ public final class PromoterConfig extends Config
 
   public File getAntHome()
   {
-    return getDirectory("ant.home");
+    return getDirectory("ANT_HOME");
   }
 
   public File getWorkingArea()
