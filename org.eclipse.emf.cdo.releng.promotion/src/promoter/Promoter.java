@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
 
 import promoter.util.Ant;
 import promoter.util.IO;
@@ -40,6 +41,12 @@ public class Promoter
   {
     if (true)
     {
+      for (Entry<Object, Object> entry : System.getProperties().entrySet())
+      {
+        System.out.println(entry.getKey() + " = " + entry.getValue());
+      }
+
+      System.out.println();
       System.out.println(PromoterConfig.INSTANCE.getAntHome());
       System.out.println(PromoterConfig.INSTANCE.getCompositionArea());
       System.out.println(PromoterConfig.INSTANCE.getCompositionTempArea());
