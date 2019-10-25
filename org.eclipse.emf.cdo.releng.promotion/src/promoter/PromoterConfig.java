@@ -19,7 +19,7 @@ import promoter.util.Config;
  */
 public final class PromoterConfig extends Config
 {
-  private static final String FILE = System.getProperty("promoter.properties", "promoter.properties");
+  private static final String FILE = System.getProperty("promoter.properties", "config/promoter.properties");
 
   public static final PromoterConfig INSTANCE = new PromoterConfig(FILE);
 
