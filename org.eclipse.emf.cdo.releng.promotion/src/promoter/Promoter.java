@@ -59,11 +59,11 @@ public class Promoter
       System.out.println("DropsArea           = " + PromoterConfig.INSTANCE.getDropsArea());
       System.out.println("CompositionArea     = " + PromoterConfig.INSTANCE.getCompositionArea());
       System.out.println("CompositionTempArea = " + PromoterConfig.INSTANCE.getCompositionTempArea());
-      System.out.println("UserDirectory       = " + PromoterConfig.INSTANCE.getUserDirectory());
-      System.out.println("JobsURL             = " + PromoterConfig.INSTANCE.getJobsURL());
+      System.out.println("WorkingArea         = " + PromoterConfig.INSTANCE.getWorkingArea());
       System.out.println("ProjectRelengArea   = " + PromoterConfig.INSTANCE.getProjectRelengArea());
       System.out.println("AntHome             = " + PromoterConfig.INSTANCE.getAntHome());
-      System.out.println("WorkingArea         = " + PromoterConfig.INSTANCE.getWorkingArea());
+      System.out.println("UserDirectory       = " + PromoterConfig.INSTANCE.getUserDirectory());
+      System.out.println("JobsURL             = " + PromoterConfig.INSTANCE.getJobsURL());
       System.out.println("----------------------------------------------------------------------------------------");
       return;
     }
