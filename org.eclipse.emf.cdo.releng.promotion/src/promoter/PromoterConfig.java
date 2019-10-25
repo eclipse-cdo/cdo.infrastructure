@@ -78,17 +78,6 @@ public final class PromoterConfig extends Config
     return getProperty("JOBS_URL");
   }
 
-  public File getInstallArea()
-  {
-    String path = getProperty("promoterInstallArea");
-    if (path == null)
-    {
-      throw new IllegalStateException("Install area not configured");
-    }
-
-    return new File(path);
-  }
-
   public String formatDownloadURL(String path)
   {
     return "https://www.eclipse.org/downloads/download.php?file=/" + getDownloadsPath() + "/" + path + "&amp;protocol=http";

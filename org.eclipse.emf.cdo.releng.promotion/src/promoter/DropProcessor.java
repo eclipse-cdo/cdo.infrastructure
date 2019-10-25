@@ -12,10 +12,6 @@ package promoter;
 
 import org.xml.sax.SAXException;
 
-import promoter.util.Config;
-import promoter.util.IO;
-import promoter.util.XMLOutput;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,6 +23,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+
+import promoter.util.Config;
+import promoter.util.IO;
+import promoter.util.XMLOutput;
 
 /**
  * @author Eike Stepper
@@ -138,7 +138,7 @@ public class DropProcessor extends PromoterComponent
 
     // Transform
     xml.element("xslt");
-    xml.attribute("style", new File(PromoterConfig.INSTANCE.getInstallArea(), "xsl/content2categories.xsl"));
+    xml.attribute("style", new File(PromoterConfig.INSTANCE.getUserDirectory(), "xsl/content2categories.xsl"));
     xml.attribute("in", contentXML);
     xml.attribute("out", categoriesXML);
 

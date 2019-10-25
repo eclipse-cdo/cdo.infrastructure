@@ -88,6 +88,11 @@ public class Config
     return directory;
   }
 
+  public File getUserDirectory()
+  {
+    return getDirectory("user.dir");
+  }
+
   public static Properties loadProperties(File file, boolean failIfNotExists)
   {
     Properties properties = new Properties();

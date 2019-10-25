@@ -14,7 +14,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map.Entry;
 
 import promoter.util.Ant;
 import promoter.util.IO;
@@ -41,21 +40,22 @@ public class Promoter
   {
     if (true)
     {
-      for (Entry<Object, Object> entry : System.getProperties().entrySet())
-      {
-        System.out.println(entry.getKey() + " = " + entry.getValue());
-      }
+      // for (Entry<Object, Object> entry : System.getProperties().entrySet())
+      // {
+      // System.out.println(entry.getKey() + " = " + entry.getValue());
+      // }
+      //
+      // System.out.println();
+      // System.out.println();
 
-      System.out.println();
       System.out.println(PromoterConfig.INSTANCE.getAntHome());
       System.out.println(PromoterConfig.INSTANCE.getCompositionArea());
       System.out.println(PromoterConfig.INSTANCE.getCompositionTempArea());
       System.out.println(PromoterConfig.INSTANCE.getDownloadsArea());
-      System.out.println(PromoterConfig.INSTANCE.getDownloadsArea());
       System.out.println(PromoterConfig.INSTANCE.getDownloadsHome());
       System.out.println(PromoterConfig.INSTANCE.getDownloadsPath());
       System.out.println(PromoterConfig.INSTANCE.getDropsArea());
-      System.out.println(PromoterConfig.INSTANCE.getInstallArea());
+      System.out.println(PromoterConfig.INSTANCE.getUserDirectory());
       System.out.println(PromoterConfig.INSTANCE.getJobsURL());
       System.out.println(PromoterConfig.INSTANCE.getProjectRelengArea());
       System.out.println(PromoterConfig.INSTANCE.getWorkingArea());
