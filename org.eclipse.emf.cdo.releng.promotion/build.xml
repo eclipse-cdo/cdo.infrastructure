@@ -9,11 +9,10 @@
   Contributors:
     Eike Stepper - initial API and implementation
 -->
-<project name="promoter" default="build">
+<project name="promoter" default="promote">
 
 	<property environment="env" />
-	<echoproperties prefix="env."/>
-	<propertyfile file="config/promoter.properties" />
+	<property file="config/promoter.properties" prefix="config." />
 
 	<target name="build">
 		<delete>
@@ -25,6 +24,12 @@
 		<mkdir dir="bin" />
 		<javac srcdir="src" destdir="bin" debug="on" includeantruntime="false" />
 		<jar destfile="promoter.jar" />
+	</target>
+
+	<target name="promote" depends="build">
+		<java classpath="promoter.jar" classname="${config.classPromoter}">
+			<jvmarg value="-DANT_HOME=${env.ANT_HOME}" />
+		</java>
 	</target>
 
 </project>

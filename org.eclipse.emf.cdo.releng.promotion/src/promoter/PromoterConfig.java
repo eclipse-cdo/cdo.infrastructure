@@ -28,6 +28,11 @@ public final class PromoterConfig extends Config
     super(filename);
   }
 
+  public File getAntHome()
+  {
+    return getDirectory("ANT_HOME");
+  }
+
   public File getWorkingArea()
   {
     return getDirectory("workingArea");

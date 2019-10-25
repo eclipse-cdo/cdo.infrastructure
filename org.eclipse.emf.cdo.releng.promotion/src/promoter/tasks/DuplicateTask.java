@@ -10,14 +10,14 @@
  */
 package promoter.tasks;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import promoter.BuildInfo;
 import promoter.PromoterConfig;
 import promoter.util.Ant;
 import promoter.util.XMLOutput;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Eike Stepper
@@ -28,7 +28,7 @@ public class DuplicateTask extends AbstractDropTask
 
   public DuplicateTask()
   {
-    this(PromoterConfig.INSTANCE.getDirectory("ANT_HOME"));
+    this(PromoterConfig.INSTANCE.getAntHome());
   }
 
   private DuplicateTask(File antHome)

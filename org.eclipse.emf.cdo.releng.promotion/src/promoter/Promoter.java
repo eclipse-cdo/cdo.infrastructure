@@ -38,6 +38,23 @@ public class Promoter
 
   public void run()
   {
+    if (true)
+    {
+      System.out.println(PromoterConfig.INSTANCE.getAntHome());
+      System.out.println(PromoterConfig.INSTANCE.getCompositionArea());
+      System.out.println(PromoterConfig.INSTANCE.getCompositionTempArea());
+      System.out.println(PromoterConfig.INSTANCE.getDownloadsArea());
+      System.out.println(PromoterConfig.INSTANCE.getDownloadsArea());
+      System.out.println(PromoterConfig.INSTANCE.getDownloadsHome());
+      System.out.println(PromoterConfig.INSTANCE.getDownloadsPath());
+      System.out.println(PromoterConfig.INSTANCE.getDropsArea());
+      System.out.println(PromoterConfig.INSTANCE.getInstallArea());
+      System.out.println(PromoterConfig.INSTANCE.getJobsURL());
+      System.out.println(PromoterConfig.INSTANCE.getProjectRelengArea());
+      System.out.println(PromoterConfig.INSTANCE.getWorkingArea());
+      return;
+    }
+
     BuildCopier buildCopier = createBuildCopier();
     List<BuildInfo> builds = new ArrayList<BuildInfo>();
 
