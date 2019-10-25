@@ -33,6 +33,21 @@ public final class PromoterConfig extends Config
     return getDirectory("ANT_HOME");
   }
 
+  public File getInstallDirectory()
+  {
+    return getUserDirectory();
+  }
+
+  public File getXSLDirectory()
+  {
+    return new File(getInstallDirectory(), "xsl");
+  }
+
+  public File getConfigDirectory()
+  {
+    return new File(getInstallDirectory(), "config");
+  }
+
   public File getWorkingArea()
   {
     return getDirectory("workingArea");

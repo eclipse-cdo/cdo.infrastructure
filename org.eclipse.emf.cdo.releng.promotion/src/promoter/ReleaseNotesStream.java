@@ -4,18 +4,18 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
 package promoter;
 
-import promoter.util.Config;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import promoter.util.Config;
 
 /**
  * @author Eike Stepper
@@ -32,7 +32,9 @@ public class ReleaseNotesStream
   {
     this.name = name;
 
-    Properties streamProperties = Config.loadProperties(new File("streams", name + ".properties"), true);
+    File configFolder = new File(PromoterConfig.INSTANCE.getConfigDirectory(), "streams");
+    Properties streamProperties = Config.loadProperties(new File(configFolder, name + ".properties"), true);
+
     firstRevision = streamProperties.getProperty("first.revision");
     if (firstRevision == null)
     {

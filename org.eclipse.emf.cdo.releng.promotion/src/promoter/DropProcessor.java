@@ -138,7 +138,7 @@ public class DropProcessor extends PromoterComponent
 
     // Transform
     xml.element("xslt");
-    xml.attribute("style", new File(PromoterConfig.INSTANCE.getUserDirectory(), "xsl/content2categories.xsl"));
+    xml.attribute("style", new File(PromoterConfig.INSTANCE.getXSLDirectory(), "content2categories.xsl"));
     xml.attribute("in", contentXML);
     xml.attribute("out", categoriesXML);
 

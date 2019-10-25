@@ -44,7 +44,9 @@ public class BuildCopier extends PromoterComponent
   public List<BuildInfo> copyBuilds()
   {
     List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
-    for (File jobDir : new File("jobs").listFiles())
+    File configFolder = new File(PromoterConfig.INSTANCE.getConfigDirectory(), "jobs");
+
+    for (File jobDir : configFolder.listFiles())
     {
       if (jobDir.isDirectory())
       {

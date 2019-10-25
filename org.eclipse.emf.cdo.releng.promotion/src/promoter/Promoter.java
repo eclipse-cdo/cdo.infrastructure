@@ -14,7 +14,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map.Entry;
 
 import promoter.util.Ant;
 import promoter.util.IO;
@@ -41,18 +40,15 @@ public class Promoter
   {
     if (true)
     {
-      if (false)
-      {
-        for (Entry<Object, Object> entry : System.getProperties().entrySet())
-        {
-          System.out.println(entry.getKey() + " = " + entry.getValue());
-        }
+      // for (Entry<Object, Object> entry : System.getProperties().entrySet())
+      // {
+      // System.out.println(entry.getKey() + " = " + entry.getValue());
+      // }
+      //
+      // System.out.println();
+      // System.out.println();
 
-        System.out.println();
-        System.out.println();
-      }
-
-      System.out.println("----------------------------------------------------------------------------------------");
+      System.out.println("--------------------------------------------------------------------------------------------------");
       System.out.println("DownloadsPath       = " + PromoterConfig.INSTANCE.getDownloadsPath());
       System.out.println("DownloadsHome       = " + PromoterConfig.INSTANCE.getDownloadsHome());
       System.out.println("DownloadsArea       = " + PromoterConfig.INSTANCE.getDownloadsArea());
@@ -62,9 +58,10 @@ public class Promoter
       System.out.println("WorkingArea         = " + PromoterConfig.INSTANCE.getWorkingArea());
       System.out.println("ProjectRelengArea   = " + PromoterConfig.INSTANCE.getProjectRelengArea());
       System.out.println("AntHome             = " + PromoterConfig.INSTANCE.getAntHome());
-      System.out.println("UserDirectory       = " + PromoterConfig.INSTANCE.getUserDirectory());
+      System.out.println("InstallDirectory    = " + PromoterConfig.INSTANCE.getInstallDirectory());
+      System.out.println("ConfigDirectory     = " + PromoterConfig.INSTANCE.getConfigDirectory());
       System.out.println("JobsURL             = " + PromoterConfig.INSTANCE.getJobsURL());
-      System.out.println("----------------------------------------------------------------------------------------");
+      System.out.println("--------------------------------------------------------------------------------------------------");
       return;
     }
 
@@ -275,8 +272,10 @@ public class Promoter
       DropProcessor dropProcessor = createDropProcessor();
       final List<BuildInfo> buildInfos = dropProcessor.processDrops(xml);
 
+      File configFolder = new File(PromoterConfig.INSTANCE.getConfigDirectory(), "composites");
+
       RepositoryComposer repositoryComposer = createRepositoryComposer();
-      final WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, new File("composites"));
+      final WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, configFolder);
 
       return new AntResult(buildInfos, webNode);
     }
