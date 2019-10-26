@@ -26,9 +26,9 @@ import promoter.util.IO.OutputHandler;
 public class Git extends SourceCodeManager
 {
   // TODO Make CLONE configurable
-  public static final String CLONE = "cd ~estepper/cdo.git;\n";
+  public static final String CLONE = "cd " + PromoterConfig.INSTANCE.getProjectCloneLocation() + ";\n";
 
-  public static final String GIT_BINARY = CLONE + "/usr/local/bin/git";
+  public static final String GIT_BINARY = CLONE + PromoterConfig.INSTANCE.getGitExecutable();
 
   // The symbolic name (alternatively: the URL) of the upstream (main) Git repository
   public static final String REMOTE_GIT = "origin";

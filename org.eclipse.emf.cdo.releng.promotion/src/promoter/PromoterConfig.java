@@ -28,6 +28,16 @@ public final class PromoterConfig extends Config
     super(filename);
   }
 
+  public File getGitExecutable()
+  {
+    return getFile("GIT_EXECUTABLE");
+  }
+
+  public File getProjectCloneLocation()
+  {
+    return getDirectory("projectCloneLocation");
+  }
+
   public File getAntHome()
   {
     return getDirectory("ANT_HOME");

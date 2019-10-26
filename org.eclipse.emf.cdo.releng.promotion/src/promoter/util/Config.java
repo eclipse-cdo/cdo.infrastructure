@@ -71,7 +71,7 @@ public class Config
     return getProperties().getProperty(key, defaultValue);
   }
 
-  public File getDirectory(String key)
+  public File getFileOrDirectory(String key)
   {
     String path = getProperty(key);
     if (path == null)
@@ -80,12 +80,34 @@ public class Config
     }
 
     File directory = new File(path);
-    if (!directory.isDirectory())
+    if (!directory.exists())
     {
-      throw new IllegalStateException(path + " does not exist or is not a directory");
+      throw new IllegalStateException(path + " does not exist");
     }
 
     return directory;
+  }
+
+  public File getFile(String key)
+  {
+    File fileOrDirectory = getFileOrDirectory(key);
+    if (!fileOrDirectory.isFile())
+    {
+      throw new IllegalStateException(fileOrDirectory + " is not a file");
+    }
+
+    return fileOrDirectory;
+  }
+
+  public File getDirectory(String key)
+  {
+    File fileOrDirectory = getFileOrDirectory(key);
+    if (!fileOrDirectory.isDirectory())
+    {
+      throw new IllegalStateException(fileOrDirectory + " is not a directory");
+    }
+
+    return fileOrDirectory;
   }
 
   public File getUserDirectory()

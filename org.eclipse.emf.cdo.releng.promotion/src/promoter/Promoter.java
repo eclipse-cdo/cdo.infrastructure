@@ -48,20 +48,22 @@ public class Promoter
       // System.out.println();
       // System.out.println();
 
-      System.out.println("--------------------------------------------------------------------------------------------------");
-      System.out.println("DownloadsPath       = " + PromoterConfig.INSTANCE.getDownloadsPath());
-      System.out.println("DownloadsHome       = " + PromoterConfig.INSTANCE.getDownloadsHome());
-      System.out.println("DownloadsArea       = " + PromoterConfig.INSTANCE.getDownloadsArea());
-      System.out.println("DropsArea           = " + PromoterConfig.INSTANCE.getDropsArea());
-      System.out.println("CompositionArea     = " + PromoterConfig.INSTANCE.getCompositionArea());
-      System.out.println("CompositionTempArea = " + PromoterConfig.INSTANCE.getCompositionTempArea());
-      System.out.println("WorkingArea         = " + PromoterConfig.INSTANCE.getWorkingArea());
-      System.out.println("ProjectRelengArea   = " + PromoterConfig.INSTANCE.getProjectRelengArea());
-      System.out.println("AntHome             = " + PromoterConfig.INSTANCE.getAntHome());
-      System.out.println("InstallDirectory    = " + PromoterConfig.INSTANCE.getInstallDirectory());
-      System.out.println("ConfigDirectory     = " + PromoterConfig.INSTANCE.getConfigDirectory());
-      System.out.println("JobsURL             = " + PromoterConfig.INSTANCE.getJobsURL());
-      System.out.println("--------------------------------------------------------------------------------------------------");
+      System.out.println("---------------------------------------------------------------------------------------------------");
+      System.out.println("DownloadsPath        = " + PromoterConfig.INSTANCE.getDownloadsPath());
+      System.out.println("DownloadsHome        = " + PromoterConfig.INSTANCE.getDownloadsHome());
+      System.out.println("DownloadsArea        = " + PromoterConfig.INSTANCE.getDownloadsArea());
+      System.out.println("DropsArea            = " + PromoterConfig.INSTANCE.getDropsArea());
+      System.out.println("CompositionArea      = " + PromoterConfig.INSTANCE.getCompositionArea());
+      System.out.println("CompositionTempArea  = " + PromoterConfig.INSTANCE.getCompositionTempArea());
+      System.out.println("WorkingArea          = " + PromoterConfig.INSTANCE.getWorkingArea());
+      System.out.println("ProjectRelengArea    = " + PromoterConfig.INSTANCE.getProjectRelengArea());
+      System.out.println("AntHome              = " + PromoterConfig.INSTANCE.getAntHome());
+      System.out.println("GitExecutable        = " + PromoterConfig.INSTANCE.getGitExecutable());
+      System.out.println("ProjectCloneLocation = " + PromoterConfig.INSTANCE.getProjectCloneLocation());
+      System.out.println("InstallDirectory     = " + PromoterConfig.INSTANCE.getInstallDirectory());
+      System.out.println("ConfigDirectory      = " + PromoterConfig.INSTANCE.getConfigDirectory());
+      System.out.println("JobsURL              = " + PromoterConfig.INSTANCE.getJobsURL());
+      System.out.println("---------------------------------------------------------------------------------------------------");
       return;
     }
 
