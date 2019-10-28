@@ -273,10 +273,10 @@ public class Promoter
       DropProcessor dropProcessor = createDropProcessor();
       final List<BuildInfo> buildInfos = dropProcessor.processDrops(xml);
 
-      File configFolder = new File(PromoterConfig.INSTANCE.getConfigDirectory(), "composites");
+      File composites = new File(PromoterConfig.INSTANCE.getConfigDirectory(), "composites");
 
       RepositoryComposer repositoryComposer = createRepositoryComposer();
-      final WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, configFolder);
+      final WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, PromoterConfig.INSTANCE.getConfigDirectory(), composites);
 
       return new AntResult(buildInfos, webNode);
     }

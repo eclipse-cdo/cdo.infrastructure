@@ -37,7 +37,7 @@ public class RepositoryComposer extends PromoterComponent
   {
   }
 
-  public WebNode composeRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File folder) throws SAXException
+  public WebNode composeRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File baseFolder, File folder) throws SAXException
   {
     if (!folder.isDirectory())
     {
@@ -50,9 +50,10 @@ public class RepositoryComposer extends PromoterComponent
       return null;
     }
 
-    WebNode webNode = new WebNode(folder);
+    File relativePath = IO.makeRelative(folder, baseFolder);
+    WebNode webNode = new WebNode(relativePath);
 
-    Repository repository = createRepository(folder, buildInfos);
+    Repository repository = createRepository(baseFolder, relativePath, buildInfos);
     if (repository == Repository.DISABLED)
     {
       return null;
@@ -66,7 +67,7 @@ public class RepositoryComposer extends PromoterComponent
 
     for (File child : folder.listFiles())
     {
-      WebNode childWebNode = composeRepositories(xml, buildInfos, child);
+      WebNode childWebNode = composeRepositories(xml, buildInfos, baseFolder, child);
       if (childWebNode != null)
       {
         webNode.getChildren().add(childWebNode);
@@ -79,9 +80,11 @@ public class RepositoryComposer extends PromoterComponent
     return webNode;
   }
 
-  protected Repository createRepository(File compositeDir, List<BuildInfo> buildInfos)
+  protected Repository createRepository(File baseFolder, File relativePath, List<BuildInfo> buildInfos)
   {
-    Properties compositionProperties = Config.loadProperties(new File(compositeDir, "composition.properties"), false);
+    String path = relativePath.getPath();
+    File configFolder = new File(baseFolder, path);
+    Properties compositionProperties = Config.loadProperties(new File(configFolder, "composition.properties"), false);
 
     boolean disabled = Config.isDisabled(compositionProperties);
     if (disabled)
@@ -98,7 +101,6 @@ public class RepositoryComposer extends PromoterComponent
     Repository repository;
 
     File temp = PromoterConfig.INSTANCE.getCompositionTempArea();
-    String path = compositeDir.getPath();
     path = path.substring(path.indexOf("/") + 1); // Assumes that this method is called only for 2. level repos
 
     String childLocations = compositionProperties.getProperty("child.locations");

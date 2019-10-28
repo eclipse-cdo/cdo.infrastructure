@@ -136,6 +136,11 @@ public final class IO
     return false;
   }
 
+  public static File makeRelative(File file, File folder)
+  {
+    return new File(makeRelative(file.getAbsolutePath(), folder.getAbsolutePath()));
+  }
+
   public static String makeRelative(String file, String folder)
   {
     file = file.replaceAll("\\\\", "/");
