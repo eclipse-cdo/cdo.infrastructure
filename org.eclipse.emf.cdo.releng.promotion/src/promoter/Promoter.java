@@ -49,7 +49,7 @@ public class Promoter
     // System.out.println();
     // System.out.println();
 
-    System.out.println("---------------------------------------------------------------------------------------------------");
+    System.out.println("----------------------------------------------------------------------------------------------------------");
     System.out.println("DownloadsPath        = " + PromoterConfig.INSTANCE.getDownloadsPath());
     System.out.println("DownloadsHome        = " + PromoterConfig.INSTANCE.getDownloadsHome());
     System.out.println("DownloadsArea        = " + PromoterConfig.INSTANCE.getDownloadsArea());
@@ -64,7 +64,7 @@ public class Promoter
     System.out.println("InstallDirectory     = " + PromoterConfig.INSTANCE.getInstallDirectory());
     System.out.println("ConfigDirectory      = " + PromoterConfig.INSTANCE.getConfigDirectory());
     System.out.println("JobsURL              = " + PromoterConfig.INSTANCE.getJobsURL());
-    System.out.println("---------------------------------------------------------------------------------------------------");
+    System.out.println("----------------------------------------------------------------------------------------------------------");
 
     BuildCopier buildCopier = createBuildCopier();
     List<BuildInfo> builds = new ArrayList<BuildInfo>();
