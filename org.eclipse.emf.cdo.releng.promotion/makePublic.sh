@@ -7,7 +7,7 @@ compositionTempFolder=$DOWNLOADS_HOME/$downloadsPath/$compositionTempPath
 if [ -d "$compositionTempFolder" ]
 then
 	tmpFolder=$compositionFolder.tmp
-  rm -rf "$compositionTempFolder"
+  rm -rf "$tmpFolder"
 
  	if [ -d "$compositionFolder" ]
   then
