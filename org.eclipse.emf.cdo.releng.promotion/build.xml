@@ -31,6 +31,12 @@
 	</target>
 
 	<target name="promote" depends="build">
+		<delete includeemptydirs="true" defaultexcludes="false" failonerror="false" quiet="true">
+			<fileset dir="${DOWNLOADS_HOME}/${downloadsPath}">
+				<include name="${compositionPath}.tmp" />
+				<include name="${compositionTempPath}" />
+			</fileset>
+		</delete>
 		<java classpath="promoter.jar" classname="${config.classPromoter}">
 			<sysproperty key="workingArea" value="${env.WORKSPACE}" />
 			<sysproperty key="ANT_HOME" value="${env.ANT_HOME}" />
