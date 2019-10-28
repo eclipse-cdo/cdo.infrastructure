@@ -40,6 +40,7 @@
 		<java classpath="promoter.jar" classname="${config.classPromoter}">
 			<sysproperty key="workingArea" value="${env.WORKSPACE}" />
 			<sysproperty key="ANT_HOME" value="${env.ANT_HOME}" />
+			<sysproperty key="forcedPromotion" value="${promotion.force}" />
 		</java>
 	</target>
 

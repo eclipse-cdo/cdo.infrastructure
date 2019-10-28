@@ -241,7 +241,7 @@ public class Promoter
 
   public static void main(String[] args) throws Exception
   {
-    boolean force = false;
+    boolean force = Boolean.getBoolean("forcedPromotion");
     if (args != null)
     {
       for (String arg : args)
