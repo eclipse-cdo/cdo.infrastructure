@@ -59,13 +59,6 @@ public class DropProcessor extends PromoterComponent
 
   protected void processDrop(XMLOutput xml, File drop, List<BuildInfo> buildInfos) throws Exception
   {
-    xml.element("echo ");
-    xml.attribute("message", "==============");
-    xml.element("echo ");
-    xml.attribute("message", drop.getName());
-    xml.element("echo ");
-    xml.attribute("message", "==============");
-
     generateCategories(xml, drop);
 
     // Add p2.mirrorsURL
@@ -101,18 +94,6 @@ public class DropProcessor extends PromoterComponent
         if (!zipSite.exists())
         {
           generateZipSite(xml, drop, zipSite);
-        }
-      }
-
-      // Keep until end of 4.0 maintenance:
-      String generateZipAll = promotionProperties.getProperty("generate.zip.all");
-      if (generateZipAll != null)
-      {
-        File dropinsZip = new File(zips, "dropins.zip");
-        if (dropinsZip.isFile())
-        {
-          File zipAll = new File(zips, buildInfo.substitute(generateZipAll));
-          renameZipAll(xml, dropinsZip, zipAll);
         }
       }
     }
@@ -280,13 +261,6 @@ public class DropProcessor extends PromoterComponent
     xml.element("include");
     xml.pop();
     xml.pop();
-  }
-
-  protected void renameZipAll(XMLOutput xml, File dropinsZip, File zipAll) throws SAXException
-  {
-    xml.element("move");
-    xml.attribute("file", dropinsZip);
-    xml.attribute("tofile", zipAll);
   }
 
   protected void unpackHelp(XMLOutput xml, File help) throws SAXException, IOException
