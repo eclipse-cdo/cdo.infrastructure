@@ -59,6 +59,13 @@ public class DropProcessor extends PromoterComponent
 
   protected void processDrop(XMLOutput xml, File drop, List<BuildInfo> buildInfos) throws Exception
   {
+    xml.element("echo ");
+    xml.attribute("message", "==============");
+    xml.element("echo ");
+    xml.attribute("message", drop.getName());
+    xml.element("echo ");
+    xml.attribute("message", "==============");
+
     generateCategories(xml, drop);
 
     // Add p2.mirrorsURL

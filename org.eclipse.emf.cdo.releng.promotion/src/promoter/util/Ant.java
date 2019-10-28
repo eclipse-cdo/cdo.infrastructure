@@ -105,7 +105,6 @@ public abstract class Ant<RESULT>
 
   protected void executeAntScript()
   {
-    System.out.println();
     String ant = anthome + "/bin/ant";
     if (System.getProperty("os.name", "").startsWith("Windows"))
     {
@@ -113,6 +112,10 @@ public abstract class Ant<RESULT>
     }
 
     String path = getScript().getAbsolutePath();
+
+    System.out.println();
+    System.out.println("Executing Ant script " + path);
+
     IO.executeProcess(ant, "-f", path);
   }
 
