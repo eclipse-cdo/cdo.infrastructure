@@ -39,42 +39,56 @@ public class RepositoryComposer extends PromoterComponent
 
   public WebNode composeRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File folder) throws SAXException
   {
-    if (folder.isDirectory())
+    if (!folder.isDirectory())
     {
-      String compositeName = folder.getName();
-      if (!IO.isExcluded(compositeName))
+      return null;
+    }
+
+    String compositeName = folder.getName();
+    if (IO.isExcluded(compositeName))
+    {
+      return null;
+    }
+
+    WebNode webNode = new WebNode(folder);
+
+    Repository repository = createRepository(folder, buildInfos);
+    if (repository == Repository.DISABLED)
+    {
+      return null;
+    }
+
+    if (repository != null)
+    {
+      repository.generate(xml);
+      webNode.setRepository(repository);
+    }
+
+    for (File child : folder.listFiles())
+    {
+      WebNode childWebNode = composeRepositories(xml, buildInfos, child);
+      if (childWebNode != null)
       {
-        WebNode webNode = new WebNode(folder);
-
-        Repository repository = createRepository(folder, buildInfos);
-        if (repository != null)
-        {
-          repository.generate(xml);
-          webNode.setRepository(repository);
-        }
-
-        for (File child : folder.listFiles())
-        {
-          WebNode childWebNode = composeRepositories(xml, buildInfos, child);
-          if (childWebNode != null)
-          {
-            webNode.getChildren().add(childWebNode);
-          }
-        }
-
-        Collections.sort(webNode.getChildren());
-
-        createSymLink(xml, webNode);
-        return webNode;
+        webNode.getChildren().add(childWebNode);
       }
     }
 
-    return null;
+    Collections.sort(webNode.getChildren());
+
+    createSymLink(xml, webNode);
+    return webNode;
   }
 
   protected Repository createRepository(File compositeDir, List<BuildInfo> buildInfos)
   {
     Properties compositionProperties = Config.loadProperties(new File(compositeDir, "composition.properties"), false);
+
+    boolean disabled = Config.isDisabled(compositionProperties);
+    if (disabled)
+    {
+      return Repository.DISABLED;
+    }
+
     String name = compositionProperties.getProperty("composite.name");
     if (name == null)
     {

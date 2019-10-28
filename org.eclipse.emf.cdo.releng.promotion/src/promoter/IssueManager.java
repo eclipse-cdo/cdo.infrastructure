@@ -18,6 +18,8 @@ import java.util.Comparator;
  */
 public abstract class IssueManager extends PromoterComponent implements Comparator<Issue>
 {
+  private static final boolean USE_CACHE = Boolean.getBoolean("promoter.IssueManager.USE_CACHE");
+
   private File issuesFolder;
 
   public IssueManager()
@@ -57,6 +59,6 @@ public abstract class IssueManager extends PromoterComponent implements Comparat
 
   protected boolean useCache()
   {
-    return false;
+    return USE_CACHE;
   }
 }

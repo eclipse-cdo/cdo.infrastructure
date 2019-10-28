@@ -25,7 +25,6 @@ import promoter.util.IO.OutputHandler;
  */
 public class Git extends SourceCodeManager
 {
-  // TODO Make CLONE configurable
   public static final String CLONE = "cd " + PromoterConfig.INSTANCE.getProjectCloneLocation() + ";\n";
 
   public static final String GIT_BINARY = CLONE + PromoterConfig.INSTANCE.getGitExecutable();

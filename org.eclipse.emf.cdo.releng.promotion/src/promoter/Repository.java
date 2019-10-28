@@ -28,6 +28,8 @@ import promoter.util.XMLOutput;
  */
 public class Repository
 {
+  public static final Repository DISABLED = new Repository();
+
   public static final boolean COMPRESS = false;
 
   private static final String PARENT_DIRECTORY = "../";
@@ -59,6 +61,10 @@ public class Repository
   private int webPriority;
 
   private boolean webCollapsed;
+
+  private Repository()
+  {
+  }
 
   public Repository(RepositoryComposer composer, File base, String name, String path)
   {

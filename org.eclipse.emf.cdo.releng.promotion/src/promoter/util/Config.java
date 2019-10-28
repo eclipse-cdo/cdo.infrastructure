@@ -150,4 +150,9 @@ public class Config
 
     return properties;
   }
+
+  public static boolean isDisabled(Properties properties)
+  {
+    return properties.getProperty("disabled", "false").equalsIgnoreCase("true");
+  }
 }

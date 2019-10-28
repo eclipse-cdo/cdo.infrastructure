@@ -48,15 +48,26 @@ public class BuildCopier extends PromoterComponent
 
     for (File jobDir : configFolder.listFiles())
     {
-      if (jobDir.isDirectory())
+      if (!jobDir.isDirectory())
       {
-        String jobName = jobDir.getName();
-        if (!IO.isExcluded(jobName))
-        {
-          Properties jobProperties = Config.loadProperties(new File(jobDir, "promotion.properties"), false);
-          copyBuilds(jobName, jobProperties, buildInfos);
-        }
+        continue;
       }
+
+      String jobName = jobDir.getName();
+      if (IO.isExcluded(jobName))
+      {
+        continue;
+      }
+
+      Properties jobProperties = Config.loadProperties(new File(jobDir, "promotion.properties"), false);
+
+      boolean disabled = Config.isDisabled(jobProperties);
+      if (disabled)
+      {
+        continue;
+      }
+
+      copyBuilds(jobName, jobProperties, buildInfos);
     }
 
     return buildInfos;
