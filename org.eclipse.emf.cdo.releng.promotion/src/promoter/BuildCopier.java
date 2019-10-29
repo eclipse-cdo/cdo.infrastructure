@@ -77,11 +77,8 @@ public class BuildCopier extends PromoterComponent
   {
     String jobURL = PromoterConfig.INSTANCE.getJobsURL() + "/" + jobName;
 
-    if (getPromoter().isForce())
-    {
-      System.out.println();
-      System.out.println("Checking builds of " + jobURL);
-    }
+    System.out.println();
+    System.out.println("Checking builds of " + jobURL);
 
     Set<Integer> excludedBuilds = new HashSet<Integer>();
     StringTokenizer tokenizer = new StringTokenizer(jobProperties.getProperty("excluded.builds", ""), ",;: \t\n\r\f");
@@ -99,11 +96,7 @@ public class BuildCopier extends PromoterComponent
     {
       if (excludedBuilds.contains(buildNumber))
       {
-        if (getPromoter().isForce())
-        {
-          System.out.println("Build " + buildNumber + " is excluded");
-        }
-
+        System.out.println("Build " + buildNumber + " is excluded");
         continue;
       }
 
@@ -127,25 +120,15 @@ public class BuildCopier extends PromoterComponent
       }
       else if ("FAILURE".equalsIgnoreCase(buildResult))
       {
-        if (getPromoter().isForce())
-        {
-          System.out.println("Build " + buildNumber + " is failed");
-        }
+        System.out.println("Build " + buildNumber + " is failed");
       }
       else if ("ABORTED".equalsIgnoreCase(buildResult))
       {
-        if (getPromoter().isForce())
-        {
-          System.out.println("Build " + buildNumber + " is aborted");
-        }
+        System.out.println("Build " + buildNumber + " is aborted");
       }
       else
       {
-        if (getPromoter().isForce())
-        {
-          System.out.println("Build " + buildNumber + " is in progress");
-        }
-
+        System.out.println("Build " + buildNumber + " is in progress");
         buildInProgress = true;
       }
 
@@ -204,17 +187,11 @@ public class BuildCopier extends PromoterComponent
         return true;
       }
 
-      if (getPromoter().isForce())
-      {
-        System.out.println("Build " + buildInfo.getNumber() + " is already promoted");
-      }
+      System.out.println("Build " + buildInfo.getNumber() + " is already promoted");
     }
     else
     {
-      if (getPromoter().isForce())
-      {
-        System.out.println("Build " + buildInfo.getNumber() + " is not configured for promotion");
-      }
+      System.out.println("Build " + buildInfo.getNumber() + " (" + buildType + ") is not configured for promotion");
     }
 
     return false;
