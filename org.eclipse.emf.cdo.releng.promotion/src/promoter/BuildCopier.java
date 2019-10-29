@@ -149,6 +149,7 @@ public class BuildCopier extends PromoterComponent
     String buildType = buildInfo.getType();
     String autoPromote = jobProperties.getProperty("auto.promote", "IMSR");
     String autoVisible = jobProperties.getProperty("auto.visible", "");
+    String message = "Build " + buildInfo.getNumber() + " (" + buildType + ")";
 
     if (autoPromote.contains(buildType))
     {
@@ -187,11 +188,11 @@ public class BuildCopier extends PromoterComponent
         return true;
       }
 
-      System.out.println("Build " + buildInfo.getNumber() + " is already promoted");
+      System.out.println(message + " is already promoted");
     }
     else
     {
-      System.out.println("Build " + buildInfo.getNumber() + " (" + buildType + ") is not configured for promotion");
+      System.out.println(message + " is not configured for promotion");
     }
 
     return false;
