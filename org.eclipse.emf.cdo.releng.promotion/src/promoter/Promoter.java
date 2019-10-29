@@ -56,6 +56,9 @@ public class Promoter
     System.out.println("DropsArea            = " + PromoterConfig.INSTANCE.getDropsArea());
     System.out.println("CompositionArea      = " + PromoterConfig.INSTANCE.getCompositionArea());
     System.out.println("CompositionTempArea  = " + PromoterConfig.INSTANCE.getCompositionTempArea());
+    System.out.println("ArchiveHome          = " + PromoterConfig.INSTANCE.getArchiveHome());
+    System.out.println("ArchiveArea          = " + PromoterConfig.INSTANCE.getArchiveArea());
+    System.out.println("ArchiveDropsArea     = " + PromoterConfig.INSTANCE.getArchiveDropsArea());
     System.out.println("WorkingArea          = " + PromoterConfig.INSTANCE.getWorkingArea());
     System.out.println("ProjectRelengArea    = " + PromoterConfig.INSTANCE.getProjectRelengArea());
     System.out.println("AntHome              = " + PromoterConfig.INSTANCE.getAntHome());

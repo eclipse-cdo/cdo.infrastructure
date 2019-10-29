@@ -83,6 +83,21 @@ public final class PromoterConfig extends Config
     return new File(getDownloadsArea(), "drops");
   }
 
+  public File getArchiveHome()
+  {
+    return getDirectory("ARCHIVE_HOME");
+  }
+
+  public File getArchiveArea()
+  {
+    return new File(new File(getArchiveHome(), getDownloadsPath()), "downloads");
+  }
+
+  public File getArchiveDropsArea()
+  {
+    return new File(getArchiveArea(), "drops");
+  }
+
   public File getDownloadsArea()
   {
     return new File(getDownloadsHome(), getDownloadsPath());
