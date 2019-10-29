@@ -26,7 +26,7 @@ import promoter.util.FileSizeInserter;
  */
 public class WebNode implements Comparable<WebNode>
 {
-  public static final String HELP_TOPIC_URL = "http://help.eclipse.org/indigo/index.jsp?topic=";
+  public static final String HELP_TOPIC_URL = PromoterConfig.INSTANCE.getHelpURL() + "/index.jsp?topic=";
 
   private File folder;
 
