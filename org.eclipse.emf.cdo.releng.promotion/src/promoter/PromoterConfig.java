@@ -123,6 +123,11 @@ public final class PromoterConfig extends Config
     return getProperty("HELP_URL");
   }
 
+  public String getHelpTopicURL()
+  {
+    return getHelpURL() + "/index.jsp?topic=";
+  }
+
   public String formatDownloadURL(String path)
   {
     return "https://www.eclipse.org/downloads/download.php?file=/" + getDownloadsPath() + "/" + path + "&amp;protocol=http";

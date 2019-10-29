@@ -24,6 +24,8 @@ import promoter.util.XML;
  */
 public final class BuildInfo implements Comparable<BuildInfo>
 {
+  private final Location location;
+
   private String branch;
 
   private String hudson;
@@ -46,8 +48,14 @@ public final class BuildInfo implements Comparable<BuildInfo>
 
   private String type;
 
-  public BuildInfo()
+  private BuildInfo(Location location)
   {
+    this.location = location;
+  }
+
+  public Location getLocation()
+  {
+    return location;
   }
 
   public String getBranch()
@@ -243,7 +251,17 @@ public final class BuildInfo implements Comparable<BuildInfo>
 
   public static BuildInfo read(File file)
   {
-    final BuildInfo result = new BuildInfo();
+    Location location = null;
+    if (file.getAbsolutePath().startsWith(PromoterConfig.INSTANCE.getDownloadsArea().getAbsolutePath()))
+    {
+      location = Location.DOWNLOADS;
+    }
+    else if (file.getAbsolutePath().startsWith(PromoterConfig.INSTANCE.getArchiveArea().getAbsolutePath()))
+    {
+      location = Location.ARCHIVE;
+    }
+
+    final BuildInfo result = new BuildInfo(location);
     XML.parseXML(file, new DefaultHandler()
     {
       @Override
@@ -271,7 +289,7 @@ public final class BuildInfo implements Comparable<BuildInfo>
 
   public static BuildInfo read(URL url)
   {
-    final BuildInfo result = new BuildInfo();
+    final BuildInfo result = new BuildInfo(Location.HUDSON);
     XML.parseXML(url, new DefaultHandler()
     {
       @Override
@@ -295,5 +313,13 @@ public final class BuildInfo implements Comparable<BuildInfo>
     });
 
     return result;
+  }
+
+  /**
+   * @author Eike Stepper
+   */
+  public enum Location
+  {
+    HUDSON, DOWNLOADS, ARCHIVE
   }
 }

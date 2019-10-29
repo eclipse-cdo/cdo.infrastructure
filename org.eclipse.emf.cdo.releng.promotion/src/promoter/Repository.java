@@ -258,7 +258,7 @@ public class Repository
       out.println("<em>For information about CDO or Net4j, see their <a href=\"https://www.eclipse.org/cdo\">homepage</a> or <a");
       out.println("href=\"http://wiki.eclipse.org/CDO\">wiki</a>.");
       out.println("         <br> For information about installing or updating Eclipse software, see the");
-      out.println("         <a href=\"" + WebNode.HELP_TOPIC_URL + "/org.eclipse.platform.doc.user/tasks/tasks-124.htm\">");
+      out.println("         <a href=\"" + PromoterConfig.INSTANCE.getHelpTopicURL() + "/org.eclipse.platform.doc.user/tasks/tasks-124.htm\">");
       out.println("           Eclipse Platform Help</a>.");
       out.println("         <br> Some plugins require third party software from p2 repositories listed in this ");
       out.println("         <a href=\"bookmarks.xml\">bookmarks.xml</a> file.</em>");

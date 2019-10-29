@@ -26,8 +26,6 @@ import promoter.util.FileSizeInserter;
  */
 public class WebNode implements Comparable<WebNode>
 {
-  public static final String HELP_TOPIC_URL = PromoterConfig.INSTANCE.getHelpURL() + "/index.jsp?topic=";
-
   private File folder;
 
   private Repository repository;
@@ -130,14 +128,14 @@ public class WebNode implements Comparable<WebNode>
 
     out.println(prefix(level) + "<tr class=\"repo-info\"><td><img src=\"https://www.eclipse.org/cdo/images/22x22/package-x-generic.png\"/></td>"
         + "<td><b><a href=\"" + http() + "updates/" + repository.getPath() + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\""
-        + HELP_TOPIC_URL + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> or a web browser.</td>" + "<td class=\"file-size level"
+        + PromoterConfig.INSTANCE.getHelpTopicURL() + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> or a web browser.</td>" + "<td class=\"file-size level"
         + repository.getPathLevel() + "\"></td></tr>");
 
     String apiBaselineURL = repository.getApiBaselineURL();
     if (apiBaselineURL != null)
     {
       out.println(prefix(level) + "<tr class=\"repo-info\"><td><img src=\"https://www.eclipse.org/cdo/images/22x22/go-down.png\"/></td>" + "<td><a href=\""
-          + apiBaselineURL + "\">" + new File(apiBaselineURL).getName() + "</a> for use with <a href=\"" + HELP_TOPIC_URL
+          + apiBaselineURL + "\">" + new File(apiBaselineURL).getName() + "</a> for use with <a href=\"" + PromoterConfig.INSTANCE.getHelpTopicURL()
           + "/org.eclipse.pde.doc.user/tasks/api_tooling_baseline.htm\">API Tools</a>.</td>" + "<td class=\"file-size level" + repository.getPathLevel()
           + "\"><i>" + repository.getApiBaselineSize() + "</i></td></tr>");
     }
@@ -194,7 +192,7 @@ public class WebNode implements Comparable<WebNode>
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
     out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/package-x-generic.png\"/></td>"
-        + "<td><b><a href=\"" + http() + "drops/" + buildInfo.getQualifier() + "\">Update&nbsp;Site</a></b> for use with <a href=\"" + HELP_TOPIC_URL
+        + "<td><b><a href=\"" + http() + "drops/" + buildInfo.getQualifier() + "\">Update&nbsp;Site</a></b> for use with <a href=\"" + PromoterConfig.INSTANCE.getHelpTopicURL()
         + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> or a web browser.</td>" + "<td class=\"file-size level" + (repository.getPathLevel() + 1)
         + "\"></td></tr>");
 
@@ -218,7 +216,7 @@ public class WebNode implements Comparable<WebNode>
     generateDropSeparator(out, level);
 
     generateDropDownload(out, level, buildInfo, "zips/emf-cdo-" + buildInfo.getQualifier() + "-Site.zip",
-        " for local use with <a href=\"" + HELP_TOPIC_URL + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.");
+        " for local use with <a href=\"" + PromoterConfig.INSTANCE.getHelpTopicURL() + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.");
 
     generateDropZips(out, level, buildInfo);
 
@@ -231,7 +229,7 @@ public class WebNode implements Comparable<WebNode>
     generateDropFile(out, level, buildInfo, "api.xml", " for the API evolution report of this build.");
 
     generateDropFile(out, level, buildInfo, "bookmarks.xml",
-        " for the <a href=\"" + HELP_TOPIC_URL + "/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
+        " for the <a href=\"" + PromoterConfig.INSTANCE.getHelpTopicURL() + "/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
 
     generateDropFile(out, level, buildInfo, "bom.xml", " for the <a href=\"https://www.eclipse.org/buckminster\">bill of materials</a> of this build.");
 
