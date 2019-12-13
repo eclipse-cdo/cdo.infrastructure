@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import promoter.BuildInfo.Location;
 import promoter.util.IO;
 import promoter.util.XMLOutput;
 
@@ -118,10 +119,7 @@ public class Repository
   {
     try
     {
-      File composite = new File(base, path);
-      File folder = new File(composite, child).getCanonicalFile();
-
-      System.out.println("   Adding child location: " + folder);
+      System.out.println("   Adding child location: " + (child.startsWith("http") ? child : new File(new File(base, path), child).getCanonicalFile()));
       children.add(child);
     }
     catch (IOException ex)
@@ -188,16 +186,10 @@ public class Repository
     return builder.toString();
   }
 
-  public String getDownloadsURL(String... paths)
+  @Override
+  public String toString()
   {
-    StringBuilder builder = new StringBuilder(path);
-    for (String p : paths)
-    {
-      builder.append("/");
-      builder.append(p);
-    }
-
-    return PromoterConfig.INSTANCE.formatUpdateURL(builder.toString());
+    return path;
   }
 
   public void generate(XMLOutput xml)
@@ -332,7 +324,7 @@ public class Repository
 
           repoXML.element("property");
           repoXML.attribute("name", "p2.mirrorsURL");
-          repoXML.attribute("value", PromoterConfig.INSTANCE.formatUpdateURL(path) + "&amp;format=xml");
+          repoXML.attribute("value", PromoterConfig.INSTANCE.formatMirrorUpdateURL(path) + "&amp;format=xml");
           repoXML.pop();
 
           repoXML.element("children");
@@ -406,12 +398,12 @@ public class Repository
 
       for (BuildInfo buildInfo : buildInfos)
       {
-        if (job != null && !buildInfo.getJob().equals(job))
+        if (job != null && !job.equals(buildInfo.getJob()))
         {
           continue;
         }
 
-        if (stream != null && !buildInfo.getStream().equals(stream))
+        if (stream != null && !stream.equals(buildInfo.getStream()))
         {
           continue;
         }
@@ -421,21 +413,40 @@ public class Repository
           continue;
         }
 
-        File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
+        boolean archived = buildInfo.getLocation() == Location.ARCHIVE;
+        File dropsArea = archived ? PromoterConfig.INSTANCE.getArchiveDropsArea() : PromoterConfig.INSTANCE.getDropsArea();
+        String qualifier = buildInfo.getQualifier();
+
+        File drop = new File(dropsArea, qualifier);
         if (new File(drop, DropProcessor.MARKER_INVISIBLE).isFile())
         {
           continue;
         }
 
-        String child = PARENT_DIRECTORY;
-        for (int i = 0; i < getPathLevel(); i++)
+        String child = null;
+        if (archived)
         {
-          child += PARENT_DIRECTORY;
+          if (IO.isRepository(drop))
+          {
+            child = PromoterConfig.INSTANCE.getArchiveURL() + "/" + PromoterConfig.INSTANCE.getDownloadsPath() + "/drops/" + qualifier;
+          }
+        }
+        else
+        {
+          child = PARENT_DIRECTORY;
+          for (int i = 0; i < getPathLevel(); i++)
+          {
+            child += PARENT_DIRECTORY;
+          }
+
+          child += "drops/" + qualifier;
         }
 
-        child += "drops/" + buildInfo.getQualifier();
-        addChild(child);
-        addChild(child + "/categories");
+        if (child != null)
+        {
+          addChild(child);
+          addChild(child + "/categories");
+        }
 
         this.buildInfos.add(buildInfo);
       }

@@ -46,36 +46,45 @@ public class DropProcessor extends PromoterComponent
   public List<BuildInfo> processDrops(XMLOutput xml) throws Exception
   {
     List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
-    for (File drop : PromoterConfig.INSTANCE.getDropsArea().listFiles())
+    processDrops(xml, buildInfos, PromoterConfig.INSTANCE.getArchiveDropsArea());
+    processDrops(xml, buildInfos, PromoterConfig.INSTANCE.getDropsArea());
+
+    return buildInfos;
+  }
+
+  protected void processDrops(XMLOutput xml, List<BuildInfo> buildInfos, File dropsArea) throws Exception
+  {
+    for (File drop : dropsArea.listFiles())
     {
       if (drop.isDirectory())
       {
         processDrop(xml, drop, buildInfos);
       }
     }
-
-    return buildInfos;
   }
 
   protected void processDrop(XMLOutput xml, File drop, List<BuildInfo> buildInfos) throws Exception
   {
-    generateCategories(xml, drop);
-
-    // Add p2.mirrorsURL
-    File markerFile = new File(drop, DropProcessor.MARKER_MIRRORED);
-    if (!markerFile.exists())
+    if (IO.isRepository(drop))
     {
-      addMirroring(xml, drop, null, "artifacts");
-      addMirroring(xml, drop, null, "content");
+      generateCategories(xml, drop);
 
-      File categories = new File(drop, "categories");
-      if (categories.isDirectory())
+      // Add p2.mirrorsURL
+      File markerFile = new File(drop, DropProcessor.MARKER_MIRRORED);
+      if (!markerFile.exists())
       {
-        addMirroring(xml, drop, "categories", "content");
-      }
+        addMirroring(xml, drop, null, "artifacts");
+        addMirroring(xml, drop, null, "content");
 
-      xml.element("touch");
-      xml.attribute("file", markerFile);
+        File categories = new File(drop, "categories");
+        if (categories.isDirectory())
+        {
+          addMirroring(xml, drop, "categories", "content");
+        }
+
+        xml.element("touch");
+        xml.attribute("file", markerFile);
+      }
     }
 
     File buildInfoFile = new File(drop, "build-info.xml");
@@ -85,12 +94,14 @@ public class DropProcessor extends PromoterComponent
       buildInfos.add(buildInfo);
 
       Properties promotionProperties = Config.loadProperties(new File(drop, DropProcessor.MARKER_PROMOTED), false);
-      File zips = new File(drop, "zips");
 
       String generateZipSite = promotionProperties.getProperty("generate.zip.site");
       if (generateZipSite != null)
       {
-        File zipSite = new File(zips, buildInfo.substitute(generateZipSite));
+        File zips = new File(drop, "zips");
+        generateZipSite = buildInfo.substitute(generateZipSite);
+
+        File zipSite = new File(zips, generateZipSite);
         if (!zipSite.exists())
         {
           generateZipSite(xml, drop, zipSite);
@@ -194,7 +205,7 @@ public class DropProcessor extends PromoterComponent
 
     String match = "<property name=.p2\\.compressed. value=.true./>";
     String replace = "<property name='p2.compressed' value='true'/>\n    " + "<property name='p2.mirrorsURL' value='"
-        + PromoterConfig.INSTANCE.formatDropURL(drop.getName()) + (pathInDrop == null ? "" : "/" + pathInDrop) + "&amp;format=xml'/>";
+        + PromoterConfig.INSTANCE.formatMirrorDropURL(drop.getName()) + (pathInDrop == null ? "" : "/" + pathInDrop) + "&amp;format=xml'/>";
 
     File jarFile = new File(path, name + ".jar");
     File xmlFile = new File(path, name + ".xml");

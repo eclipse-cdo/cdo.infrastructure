@@ -83,6 +83,11 @@ public final class PromoterConfig extends Config
     return new File(getDownloadsArea(), "drops");
   }
 
+  public String getArchiveURL()
+  {
+    return getProperty("ARCHIVE_URL");
+  }
+
   public File getArchiveHome()
   {
     return getDirectory("ARCHIVE_HOME");
@@ -90,7 +95,7 @@ public final class PromoterConfig extends Config
 
   public File getArchiveArea()
   {
-    return new File(new File(getArchiveHome(), getDownloadsPath()), "downloads");
+    return new File(getArchiveHome(), getDownloadsPath());
   }
 
   public File getArchiveDropsArea()
@@ -113,6 +118,11 @@ public final class PromoterConfig extends Config
     return getDirectory("DOWNLOADS_HOME");
   }
 
+  public String getDownloadsURL()
+  {
+    return getProperty("DOWNLOADS_URL");
+  }
+
   public String getJobsURL()
   {
     return getProperty("JOBS_URL");
@@ -128,18 +138,18 @@ public final class PromoterConfig extends Config
     return getHelpURL() + "/index.jsp?topic=";
   }
 
-  public String formatDownloadURL(String path)
+  private String formatMirrorURL(String path)
   {
     return "https://www.eclipse.org/downloads/download.php?file=/" + getDownloadsPath() + "/" + path + "&amp;protocol=http";
   }
 
-  public String formatDropURL(String path)
+  public String formatMirrorDropURL(String path)
   {
-    return formatDownloadURL("drops/" + path);
+    return formatMirrorURL("drops/" + path);
   }
 
-  public String formatUpdateURL(String path)
+  public String formatMirrorUpdateURL(String path)
   {
-    return formatDownloadURL(getProperty("compositionPath") + "/" + path);
+    return formatMirrorURL(getProperty("compositionPath") + "/" + path);
   }
 }

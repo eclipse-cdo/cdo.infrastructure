@@ -24,16 +24,40 @@ import promoter.util.XMLOutput;
  */
 public class Promoter
 {
-  private boolean force;
+  private final boolean force;
 
-  public Promoter(boolean force)
+  private final boolean skipCopyBuilds;
+
+  private final boolean skipPerformTasks;
+
+  private final boolean skipGenerateReleaseNotes;
+
+  public Promoter(boolean force, boolean skipCopyBuilds, boolean skipPerformTasks, boolean skipGenerateReleaseNotes)
   {
     this.force = force;
+    this.skipCopyBuilds = skipCopyBuilds;
+    this.skipPerformTasks = skipPerformTasks;
+    this.skipGenerateReleaseNotes = skipGenerateReleaseNotes;
   }
 
   public boolean isForce()
   {
     return force;
+  }
+
+  public boolean isSkipCopyBuilds()
+  {
+    return skipCopyBuilds;
+  }
+
+  public boolean isSkipPerformTasks()
+  {
+    return skipPerformTasks;
+  }
+
+  public boolean isSkipGenerateReleaseNotes()
+  {
+    return skipGenerateReleaseNotes;
   }
 
   public void run()
@@ -69,49 +93,53 @@ public class Promoter
     System.out.println("JobsURL              = " + PromoterConfig.INSTANCE.getJobsURL());
     System.out.println("----------------------------------------------------------------------------------------------------------");
 
-    BuildCopier buildCopier = createBuildCopier();
     List<BuildInfo> builds = new ArrayList<BuildInfo>();
-
-    try
+    if (!skipCopyBuilds)
     {
-      builds = buildCopier.copyBuilds();
-    }
-    catch (Exception ex)
-    {
-      ex.printStackTrace();
-      System.out.println();
+      BuildCopier buildCopier = createBuildCopier();
+
+      try
+      {
+        builds = buildCopier.copyBuilds();
+      }
+      catch (Exception ex)
+      {
+        ex.printStackTrace();
+        System.out.println();
+      }
     }
 
-    List<Task> tasks = performTasks(builds);
+    List<Task> tasks = skipPerformTasks ? new ArrayList<Task>() : performTasks(builds);
 
     if (builds.isEmpty() && tasks.isEmpty())
     {
-      if (force)
-      {
-        System.out.println();
-        System.out.print("No new builds or tasks have been found.");
-      }
-      else
+      System.out.println();
+      System.out.print("No new builds or tasks have been found.");
+
+      if (!force)
       {
         return;
       }
-
-      System.out.println();
-      System.out.println();
     }
+
+    System.out.println();
+    System.out.println();
 
     Ant<AntResult> ant = createAnt();
     AntResult result = ant.run();
 
-    try
+    if (!skipGenerateReleaseNotes)
     {
-      ReleaseNotesGenerator releaseNotesGenerator = createReleaseNotesGenerator();
-      releaseNotesGenerator.generateReleaseNotes(result.getBuildInfos());
-    }
-    catch (Exception ex)
-    {
-      ex.printStackTrace();
-      System.out.println();
+      try
+      {
+        ReleaseNotesGenerator releaseNotesGenerator = createReleaseNotesGenerator();
+        releaseNotesGenerator.generateReleaseNotes(result.getBuildInfos());
+      }
+      catch (Exception ex)
+      {
+        ex.printStackTrace();
+        System.out.println();
+      }
     }
 
     WebNode rootNode = result.getRootNode();
@@ -245,6 +273,10 @@ public class Promoter
   public static void main(String[] args) throws Exception
   {
     boolean force = Boolean.getBoolean("forcedPromotion");
+    boolean skipCopyBuilds = Boolean.getBoolean("skipCopyBuilds");
+    boolean skipPerformTasks = Boolean.getBoolean("skipPerformTasks");
+    boolean skipGenerateReleaseNotes = Boolean.getBoolean("skipGenerateReleaseNotes");
+
     if (args != null)
     {
       for (String arg : args)
@@ -253,10 +285,22 @@ public class Promoter
         {
           force = true;
         }
+        else if ("--skipCopyBuilds".equals(arg))
+        {
+          skipCopyBuilds = true;
+        }
+        else if ("--skipPerformTasks".equals(arg))
+        {
+          skipPerformTasks = true;
+        }
+        else if ("--skipGenerateReleaseNotes".equals(arg))
+        {
+          skipGenerateReleaseNotes = true;
+        }
       }
     }
 
-    Promoter main = new Promoter(force);
+    Promoter main = new Promoter(force, skipCopyBuilds, skipPerformTasks, skipGenerateReleaseNotes);
     main.run();
   }
 
@@ -276,10 +320,11 @@ public class Promoter
       DropProcessor dropProcessor = createDropProcessor();
       final List<BuildInfo> buildInfos = dropProcessor.processDrops(xml);
 
-      File composites = new File(PromoterConfig.INSTANCE.getConfigDirectory(), "composites");
+      File baseFolder = PromoterConfig.INSTANCE.getConfigDirectory();
+      File composites = new File(baseFolder, "composites");
 
       RepositoryComposer repositoryComposer = createRepositoryComposer();
-      final WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, PromoterConfig.INSTANCE.getConfigDirectory(), composites);
+      final WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, baseFolder, composites);
 
       return new AntResult(buildInfos, webNode);
     }

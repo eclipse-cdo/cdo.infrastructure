@@ -136,6 +136,12 @@ public final class IO
     return false;
   }
 
+  public static boolean isRepository(File drop)
+  {
+    return new File(drop, "content.jar").isFile() || new File(drop, "compositeContent.xml").isFile()//
+        || new File(drop, "content.xml").isFile() || new File(drop, "compositeContent.jar").isFile();
+  }
+
   public static File makeRelative(File file, File folder)
   {
     return new File(makeRelative(file.getAbsolutePath(), folder.getAbsolutePath()));

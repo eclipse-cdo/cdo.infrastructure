@@ -130,16 +130,31 @@ public final class BuildInfo implements Comparable<BuildInfo>
     return type;
   }
 
-  public String getDownloadsURL(String... paths)
+  public File getDrop()
   {
-    StringBuilder builder = new StringBuilder();
-    for (String p : paths)
+    File area = location == Location.ARCHIVE ? PromoterConfig.INSTANCE.getArchiveDropsArea() : PromoterConfig.INSTANCE.getDropsArea();
+    return new File(area, qualifier);
+  }
+
+  public String getDropURL(String path, boolean mirror)
+  {
+    String file = "/" + PromoterConfig.INSTANCE.getDownloadsPath() + "/drops/" + qualifier;
+    if (path != null)
     {
-      builder.append("/");
-      builder.append(p);
+      file += "/" + path;
     }
 
-    return PromoterConfig.INSTANCE.formatUpdateURL(builder.toString());
+    if (location == Location.ARCHIVE)
+    {
+      return PromoterConfig.INSTANCE.getArchiveURL() + file;
+    }
+
+    if (mirror)
+    {
+      return "https://www.eclipse.org/downloads/download.php?file=" + file + "&amp;protocol=http";
+    }
+
+    return PromoterConfig.INSTANCE.getDownloadsURL() + file;
   }
 
   public String substitute(String pattern)
@@ -160,8 +175,9 @@ public final class BuildInfo implements Comparable<BuildInfo>
   @Override
   public String toString()
   {
-    return "BuildInfo [branch=" + branch + ", hudson=" + hudson + ", job=" + job + ", number=" + number + ", qualifier=" + qualifier + ", revision=" + revision
-        + ", relnotes=" + relnotesRevision + ", stream=" + stream + ", timestamp=" + timestamp + ", trigger=" + trigger + ", type=" + type + "]";
+    return "BuildInfo [location=" + location + ", branch=" + branch + ", hudson=" + hudson + ", job=" + job + ", number=" + number + ", qualifier=" + qualifier
+        + ", revision=" + revision + ", relnotes=" + relnotesRevision + ", stream=" + stream + ", timestamp=" + timestamp + ", trigger=" + trigger + ", type="
+        + type + "]";
   }
 
   public int compareTo(BuildInfo o)
@@ -269,17 +285,25 @@ public final class BuildInfo implements Comparable<BuildInfo>
       {
         if ("build".equals(qName))
         {
+          String type = attributes.getValue("type");
+          String timestamp = attributes.getValue("timestamp");
+          String qualifier = attributes.getValue("qualifier");
+          if (qualifier == null)
+          {
+            qualifier = type + timestamp;
+          }
+
           result.setBranch(attributes.getValue("branch"));
           result.setHudson(attributes.getValue("hudson"));
           result.setJob(attributes.getValue("job"));
           result.setNumber(attributes.getValue("number"));
-          result.setQualifier(attributes.getValue("qualifier"));
+          result.setQualifier(qualifier);
           result.setRevision(attributes.getValue("revision"));
           result.setRelnotesRevision(attributes.getValue("relnotes"));
           result.setStream(attributes.getValue("stream"));
-          result.setTimestamp(attributes.getValue("timestamp"));
+          result.setTimestamp(timestamp);
           result.setTrigger(attributes.getValue("trigger"));
-          result.setType(attributes.getValue("type"));
+          result.setType(type);
         }
       }
     });

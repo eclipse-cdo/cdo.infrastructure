@@ -20,6 +20,8 @@ import java.util.Properties;
  */
 public class Config
 {
+  private static final boolean SKIP_FILE_CHECKS = Boolean.getBoolean("skipFileChecks");
+
   private final File file;
 
   private Properties properties;
@@ -80,9 +82,9 @@ public class Config
     }
 
     File directory = new File(path);
-    if (!directory.exists())
+    if (!SKIP_FILE_CHECKS && !directory.exists())
     {
-      throw new IllegalStateException(path + " does not exist");
+      throw new IllegalStateException("Property " + key + ": Path " + path + " does not exist");
     }
 
     return directory;
@@ -91,7 +93,7 @@ public class Config
   public File getFile(String key)
   {
     File fileOrDirectory = getFileOrDirectory(key);
-    if (!fileOrDirectory.isFile())
+    if (!SKIP_FILE_CHECKS && !fileOrDirectory.isFile())
     {
       throw new IllegalStateException(fileOrDirectory + " is not a file");
     }
@@ -102,7 +104,7 @@ public class Config
   public File getDirectory(String key)
   {
     File fileOrDirectory = getFileOrDirectory(key);
-    if (!fileOrDirectory.isDirectory())
+    if (!SKIP_FILE_CHECKS && !fileOrDirectory.isDirectory())
     {
       throw new IllegalStateException(fileOrDirectory + " is not a directory");
     }

@@ -44,8 +44,7 @@ public class RepositoryComposer extends PromoterComponent
       return null;
     }
 
-    String compositeName = folder.getName();
-    if (IO.isExcluded(compositeName))
+    if (IO.isExcluded(folder.getName()))
     {
       return null;
     }
@@ -65,7 +64,8 @@ public class RepositoryComposer extends PromoterComponent
       webNode.setRepository(repository);
     }
 
-    for (File child : folder.listFiles())
+    File[] children = folder.listFiles();
+    for (File child : children)
     {
       WebNode childWebNode = composeRepositories(xml, buildInfos, baseFolder, child);
       if (childWebNode != null)
@@ -101,7 +101,16 @@ public class RepositoryComposer extends PromoterComponent
     Repository repository;
 
     File temp = PromoterConfig.INSTANCE.getCompositionTempArea();
-    path = path.substring(path.indexOf("/") + 1); // Assumes that this method is called only for 2. level repos
+
+    // This method is only called for 2. level repositories.
+    // Strip off "composites/" from the beginning of the path.
+    int pos = path.indexOf("/");
+    if (pos == -1)
+    {
+      pos = path.indexOf("\\");
+    }
+
+    path = path.substring(pos + 1);
 
     String childLocations = compositionProperties.getProperty("child.locations");
     if (childLocations != null)

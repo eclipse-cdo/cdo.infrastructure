@@ -20,6 +20,7 @@ import java.util.Properties;
 
 import promoter.util.Config;
 import promoter.util.FileSizeInserter;
+import promoter.util.IO;
 
 /**
  * @author Eike Stepper
@@ -62,6 +63,12 @@ public class WebNode implements Comparable<WebNode>
     Integer p1 = repository == null ? -1 : repository.getWebPriority();
     Integer p2 = o.repository == null ? -1 : o.repository.getWebPriority();
     return p2.compareTo(p1);
+  }
+
+  @Override
+  public String toString()
+  {
+    return folder.toString();
   }
 
   public void generate(PrintStream out, int level) throws IOException
@@ -127,9 +134,10 @@ public class WebNode implements Comparable<WebNode>
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
     out.println(prefix(level) + "<tr class=\"repo-info\"><td><img src=\"https://www.eclipse.org/cdo/images/22x22/package-x-generic.png\"/></td>"
-        + "<td><b><a href=\"" + http() + "updates/" + repository.getPath() + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\""
-        + PromoterConfig.INSTANCE.getHelpTopicURL() + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> or a web browser.</td>" + "<td class=\"file-size level"
-        + repository.getPathLevel() + "\"></td></tr>");
+        + "<td><b><a href=\"" + PromoterConfig.INSTANCE.getDownloadsURL() + "/updates/" + repository.getPath()
+        + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"" + PromoterConfig.INSTANCE.getHelpTopicURL()
+        + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> or a web browser.</td>" + "<td class=\"file-size level" + repository.getPathLevel()
+        + "\"></td></tr>");
 
     String apiBaselineURL = repository.getApiBaselineURL();
     if (apiBaselineURL != null)
@@ -176,7 +184,7 @@ public class WebNode implements Comparable<WebNode>
     String dropID = "drop_" + dropName;
     String dropLabel = buildInfo.getQualifier();
 
-    Properties webProperties = Config.loadProperties(new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier() + "/web.properties"), false);
+    Properties webProperties = Config.loadProperties(new File(buildInfo.getDrop(), "web.properties"), false);
     String webLabel = webProperties.getProperty("web.label");
     if (webLabel != null)
     {
@@ -188,117 +196,72 @@ public class WebNode implements Comparable<WebNode>
         + "\"><img src=\"https://www.eclipse.org/cdo/images/link_obj.gif\" alt=\"Permalink\" width=\"12\" height=\"12\"/></a>");
 
     out.println(prefix(level++) + "<div class=\"drop\" id=\"" + dropID + "\"" + (firstDrop ? "" : " style=\"display: none\"") + ">");
-
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
-    out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/package-x-generic.png\"/></td>"
-        + "<td><b><a href=\"" + http() + "drops/" + buildInfo.getQualifier() + "\">Update&nbsp;Site</a></b> for use with <a href=\"" + PromoterConfig.INSTANCE.getHelpTopicURL()
-        + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> or a web browser.</td>" + "<td class=\"file-size level" + (repository.getPathLevel() + 1)
-        + "\"></td></tr>");
+    File drop = buildInfo.getDrop();
+    String dropURL = buildInfo.getDropURL(null, false);
+    int elements = 0;
 
-    out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/edit-paste.png\"/></td><td><b><a href=\""
-        + http() + "drops/" + buildInfo.getQualifier() + "/relnotes.html\">Release Notes</a></b> to see what's in this build.</td><td class=\"file-size level"
-        + (repository.getPathLevel() + 1) + "\"></td></tr>");
-
-    generateDropHelp(out, level, buildInfo);
-
-    File apiHTML = getDropFile(buildInfo, "api.html");
-    if (apiHTML.isFile())
+    // Update Site
+    if (IO.isRepository(drop))
     {
-      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/api/report.gif\"/></td><td><b><a href=\"" + http()
-          + "drops/" + buildInfo.getQualifier()
-          + "/api.html\">API Evolution Report</a></b> to see the API changes in this stream.</td><td class=\"file-size level" + (repository.getPathLevel() + 1)
-          + "\"></td></tr>");
+      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/package-x-generic.png\"/></td>"
+          + "<td><b><a href=\"" + dropURL + "\">Update&nbsp;Site</a></b> for use with <a href=\"" + PromoterConfig.INSTANCE.getHelpTopicURL()
+          + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> or a web browser.</td>" + "<td class=\"file-size level"
+          + (repository.getPathLevel() + 1) + "\"></td></tr>");
+      ++elements;
     }
 
-    generateDropTests(out, level, buildInfo);
+    // Release Notes
+    if (new File(drop, "relnotes.html").isFile())
+    {
+      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/edit-paste.png\"/></td><td><b><a href=\""
+          + dropURL + "/relnotes.html\">Release Notes</a></b> to see what's in this build.</td><td class=\"file-size level" + (repository.getPathLevel() + 1)
+          + "\"></td></tr>");
+      ++elements;
+    }
 
-    generateDropSeparator(out, level);
-
-    generateDropDownload(out, level, buildInfo, "zips/emf-cdo-" + buildInfo.getQualifier() + "-Site.zip",
-        " for local use with <a href=\"" + PromoterConfig.INSTANCE.getHelpTopicURL() + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>.");
-
-    generateDropZips(out, level, buildInfo);
-
-    generateDropSeparator(out, level);
-
-    generateDropFile(out, level, buildInfo, "index.xml", " for the contents of this build.");
-
-    generateDropFile(out, level, buildInfo, "relnotes.xml", " for the change infos of this build.");
-
-    generateDropFile(out, level, buildInfo, "api.xml", " for the API evolution report of this build.");
-
-    generateDropFile(out, level, buildInfo, "bookmarks.xml",
-        " for the <a href=\"" + PromoterConfig.INSTANCE.getHelpTopicURL() + "/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
-
-    generateDropFile(out, level, buildInfo, "bom.xml", " for the <a href=\"https://www.eclipse.org/buckminster\">bill of materials</a> of this build.");
-
-    generateDropFile(out, level, buildInfo, "build-info.xml", " for the parameters that produced this build.");
-
-    generateDropFile(out, level, buildInfo, "test-report.xml", " for the test results of this build.");
-    generateDropFile(out, level, buildInfo, "tests/test-report.xml", " for the test results of this build.");
-
-    generateDropSeparator(out, level);
-
-    out.println(prefix(--level) + "</table>");
-    out.println(prefix(--level) + "</div>");
-    return level;
-  }
-
-  protected void generateDropSeparator(PrintStream out, int level)
-  {
-    out.println(prefix(level) + "<tr class=\"drop-info\"><td colspan=\"3\"><hr class=\"drop-separator\"></td></tr>");
-  }
-
-  protected void generateDropHelp(PrintStream out, int level, BuildInfo buildInfo)
-  {
-    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
-    File help = new File(drop, "help");
-    File index = new File(help, "index.html");
-    if (index.isFile())
+    // Documentation
+    if (new File(new File(drop, "help"), "index.html").isFile())
     {
       out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/help-browser.png\"/></td><td><b><a href=\""
-          + http() + "drops/" + buildInfo.getQualifier()
-          + "/help/index.html\">Documentation</a></b> to browse the online help center of this build.</td><td class=\"file-size level"
+          + dropURL + "/help/index.html\">Documentation</a></b> to browse the online help center of this build.</td><td class=\"file-size level"
           + (repository.getPathLevel() + 1) + "\"></td></tr>");
+      ++elements;
     }
-  }
 
-  protected void generateDropTests(PrintStream out, int level, BuildInfo buildInfo)
-  {
-    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
-    File tests = new File(drop, "tests");
-    File index = new File(tests, "index.html");
-    if (index.isFile())
+    // API Revolution Report
+    if (new File(drop, "api.html").isFile())
     {
-      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/junit.png\"/></td><td><b><a href=\"" + http()
-          + "drops/" + buildInfo.getQualifier()
-          + "/tests/index.html\">Test Report</a></b> to explore the quality of this build.</td><td class=\"file-size level" + (repository.getPathLevel() + 1)
+      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/api/report.gif\"/></td><td><b><a href=\"" + dropURL
+          + "/api.html\">API Evolution Report</a></b> to see the API changes in this stream.</td><td class=\"file-size level" + (repository.getPathLevel() + 1)
           + "\"></td></tr>");
+      ++elements;
     }
-  }
 
-  protected void generateDropDownload(PrintStream out, int level, BuildInfo buildInfo, String path, String description)
-  {
-    File download = getDropFile(buildInfo, path);
-    if (download.isFile())
+    // Test Report
+    if (new File(new File(drop, "tests"), "index.html").isFile())
     {
-      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
-          + PromoterConfig.INSTANCE.formatDropURL(buildInfo.getQualifier() + "/" + path) + "\">" + new File(path).getName() + "</a>" + description
-          + "</td><td class=\"file-size level" + (repository.getPathLevel() + 1) + "\">" + formatFileSize(download.getAbsolutePath()) + "</td></tr>");
+      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/junit.png\"/></td><td><b><a href=\""
+          + dropURL + "/tests/index.html\">Test Report</a></b> to explore the quality of this build.</td><td class=\"file-size level"
+          + (repository.getPathLevel() + 1) + "\"></td></tr>");
+      ++elements;
     }
-  }
 
-  private File getDropFile(BuildInfo buildInfo, String path)
-  {
-    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
-    File download = new File(drop, path);
-    return download;
-  }
+    if (elements > 0)
+    {
+      generateDropSeparator(out, level);
+      elements = 0;
+    }
 
-  protected void generateDropZips(PrintStream out, int level, BuildInfo buildInfo)
-  {
-    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), buildInfo.getQualifier());
+    // Downloads
+    if (generateDropDownload(out, level, buildInfo, "zips/emf-cdo-" + buildInfo.getQualifier() + "-Site.zip",
+        " for local use with <a href=\"" + PromoterConfig.INSTANCE.getHelpTopicURL() + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a>."))
+    {
+      ++elements;
+    }
+
+    // Zips
     List<DropZip> dropZips = new ArrayList<DropZip>();
 
     File zipsFolder = new File(drop, "zips");
@@ -319,21 +282,76 @@ public class WebNode implements Comparable<WebNode>
     for (DropZip dropZip : dropZips)
     {
       generateDropDownload(out, level, buildInfo, "zips/" + dropZip.getName(), " " + dropZip.getDescription());
+      ++elements;
     }
+
+    if (elements > 0)
+    {
+      generateDropSeparator(out, level);
+      elements = 0;
+    }
+
+    generateDropFile(out, level, buildInfo, "index.xml", " for the contents of this build.");
+
+    generateDropFile(out, level, buildInfo, "relnotes.xml", " for the change infos of this build.");
+
+    generateDropFile(out, level, buildInfo, "api.xml", " for the API evolution report of this build.");
+
+    generateDropFile(out, level, buildInfo, "bookmarks.xml", " for the <a href=\"" + PromoterConfig.INSTANCE.getHelpTopicURL()
+        + "/org.eclipse.platform.doc.user/tasks/tasks-128.htm\">import</a> of the build dependencies.");
+
+    generateDropFile(out, level, buildInfo, "bom.xml", " for the <a href=\"https://www.eclipse.org/buckminster\">bill of materials</a> of this build.");
+
+    generateDropFile(out, level, buildInfo, "build-info.xml", " for the parameters that produced this build.");
+
+    generateDropFile(out, level, buildInfo, "test-report.xml", " for the test results of this build.");
+    generateDropFile(out, level, buildInfo, "tests/test-report.xml", " for the test results of this build.");
+
+    generateDropSeparator(out, level);
+
+    out.println(prefix(--level) + "</table>");
+    out.println(prefix(--level) + "</div>");
+    return level;
   }
 
-  protected void generateDropFile(PrintStream out, int level, BuildInfo buildInfo, String path, String description)
+  protected void generateDropSeparator(PrintStream out, int level)
   {
-    String size = formatFileSize(PromoterConfig.INSTANCE.getDropsArea().getAbsolutePath() + "/" + buildInfo.getQualifier() + "/" + path);
-    if (size.length() > 0)
-    {
-      int lastSlash = path.lastIndexOf('/');
-      String label = lastSlash == -1 ? path : path.substring(lastSlash + 1);
+    out.println(prefix(level) + "<tr class=\"drop-info\"><td colspan=\"3\"><hr class=\"drop-separator\"></td></tr>");
+  }
 
-      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
-          + http() + "drops/" + buildInfo.getQualifier() + "/" + path + "\">" + label + "</a>" + description + "</td><td class=\"file-size level"
-          + (repository.getPathLevel() + 1) + "\">" + size + "</td></tr>");
+  protected boolean generateDropFile(PrintStream out, int level, BuildInfo buildInfo, String path, String description)
+  {
+    File file = new File(buildInfo.getDrop(), path);
+    if (file.isFile())
+    {
+      String size = formatFileSize(file.getAbsolutePath());
+      if (size.length() > 0)
+      {
+        int lastSlash = path.lastIndexOf('/');
+        String label = lastSlash == -1 ? path : path.substring(lastSlash + 1);
+
+        out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/text-x-generic.png\"/></td><td><a href=\""
+            + buildInfo.getDropURL(path, false) + "\">" + label + "</a>" + description + "</td><td class=\"file-size level" + (repository.getPathLevel() + 1)
+            + "\">" + size + "</td></tr>");
+        return true;
+      }
     }
+
+    return false;
+  }
+
+  protected boolean generateDropDownload(PrintStream out, int level, BuildInfo buildInfo, String path, String description)
+  {
+    File download = new File(buildInfo.getDrop(), path);
+    if (download.isFile())
+    {
+      out.println(prefix(level) + "<tr class=\"drop-info\"><td><img src=\"https://www.eclipse.org/cdo/images/16x16/go-down.png\"/></td><td><a href=\""
+          + buildInfo.getDropURL(path, true) + "\">" + new File(path).getName() + "</a>" + description + "</td><td class=\"file-size level"
+          + (repository.getPathLevel() + 1) + "\">" + formatFileSize(download.getAbsolutePath()) + "</td></tr>");
+      return true;
+    }
+
+    return false;
   }
 
   private static String formatFileSize(String path)
@@ -357,12 +375,6 @@ public class WebNode implements Comparable<WebNode>
     }
 
     return prefix;
-  }
-
-  public static String http()
-  {
-    String downloadsPath = PromoterConfig.INSTANCE.getProperty("downloadsPath");
-    return "http://download.eclipse.org/" + downloadsPath + "/";
   }
 
   /**
