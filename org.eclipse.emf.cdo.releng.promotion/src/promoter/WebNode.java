@@ -27,6 +27,8 @@ import promoter.util.IO;
  */
 public class WebNode implements Comparable<WebNode>
 {
+  private final boolean EXPAND_ALL = Boolean.getBoolean("webExpandAll");
+
   private File folder;
 
   private Repository repository;
@@ -129,15 +131,14 @@ public class WebNode implements Comparable<WebNode>
         + "\"><img src=\"https://www.eclipse.org/cdo/images/link_obj.gif\" alt=\"Permalink\" width=\"12\" height=\"12\"/></a>");
 
     out.println(prefix(level++) + "<div class=\"repo" + repository.getPathLevel() + "\" id=\"repo_" + repoName + "\""
-        + (repository.isWebCollapsed() || empty ? " style=\"display: none\"" : "") + ">");
+        + (!EXPAND_ALL && repository.isWebCollapsed() || empty ? " style=\"display: none\"" : "") + ">");
 
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
     out.println(prefix(level) + "<tr class=\"repo-info\"><td><img src=\"https://www.eclipse.org/cdo/images/22x22/package-x-generic.png\"/></td>"
-        + "<td><b><a href=\"" + PromoterConfig.INSTANCE.getDownloadsURL() + "/updates/" + repository.getPath()
-        + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\"" + PromoterConfig.INSTANCE.getHelpTopicURL()
-        + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> or a web browser.</td>" + "<td class=\"file-size level" + repository.getPathLevel()
-        + "\"></td></tr>");
+        + "<td><b><a href=\"" + repository.getURL(false) + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\""
+        + PromoterConfig.INSTANCE.getHelpTopicURL() + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> or a web browser.</td>"
+        + "<td class=\"file-size level" + repository.getPathLevel() + "\"></td></tr>");
 
     String apiBaselineURL = repository.getApiBaselineURL();
     if (apiBaselineURL != null)
@@ -195,7 +196,7 @@ public class WebNode implements Comparable<WebNode>
         + "</a></b> <a name=\"" + dropName + "\" href=\"#" + dropName
         + "\"><img src=\"https://www.eclipse.org/cdo/images/link_obj.gif\" alt=\"Permalink\" width=\"12\" height=\"12\"/></a>");
 
-    out.println(prefix(level++) + "<div class=\"drop\" id=\"" + dropID + "\"" + (firstDrop ? "" : " style=\"display: none\"") + ">");
+    out.println(prefix(level++) + "<div class=\"drop\" id=\"" + dropID + "\"" + (EXPAND_ALL || firstDrop ? "" : " style=\"display: none\"") + ">");
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
     File drop = buildInfo.getDrop();

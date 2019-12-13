@@ -205,7 +205,8 @@ public class DropProcessor extends PromoterComponent
 
     String match = "<property name=.p2\\.compressed. value=.true./>";
     String replace = "<property name='p2.compressed' value='true'/>\n    " + "<property name='p2.mirrorsURL' value='"
-        + PromoterConfig.INSTANCE.formatMirrorDropURL(drop.getName()) + (pathInDrop == null ? "" : "/" + pathInDrop) + "&amp;format=xml'/>";
+        + PromoterConfig.INSTANCE.formatDropURL(drop.getName() + (pathInDrop == null ? "" : "/" + pathInDrop), true).replace("&", "&amp;")
+        + "&amp;format=xml'/>";
 
     File jarFile = new File(path, name + ".jar");
     File xmlFile = new File(path, name + ".xml");

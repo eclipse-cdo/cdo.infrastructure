@@ -70,12 +70,22 @@ public final class PromoterConfig extends Config
 
   public File getCompositionArea()
   {
-    return new File(getDownloadsArea(), getProperty("compositionPath"));
+    return new File(getDownloadsArea(), getCompositionPath());
   }
 
   public File getCompositionTempArea()
   {
-    return new File(getDownloadsArea(), getProperty("compositionTempPath"));
+    return new File(getDownloadsArea(), getCompositionTempPath());
+  }
+
+  public String getCompositionPath()
+  {
+    return getProperty("compositionPath");
+  }
+
+  public String getCompositionTempPath()
+  {
+    return getProperty("compositionTempPath");
   }
 
   public File getDropsArea()
@@ -138,18 +148,25 @@ public final class PromoterConfig extends Config
     return getHelpURL() + "/index.jsp?topic=";
   }
 
-  private String formatMirrorURL(String path)
+  private String formatURL(String path, boolean mirror)
   {
-    return "https://www.eclipse.org/downloads/download.php?file=/" + getDownloadsPath() + "/" + path + "&amp;protocol=http";
+    path = getDownloadsPath() + "/" + path;
+
+    if (mirror)
+    {
+      return "https://www.eclipse.org/downloads/download.php?file=/" + path + "&protocol=http";
+    }
+
+    return getDownloadsURL() + "/" + path;
   }
 
-  public String formatMirrorDropURL(String path)
+  public String formatDropURL(String path, boolean mirror)
   {
-    return formatMirrorURL("drops/" + path);
+    return formatURL("drops/" + path, mirror);
   }
 
-  public String formatMirrorUpdateURL(String path)
+  public String formatUpdateURL(String path, boolean mirror)
   {
-    return formatMirrorURL(getProperty("compositionPath") + "/" + path);
+    return formatURL(getCompositionPath() + "/" + path, mirror);
   }
 }

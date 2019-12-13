@@ -110,6 +110,11 @@ public class Repository
     return pathLevel;
   }
 
+  public final String getURL(boolean mirror)
+  {
+    return PromoterConfig.INSTANCE.formatUpdateURL(path, mirror);
+  }
+
   public final List<String> getChildren()
   {
     return Collections.unmodifiableList(children);
@@ -324,7 +329,7 @@ public class Repository
 
           repoXML.element("property");
           repoXML.attribute("name", "p2.mirrorsURL");
-          repoXML.attribute("value", PromoterConfig.INSTANCE.formatMirrorUpdateURL(path) + "&amp;format=xml");
+          repoXML.attribute("value", getURL(true).replace("&", "&amp;") + "&amp;format=xml");
           repoXML.pop();
 
           repoXML.element("children");
