@@ -151,6 +151,7 @@ public final class PromoterConfig extends Config
   private String formatURL(String path, boolean mirror)
   {
     path = getDownloadsPath() + "/" + path;
+    path = path.replace('\\', '/');
 
     if (mirror)
     {

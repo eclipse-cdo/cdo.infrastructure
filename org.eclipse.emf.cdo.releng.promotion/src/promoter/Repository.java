@@ -329,7 +329,7 @@ public class Repository
 
           repoXML.element("property");
           repoXML.attribute("name", "p2.mirrorsURL");
-          repoXML.attribute("value", getURL(true).replace("&", "&amp;") + "&amp;format=xml");
+          repoXML.attribute("value", getURL(true) + "&format=xml");
           repoXML.pop();
 
           repoXML.element("children");
