@@ -50,7 +50,10 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
     for (ReleaseNotesStream stream : getStreams(buildInfos))
     {
-      generateReleaseNotes(stream);
+      if (!stream.isDisabled())
+      {
+        generateReleaseNotes(stream);
+      }
     }
 
     issueManager = null;
@@ -289,15 +292,17 @@ public class ReleaseNotesGenerator extends PromoterComponent
     for (BuildInfo buildInfo : buildInfos)
     {
       String name = buildInfo.getStream();
-
-      ReleaseNotesStream stream = streams.get(name);
-      if (stream == null)
+      if (name != null && name.length() != 0)
       {
-        stream = new ReleaseNotesStream(name);
-        streams.put(name, stream);
-      }
+        ReleaseNotesStream stream = streams.get(name);
+        if (stream == null)
+        {
+          stream = new ReleaseNotesStream(name);
+          streams.put(name, stream);
+        }
 
-      stream.getBuildInfos().add(buildInfo);
+        stream.getBuildInfos().add(buildInfo);
+      }
     }
 
     return streams.values();

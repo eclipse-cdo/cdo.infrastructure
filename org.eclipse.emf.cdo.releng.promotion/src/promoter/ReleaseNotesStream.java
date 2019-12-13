@@ -20,13 +20,13 @@ import promoter.util.Config;
 /**
  * @author Eike Stepper
  */
-public class ReleaseNotesStream
+public final class ReleaseNotesStream
 {
-  private String name;
+  private final String name;
 
-  private String firstRevision;
+  private final String firstRevision;
 
-  private List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
+  private final List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
 
   public ReleaseNotesStream(String name)
   {
@@ -35,16 +35,28 @@ public class ReleaseNotesStream
     File configFolder = new File(PromoterConfig.INSTANCE.getConfigDirectory(), "streams");
     Properties streamProperties = Config.loadProperties(new File(configFolder, name + ".properties"), true);
 
-    firstRevision = streamProperties.getProperty("first.revision");
-    if (firstRevision == null)
+    if (Config.isDisabled(streamProperties))
     {
-      throw new IllegalStateException("First revision of stream " + name + "is not specified");
+      firstRevision = null;
+    }
+    else
+    {
+      firstRevision = streamProperties.getProperty("first.revision");
+      if (firstRevision == null)
+      {
+        throw new IllegalStateException("First revision of stream " + name + "is not specified");
+      }
     }
   }
 
-  public final String getName()
+  public String getName()
   {
     return name;
+  }
+
+  public boolean isDisabled()
+  {
+    return firstRevision == null;
   }
 
   public String getFirstRevision()
@@ -52,8 +64,14 @@ public class ReleaseNotesStream
     return firstRevision;
   }
 
-  public final List<BuildInfo> getBuildInfos()
+  public List<BuildInfo> getBuildInfos()
   {
     return buildInfos;
+  }
+
+  @Override
+  public String toString()
+  {
+    return name;
   }
 }

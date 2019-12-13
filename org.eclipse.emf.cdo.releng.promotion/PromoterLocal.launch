@@ -9,5 +9,5 @@
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_EXCLUDE_TEST_CODE" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="promoter.Promoter"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.eclipse.emf.cdo.releng.promotion"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DANT_HOME=&quot;C:\Develop\bin\apache-ant-1.8.2&quot;&#13;&#10;-DDOWNLOADS_HOME=&quot;C:\Users\Stepper\Desktop\download.e.o&quot;&#13;&#10;-DARCHIVE_HOME=&quot;C:\Users\Stepper\Desktop\archive.e.o&quot;&#13;&#10;-DworkingArea=&quot;C:\Users\Stepper\Desktop\workingArea&quot;&#13;&#10;-DforcedPromotion=true&#13;&#10;-DskipCopyBuilds=true&#13;&#10;-DskipPerformTasks=true&#13;&#10;-DskipGenerateReleaseNotes=true&#13;&#10;-DskipFileChecks=true"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DANT_HOME=&quot;C:\Develop\bin\apache-ant-1.8.2&quot;&#13;&#10;-DDOWNLOADS_HOME=&quot;C:\Users\Stepper\Desktop\download.e.o&quot;&#13;&#10;-DARCHIVE_HOME=&quot;C:\Users\Stepper\Desktop\archive.e.o&quot;&#13;&#10;-DworkingArea=&quot;C:\Users\Stepper\Desktop\workingArea&quot;&#13;&#10;-DforcedPromotion=true&#13;&#10;-DskipCopyBuilds=true&#13;&#10;-DskipPerformTasks=true&#13;&#10;-DXXXskipGenerateReleaseNotes=true&#13;&#10;-DskipFileChecks=true"/>
 </launchConfiguration>
