@@ -206,6 +206,7 @@ public class WebNode implements Comparable<WebNode>
 
     File drop = buildInfo.getDrop();
     String dropURL = buildInfo.getDropURL(null, false);
+    System.out.println(dropURL);
     int elements = 0;
 
     // Update Site
