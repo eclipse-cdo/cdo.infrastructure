@@ -39,6 +39,8 @@ public class DropProcessor extends PromoterComponent
 
   public static final String MARKER_INVISIBLE = ".invisible";
 
+  public static final String MARKER_ARCHIVED = ".archived";
+
   public DropProcessor()
   {
   }
@@ -56,7 +58,7 @@ public class DropProcessor extends PromoterComponent
   {
     for (File drop : dropsArea.listFiles())
     {
-      if (drop.isDirectory())
+      if (drop.isDirectory() && !new File(drop, MARKER_ARCHIVED).exists())
       {
         processDrop(xml, drop, buildInfos);
       }
