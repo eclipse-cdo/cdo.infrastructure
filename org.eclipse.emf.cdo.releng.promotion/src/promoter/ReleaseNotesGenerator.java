@@ -71,7 +71,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
     BuildInfo buildInfo = buildInfos[i];
     String qualifier = buildInfo.getQualifier();
 
-    File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), qualifier);
+    File drop = buildInfo.getDrop();
     File relnotesXML = new File(drop, "relnotes.xml");
     File relnotesHTML = new File(drop, "relnotes.html");
     if (!relnotesXML.exists() || !relnotesHTML.exists())
