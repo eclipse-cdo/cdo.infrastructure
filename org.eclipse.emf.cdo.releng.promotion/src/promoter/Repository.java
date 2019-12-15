@@ -12,7 +12,6 @@ package promoter;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,8 +34,6 @@ public class Repository
 
   private static final String PARENT_DIRECTORY = "../";
 
-  private RepositoryComposer composer;
-
   private File base;
 
   private String name;
@@ -45,7 +42,7 @@ public class Repository
 
   private int pathLevel;
 
-  private List<String> children = new ArrayList<String>();
+  private List<String> children = new ArrayList<>();
 
   private String childRetention;
 
@@ -67,12 +64,11 @@ public class Repository
   {
   }
 
-  public Repository(RepositoryComposer composer, File base, String name, String path)
+  public Repository(File base, String name, String path)
   {
     System.out.println();
     System.out.println("Generating repository " + name + ": " + new File(base, path).getAbsolutePath());
 
-    this.composer = composer;
     this.base = base;
     this.name = name;
     this.path = path;
@@ -83,11 +79,6 @@ public class Repository
       tokenizer.nextToken();
       ++pathLevel;
     }
-  }
-
-  public final RepositoryComposer getComposer()
-  {
-    return composer;
   }
 
   public final File getBase()
@@ -202,14 +193,10 @@ public class Repository
     File folder = new File(base, path);
     folder.mkdirs();
 
-    IO.writeFile(new File(folder, "composition.properties"), new IO.OutputHandler()
-    {
-      public void handleOutput(OutputStream out) throws IOException
-      {
-        PrintStream stream = new PrintStream(out);
-        stream.println("composite.name=" + name);
-        stream.flush();
-      }
+    IO.writeFile(new File(folder, "composition.properties"), out -> {
+      PrintStream stream = new PrintStream(out);
+      stream.println("composite.name=" + name);
+      stream.flush();
     });
 
     // IO.writeFile(new File(folder, "p2.index"), new IO.OutputHandler()
@@ -300,71 +287,67 @@ public class Repository
   protected void generateXML(final XMLOutput xml, final File folder, final String xmlName, final String entityName, final String typeName)
   {
     final File xmlFile = new File(folder, xmlName + ".xml");
-    IO.writeFile(xmlFile, new IO.OutputHandler()
-    {
-      public void handleOutput(OutputStream out) throws IOException
+    IO.writeFile(xmlFile, out -> {
+      try
       {
-        try
+        XMLOutput repoXML = new XMLOutput(out);
+        repoXML.processingInstruction(entityName, "version=\"1.0.0\"");
+
+        repoXML.element("repository");
+        repoXML.attribute("name", name);
+        repoXML.attribute("type", typeName);
+        repoXML.attribute("version", "1.0.0");
+        repoXML.push();
+
+        repoXML.element("properties");
+        repoXML.attribute("size", "3");
+        repoXML.push();
+
+        repoXML.element("property");
+        repoXML.attribute("name", "p2.timestamp");
+        repoXML.attribute("value", System.currentTimeMillis());
+
+        repoXML.element("property");
+        repoXML.attribute("name", "p2.compressed");
+        repoXML.attribute("value", COMPRESS);
+
+        repoXML.element("property");
+        repoXML.attribute("name", "p2.mirrorsURL");
+        repoXML.attribute("value", getURL(true) + "&format=xml");
+        repoXML.pop();
+
+        repoXML.element("children");
+        repoXML.attribute("size", children.size());
+        repoXML.push();
+
+        for (String child : children)
         {
-          XMLOutput repoXML = new XMLOutput(out);
-          repoXML.processingInstruction(entityName, "version=\"1.0.0\"");
-
-          repoXML.element("repository");
-          repoXML.attribute("name", name);
-          repoXML.attribute("type", typeName);
-          repoXML.attribute("version", "1.0.0");
-          repoXML.push();
-
-          repoXML.element("properties");
-          repoXML.attribute("size", "3");
-          repoXML.push();
-
-          repoXML.element("property");
-          repoXML.attribute("name", "p2.timestamp");
-          repoXML.attribute("value", System.currentTimeMillis());
-
-          repoXML.element("property");
-          repoXML.attribute("name", "p2.compressed");
-          repoXML.attribute("value", COMPRESS);
-
-          repoXML.element("property");
-          repoXML.attribute("name", "p2.mirrorsURL");
-          repoXML.attribute("value", getURL(true) + "&format=xml");
-          repoXML.pop();
-
-          repoXML.element("children");
-          repoXML.attribute("size", children.size());
-          repoXML.push();
-
-          for (String child : children)
-          {
-            repoXML.element("child");
-            repoXML.attribute("location", child);
-          }
-
-          repoXML.pop();
-          repoXML.pop();
-          repoXML.done();
-
-          if (COMPRESS)
-          {
-            xml.element("zip");
-            xml.attribute("destfile", new File(folder, xmlName + ".jar"));
-            xml.attribute("update", false);
-            xml.push();
-            xml.element("fileset");
-            xml.attribute("dir", folder);
-            xml.push();
-            xml.element("include");
-            xml.attribute("name", xmlFile.getName());
-            xml.pop();
-            xml.pop();
-          }
+          repoXML.element("child");
+          repoXML.attribute("location", child);
         }
-        catch (Exception ex)
+
+        repoXML.pop();
+        repoXML.pop();
+        repoXML.done();
+
+        if (COMPRESS)
         {
-          throw new RuntimeException(ex);
+          xml.element("zip");
+          xml.attribute("destfile", new File(folder, xmlName + ".jar"));
+          xml.attribute("update", false);
+          xml.push();
+          xml.element("fileset");
+          xml.attribute("dir", folder);
+          xml.push();
+          xml.element("include");
+          xml.attribute("name", xmlFile.getName());
+          xml.pop();
+          xml.pop();
         }
+      }
+      catch (Exception ex)
+      {
+        throw new RuntimeException(ex);
       }
     });
   }
@@ -392,11 +375,11 @@ public class Repository
 
     private String types;
 
-    private List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
+    private List<BuildInfo> buildInfos = new ArrayList<>();
 
-    public Drops(RepositoryComposer composer, File base, String name, String path, String job, String stream, String types, List<BuildInfo> buildInfos)
+    public Drops(File base, String name, String path, String job, String stream, String types, List<BuildInfo> buildInfos)
     {
-      super(composer, base, name, path);
+      super(base, name, path);
       this.job = job;
       this.stream = stream;
       this.types = types;
@@ -433,7 +416,7 @@ public class Repository
         {
           if (IO.isRepository(drop))
           {
-            child = PromoterConfig.INSTANCE.getArchiveURL() + "/" + PromoterConfig.INSTANCE.getDownloadsPath() + "/drops/" + qualifier;
+            child = PromoterConfig.INSTANCE.getArchiveURL() + "/" + PromoterConfig.INSTANCE.getProjectPath() + "/drops/" + qualifier;
           }
         }
         else

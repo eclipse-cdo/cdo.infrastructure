@@ -63,9 +63,14 @@ public final class PromoterConfig extends Config
     return getDirectory("workingArea");
   }
 
-  public String getDownloadsPath()
+  public String getProjectName()
   {
-    return getProperty("downloadsPath");
+    return getProperty("projectName");
+  }
+
+  public String getProjectPath()
+  {
+    return getProperty("projectPath");
   }
 
   public File getCompositionArea()
@@ -105,7 +110,7 @@ public final class PromoterConfig extends Config
 
   public File getArchiveArea()
   {
-    return new File(getArchiveHome(), getDownloadsPath());
+    return new File(getArchiveHome(), getProjectPath());
   }
 
   public File getArchiveDropsArea()
@@ -115,7 +120,7 @@ public final class PromoterConfig extends Config
 
   public File getDownloadsArea()
   {
-    return new File(getDownloadsHome(), getDownloadsPath());
+    return new File(getDownloadsHome(), getProjectPath());
   }
 
   public File getProjectRelengArea()
@@ -150,7 +155,7 @@ public final class PromoterConfig extends Config
 
   private String formatURL(String path, boolean mirror)
   {
-    path = getDownloadsPath() + "/" + path;
+    path = getProjectPath() + "/" + path;
     path = path.replace('\\', '/');
 
     if (mirror)

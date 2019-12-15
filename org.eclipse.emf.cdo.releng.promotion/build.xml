@@ -32,7 +32,7 @@
 
 	<target name="promote" depends="build">
 		<delete includeemptydirs="true" defaultexcludes="false" failonerror="false" quiet="true">
-			<fileset dir="${DOWNLOADS_HOME}/${downloadsPath}">
+			<fileset dir="${DOWNLOADS_HOME}/${projectPath}">
 				<include name="${compositionPath}.tmp" />
 				<include name="${compositionTempPath}" />
 			</fileset>

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Eike Stepper - initial API and implementation
  */
@@ -16,6 +16,7 @@ import org.xml.sax.helpers.AttributesImpl;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
@@ -42,7 +43,7 @@ public class XMLOutput
 
   private char[] indentation;
 
-  private LinkedList<Element> stack = new LinkedList<Element>();
+  private LinkedList<Element> stack = new LinkedList<>();
 
   private Element element;
 
@@ -51,7 +52,7 @@ public class XMLOutput
     this.out = out;
     setNewLine("\n");
     setIndentation("  ");
-    SAXTransformerFactory factory = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
+    SAXTransformerFactory factory = (SAXTransformerFactory)TransformerFactory.newInstance();
 
     xmlHandler = factory.newTransformerHandler();
 

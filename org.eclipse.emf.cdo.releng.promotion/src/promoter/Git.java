@@ -14,11 +14,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 
 import promoter.util.IO;
-import promoter.util.IO.OutputHandler;
 
 /**
  * @author Stefan Winkler
@@ -93,20 +91,16 @@ public class Git extends SourceCodeManager
     {
       final File outFile = File.createTempFile("promotion-", ".tmp");
 
-      IO.executeProcess("/bin/bash", new OutputHandler()
-      {
-        public void handleOutput(OutputStream out) throws IOException
-        {
-          PrintStream stream = new PrintStream(out);
-          fetchIfNeeded(stream);
+      IO.executeProcess("/bin/bash", out -> {
+        PrintStream stream = new PrintStream(out);
+        fetchIfNeeded(stream);
 
-          String range = fromRevision + ".." + toRevision;
-          System.out.println("Getting log entries for " + branch + " (" + range + ")");
+        String range = fromRevision + ".." + toRevision;
+        System.out.println("Getting log entries for " + branch + " (" + range + ")");
 
-          String command = GIT_BINARY + " log " + (withPaths ? "--name-only " : "") + " --format=\"" + OUTPUT_FORMAT + "\" " + range + " > " + outFile;
-          stream.println(command);
-          stream.flush();
-        }
+        String command = GIT_BINARY + " log " + (withPaths ? "--name-only " : "") + " --format=\"" + OUTPUT_FORMAT + "\" " + range + " > " + outFile;
+        stream.println(command);
+        stream.flush();
       });
 
       FileReader fileReader = new FileReader(outFile);

@@ -10,9 +10,9 @@
  */
 package promoter;
 
-import promoter.util.IO;
-
 import java.io.File;
+
+import promoter.util.IO;
 
 /**
  * @author Eike Stepper

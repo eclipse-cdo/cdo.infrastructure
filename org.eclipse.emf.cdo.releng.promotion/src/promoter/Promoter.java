@@ -22,7 +22,7 @@ import promoter.util.XMLOutput;
 /**
  * @author Eike Stepper
  */
-public class Promoter
+public class Promoter extends ComponentFactory
 {
   private final boolean force;
 
@@ -31,6 +31,40 @@ public class Promoter
   private final boolean skipPerformTasks;
 
   private final boolean skipGenerateReleaseNotes;
+
+  public static void main(String[] args) throws Exception
+  {
+    boolean force = Boolean.getBoolean("forcedPromotion");
+    boolean skipCopyBuilds = Boolean.getBoolean("skipCopyBuilds");
+    boolean skipPerformTasks = Boolean.getBoolean("skipPerformTasks");
+    boolean skipGenerateReleaseNotes = Boolean.getBoolean("skipGenerateReleaseNotes");
+  
+    if (args != null)
+    {
+      for (String arg : args)
+      {
+        if ("--force".equals(arg))
+        {
+          force = true;
+        }
+        else if ("--skipCopyBuilds".equals(arg))
+        {
+          skipCopyBuilds = true;
+        }
+        else if ("--skipPerformTasks".equals(arg))
+        {
+          skipPerformTasks = true;
+        }
+        else if ("--skipGenerateReleaseNotes".equals(arg))
+        {
+          skipGenerateReleaseNotes = true;
+        }
+      }
+    }
+  
+    Promoter main = new Promoter(force, skipCopyBuilds, skipPerformTasks, skipGenerateReleaseNotes);
+    main.run();
+  }
 
   public Promoter(boolean force, boolean skipCopyBuilds, boolean skipPerformTasks, boolean skipGenerateReleaseNotes)
   {
@@ -74,7 +108,8 @@ public class Promoter
     // System.out.println();
 
     System.out.println("----------------------------------------------------------------------------------------------------------");
-    System.out.println("DownloadsPath        = " + PromoterConfig.INSTANCE.getDownloadsPath());
+    System.out.println("ProjectName          = " + PromoterConfig.INSTANCE.getProjectName());
+    System.out.println("ProjectPath          = " + PromoterConfig.INSTANCE.getProjectPath());
     System.out.println("DownloadsHome        = " + PromoterConfig.INSTANCE.getDownloadsHome());
     System.out.println("DownloadsArea        = " + PromoterConfig.INSTANCE.getDownloadsArea());
     System.out.println("DropsArea            = " + PromoterConfig.INSTANCE.getDropsArea());
@@ -93,14 +128,14 @@ public class Promoter
     System.out.println("JobsURL              = " + PromoterConfig.INSTANCE.getJobsURL());
     System.out.println("----------------------------------------------------------------------------------------------------------");
 
-    List<BuildInfo> builds = new ArrayList<BuildInfo>();
+    List<BuildInfo> copiedBuilds = new ArrayList<>();
     if (!skipCopyBuilds)
     {
       BuildCopier buildCopier = createBuildCopier();
 
       try
       {
-        builds = buildCopier.copyBuilds();
+        copiedBuilds = buildCopier.copyBuilds();
       }
       catch (Exception ex)
       {
@@ -109,9 +144,9 @@ public class Promoter
       }
     }
 
-    List<Task> tasks = skipPerformTasks ? new ArrayList<Task>() : performTasks(builds);
+    List<Task> performedTasks = skipPerformTasks ? new ArrayList<>() : performTasks(copiedBuilds);
 
-    if (builds.isEmpty() && tasks.isEmpty())
+    if (copiedBuilds.isEmpty() && performedTasks.isEmpty())
     {
       System.out.println();
       System.out.print("No new builds or tasks have been found.");
@@ -126,7 +161,7 @@ public class Promoter
     System.out.println();
 
     Ant<AntResult> ant = createAnt();
-    AntResult result = ant.run();
+    AntResult result = ant.run(); // Calls processDropsAndComposeRepositories().
 
     if (!skipGenerateReleaseNotes)
     {
@@ -154,7 +189,7 @@ public class Promoter
 
   public List<Task> performTasks(List<BuildInfo> builds)
   {
-    List<Task> tasks = new ArrayList<Task>();
+    List<Task> tasks = new ArrayList<>();
     File publicFolder = new File(PromoterConfig.INSTANCE.getWorkingArea(), "public");
     File taskFolder = new File(publicFolder, "tasks.inprogress");
     if (taskFolder.isDirectory())
@@ -166,7 +201,7 @@ public class Promoter
           if (file.isFile() && file.getName().endsWith(".task"))
           {
             String content = IO.readTextFile(file);
-            List<String> args = new ArrayList<String>(Arrays.asList(content.split("\n")));
+            List<String> args = new ArrayList<>(Arrays.asList(content.split("\n")));
             String type = args.remove(0);
 
             Task task = createComponent("promoter.tasks." + type + "Task");
@@ -200,39 +235,18 @@ public class Promoter
     return tasks;
   }
 
-  public SourceCodeManager createSourceCodeManager()
+  public AntResult processDropsAndComposeRepositories(XMLOutput xml) throws Exception
   {
-    return createComponent(SourceCodeManager.class);
-  }
+    DropProcessor dropProcessor = createDropProcessor();
+    List<BuildInfo> buildInfos = dropProcessor.processDrops(xml);
 
-  public IssueManager createIssueManager()
-  {
-    return createComponent(IssueManager.class);
-  }
+    File baseFolder = PromoterConfig.INSTANCE.getConfigDirectory();
+    File composites = new File(baseFolder, "composites");
 
-  public BuildCopier createBuildCopier()
-  {
-    return createComponent(BuildCopier.class);
-  }
+    RepositoryComposer repositoryComposer = createRepositoryComposer();
+    WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, baseFolder, composites);
 
-  public DropProcessor createDropProcessor()
-  {
-    return createComponent(DropProcessor.class);
-  }
-
-  public ReleaseNotesGenerator createReleaseNotesGenerator()
-  {
-    return createComponent(ReleaseNotesGenerator.class);
-  }
-
-  public RepositoryComposer createRepositoryComposer()
-  {
-    return createComponent(RepositoryComposer.class);
-  }
-
-  public WebGenerator createWebGenerator()
-  {
-    return createComponent(WebGenerator.class);
+    return new AntResult(buildInfos, webNode);
   }
 
   public Ant<AntResult> createAnt()
@@ -240,68 +254,6 @@ public class Promoter
     File script = new File(PromoterConfig.INSTANCE.getWorkingArea(), "promoter.ant");
     File basedir = PromoterConfig.INSTANCE.getDownloadsArea();
     return new DefaultAnt(script, basedir);
-  }
-
-  public <T> T createComponent(Class<T> type)
-  {
-    String name = PromoterConfig.INSTANCE.getProperty("class" + type.getSimpleName(), type.getName());
-    return createComponent(name);
-  }
-
-  public <T> T createComponent(String name)
-  {
-    try
-    {
-      @SuppressWarnings("unchecked")
-      Class<T> c = (Class<T>)getClass().getClassLoader().loadClass(name);
-
-      T component = c.newInstance();
-      if (component instanceof PromoterComponent)
-      {
-        PromoterComponent promoterComponent = (PromoterComponent)component;
-        promoterComponent.setPromoter(this);
-      }
-
-      return component;
-    }
-    catch (Exception ex)
-    {
-      throw new RuntimeException(ex);
-    }
-  }
-
-  public static void main(String[] args) throws Exception
-  {
-    boolean force = Boolean.getBoolean("forcedPromotion");
-    boolean skipCopyBuilds = Boolean.getBoolean("skipCopyBuilds");
-    boolean skipPerformTasks = Boolean.getBoolean("skipPerformTasks");
-    boolean skipGenerateReleaseNotes = Boolean.getBoolean("skipGenerateReleaseNotes");
-
-    if (args != null)
-    {
-      for (String arg : args)
-      {
-        if ("--force".equals(arg))
-        {
-          force = true;
-        }
-        else if ("--skipCopyBuilds".equals(arg))
-        {
-          skipCopyBuilds = true;
-        }
-        else if ("--skipPerformTasks".equals(arg))
-        {
-          skipPerformTasks = true;
-        }
-        else if ("--skipGenerateReleaseNotes".equals(arg))
-        {
-          skipGenerateReleaseNotes = true;
-        }
-      }
-    }
-
-    Promoter main = new Promoter(force, skipCopyBuilds, skipPerformTasks, skipGenerateReleaseNotes);
-    main.run();
   }
 
   /**
@@ -317,16 +269,7 @@ public class Promoter
     @Override
     protected AntResult create(XMLOutput xml) throws Exception
     {
-      DropProcessor dropProcessor = createDropProcessor();
-      final List<BuildInfo> buildInfos = dropProcessor.processDrops(xml);
-
-      File baseFolder = PromoterConfig.INSTANCE.getConfigDirectory();
-      File composites = new File(baseFolder, "composites");
-
-      RepositoryComposer repositoryComposer = createRepositoryComposer();
-      final WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, baseFolder, composites);
-
-      return new AntResult(buildInfos, webNode);
+      return processDropsAndComposeRepositories(xml);
     }
   }
 

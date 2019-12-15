@@ -128,9 +128,9 @@ public class DuplicateTask extends AbstractDropTask
   {
     File antHome = new File("C:\\develop\\bin\\apache-ant-1.8.2");
     File drop = new File("C:\\Users\\Stepper\\Desktop\\drops\\R20120612-1449");
-    List<String> args = new ArrayList<String>();
+    List<String> args = new ArrayList<>();
     args.add("S20120621-1100");
-    List<BuildInfo> builds = new ArrayList<BuildInfo>();
+    List<BuildInfo> builds = new ArrayList<>();
 
     DuplicateTask task = new DuplicateTask(antHome);
     task.execute(drop, args, builds);

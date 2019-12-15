@@ -45,7 +45,7 @@ public class DropProcessor extends PromoterComponent
 
   public List<BuildInfo> processDrops(XMLOutput xml) throws Exception
   {
-    List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
+    List<BuildInfo> buildInfos = new ArrayList<>();
     processDrops(xml, buildInfos, PromoterConfig.INSTANCE.getArchiveDropsArea());
     processDrops(xml, buildInfos, PromoterConfig.INSTANCE.getDropsArea());
 
@@ -290,7 +290,7 @@ public class DropProcessor extends PromoterComponent
       }
 
       // Load names of doc plugins
-      Set<String> docs = new HashSet<String>();
+      Set<String> docs = new HashSet<>();
       BufferedReader reader = null;
 
       try

@@ -15,8 +15,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -43,7 +41,7 @@ public class BuildCopier extends PromoterComponent
 
   public List<BuildInfo> copyBuilds()
   {
-    List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
+    List<BuildInfo> buildInfos = new ArrayList<>();
     File configFolder = new File(PromoterConfig.INSTANCE.getConfigDirectory(), "jobs");
 
     for (File jobDir : configFolder.listFiles())
@@ -80,7 +78,7 @@ public class BuildCopier extends PromoterComponent
     System.out.println();
     System.out.println("Checking builds of " + jobURL);
 
-    Set<Integer> excludedBuilds = new HashSet<Integer>();
+    Set<Integer> excludedBuilds = new HashSet<>();
     StringTokenizer tokenizer = new StringTokenizer(jobProperties.getProperty("excluded.builds", ""), ",;: \t\n\r\f");
     while (tokenizer.hasMoreTokens())
     {
@@ -210,20 +208,16 @@ public class BuildCopier extends PromoterComponent
 
   protected void storeNextBuildNumber(String jobName, final int nextBuildNumber)
   {
-    IO.writeFile(new File(PromoterConfig.INSTANCE.getWorkingArea(), jobName + ".nextBuildNumber"), new IO.OutputHandler()
-    {
-      public void handleOutput(OutputStream out) throws IOException
-      {
-        PrintStream stream = new PrintStream(out);
-        stream.println(nextBuildNumber);
-        stream.flush();
-      }
+    IO.writeFile(new File(PromoterConfig.INSTANCE.getWorkingArea(), jobName + ".nextBuildNumber"), out -> {
+      PrintStream stream = new PrintStream(out);
+      stream.println(nextBuildNumber);
+      stream.flush();
     });
   }
 
   protected List<Integer> getBuildNumbers(String jobURL)
   {
-    final List<Integer> buildNumbers = new ArrayList<Integer>();
+    final List<Integer> buildNumbers = new ArrayList<>();
 
     try
     {

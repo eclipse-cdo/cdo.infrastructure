@@ -17,7 +17,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import promoter.SourceCodeManager.LogEntry;
-import promoter.SourceCodeManager.LogEntryHandler;
 import promoter.util.IO;
 import promoter.util.XMLOutput;
 
@@ -86,7 +83,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       String fromRevision = previousBuildInfo == null ? stream.getFirstRevision() : previousBuildInfo.getRelnotesRevision();
       String toRevision = buildInfo.getRevision();
 
-      List<Issue> issues = new ArrayList<Issue>(getIssues(buildInfo, fromRevision, toRevision));
+      List<Issue> issues = new ArrayList<>(getIssues(buildInfo, fromRevision, toRevision));
       sortIssues(issues);
 
       generateReleaseNotesXML(buildInfo, previousBuildInfo, fromRevision, toRevision, issues, relnotesXML);
@@ -147,7 +144,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
     try
     {
-      List<IssueComponent> components = new ArrayList<IssueComponent>();
+      List<IssueComponent> components = new ArrayList<>();
       addIssueComponent(components, "cdo.core", "CDO Model Repository (Core)");
       addIssueComponent(components, "cdo.legacy", "CDO Model Repository (Legacy Mode)");
       addIssueComponent(components, "cdo.ui", "CDO Model Repository (User Interface)");
@@ -288,7 +285,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
   protected Collection<ReleaseNotesStream> getStreams(List<BuildInfo> buildInfos)
   {
-    Map<String, ReleaseNotesStream> streams = new HashMap<String, ReleaseNotesStream>();
+    Map<String, ReleaseNotesStream> streams = new HashMap<>();
     for (BuildInfo buildInfo : buildInfos)
     {
       String name = buildInfo.getStream();
@@ -311,13 +308,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
   protected BuildInfo[] getBuildInfos(ReleaseNotesStream stream)
   {
     List<BuildInfo> buildInfos = stream.getBuildInfos();
-    Collections.sort(buildInfos, new Comparator<BuildInfo>()
-    {
-      public int compare(BuildInfo bi1, BuildInfo bi2)
-      {
-        return bi1.getTimestamp().compareTo(bi2.getTimestamp());
-      }
-    });
+    Collections.sort(buildInfos, (bi1, bi2) -> bi1.getTimestamp().compareTo(bi2.getTimestamp()));
 
     return buildInfos.toArray(new BuildInfo[buildInfos.size()]);
   }
@@ -368,26 +359,22 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
   protected Set<Issue> getIssues(BuildInfo buildInfo, String fromRevision, String toRevision)
   {
-    final Set<Issue> issues = new HashSet<Issue>();
+    final Set<Issue> issues = new HashSet<>();
 
     if (!fromRevision.equals(toRevision))
     {
       String branch = buildInfo.getBranch();
-      scm.handleLogEntries(branch, fromRevision, toRevision, false, new LogEntryHandler()
-      {
-        public void handleLogEntry(LogEntry logEntry)
+      scm.handleLogEntries(branch, fromRevision, toRevision, false, logEntry -> {
+        String message = logEntry.getMessage();
+        String id = issueManager.parseID(message);
+        if (id != null && id.length() != 0)
         {
-          String message = logEntry.getMessage();
-          String id = issueManager.parseID(message);
-          if (id != null && id.length() != 0)
+          Issue issue = issueManager.getIssue(id);
+          if (issue != null)
           {
-            Issue issue = issueManager.getIssue(id);
-            if (issue != null)
+            if (issues.add(issue))
             {
-              if (issues.add(issue))
-              {
-                System.out.println("   " + issue.getID() + ": " + issue.getTitle() + " --> " + issue.getSeverity());
-              }
+              System.out.println("   " + issue.getID() + ": " + issue.getTitle() + " --> " + issue.getSeverity());
             }
           }
         }
@@ -411,9 +398,9 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
     private final String label;
 
-    private final List<Issue> enhancements = new ArrayList<Issue>();
+    private final List<Issue> enhancements = new ArrayList<>();
 
-    private final List<Issue> fixes = new ArrayList<Issue>();
+    private final List<Issue> fixes = new ArrayList<>();
 
     public IssueComponent(String name, String label)
     {
@@ -475,14 +462,10 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
       if (!fixes.isEmpty())
       {
-        Collections.sort(fixes, new Comparator<Issue>()
-        {
-          public int compare(Issue i1, Issue i2)
-          {
-            Integer s1 = issueManager.getSeverity(i1);
-            Integer s2 = issueManager.getSeverity(i2);
-            return -s1.compareTo(s2);
-          }
+        Collections.sort(fixes, (i1, i2) -> {
+          Integer s1 = issueManager.getSeverity(i1);
+          Integer s2 = issueManager.getSeverity(i2);
+          return -s1.compareTo(s2);
         });
 
         out.println("<h3>Bug Fixes</h3>");

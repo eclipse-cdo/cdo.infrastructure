@@ -42,7 +42,7 @@ public abstract class SourceCodeManager extends PromoterComponent
 
     private String message;
 
-    private List<String> paths = new ArrayList<String>();
+    private List<String> paths = new ArrayList<>();
 
     public LogEntry(String revision)
     {

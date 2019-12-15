@@ -26,7 +26,7 @@ public final class ReleaseNotesStream
 
   private final String firstRevision;
 
-  private final List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
+  private final List<BuildInfo> buildInfos = new ArrayList<>();
 
   public ReleaseNotesStream(String name)
   {

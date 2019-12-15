@@ -33,7 +33,7 @@ public class WebNode implements Comparable<WebNode>
 
   private Repository repository;
 
-  private List<WebNode> children = new ArrayList<WebNode>();
+  private List<WebNode> children = new ArrayList<>();
 
   public WebNode(File folder)
   {
@@ -60,6 +60,7 @@ public class WebNode implements Comparable<WebNode>
     return children;
   }
 
+  @Override
   public int compareTo(WebNode o)
   {
     Integer p1 = repository == null ? -1 : repository.getWebPriority();
@@ -83,7 +84,7 @@ public class WebNode implements Comparable<WebNode>
       if (repository instanceof Repository.Drops)
       {
         Repository.Drops drops = (Repository.Drops)repository;
-        buildInfos = new ArrayList<BuildInfo>(drops.getBuildInfos());
+        buildInfos = new ArrayList<>(drops.getBuildInfos());
         Collections.sort(buildInfos);
       }
 
@@ -126,6 +127,7 @@ public class WebNode implements Comparable<WebNode>
     String repoName = repository.getAnchorName();
     String repoID = "repo_" + repoName;
 
+    // Heading
     out.println(prefix(level) + "<li class=\"repo-item\"><a href=\"javascript:toggle('" + repoID + "')\" class=\"repo-label" + repository.getPathLevel() + "\">"
         + repository.getWebLabel() + "</a> <a name=\"" + repoName + "\" href=\"#" + repoName
         + "\"><img src=\"https://www.eclipse.org/cdo/images/link_obj.gif\" alt=\"Permalink\" width=\"12\" height=\"12\"/></a>");
@@ -135,11 +137,13 @@ public class WebNode implements Comparable<WebNode>
 
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
+    // Composite Update Site
     out.println(prefix(level) + "<tr class=\"repo-info\"><td><img src=\"https://www.eclipse.org/cdo/images/22x22/package-x-generic.png\"/></td>"
         + "<td><b><a href=\"" + repository.getURL(false) + "\">Composite&nbsp;Update&nbsp;Site</a></b> for use with <a href=\""
         + PromoterConfig.INSTANCE.getHelpTopicURL() + "/org.eclipse.platform.doc.user/tasks/tasks-127.htm\">p2</a> or a web browser.</td>"
         + "<td class=\"file-size level" + repository.getPathLevel() + "\"></td></tr>");
 
+    // API Baseline
     String apiBaselineURL = repository.getApiBaselineURL();
     if (apiBaselineURL != null)
     {
@@ -149,6 +153,7 @@ public class WebNode implements Comparable<WebNode>
           + "\"><i>" + repository.getApiBaselineSize() + "</i></td></tr>");
     }
 
+    // Target Info
     String targetInfo = repository.getTargetInfo();
     if (targetInfo != null)
     {
@@ -263,7 +268,7 @@ public class WebNode implements Comparable<WebNode>
     }
 
     // Zips
-    List<DropZip> dropZips = new ArrayList<DropZip>();
+    List<DropZip> dropZips = new ArrayList<>();
 
     File zipsFolder = new File(drop, "zips");
     if (zipsFolder.isDirectory())
@@ -417,6 +422,7 @@ public class WebNode implements Comparable<WebNode>
       return priority;
     }
 
+    @Override
     public int compareTo(DropZip o)
     {
       int result = new Integer(o.getPriority()).compareTo(priority);

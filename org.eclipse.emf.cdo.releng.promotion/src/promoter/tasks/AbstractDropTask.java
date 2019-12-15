@@ -10,11 +10,11 @@
  */
 package promoter.tasks;
 
-import promoter.BuildInfo;
-import promoter.Task;
-
 import java.io.File;
 import java.util.List;
+
+import promoter.BuildInfo;
+import promoter.Task;
 
 /**
  * @author Eike Stepper

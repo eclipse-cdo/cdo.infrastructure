@@ -138,7 +138,7 @@ public final class BuildInfo implements Comparable<BuildInfo>
 
   public String getDropURL(String path, boolean mirror)
   {
-    String file = "/" + PromoterConfig.INSTANCE.getDownloadsPath() + "/drops/" + qualifier;
+    String file = "/" + PromoterConfig.INSTANCE.getProjectPath() + "/drops/" + qualifier;
     if (path != null)
     {
       file += "/" + path;
@@ -180,6 +180,7 @@ public final class BuildInfo implements Comparable<BuildInfo>
         + type + "]";
   }
 
+  @Override
   public int compareTo(BuildInfo o)
   {
     return o.getTimestamp().compareTo(timestamp);

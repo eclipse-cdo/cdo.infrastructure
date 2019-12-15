@@ -115,7 +115,7 @@ public class RepositoryComposer extends PromoterComponent
     String childLocations = compositionProperties.getProperty("child.locations");
     if (childLocations != null)
     {
-      repository = new Repository(this, temp, name, path);
+      repository = new Repository(temp, name, path);
 
       StringTokenizer tokenizer = new StringTokenizer(childLocations, ",");
       while (tokenizer.hasMoreTokens())
@@ -129,7 +129,7 @@ public class RepositoryComposer extends PromoterComponent
       String childJob = compositionProperties.getProperty("child.job");
       String childStream = compositionProperties.getProperty("child.stream");
       String childTypes = compositionProperties.getProperty("child.types");
-      repository = new Repository.Drops(this, temp, name, path, childJob, childStream, childTypes, buildInfos);
+      repository = new Repository.Drops(temp, name, path, childJob, childStream, childTypes, buildInfos);
     }
 
     repository.setProperties(compositionProperties);
@@ -144,7 +144,7 @@ public class RepositoryComposer extends PromoterComponent
       return;
     }
 
-    List<BuildInfo> drops = new ArrayList<BuildInfo>();
+    List<BuildInfo> drops = new ArrayList<>();
     collectAllDrops(webNode, drops);
     if (drops.isEmpty())
     {

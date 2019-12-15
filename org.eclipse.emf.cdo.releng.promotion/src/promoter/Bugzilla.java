@@ -123,6 +123,7 @@ public class Bugzilla extends IssueManager
     return 0;
   }
 
+  @Override
   public int compare(Issue i1, Issue i2)
   {
     return new Integer(i1.getID()).compareTo(new Integer(i2.getID()));
@@ -151,6 +152,7 @@ public class Bugzilla extends IssueManager
       return issue;
     }
 
+    @Override
     public void handleInput(InputStream in) throws IOException
     {
       String id = null;
