@@ -127,7 +127,8 @@ public class RepositoryComposer extends PromoterComponent
     String childJob = compositionProperties.getProperty("child.job");
     String childStream = compositionProperties.getProperty("child.stream");
     String childTypes = compositionProperties.getProperty("child.types");
-    return new Repository.Drops(name, relativePath, childJob, childStream, childTypes, buildInfos);
+    String childSurrogates = compositionProperties.getProperty("child.surrogates");
+    return new Repository.Drops(name, relativePath, childJob, childStream, childTypes, childSurrogates, buildInfos);
   }
 
   protected Repository createLatestRepository(File relativePath, Properties compositionProperties, BuildInfo buildInfo)

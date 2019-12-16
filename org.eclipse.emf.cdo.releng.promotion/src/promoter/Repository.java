@@ -15,6 +15,9 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.StringTokenizer;
+import java.util.function.Predicate;
 
 import promoter.BuildInfo.Location;
 import promoter.util.IO;
@@ -282,40 +285,34 @@ public class Repository
 
     private String types;
 
+    private String surrogates;
+
     private List<BuildInfo> buildInfos = new ArrayList<>();
 
-    public Drops(String name, File relativePath, String job, String stream, String types, List<BuildInfo> allBuildInfos)
+    public Drops(String name, File relativePath, String job, String stream, String types, String surrogates, List<BuildInfo> allBuildInfos)
     {
       super(name, relativePath);
       this.job = job;
       this.stream = stream;
       this.types = types;
+      this.surrogates = surrogates;
 
-      for (BuildInfo buildInfo : allBuildInfos)
-      {
-        if (job != null && !job.equals(buildInfo.getJob()))
-        {
-          continue;
-        }
-
-        if (stream != null && !stream.equals(buildInfo.getStream()))
-        {
-          continue;
-        }
-
-        if (types != null && !types.contains(buildInfo.getType()))
-        {
-          continue;
-        }
-
-        File drop = buildInfo.getDrop();
-        if (new File(drop, DropProcessor.MARKER_INVISIBLE).isFile())
-        {
-          continue;
-        }
-
+      allBuildInfos.stream().filter(new JobStreamTypesPredicate(job, stream, types)).forEach(buildInfo -> {
         addDrop(buildInfo);
         buildInfos.add(buildInfo);
+      });
+
+      if (surrogates != null && buildInfos.isEmpty())
+      {
+        StringTokenizer tokenizer = new StringTokenizer(surrogates, ",");
+        while (tokenizer.hasMoreTokens())
+        {
+          String surrogate = tokenizer.nextToken().trim();
+          if (attemptSurrogate(job, stream, surrogate, allBuildInfos))
+          {
+            break;
+          }
+        }
       }
     }
 
@@ -334,9 +331,96 @@ public class Repository
       return types;
     }
 
+    public String getSurrogates()
+    {
+      return surrogates;
+    }
+
     public final List<BuildInfo> getBuildInfos()
     {
       return buildInfos;
+    }
+
+    private boolean attemptSurrogate(String job, String stream, String surrogate, List<BuildInfo> allBuildInfos)
+    {
+      String[] segments = surrogate.split("/");
+      String types;
+
+      if (segments.length == 3)
+      {
+        job = segments[0];
+        stream = segments[1];
+        types = segments[2];
+      }
+      else if (segments.length == 2)
+      {
+        stream = segments[0];
+        types = segments[1];
+      }
+      else if (segments.length == 1)
+      {
+        types = segments[0];
+      }
+      else
+      {
+        throw new IllegalArgumentException("Surrogate description should be in the format '[[job/]stream/]types': " + surrogate);
+      }
+
+      Optional<BuildInfo> buildInfo = allBuildInfos.stream().filter(new JobStreamTypesPredicate(job, stream, types)).sorted().findFirst();
+      if (buildInfo.isPresent())
+      {
+        addDrop(buildInfo.get());
+        buildInfos.add(buildInfo.get());
+        return true;
+      }
+
+      return false;
+    }
+
+    /**
+     * @author Eike Stepper
+     */
+    public static class JobStreamTypesPredicate implements Predicate<BuildInfo>
+    {
+      private final String job;
+
+      private final String stream;
+
+      private final String types;
+
+      public JobStreamTypesPredicate(String job, String stream, String types)
+      {
+        this.job = job;
+        this.stream = stream;
+        this.types = types;
+      }
+
+      @Override
+      public boolean test(BuildInfo buildInfo)
+      {
+        if (job != null && !job.equals(buildInfo.getJob()))
+        {
+          return false;
+        }
+
+        if (stream != null && !stream.equals(buildInfo.getStream()))
+        {
+          return false;
+        }
+
+        if (types != null && !types.contains(buildInfo.getType()))
+        {
+          return false;
+        }
+
+        File drop = buildInfo.getDrop();
+        if (new File(drop, DropProcessor.MARKER_INVISIBLE).isFile())
+        {
+          return false;
+        }
+
+        return true;
+      }
     }
   }
 }

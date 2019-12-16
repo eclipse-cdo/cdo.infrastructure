@@ -118,6 +118,11 @@ public final class BuildInfo implements Comparable<BuildInfo>
   public int getStreamMinor()
   {
     String[] segments = stream.split("\\.");
+    if ("x".equals(segments[1]))
+    {
+      return Integer.MAX_VALUE;
+    }
+
     return Integer.parseInt(segments[1]);
   }
 
