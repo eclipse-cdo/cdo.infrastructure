@@ -46,6 +46,12 @@ public final class BuildInfo implements Comparable<BuildInfo>
 
   private String trigger;
 
+  private String train;
+
+  private String eclipse;
+
+  private String emf;
+
   private String type;
 
   private BuildInfo(Location location)
@@ -123,6 +129,21 @@ public final class BuildInfo implements Comparable<BuildInfo>
   public String getTrigger()
   {
     return trigger;
+  }
+
+  public String getTrain()
+  {
+    return train;
+  }
+
+  public String getEclipse()
+  {
+    return eclipse;
+  }
+
+  public String getEMF()
+  {
+    return emf;
   }
 
   public String getType()
@@ -261,6 +282,21 @@ public final class BuildInfo implements Comparable<BuildInfo>
     this.trigger = trigger;
   }
 
+  void setTrain(String train)
+  {
+    this.train = train;
+  }
+
+  void setEclipse(String eclipse)
+  {
+    this.eclipse = eclipse;
+  }
+
+  void setEMF(String emf)
+  {
+    this.emf = emf;
+  }
+
   void setType(String type)
   {
     this.type = type;
@@ -304,6 +340,9 @@ public final class BuildInfo implements Comparable<BuildInfo>
           result.setStream(attributes.getValue("stream"));
           result.setTimestamp(timestamp);
           result.setTrigger(attributes.getValue("trigger"));
+          result.setTrain(attributes.getValue("train"));
+          result.setEclipse(attributes.getValue("eclipse"));
+          result.setEMF(attributes.getValue("emf"));
           result.setType(type);
         }
       }
@@ -332,6 +371,9 @@ public final class BuildInfo implements Comparable<BuildInfo>
           result.setStream(attributes.getValue("stream"));
           result.setTimestamp(attributes.getValue("timestamp"));
           result.setTrigger(attributes.getValue("trigger"));
+          result.setTrain(attributes.getValue("train"));
+          result.setEclipse(attributes.getValue("eclipse"));
+          result.setEMF(attributes.getValue("emf"));
           result.setType(attributes.getValue("type"));
         }
       }
