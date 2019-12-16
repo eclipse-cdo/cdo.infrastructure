@@ -48,8 +48,6 @@ public class WebNode implements Comparable<WebNode>
 
   private List<WebNode> children = new ArrayList<>();
 
-  private String childRetention;
-
   private String apiBaselineURL;
 
   private String apiBaselineSize;
@@ -58,6 +56,8 @@ public class WebNode implements Comparable<WebNode>
 
   private int webPriority;
 
+  private String webRetention;
+
   private boolean webCollapsed;
 
   public WebNode(File relativePath, Properties properties)
@@ -65,11 +65,12 @@ public class WebNode implements Comparable<WebNode>
     this.relativePath = relativePath;
     pathLevel = (int)StreamSupport.stream(relativePath.toPath().spliterator(), false).count();
 
-    childRetention = properties.getProperty("child.retention");
     apiBaselineURL = properties.getProperty("api.baseline.url");
     apiBaselineSize = properties.getProperty("api.baseline.size", "");
+
     webLabel = properties.getProperty("web.label", getName());
     webPriority = Integer.parseInt(properties.getProperty("web.priority", "500"));
+    webRetention = properties.getProperty("web.retention");
     webCollapsed = Boolean.parseBoolean(properties.getProperty("web.collapsed", "false"));
   }
 
@@ -288,11 +289,11 @@ public class WebNode implements Comparable<WebNode>
           + apiBaselineSize + "</i></td></tr>");
     }
 
-    if (childRetention != null)
+    if (webRetention != null)
     {
       out.println(prefix(level)
           + "<tr class=\"repo-info\"><td><img style=\"vertical-align:middle\" src=\"https://www.eclipse.org/cdo/images/22x22/dialog-information.png\"/>&nbsp;&nbsp;"
-          + childRetention + "</td>" + "<td class=\"file-size level" + pathLevel + "\"></td></tr>");
+          + webRetention + "</td>" + "<td class=\"file-size level" + pathLevel + "\"></td></tr>");
     }
 
     if (empty)

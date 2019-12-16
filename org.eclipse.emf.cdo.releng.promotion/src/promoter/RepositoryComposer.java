@@ -35,25 +35,25 @@ public class RepositoryComposer extends PromoterComponent
   {
   }
 
-  public WebNode composeRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File folder) throws SAXException
+  public WebNode composeRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File configFolder) throws SAXException
   {
-    if (!folder.isDirectory())
+    if (!configFolder.isDirectory())
     {
       return null;
     }
 
-    if (IO.isExcluded(folder.getName()))
+    if (IO.isExcluded(configFolder.getName()))
     {
       return null;
     }
 
-    Properties compositionProperties = Config.loadProperties(new File(folder, "composition.properties"), false);
+    Properties compositionProperties = Config.loadProperties(new File(configFolder, "composition.properties"), false);
     if (Config.isDisabled(compositionProperties))
     {
       return null;
     }
 
-    File relativePath = PromoterConfig.INSTANCE.getConfigCompositesDirectory().toPath().relativize(folder.toPath()).toFile();
+    File relativePath = PromoterConfig.INSTANCE.getConfigCompositesDirectory().toPath().relativize(configFolder.toPath()).toFile();
     WebNode webNode = new WebNode(relativePath, compositionProperties);
 
     Repository repository = createRepository(relativePath, compositionProperties, buildInfos);
@@ -63,7 +63,7 @@ public class RepositoryComposer extends PromoterComponent
       webNode.setRepository(repository);
     }
 
-    File[] children = folder.listFiles();
+    File[] children = configFolder.listFiles();
     for (File child : children)
     {
       WebNode childWebNode = composeRepositories(xml, buildInfos, child);

@@ -284,14 +284,14 @@ public class Repository
 
     private List<BuildInfo> buildInfos = new ArrayList<>();
 
-    public Drops(String name, File relativePath, String job, String stream, String types, List<BuildInfo> buildInfos)
+    public Drops(String name, File relativePath, String job, String stream, String types, List<BuildInfo> allBuildInfos)
     {
       super(name, relativePath);
       this.job = job;
       this.stream = stream;
       this.types = types;
 
-      for (BuildInfo buildInfo : buildInfos)
+      for (BuildInfo buildInfo : allBuildInfos)
       {
         if (job != null && !job.equals(buildInfo.getJob()))
         {
@@ -315,7 +315,7 @@ public class Repository
         }
 
         addDrop(buildInfo);
-        this.buildInfos.add(buildInfo);
+        buildInfos.add(buildInfo);
       }
     }
 
