@@ -38,7 +38,7 @@ public class Promoter extends ComponentFactory
     boolean skipCopyBuilds = Boolean.getBoolean("skipCopyBuilds");
     boolean skipPerformTasks = Boolean.getBoolean("skipPerformTasks");
     boolean skipGenerateReleaseNotes = Boolean.getBoolean("skipGenerateReleaseNotes");
-  
+
     if (args != null)
     {
       for (String arg : args)
@@ -61,7 +61,7 @@ public class Promoter extends ComponentFactory
         }
       }
     }
-  
+
     Promoter main = new Promoter(force, skipCopyBuilds, skipPerformTasks, skipGenerateReleaseNotes);
     main.run();
   }
@@ -240,11 +240,8 @@ public class Promoter extends ComponentFactory
     DropProcessor dropProcessor = createDropProcessor();
     List<BuildInfo> buildInfos = dropProcessor.processDrops(xml);
 
-    File baseFolder = PromoterConfig.INSTANCE.getConfigDirectory();
-    File composites = new File(baseFolder, "composites");
-
     RepositoryComposer repositoryComposer = createRepositoryComposer();
-    WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, baseFolder, composites);
+    WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, PromoterConfig.INSTANCE.getConfigCompositesDirectory());
 
     return new AntResult(buildInfos, webNode);
   }

@@ -142,63 +142,6 @@ public final class IO
         || new File(drop, "content.xml").isFile() || new File(drop, "compositeContent.jar").isFile();
   }
 
-  public static File makeRelative(File file, File folder)
-  {
-    return new File(makeRelative(file.getAbsolutePath(), folder.getAbsolutePath()));
-  }
-
-  public static String makeRelative(String file, String folder)
-  {
-    file = file.replaceAll("\\\\", "/");
-    folder = folder.replaceAll("\\\\", "/");
-
-    if (folder.equals(file) == true)
-    {
-      return ".";
-    }
-
-    String[] fileSegments = folder.split("/");
-    String[] folderSegments = file.split("/");
-
-    int length = Math.min(fileSegments.length, folderSegments.length);
-
-    int lastCommonRoot = -1;
-
-    for (int i = 0; i < length; i++)
-    {
-      if (fileSegments[i].equals(folderSegments[i]))
-      {
-        lastCommonRoot = i;
-      }
-      else
-      {
-        break;
-      }
-    }
-
-    if (lastCommonRoot == -1)
-    {
-      return null;
-    }
-
-    StringBuilder builder = new StringBuilder();
-    for (int i = lastCommonRoot + 1; i < fileSegments.length; i++)
-    {
-      if (fileSegments[i].length() > 0)
-      {
-        builder.append("../");
-      }
-    }
-
-    for (int i = lastCommonRoot + 1; i < folderSegments.length - 1; i++)
-    {
-      builder.append(folderSegments[i] + "/");
-    }
-
-    builder.append(folderSegments[folderSegments.length - 1]);
-    return builder.toString();
-  }
-
   public static FileInputStream openInputStream(String fileName)
   {
     return openInputStream(new File(fileName));

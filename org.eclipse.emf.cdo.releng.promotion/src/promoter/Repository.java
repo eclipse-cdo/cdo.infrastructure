@@ -11,13 +11,10 @@
 package promoter;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
-import java.util.StringTokenizer;
 
 import promoter.BuildInfo.Location;
 import promoter.util.IO;
@@ -28,62 +25,26 @@ import promoter.util.XMLOutput;
  */
 public class Repository
 {
-  public static final Repository DISABLED = new Repository();
-
   public static final boolean COMPRESS = false;
 
   private static final String PARENT_DIRECTORY = "../";
-
-  private File base;
 
   private String name;
 
   private String path;
 
-  private int pathLevel;
+  private File folder;
 
   private List<String> children = new ArrayList<>();
 
-  private String childRetention;
-
-  private String targetInfo;
-
-  private String targetVersions;
-
-  private String apiBaselineURL;
-
-  private String apiBaselineSize;
-
-  private String webLabel;
-
-  private int webPriority;
-
-  private boolean webCollapsed;
-
-  private Repository()
+  public Repository(String name, File relativePath)
   {
-  }
-
-  public Repository(File base, String name, String path)
-  {
-    System.out.println();
-    System.out.println("Generating repository " + name + ": " + new File(base, path).getAbsolutePath());
-
-    this.base = base;
     this.name = name;
-    this.path = path;
+    path = relativePath.getPath().replace('\\', '/');
+    folder = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), path);
 
-    StringTokenizer tokenizer = new StringTokenizer(path, "/");
-    while (tokenizer.hasMoreTokens())
-    {
-      tokenizer.nextToken();
-      ++pathLevel;
-    }
-  }
-
-  public final File getBase()
-  {
-    return base;
+    System.out.println();
+    System.out.println("Generating repository " + name + ": " + path);
   }
 
   public final String getName()
@@ -96,9 +57,9 @@ public class Repository
     return path;
   }
 
-  public final int getPathLevel()
+  public final File getFolder()
   {
-    return pathLevel;
+    return folder;
   }
 
   public final String getURL(boolean mirror)
@@ -113,73 +74,32 @@ public class Repository
 
   public void addChild(String child)
   {
-    try
+    child = child.replace('\\', '/');
+    System.out.println("   Adding child location: " + child);
+    children.add(child);
+  }
+
+  public void addDrop(BuildInfo buildInfo)
+  {
+    File dropFolder = buildInfo.getDrop();
+    if (IO.isRepository(dropFolder))
     {
-      System.out.println("   Adding child location: " + (child.startsWith("http") ? child : new File(new File(base, path), child).getCanonicalFile()));
-      children.add(child);
-    }
-    catch (IOException ex)
-    {
-      throw new RuntimeException(ex);
-    }
-  }
-
-  public String getChildRetention()
-  {
-    return childRetention;
-  }
-
-  public String getTargetInfo()
-  {
-    return targetInfo;
-  }
-
-  public String getTargetVersions()
-  {
-    return targetVersions;
-  }
-
-  public String getApiBaselineURL()
-  {
-    return apiBaselineURL;
-  }
-
-  public String getApiBaselineSize()
-  {
-    return apiBaselineSize;
-  }
-
-  public String getWebLabel()
-  {
-    return webLabel;
-  }
-
-  public int getWebPriority()
-  {
-    return webPriority;
-  }
-
-  public boolean isWebCollapsed()
-  {
-    return webCollapsed;
-  }
-
-  public String getAnchorName()
-  {
-    StringBuilder builder = new StringBuilder();
-    for (char c : path.toCharArray())
-    {
-      if (Character.isJavaIdentifierPart(c))
+      String child = null;
+      if (buildInfo.getLocation() == Location.ARCHIVE)
       {
-        builder.append(c);
+        child = buildInfo.getDropURL(null, false);
       }
       else
       {
-        builder.append('_');
+        child = folder.toPath().relativize(dropFolder.toPath()).toString();
+      }
+
+      if (child != null)
+      {
+        addChild(child);
+        addChild(child + "/categories");
       }
     }
-
-    return builder.toString();
   }
 
   @Override
@@ -190,7 +110,6 @@ public class Repository
 
   public void generate(XMLOutput xml)
   {
-    File folder = new File(base, path);
     folder.mkdirs();
 
     IO.writeFile(new File(folder, "composition.properties"), out -> {
@@ -352,18 +271,6 @@ public class Repository
     });
   }
 
-  void setProperties(Properties properties)
-  {
-    childRetention = properties.getProperty("child.retention");
-    targetInfo = properties.getProperty("target.info");
-    targetVersions = properties.getProperty("target.versions", "");
-    apiBaselineURL = properties.getProperty("api.baseline.url");
-    apiBaselineSize = properties.getProperty("api.baseline.size", "");
-    webLabel = properties.getProperty("web.label", name);
-    webPriority = Integer.parseInt(properties.getProperty("web.priority", "500"));
-    webCollapsed = Boolean.parseBoolean(properties.getProperty("web.collapsed", "false"));
-  }
-
   /**
    * @author Eike Stepper
    */
@@ -377,9 +284,9 @@ public class Repository
 
     private List<BuildInfo> buildInfos = new ArrayList<>();
 
-    public Drops(File base, String name, String path, String job, String stream, String types, List<BuildInfo> buildInfos)
+    public Drops(String name, File relativePath, String job, String stream, String types, List<BuildInfo> buildInfos)
     {
-      super(base, name, path);
+      super(name, relativePath);
       this.job = job;
       this.stream = stream;
       this.types = types;
@@ -401,41 +308,13 @@ public class Repository
           continue;
         }
 
-        boolean archived = buildInfo.getLocation() == Location.ARCHIVE;
-        File dropsArea = archived ? PromoterConfig.INSTANCE.getArchiveDropsArea() : PromoterConfig.INSTANCE.getDropsArea();
-        String qualifier = buildInfo.getQualifier();
-
-        File drop = new File(dropsArea, qualifier);
+        File drop = buildInfo.getDrop();
         if (new File(drop, DropProcessor.MARKER_INVISIBLE).isFile())
         {
           continue;
         }
 
-        String child = null;
-        if (archived)
-        {
-          if (IO.isRepository(drop))
-          {
-            child = PromoterConfig.INSTANCE.getArchiveURL() + "/" + PromoterConfig.INSTANCE.getProjectPath() + "/drops/" + qualifier;
-          }
-        }
-        else
-        {
-          child = PARENT_DIRECTORY;
-          for (int i = 0; i < getPathLevel(); i++)
-          {
-            child += PARENT_DIRECTORY;
-          }
-
-          child += "drops/" + qualifier;
-        }
-
-        if (child != null)
-        {
-          addChild(child);
-          addChild(child + "/categories");
-        }
-
+        addDrop(buildInfo);
         this.buildInfos.add(buildInfo);
       }
     }

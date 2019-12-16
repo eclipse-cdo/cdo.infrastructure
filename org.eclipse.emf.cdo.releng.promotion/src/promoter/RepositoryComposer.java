@@ -17,13 +17,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import promoter.Repository.Drops;
 import promoter.util.Config;
 import promoter.util.IO;
 import promoter.util.XMLOutput;
@@ -37,7 +35,7 @@ public class RepositoryComposer extends PromoterComponent
   {
   }
 
-  public WebNode composeRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File baseFolder, File folder) throws SAXException
+  public WebNode composeRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File folder) throws SAXException
   {
     if (!folder.isDirectory())
     {
@@ -49,15 +47,16 @@ public class RepositoryComposer extends PromoterComponent
       return null;
     }
 
-    File relativePath = IO.makeRelative(folder, baseFolder);
-    WebNode webNode = new WebNode(relativePath);
-
-    Repository repository = createRepository(baseFolder, relativePath, buildInfos);
-    if (repository == Repository.DISABLED)
+    Properties compositionProperties = Config.loadProperties(new File(folder, "composition.properties"), false);
+    if (Config.isDisabled(compositionProperties))
     {
       return null;
     }
 
+    File relativePath = PromoterConfig.INSTANCE.getConfigCompositesDirectory().toPath().relativize(folder.toPath()).toFile();
+    WebNode webNode = new WebNode(relativePath, compositionProperties);
+
+    Repository repository = createRepository(relativePath, compositionProperties, buildInfos);
     if (repository != null)
     {
       repository.generate(xml);
@@ -67,7 +66,7 @@ public class RepositoryComposer extends PromoterComponent
     File[] children = folder.listFiles();
     for (File child : children)
     {
-      WebNode childWebNode = composeRepositories(xml, buildInfos, baseFolder, child);
+      WebNode childWebNode = composeRepositories(xml, buildInfos, child);
       if (childWebNode != null)
       {
         webNode.getChildren().add(childWebNode);
@@ -76,46 +75,44 @@ public class RepositoryComposer extends PromoterComponent
 
     Collections.sort(webNode.getChildren());
 
-    createSymLink(xml, webNode);
+    if (repository != null)
+    {
+      BuildInfo latestDrop = webNode.getLatestDrop(false);
+      if (latestDrop != null)
+      {
+        String latestQualifier = latestDrop.getQualifier();
+        String path = relativePath.getPath();
+
+        File latestUrl = new File(new File(PromoterConfig.INSTANCE.getCompositionTempArea(), path), "latest.qualifier");
+        appendFile(latestUrl, latestQualifier);
+
+        File latestUrls = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "latest.qualifiers");
+        appendFile(latestUrls, path.replace('/', '_').replace('\\', '_').replace('.', '_') + " = " + latestQualifier + "\n");
+
+        Repository latestRepository = createLatestRepository(new File(relativePath, "latest"), compositionProperties, latestDrop);
+        if (latestRepository != null)
+        {
+          latestRepository.generate(xml);
+          webNode.setLatestRepository(latestRepository);
+        }
+      }
+    }
+
     return webNode;
   }
 
-  protected Repository createRepository(File baseFolder, File relativePath, List<BuildInfo> buildInfos)
+  protected Repository createRepository(File relativePath, Properties compositionProperties, List<BuildInfo> buildInfos)
   {
-    String path = relativePath.getPath();
-    File configFolder = new File(baseFolder, path);
-    Properties compositionProperties = Config.loadProperties(new File(configFolder, "composition.properties"), false);
-
-    boolean disabled = Config.isDisabled(compositionProperties);
-    if (disabled)
-    {
-      return Repository.DISABLED;
-    }
-
     String name = compositionProperties.getProperty("composite.name");
     if (name == null)
     {
       return null;
     }
 
-    Repository repository;
-
-    File temp = PromoterConfig.INSTANCE.getCompositionTempArea();
-
-    // This method is only called for 2. level repositories.
-    // Strip off "composites/" from the beginning of the path.
-    int pos = path.indexOf("/");
-    if (pos == -1)
-    {
-      pos = path.indexOf("\\");
-    }
-
-    path = path.substring(pos + 1);
-
     String childLocations = compositionProperties.getProperty("child.locations");
-    if (childLocations != null)
+    if (childLocations != null && !childLocations.isEmpty())
     {
-      repository = new Repository(temp, name, path);
+      Repository repository = new Repository(name, relativePath);
 
       StringTokenizer tokenizer = new StringTokenizer(childLocations, ",");
       while (tokenizer.hasMoreTokens())
@@ -123,63 +120,27 @@ public class RepositoryComposer extends PromoterComponent
         String childLocation = tokenizer.nextToken().trim();
         repository.addChild(childLocation);
       }
-    }
-    else
-    {
-      String childJob = compositionProperties.getProperty("child.job");
-      String childStream = compositionProperties.getProperty("child.stream");
-      String childTypes = compositionProperties.getProperty("child.types");
-      repository = new Repository.Drops(temp, name, path, childJob, childStream, childTypes, buildInfos);
+
+      return repository;
     }
 
-    repository.setProperties(compositionProperties);
-    return repository;
+    String childJob = compositionProperties.getProperty("child.job");
+    String childStream = compositionProperties.getProperty("child.stream");
+    String childTypes = compositionProperties.getProperty("child.types");
+    return new Repository.Drops(name, relativePath, childJob, childStream, childTypes, buildInfos);
   }
 
-  protected void createSymLink(XMLOutput xml, WebNode webNode) throws SAXException
+  protected Repository createLatestRepository(File relativePath, Properties compositionProperties, BuildInfo buildInfo)
   {
-    Repository repository = webNode.getRepository();
-    if (repository == null)
+    String name = compositionProperties.getProperty("latest.name");
+    if (name == null)
     {
-      return;
+      return null;
     }
 
-    List<BuildInfo> drops = new ArrayList<>();
-    collectAllDrops(webNode, drops);
-    if (drops.isEmpty())
-    {
-      return;
-    }
-
-    BuildInfo latest = null;
-    for (BuildInfo drop : drops)
-    {
-      if (drop.isLaterThan(latest))
-      {
-        latest = drop;
-      }
-    }
-
-    if (latest != null)
-    {
-      String path = repository.getPath();
-      File folder = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), path);
-
-      // File link = new File(folder, "latest");
-      // File drop = new File(PromoterConfig.INSTANCE.getDropsArea(), latest.getQualifier());
-      // String relativeDrop = IO.makeRelative(drop.getAbsolutePath(), new
-      // File(PromoterConfig.INSTANCE.getCompositionArea(), path).getAbsolutePath());
-      // xml.element("symlink");
-      // xml.attribute("link", link.getAbsolutePath());
-      // xml.attribute("resource", relativeDrop);
-
-      File latestUrl = new File(folder, "latest.qualifier");
-      appendFile(latestUrl, latest.getQualifier());
-
-      File latestUrls = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "latest.qualifiers");
-      String append = path.replace('/', '_').replace('.', '_') + " = " + latest.getQualifier() + "\n";
-      appendFile(latestUrls, append);
-    }
+    Repository repository = new Repository(name, relativePath);
+    repository.addDrop(buildInfo);
+    return repository;
   }
 
   protected void appendFile(File file, String line)
@@ -201,21 +162,6 @@ public class RepositoryComposer extends PromoterComponent
     finally
     {
       IO.close(out);
-    }
-  }
-
-  protected void collectAllDrops(WebNode webNode, List<BuildInfo> drops)
-  {
-    Repository repository = webNode.getRepository();
-    if (repository instanceof Drops)
-    {
-      Drops dropsRepository = (Drops)repository;
-      drops.addAll(dropsRepository.getBuildInfos());
-    }
-
-    for (WebNode childNode : webNode.getChildren())
-    {
-      collectAllDrops(childNode, drops);
     }
   }
 }

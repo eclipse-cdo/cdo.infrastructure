@@ -58,6 +58,11 @@ public final class PromoterConfig extends Config
     return new File(getInstallDirectory(), "config");
   }
 
+  public File getConfigCompositesDirectory()
+  {
+    return new File(getConfigDirectory(), "composites");
+  }
+
   public File getWorkingArea()
   {
     return getDirectory("workingArea");
