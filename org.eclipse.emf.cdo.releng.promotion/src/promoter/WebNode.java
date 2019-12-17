@@ -209,7 +209,6 @@ public class WebNode implements Comparable<WebNode>
       {
         Repository.Drops drops = (Repository.Drops)repository;
         buildInfos = new ArrayList<>(drops.getBuildInfos());
-        Collections.sort(buildInfos);
         empty = buildInfos.isEmpty();
         surrogate = drops.containsSurrogateDrop();
       }

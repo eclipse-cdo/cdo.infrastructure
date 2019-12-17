@@ -305,7 +305,7 @@ public class Repository
 
       while (buildInfos.size() > max)
       {
-        buildInfos.remove(buildInfos.size() - 1);
+        buildInfos.remove(max);
       }
 
       for (BuildInfo buildInfo : buildInfos)
