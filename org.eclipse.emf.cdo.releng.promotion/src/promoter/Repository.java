@@ -48,7 +48,7 @@ public class Repository
     folder = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), path);
 
     System.out.println();
-    System.out.println("Generating repository " + name + ": " + path);
+    System.out.println("Generating repository " + name + ": " + getURL(false));
   }
 
   public final String getName()
