@@ -287,6 +287,8 @@ public class Repository
 
     private String surrogates;
 
+    private boolean containsSurrogateDrop;
+
     private List<BuildInfo> buildInfos = new ArrayList<>();
 
     public Drops(String name, File relativePath, String job, String stream, String types, String surrogates, List<BuildInfo> allBuildInfos)
@@ -297,7 +299,7 @@ public class Repository
       this.types = types;
       this.surrogates = surrogates;
 
-      allBuildInfos.stream().filter(new JobStreamTypesPredicate(job, stream, types)).forEach(buildInfo -> {
+      allBuildInfos.stream().filter(testJobStreamTypesVisible(job, stream, types)).forEach(buildInfo -> {
         addDrop(buildInfo);
         buildInfos.add(buildInfo);
       });
@@ -310,6 +312,7 @@ public class Repository
           String surrogate = tokenizer.nextToken().trim();
           if (attemptSurrogate(job, stream, surrogate, allBuildInfos))
           {
+            containsSurrogateDrop = true;
             break;
           }
         }
@@ -334,6 +337,11 @@ public class Repository
     public String getSurrogates()
     {
       return surrogates;
+    }
+
+    public boolean containsSurrogateDrop()
+    {
+      return containsSurrogateDrop;
     }
 
     public final List<BuildInfo> getBuildInfos()
@@ -366,7 +374,7 @@ public class Repository
         throw new IllegalArgumentException("Surrogate description should be in the format '[[job/]stream/]types': " + surrogate);
       }
 
-      Optional<BuildInfo> buildInfo = allBuildInfos.stream().filter(new JobStreamTypesPredicate(job, stream, types)).sorted().findFirst();
+      Optional<BuildInfo> buildInfo = allBuildInfos.stream().filter(testJobStreamTypesVisible(job, stream, types)).sorted().findFirst();
       if (buildInfo.isPresent())
       {
         addDrop(buildInfo.get());
@@ -377,50 +385,9 @@ public class Repository
       return false;
     }
 
-    /**
-     * @author Eike Stepper
-     */
-    public static class JobStreamTypesPredicate implements Predicate<BuildInfo>
+    private static Predicate<BuildInfo> testJobStreamTypesVisible(String job, String stream, String types)
     {
-      private final String job;
-
-      private final String stream;
-
-      private final String types;
-
-      public JobStreamTypesPredicate(String job, String stream, String types)
-      {
-        this.job = job;
-        this.stream = stream;
-        this.types = types;
-      }
-
-      @Override
-      public boolean test(BuildInfo buildInfo)
-      {
-        if (job != null && !job.equals(buildInfo.getJob()))
-        {
-          return false;
-        }
-
-        if (stream != null && !stream.equals(buildInfo.getStream()))
-        {
-          return false;
-        }
-
-        if (types != null && !types.contains(buildInfo.getType()))
-        {
-          return false;
-        }
-
-        File drop = buildInfo.getDrop();
-        if (new File(drop, DropProcessor.MARKER_INVISIBLE).isFile())
-        {
-          return false;
-        }
-
-        return true;
-      }
+      return BuildInfo.testJob(job).and(BuildInfo.testStream(stream).and(BuildInfo.testTypes(types).and(BuildInfo.testVisible())));
     }
   }
 }

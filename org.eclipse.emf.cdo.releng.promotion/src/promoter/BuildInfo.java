@@ -16,6 +16,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.File;
 import java.net.URL;
+import java.util.function.Predicate;
 
 import promoter.util.XML;
 
@@ -154,6 +155,13 @@ public final class BuildInfo implements Comparable<BuildInfo>
   public String getType()
   {
     return type;
+  }
+
+  public boolean isVisible()
+  {
+    File drop = getDrop();
+    File marker = new File(drop, DropProcessor.MARKER_INVISIBLE);
+    return !marker.isFile();
   }
 
   public File getDrop()
@@ -385,6 +393,26 @@ public final class BuildInfo implements Comparable<BuildInfo>
     });
 
     return result;
+  }
+
+  public static Predicate<BuildInfo> testJob(String job)
+  {
+    return buildInfo -> job == null || job.equals(buildInfo.getJob());
+  }
+
+  public static Predicate<BuildInfo> testStream(String stream)
+  {
+    return buildInfo -> stream == null || stream.equals(buildInfo.getStream());
+  }
+
+  public static Predicate<BuildInfo> testTypes(String types)
+  {
+    return buildInfo -> types == null || types.contains(buildInfo.getType());
+  }
+
+  public static Predicate<BuildInfo> testVisible()
+  {
+    return buildInfo -> buildInfo.isVisible();
   }
 
   /**

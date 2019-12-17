@@ -202,14 +202,19 @@ public class WebNode implements Comparable<WebNode>
     if (repository != null)
     {
       List<BuildInfo> buildInfos = null;
+      boolean empty = false;
+      boolean surrogate = false;
+
       if (repository instanceof Repository.Drops)
       {
         Repository.Drops drops = (Repository.Drops)repository;
         buildInfos = new ArrayList<>(drops.getBuildInfos());
         Collections.sort(buildInfos);
+        empty = buildInfos.isEmpty();
+        surrogate = drops.containsSurrogateDrop();
       }
 
-      level = generateRepositoryStart(out, level, buildInfos != null && buildInfos.isEmpty());
+      level = generateRepositoryStart(out, level, empty, surrogate);
 
       if (buildInfos != null && !buildInfos.isEmpty())
       {
@@ -243,7 +248,7 @@ public class WebNode implements Comparable<WebNode>
     }
   }
 
-  protected int generateRepositoryStart(PrintStream out, int level, boolean empty)
+  protected int generateRepositoryStart(PrintStream out, int level, boolean empty, boolean surrogate)
   {
     String nodeName = getAnchorName();
     String nodeID = "repo_" + nodeName;
@@ -300,6 +305,11 @@ public class WebNode implements Comparable<WebNode>
     {
       out.println(prefix(level) + "<tr class=\"repo-info\"><td><i>Currently this composite update site is empty.<br>"
           + "This may change in the future when new builds are promoted.</i></td></tr>");
+    }
+    else if (surrogate)
+    {
+      out.println(prefix(level) + "<tr class=\"drop-info\"><td><i>Currently this composite update site contains a surrogate build.<br>"
+          + "It may disappear in the future when new builds are promoted.</i></td></tr>");
     }
 
     out.println(prefix(--level) + "</table>");
