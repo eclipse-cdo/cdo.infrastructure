@@ -13,7 +13,10 @@ package promoter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import promoter.util.Ant;
 import promoter.util.IO;
@@ -74,39 +77,8 @@ public class Promoter extends ComponentFactory
     this.skipGenerateReleaseNotes = skipGenerateReleaseNotes;
   }
 
-  public boolean isForce()
-  {
-    return force;
-  }
-
-  public boolean isSkipCopyBuilds()
-  {
-    return skipCopyBuilds;
-  }
-
-  public boolean isSkipPerformTasks()
-  {
-    return skipPerformTasks;
-  }
-
-  public boolean isSkipGenerateReleaseNotes()
-  {
-    return skipGenerateReleaseNotes;
-  }
-
   public void run()
   {
-    // System.out.println();
-    // System.out.println();
-    //
-    // for (Entry<Object, Object> entry : System.getProperties().entrySet())
-    // {
-    // System.out.println(entry.getKey() + " = " + entry.getValue());
-    // }
-    //
-    // System.out.println();
-    // System.out.println();
-
     System.out.println("----------------------------------------------------------------------------------------------------------");
     System.out.println("ProjectName          = " + PromoterConfig.INSTANCE.getProjectName());
     System.out.println("ProjectPath          = " + PromoterConfig.INSTANCE.getProjectPath());
@@ -243,7 +215,28 @@ public class Promoter extends ComponentFactory
     RepositoryComposer repositoryComposer = createRepositoryComposer();
     WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, PromoterConfig.INSTANCE.getConfigCompositesDirectory());
 
+    deleteOldDrops(webNode, buildInfos);
     return new AntResult(buildInfos, webNode);
+  }
+
+  public void deleteOldDrops(WebNode webNode, List<BuildInfo> allBuildInfos)
+  {
+    Set<BuildInfo> composedDrops = new HashSet<>(webNode.getDrops(true));
+
+    for (Iterator<BuildInfo> it = allBuildInfos.iterator(); it.hasNext();)
+    {
+      BuildInfo buildInfo = it.next();
+      if (!composedDrops.contains(buildInfo) && buildInfo.isVisible())
+      {
+        System.out.println();
+        System.out.println("Deleting drop: " + buildInfo);
+
+        int files = IO.delete(buildInfo.getDrop());
+        System.out.println("Deleted files: " + files);
+
+        it.remove();
+      }
+    }
   }
 
   public Ant<AntResult> createAnt()

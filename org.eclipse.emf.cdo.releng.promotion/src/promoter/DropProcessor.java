@@ -50,7 +50,6 @@ public class DropProcessor extends PromoterComponent
     List<BuildInfo> buildInfos = new ArrayList<>();
     processDrops(xml, buildInfos, PromoterConfig.INSTANCE.getArchiveDropsArea());
     processDrops(xml, buildInfos, PromoterConfig.INSTANCE.getDropsArea());
-
     return buildInfos;
   }
 

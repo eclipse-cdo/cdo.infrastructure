@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import promoter.BuildInfo.Location;
 import promoter.util.IO;
@@ -289,9 +290,9 @@ public class Repository
 
     private boolean containsSurrogateDrop;
 
-    private List<BuildInfo> buildInfos = new ArrayList<>();
+    private List<BuildInfo> buildInfos;
 
-    public Drops(String name, File relativePath, String job, String stream, String types, String surrogates, List<BuildInfo> allBuildInfos)
+    public Drops(String name, File relativePath, String job, String stream, String types, int max, String surrogates, List<BuildInfo> allBuildInfos)
     {
       super(name, relativePath);
       this.job = job;
@@ -299,10 +300,18 @@ public class Repository
       this.types = types;
       this.surrogates = surrogates;
 
-      allBuildInfos.stream().filter(testJobStreamTypesVisible(job, stream, types)).forEach(buildInfo -> {
+      buildInfos = allBuildInfos.stream().filter(testJobStreamTypesVisible(job, stream, types)).collect(Collectors.toList());
+      Collections.sort(buildInfos);
+
+      while (buildInfos.size() > max)
+      {
+        buildInfos.remove(buildInfos.size() - 1);
+      }
+
+      for (BuildInfo buildInfo : buildInfos)
+      {
         addDrop(buildInfo);
-        buildInfos.add(buildInfo);
-      });
+      }
 
       if (surrogates != null && buildInfos.isEmpty())
       {
