@@ -302,12 +302,14 @@ public class WebNode implements Comparable<WebNode>
 
     if (empty)
     {
-      out.println(prefix(level) + "<tr class=\"repo-info\"><td><i>Currently this composite update site is empty.<br>"
+      out.println(prefix(level)
+          + "<tr class=\"repo-info\"><td><img style=\"width:22px;height:22px;vertical-align:middle\" src=\"https://www.eclipse.org/cdo/images/empty.gif\"/>&nbsp;&nbsp;<i>Currently this composite update site is empty.<br>"
           + "This may change in the future when new builds are promoted.</i></td></tr>");
     }
     else if (surrogate)
     {
-      out.println(prefix(level) + "<tr class=\"drop-info\"><td><i>Currently this composite update site contains a surrogate build.<br>"
+      out.println(prefix(level)
+          + "<tr class=\"drop-info\"><td><img style=\"width:22px;height:22px;vertical-align:middle\" src=\"https://www.eclipse.org/cdo/images/empty.gif\"/>&nbsp;&nbsp;<i>Currently this composite update site contains a surrogate build.<br>"
           + "It may disappear in the future when new builds are promoted.</i></td></tr>");
     }
 
