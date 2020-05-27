@@ -15,7 +15,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -112,20 +111,22 @@ public class BuildCopier extends PromoterComponent
             buildInfos.add(buildInfo);
           }
         }
-        catch (RuntimeException ex)
+        catch (Exception ex)
         {
-          if (ex.getCause() instanceof FileNotFoundException)
-          {
-            System.out.println("Build " + buildNumber + " has no artifacts");
-            continue;
-          }
-
-          throw ex;
+          ex.printStackTrace();
+          continue;
+          // if (ex.getCause() instanceof FileNotFoundException)
+          // {
+          // System.out.println("Build " + buildNumber + " has no artifacts");
+          // continue;
+          // }
+          //
+          // throw ex;
         }
-        catch (MalformedURLException ex)
-        {
-          throw new RuntimeException(ex);
-        }
+        // catch (MalformedURLException ex)
+        // {
+        // throw new RuntimeException(ex);
+        // }
       }
       else if ("FAILURE".equalsIgnoreCase(buildResult))
       {
