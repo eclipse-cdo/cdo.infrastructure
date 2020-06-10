@@ -34,7 +34,7 @@ public final class XML
   {
   }
 
-  public static void parseXML(File file, DefaultHandler handler)
+  public static void parseXML(File file, DefaultHandler handler) throws IOException
   {
     InputStream in = null;
 
@@ -43,7 +43,7 @@ public final class XML
       in = new FileInputStream(file);
       parseXML(in, handler);
     }
-    catch (Exception ex)
+    catch (ParserConfigurationException | SAXException ex)
     {
       throw wrapException(ex);
     }
@@ -53,7 +53,7 @@ public final class XML
     }
   }
 
-  public static void parseXML(URL url, DefaultHandler handler)
+  public static void parseXML(URL url, DefaultHandler handler) throws IOException
   {
     InputStream in = null;
 
@@ -62,7 +62,7 @@ public final class XML
       in = url.openStream();
       parseXML(in, handler);
     }
-    catch (Exception ex)
+    catch (ParserConfigurationException | SAXException ex)
     {
       throw wrapException(ex);
     }
@@ -72,7 +72,7 @@ public final class XML
     }
   }
 
-  public static void parseXML(InputStream in, DefaultHandler handler) throws ParserConfigurationException, SAXException, IOException
+  public static void parseXML(InputStream in, DefaultHandler handler) throws IOException, ParserConfigurationException, SAXException
   {
     if (parserFactory == null)
     {

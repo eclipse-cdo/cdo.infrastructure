@@ -15,6 +15,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.function.Predicate;
 
@@ -315,7 +316,7 @@ public final class BuildInfo implements Comparable<BuildInfo>
     this.type = type;
   }
 
-  public static BuildInfo read(File file)
+  public static BuildInfo read(File file) throws IOException
   {
     Location location = null;
     if (file.getAbsolutePath().startsWith(PromoterConfig.INSTANCE.getDownloadsArea().getAbsolutePath()))
@@ -364,7 +365,7 @@ public final class BuildInfo implements Comparable<BuildInfo>
     return result;
   }
 
-  public static BuildInfo read(URL url)
+  public static BuildInfo read(URL url) throws IOException
   {
     final BuildInfo result = new BuildInfo(Location.HUDSON);
     XML.parseXML(url, new DefaultHandler()
