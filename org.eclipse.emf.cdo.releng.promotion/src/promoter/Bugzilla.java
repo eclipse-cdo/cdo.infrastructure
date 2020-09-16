@@ -126,7 +126,7 @@ public class Bugzilla extends IssueManager
   @Override
   public int compare(Issue i1, Issue i2)
   {
-    return new Integer(i1.getID()).compareTo(new Integer(i2.getID()));
+    return Integer.valueOf(i1.getID()).compareTo(Integer.valueOf(i2.getID()));
   }
 
   public static void main(String[] args)

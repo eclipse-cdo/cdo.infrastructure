@@ -10,6 +10,8 @@
  */
 package promoter;
 
+import java.lang.reflect.Constructor;
+
 /**
  * @author Eike Stepper
  */
@@ -27,8 +29,9 @@ public class ComponentFactory
     {
       @SuppressWarnings("unchecked")
       Class<T> c = (Class<T>)getClass().getClassLoader().loadClass(name);
+      Constructor<T> constructor = c.getConstructor();
 
-      T component = c.newInstance();
+      T component = constructor.newInstance();
       if (component instanceof PromoterComponent)
       {
         PromoterComponent promoterComponent = (PromoterComponent)component;

@@ -616,7 +616,7 @@ public class WebNode implements Comparable<WebNode>
     @Override
     public int compareTo(DropZip o)
     {
-      int result = new Integer(o.getPriority()).compareTo(priority);
+      int result = Integer.valueOf(o.getPriority()).compareTo(priority);
       if (result == 0)
       {
         result = getName().compareTo(o.getName());
