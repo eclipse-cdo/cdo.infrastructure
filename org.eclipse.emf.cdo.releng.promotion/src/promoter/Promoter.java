@@ -11,6 +11,7 @@
 package promoter;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -134,13 +135,14 @@ public class Promoter extends ComponentFactory
 
     Ant<AntResult> ant = createAnt();
     AntResult result = ant.run(); // Calls processDropsAndComposeRepositories().
+    List<BuildInfo> buildInfos = result.getBuildInfos();
 
     if (!skipGenerateReleaseNotes)
     {
       try
       {
         ReleaseNotesGenerator releaseNotesGenerator = createReleaseNotesGenerator();
-        releaseNotesGenerator.generateReleaseNotes(result.getBuildInfos());
+        releaseNotesGenerator.generateReleaseNotes(buildInfos);
       }
       catch (Exception ex)
       {
@@ -155,6 +157,17 @@ public class Promoter extends ComponentFactory
       WebGenerator webGenerator = createWebGenerator();
       webGenerator.generateWeb(rootNode);
     }
+
+    IO.writeFile(new File(PromoterConfig.INSTANCE.getDropsArea(), "drops.txt"), out -> {
+      PrintStream stream = new PrintStream(out);
+
+      for (BuildInfo buildInfo : buildInfos)
+      {
+        stream.println(buildInfo.getQualifier());
+      }
+
+      stream.flush();
+    });
 
     System.out.println();
   }
