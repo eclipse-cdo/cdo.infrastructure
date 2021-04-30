@@ -48,7 +48,7 @@ public class Git extends SourceCodeManager
   {
   }
 
-  private boolean cloneIfNeeded()
+  private boolean cloneIfNeeded(PrintStream stream)
   {
     File clone = PromoterConfig.INSTANCE.getProjectCloneLocation();
     if (clone.exists())
@@ -59,12 +59,11 @@ public class Git extends SourceCodeManager
     File parent = clone.getParentFile();
     parent.mkdirs();
 
-    IO.executeProcess("/bin/bash", out -> {
-      PrintStream stream = new PrintStream(out);
-      stream.println(PromoterConfig.INSTANCE.getGitExecutable() + " clone --bare " + PromoterConfig.INSTANCE.getGitRepositoryURL() + " " + clone);
-      stream.flush();
-    });
+    String url = PromoterConfig.INSTANCE.getGitRepositoryURL();
 
+    System.out.println("Cloning " + url + " to " + clone);
+    stream.println(PromoterConfig.INSTANCE.getGitExecutable() + " clone --bare " + url + " " + clone);
+    stream.flush();
     return true;
   }
 
@@ -74,11 +73,12 @@ public class Git extends SourceCodeManager
     {
       fetched = true;
 
-      if (cloneIfNeeded())
+      if (cloneIfNeeded(stream))
       {
         return;
       }
 
+      System.out.println("Fetching " + PromoterConfig.INSTANCE.getProjectCloneLocation() + " to " + PromoterConfig.INSTANCE.getProjectCloneLocation());
       stream.println(GIT_COMMAND + " fetch");
       stream.flush();
     }
