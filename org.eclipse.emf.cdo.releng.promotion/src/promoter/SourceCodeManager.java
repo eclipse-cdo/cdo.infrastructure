@@ -96,6 +96,7 @@ public abstract class SourceCodeManager extends PromoterComponent
   /**
    * @author Eike Stepper
    */
+  @FunctionalInterface
   public interface LogEntryHandler
   {
     public void handleLogEntry(LogEntry logEntry);

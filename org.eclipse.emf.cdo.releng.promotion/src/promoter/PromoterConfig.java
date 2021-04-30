@@ -168,17 +168,17 @@ public final class PromoterConfig extends Config
     {
       if (jobURL.endsWith("/"))
       {
-        jobURL = jobURL.substring(jobURL.length() - "/".length());
+        jobURL = jobURL.substring(0, jobURL.length() - "/".length());
       }
 
       if (jobURL.endsWith(jobName))
       {
-        jobURL = jobURL.substring(jobURL.length() - jobName.length());
+        jobURL = jobURL.substring(0, jobURL.length() - jobName.length());
       }
 
       if (jobURL.endsWith("/"))
       {
-        jobURL = jobURL.substring(jobURL.length() - "/".length());
+        jobURL = jobURL.substring(0, jobURL.length() - "/".length());
       }
 
       return jobURL;

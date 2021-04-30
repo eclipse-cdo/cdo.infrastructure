@@ -38,8 +38,8 @@
 			</fileset>
 		</delete>
 		<java classpath="promoter.jar" classname="${config.classPromoter}">
-			<sysproperty key="JOB_NAME" value="${env.JOB_NAME}" />
 			<sysproperty key="JOB_URL" value="${env.JOB_URL}" />
+			<sysproperty key="JOB_NAME" value="${env.JOB_NAME}" />
 			<sysproperty key="ANT_HOME" value="${env.ANT_HOME}" />
 			<sysproperty key="workingArea" value="${env.WORKSPACE}" />
 			<sysproperty key="forcedPromotion" value="${promotion.force}" />
