@@ -92,7 +92,7 @@ public class Promoter extends ComponentFactory
     System.out.println("ArchiveArea          = " + PromoterConfig.INSTANCE.getArchiveArea());
     System.out.println("ArchiveDropsArea     = " + PromoterConfig.INSTANCE.getArchiveDropsArea());
     System.out.println("WorkingArea          = " + PromoterConfig.INSTANCE.getWorkingArea());
-    System.out.println("ProjectRelengArea    = " + PromoterConfig.INSTANCE.getProjectRelengArea());
+    // System.out.println("ProjectRelengArea = " + PromoterConfig.INSTANCE.getProjectRelengArea());
     System.out.println("AntHome              = " + PromoterConfig.INSTANCE.getAntHome());
     System.out.println("GitExecutable        = " + PromoterConfig.INSTANCE.getGitExecutable());
     System.out.println("ProjectCloneLocation = " + PromoterConfig.INSTANCE.getProjectCloneLocation());

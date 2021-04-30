@@ -33,9 +33,20 @@ public final class PromoterConfig extends Config
     return getFile("GIT_EXECUTABLE");
   }
 
+  public String getGitRepositoryPath()
+  {
+    return getProperty("gitRepositoryPath");
+  }
+
   public File getProjectCloneLocation()
   {
-    return getDirectory("projectCloneLocation");
+    String gitRepositoryPath = getGitRepositoryPath();
+    if (gitRepositoryPath != null)
+    {
+      return new File(getWorkingArea(), gitRepositoryPath);
+    }
+
+    return getDirectory("projectCloneLocation"); // Deprecated.
   }
 
   public File getAntHome()
@@ -128,6 +139,7 @@ public final class PromoterConfig extends Config
     return new File(getDownloadsHome(), getProjectPath());
   }
 
+  @Deprecated
   public File getProjectRelengArea()
   {
     return getDirectory("projectRelengArea");
@@ -145,7 +157,29 @@ public final class PromoterConfig extends Config
 
   public String getJobsURL()
   {
-    return getProperty("JOBS_URL");
+    String jobURL = getProperty("JOB_URL");
+    String jobName = getProperty("JOB_NAME");
+    if (jobURL != null && jobName != null)
+    {
+      if (jobURL.endsWith("/"))
+      {
+        jobURL = jobURL.substring(jobURL.length() - "/".length());
+      }
+
+      if (jobURL.endsWith(jobName))
+      {
+        jobURL = jobURL.substring(jobURL.length() - jobName.length());
+      }
+
+      if (jobURL.endsWith("/"))
+      {
+        jobURL = jobURL.substring(jobURL.length() - "/".length());
+      }
+
+      return jobURL;
+    }
+
+    return getProperty("JOBS_URL"); // Deprecated.
   }
 
   public String getHelpURL()
