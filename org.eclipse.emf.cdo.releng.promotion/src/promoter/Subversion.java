@@ -23,6 +23,7 @@ import promoter.util.XML;
 /**
  * @author Eike Stepper
  */
+@Deprecated
 public class Subversion extends SourceCodeManager
 {
   public static final String SVN_BINARY = "/usr/local/bin/svn";
@@ -133,11 +134,5 @@ public class Subversion extends SourceCodeManager
     {
       throw new RuntimeException(ex);
     }
-  }
-
-  @Override
-  public void commit(String comment, File... checkouts)
-  {
-    throw new UnsupportedOperationException();
   }
 }

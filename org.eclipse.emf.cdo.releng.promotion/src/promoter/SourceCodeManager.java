@@ -10,7 +10,6 @@
  */
 package promoter;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +25,6 @@ public abstract class SourceCodeManager extends PromoterComponent
   public abstract void setTag(String branch, String revision, String tag);
 
   public abstract void handleLogEntries(String branch, String fromRevision, String toRevision, boolean withPaths, LogEntryHandler handler);
-
-  public abstract void commit(String comment, File... checkouts);
 
   /**
    * @author Eike Stepper

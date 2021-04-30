@@ -23,11 +23,12 @@ import promoter.util.IO;
  */
 public class Git extends SourceCodeManager
 {
-  public static final String CLONE = "cd " + PromoterConfig.INSTANCE.getProjectCloneLocation() + ";\n";
-
-  public static final String GIT_BINARY = CLONE + PromoterConfig.INSTANCE.getGitExecutable();
+  private static final String GIT_COMMAND = //
+      "cd " + PromoterConfig.INSTANCE.getProjectCloneLocation() + ";\n" + //
+          PromoterConfig.INSTANCE.getGitExecutable();
 
   // The symbolic name (alternatively: the URL) of the upstream (main) Git repository
+  @Deprecated
   public static final String REMOTE_GIT = "origin";
 
   // the following makes Git output
@@ -47,14 +48,39 @@ public class Git extends SourceCodeManager
   {
   }
 
+  private boolean cloneIfNeeded()
+  {
+    File clone = PromoterConfig.INSTANCE.getProjectCloneLocation();
+    if (clone.exists())
+    {
+      return false;
+    }
+
+    File parent = clone.getParentFile();
+    parent.mkdirs();
+
+    IO.executeProcess("/bin/bash", out -> {
+      PrintStream stream = new PrintStream(out);
+      stream.println(PromoterConfig.INSTANCE.getGitExecutable() + " clone --bare " + PromoterConfig.INSTANCE.getGitRepositoryURL() + " " + clone);
+      stream.flush();
+    });
+
+    return true;
+  }
+
   private void fetchIfNeeded(PrintStream stream)
   {
     if (!fetched)
     {
-      stream.println(GIT_BINARY + " fetch");
-      stream.flush();
-
       fetched = true;
+
+      if (cloneIfNeeded())
+      {
+        return;
+      }
+
+      stream.println(GIT_COMMAND + " fetch");
+      stream.flush();
     }
   }
 
@@ -85,7 +111,7 @@ public class Git extends SourceCodeManager
   }
 
   @Override
-  public void handleLogEntries(final String branch, final String fromRevision, final String toRevision, final boolean withPaths, final LogEntryHandler handler)
+  public void handleLogEntries(String branch, String fromRevision, String toRevision, boolean withPaths, LogEntryHandler handler)
   {
     try
     {
@@ -98,7 +124,7 @@ public class Git extends SourceCodeManager
         String range = fromRevision + ".." + toRevision;
         System.out.println("Getting log entries for " + branch + " (" + range + ")");
 
-        String command = GIT_BINARY + " log " + (withPaths ? "--name-only " : "") + " --format=\"" + OUTPUT_FORMAT + "\" " + range + " > " + outFile;
+        String command = GIT_COMMAND + " log " + (withPaths ? "--name-only " : "") + " --format=\"" + OUTPUT_FORMAT + "\" " + range + " > " + outFile;
         stream.println(command);
         stream.flush();
       });
@@ -179,6 +205,10 @@ public class Git extends SourceCodeManager
         outFile.delete();
       }
     }
+    catch (RuntimeException ex)
+    {
+      throw ex;
+    }
     catch (Exception ex)
     {
       throw new RuntimeException(ex);
@@ -192,12 +222,7 @@ public class Git extends SourceCodeManager
     {
       throw new IllegalStateException("Unexpected end of stream");
     }
-    return result;
-  }
 
-  @Override
-  public void commit(String comment, File... checkouts)
-  {
-    throw new UnsupportedOperationException();
+    return result;
   }
 }

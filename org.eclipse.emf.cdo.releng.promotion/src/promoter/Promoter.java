@@ -36,6 +36,8 @@ public class Promoter extends ComponentFactory
 
   private final boolean skipGenerateReleaseNotes;
 
+  private SourceCodeManager scm;
+
   public static void main(String[] args) throws Exception
   {
     boolean force = Boolean.getBoolean("forcedPromotion");
@@ -76,6 +78,16 @@ public class Promoter extends ComponentFactory
     this.skipCopyBuilds = skipCopyBuilds;
     this.skipPerformTasks = skipPerformTasks;
     this.skipGenerateReleaseNotes = skipGenerateReleaseNotes;
+  }
+
+  public SourceCodeManager getSourceCodeManager()
+  {
+    if (scm == null)
+    {
+      scm = createSourceCodeManager();
+    }
+
+    return scm;
   }
 
   public void run()

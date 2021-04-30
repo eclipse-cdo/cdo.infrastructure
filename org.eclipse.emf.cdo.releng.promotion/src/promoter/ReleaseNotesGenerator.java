@@ -42,7 +42,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
   public synchronized void generateReleaseNotes(List<BuildInfo> buildInfos)
   {
-    scm = getPromoter().createSourceCodeManager();
+    scm = getPromoter().getSourceCodeManager();
     issueManager = getPromoter().createIssueManager();
 
     for (ReleaseNotesStream stream : getStreams(buildInfos))

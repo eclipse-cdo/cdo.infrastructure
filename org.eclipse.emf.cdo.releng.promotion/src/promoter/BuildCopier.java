@@ -206,7 +206,7 @@ public class BuildCopier extends PromoterComponent
   protected void setTag(BuildInfo buildInfo)
   {
     System.out.println();
-    SourceCodeManager scm = getPromoter().createSourceCodeManager();
+    SourceCodeManager scm = getPromoter().getSourceCodeManager();
     if (scm != null)
     {
       scm.setTag(buildInfo.getBranch(), buildInfo.getRevision(), buildInfo.getQualifier());

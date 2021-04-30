@@ -38,6 +38,11 @@ public final class PromoterConfig extends Config
     return getProperty("gitRepositoryPath");
   }
 
+  public String getGitRepositoryURL()
+  {
+    return getProperty("gitRepositoryURL");
+  }
+
   public File getProjectCloneLocation()
   {
     String gitRepositoryPath = getGitRepositoryPath();
