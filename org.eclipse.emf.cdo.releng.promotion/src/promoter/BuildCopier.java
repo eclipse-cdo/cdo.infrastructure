@@ -17,7 +17,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -87,10 +86,6 @@ public class BuildCopier extends PromoterComponent
       excludedBuilds.add(Integer.parseInt(tokenizer.nextToken()));
     }
 
-    final int NO_BUILD = -1;
-    int nextBuildNumber = NO_BUILD;
-    boolean buildInProgress = false;
-
     List<Integer> buildNumbers = getBuildNumbers(jobURL);
     for (Integer buildNumber : buildNumbers)
     {
@@ -134,18 +129,7 @@ public class BuildCopier extends PromoterComponent
       else
       {
         System.out.println("Build " + buildNumber + " is in progress");
-        buildInProgress = true;
       }
-
-      if (!buildInProgress)
-      {
-        nextBuildNumber = buildNumber + 1;
-      }
-    }
-
-    if (nextBuildNumber != NO_BUILD)
-    {
-      storeNextBuildNumber(jobName, nextBuildNumber);
     }
   }
 
@@ -211,15 +195,6 @@ public class BuildCopier extends PromoterComponent
     {
       scm.setTag(buildInfo.getBranch(), buildInfo.getRevision(), buildInfo.getQualifier());
     }
-  }
-
-  protected void storeNextBuildNumber(String jobName, final int nextBuildNumber)
-  {
-    IO.writeFile(new File(PromoterConfig.INSTANCE.getWorkingArea(), jobName + ".nextBuildNumber"), out -> {
-      PrintStream stream = new PrintStream(out);
-      stream.println(nextBuildNumber);
-      stream.flush();
-    });
   }
 
   protected List<Integer> getBuildNumbers(String jobURL)
