@@ -17,6 +17,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -45,6 +46,9 @@ public class BuildCopier extends PromoterComponent
     List<BuildInfo> buildInfos = new ArrayList<>();
     File configFolder = new File(PromoterConfig.INSTANCE.getConfigDirectory(), "jobs");
 
+    File logFile = new File(PromoterConfig.INSTANCE.getWorkingArea(), "copied-builds.txt");
+    logFile.delete(); // Intentionally on best effort.
+
     for (File jobDir : configFolder.listFiles())
     {
       if (!jobDir.isDirectory())
@@ -67,6 +71,20 @@ public class BuildCopier extends PromoterComponent
       }
 
       copyBuilds(jobName, jobProperties, buildInfos);
+    }
+
+    if (!buildInfos.isEmpty())
+    {
+      IO.writeFile(logFile, out -> {
+        PrintStream stream = new PrintStream(out);
+
+        for (BuildInfo buildInfo : buildInfos)
+        {
+          stream.println(buildInfo.getQualifier());
+        }
+
+        stream.flush();
+      });
     }
 
     return buildInfos;
