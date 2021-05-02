@@ -29,9 +29,9 @@ public final class PromoterConfig extends Config
     super(filename);
   }
 
-  public boolean isTEST()
+  public boolean isTest()
   {
-    return "true".equalsIgnoreCase(getProperty("TEST"));
+    return "true".equalsIgnoreCase(getProperty("test"));
   }
 
   public File getGitExecutable()
@@ -100,7 +100,7 @@ public final class PromoterConfig extends Config
     String projectPath = getProperty("projectPath");
     projectPath = Util.rstrip(projectPath, "/");
 
-    if (isTEST())
+    if (isTest())
     {
       projectPath += "/test";
     }
