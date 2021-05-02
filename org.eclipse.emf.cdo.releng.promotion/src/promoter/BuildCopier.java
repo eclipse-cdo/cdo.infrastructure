@@ -46,9 +46,6 @@ public class BuildCopier extends PromoterComponent
     List<BuildInfo> buildInfos = new ArrayList<>();
     File configFolder = new File(PromoterConfig.INSTANCE.getConfigDirectory(), "jobs");
 
-    File logFile = new File(PromoterConfig.INSTANCE.getWorkingArea(), "copied-builds.txt");
-    logFile.delete(); // Intentionally on best effort.
-
     for (File jobDir : configFolder.listFiles())
     {
       if (!jobDir.isDirectory())
@@ -73,19 +70,17 @@ public class BuildCopier extends PromoterComponent
       copyBuilds(jobName, jobProperties, buildInfos);
     }
 
-    if (!buildInfos.isEmpty())
-    {
-      IO.writeFile(logFile, out -> {
-        PrintStream stream = new PrintStream(out);
+    File logFile = new File(PromoterConfig.INSTANCE.getWorkingArea(), "copied-builds.txt");
+    IO.writeFile(logFile, out -> {
+      PrintStream stream = new PrintStream(out);
 
-        for (BuildInfo buildInfo : buildInfos)
-        {
-          stream.println(buildInfo.getQualifier());
-        }
+      for (BuildInfo buildInfo : buildInfos)
+      {
+        stream.println(buildInfo.getQualifier());
+      }
 
-        stream.flush();
-      });
-    }
+      stream.flush();
+    });
 
     return buildInfos;
   }
