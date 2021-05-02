@@ -13,6 +13,7 @@ package promoter;
 import java.io.File;
 
 import promoter.util.Config;
+import promoter.util.Util;
 
 /**
  * @author Eike Stepper
@@ -26,6 +27,11 @@ public final class PromoterConfig extends Config
   private PromoterConfig(String filename)
   {
     super(filename);
+  }
+
+  public boolean isTEST()
+  {
+    return "true".equalsIgnoreCase(getProperty("TEST"));
   }
 
   public File getGitExecutable()
@@ -91,7 +97,15 @@ public final class PromoterConfig extends Config
 
   public String getProjectPath()
   {
-    return getProperty("projectPath");
+    String projectPath = getProperty("projectPath");
+    projectPath = Util.rstrip(projectPath, "/");
+
+    if (isTEST())
+    {
+      projectPath += "/test";
+    }
+
+    return projectPath;
   }
 
   public File getCompositionArea()
@@ -166,20 +180,14 @@ public final class PromoterConfig extends Config
     String jobName = getProperty("JOB_NAME");
     if (jobURL != null && jobName != null)
     {
-      if (jobURL.endsWith("/"))
-      {
-        jobURL = jobURL.substring(0, jobURL.length() - "/".length());
-      }
+      jobURL = Util.rstrip(jobURL, "/");
 
       if (jobURL.endsWith(jobName))
       {
         jobURL = jobURL.substring(0, jobURL.length() - jobName.length());
       }
 
-      if (jobURL.endsWith("/"))
-      {
-        jobURL = jobURL.substring(0, jobURL.length() - "/".length());
-      }
+      jobURL = Util.rstrip(jobURL, "/");
 
       return jobURL;
     }
