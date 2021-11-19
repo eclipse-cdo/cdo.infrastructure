@@ -48,24 +48,38 @@ public class DropProcessor extends PromoterComponent
   public List<BuildInfo> processDrops(XMLOutput xml) throws Exception
   {
     List<BuildInfo> buildInfos = new ArrayList<>();
-    processDrops(xml, buildInfos, PromoterConfig.INSTANCE.getArchiveDropsArea());
-    processDrops(xml, buildInfos, PromoterConfig.INSTANCE.getDropsArea());
+    processDrops(xml, true, buildInfos, PromoterConfig.INSTANCE.getArchiveDropsArea());
+    processDrops(xml, false, buildInfos, PromoterConfig.INSTANCE.getDropsArea());
     return buildInfos;
   }
 
-  protected void processDrops(XMLOutput xml, List<BuildInfo> buildInfos, File dropsArea) throws Exception
+  protected void processDrops(XMLOutput xml, boolean loadInfoOnly, List<BuildInfo> buildInfos, File dropsArea) throws Exception
   {
     for (File drop : dropsArea.listFiles())
     {
       if (drop.isDirectory() && !new File(drop, MARKER_ARCHIVED).exists())
       {
-        processDrop(xml, drop, buildInfos);
+        processDrop(xml, drop, loadInfoOnly, buildInfos);
       }
     }
   }
 
-  protected void processDrop(XMLOutput xml, File drop, List<BuildInfo> buildInfos) throws Exception
+  protected void processDrop(XMLOutput xml, File drop, boolean loadInfoOnly, List<BuildInfo> buildInfos) throws Exception
   {
+    BuildInfo buildInfo = null;
+
+    File buildInfoFile = new File(drop, "build-info.xml");
+    if (buildInfoFile.isFile())
+    {
+      buildInfo = BuildInfo.read(buildInfoFile);
+      buildInfos.add(buildInfo);
+    }
+
+    if (loadInfoOnly)
+    {
+      return;
+    }
+
     if (IO.isRepository(drop))
     {
       generateCategories(xml, drop);
@@ -88,12 +102,8 @@ public class DropProcessor extends PromoterComponent
       }
     }
 
-    File buildInfoFile = new File(drop, "build-info.xml");
-    if (buildInfoFile.isFile())
+    if (buildInfo != null)
     {
-      BuildInfo buildInfo = BuildInfo.read(buildInfoFile);
-      buildInfos.add(buildInfo);
-
       Properties promotionProperties = Config.loadProperties(new File(drop, DropProcessor.MARKER_PROMOTED), false);
 
       String generateZipSite = promotionProperties.getProperty("generate.zip.site");
