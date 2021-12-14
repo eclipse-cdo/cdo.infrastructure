@@ -197,15 +197,15 @@ public class ReleaseNotesGenerator extends PromoterComponent
       out.print("<br/>The first commit is " + fromRevision);
       if (previousBuildInfo != null)
       {
-        out.println(" in the <a href=\"http://git.eclipse.org/c/cdo/cdo.git/?h=" + previousBuildInfo.getBranch().replaceAll("/", "%2F") + "\">"
+        out.println(" in the <a href=\"https://git.eclipse.org/c/cdo/cdo.git/?h=" + previousBuildInfo.getBranch().replaceAll("/", "%2F") + "\">"
             + previousBuildInfo.getBranch() + "</a> branch.");
       }
       else
       {
-        out.println(" in the <a href=\"http://git.eclipse.org/c/cdo/cdo.git/?h=master\">master</a> branch.");
+        out.println(" in the <a href=\"https://git.eclipse.org/c/cdo/cdo.git/?h=master\">master</a> branch.");
       }
 
-      out.println("<br/>The last commit is " + toRevision + " in the <a href=\"" + "http://git.eclipse.org/c/cdo/cdo.git/?h="
+      out.println("<br/>The last commit is " + toRevision + " in the <a href=\"" + "https://git.eclipse.org/c/cdo/cdo.git/?h="
           + buildInfo.getBranch().replaceAll("/", "%2F") + "\">" + buildInfo.getBranch() + "</a> branch.");
 
       previousBuildNote(out, buildInfo, previousBuildInfo);
