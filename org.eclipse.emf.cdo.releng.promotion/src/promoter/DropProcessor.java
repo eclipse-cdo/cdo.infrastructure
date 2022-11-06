@@ -19,7 +19,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -299,7 +299,7 @@ public class DropProcessor extends PromoterComponent
       }
 
       // Load names of doc plugins
-      Set<String> docs = new HashSet<>();
+      Set<String> docs = new LinkedHashSet<>();
       BufferedReader reader = null;
 
       try

@@ -17,9 +17,9 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -285,7 +285,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
   protected Collection<ReleaseNotesStream> getStreams(List<BuildInfo> buildInfos)
   {
-    Map<String, ReleaseNotesStream> streams = new HashMap<>();
+    Map<String, ReleaseNotesStream> streams = new LinkedHashMap<>();
     for (BuildInfo buildInfo : buildInfos)
     {
       String name = buildInfo.getStream();
@@ -359,7 +359,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
   protected Set<Issue> getIssues(BuildInfo buildInfo, String fromRevision, String toRevision)
   {
-    final Set<Issue> issues = new HashSet<>();
+    final Set<Issue> issues = new LinkedHashSet<>();
 
     if (!fromRevision.equals(toRevision))
     {
