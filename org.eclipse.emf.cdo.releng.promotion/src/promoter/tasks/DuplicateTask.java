@@ -11,11 +11,9 @@
 package promoter.tasks;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import promoter.BuildInfo;
-import promoter.PromoterConfig;
 import promoter.util.Ant;
 import promoter.util.XMLOutput;
 
@@ -24,16 +22,8 @@ import promoter.util.XMLOutput;
  */
 public class DuplicateTask extends AbstractDropTask
 {
-  private File antHome;
-
   public DuplicateTask()
   {
-    this(PromoterConfig.INSTANCE.getAntHome());
-  }
-
-  private DuplicateTask(File antHome)
-  {
-    this.antHome = antHome;
   }
 
   @Override
@@ -56,7 +46,7 @@ public class DuplicateTask extends AbstractDropTask
     {
       File script = File.createTempFile("duplicateDrop-", ".ant");
       File basedir = drop.getParentFile();
-      new Ant<Object>(antHome, script, basedir)
+      new Ant<Object>(script, basedir)
       {
         @Override
         protected Object create(XMLOutput xml) throws Exception
@@ -122,17 +112,5 @@ public class DuplicateTask extends AbstractDropTask
     }
 
     return true; // Order recomposition
-  }
-
-  public static void main(String[] _args)
-  {
-    File antHome = new File("C:\\develop\\bin\\apache-ant-1.8.2");
-    File drop = new File("C:\\Users\\Stepper\\Desktop\\drops\\R20120612-1449");
-    List<String> args = new ArrayList<>();
-    args.add("S20120621-1100");
-    List<BuildInfo> builds = new ArrayList<>();
-
-    DuplicateTask task = new DuplicateTask(antHome);
-    task.execute(drop, args, builds);
   }
 }

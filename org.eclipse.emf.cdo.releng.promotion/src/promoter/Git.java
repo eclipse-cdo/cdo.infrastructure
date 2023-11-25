@@ -15,6 +15,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiConsumer;
 
 import promoter.util.IO;
 
@@ -23,9 +26,7 @@ import promoter.util.IO;
  */
 public class Git extends SourceCodeManager
 {
-  private static final String GIT_COMMAND = //
-      "cd " + PromoterConfig.INSTANCE.getProjectCloneLocation() + ";\n" + //
-          PromoterConfig.INSTANCE.getGitExecutable();
+  private static final String GIT_COMMAND = "\"" + PromoterConfig.INSTANCE.getGitExecutable() + "\"";
 
   // The symbolic name (alternatively: the URL) of the upstream (main) Git repository
   @Deprecated
@@ -42,46 +43,12 @@ public class Git extends SourceCodeManager
   // for each history entry
   public static final String OUTPUT_FORMAT = "--BEGIN-COMMIT--%n%h%n%cn%n%ci%n%B%n--BEGIN-SUMMARY--%n";
 
+  private static final boolean WINDOWS = System.getProperty("os.name").contains("indows");
+
   private boolean fetched;
 
   public Git()
   {
-  }
-
-  private boolean cloneIfNeeded(PrintStream stream)
-  {
-    File clone = PromoterConfig.INSTANCE.getProjectCloneLocation();
-    if (clone.exists())
-    {
-      return false;
-    }
-
-    File parent = clone.getParentFile();
-    parent.mkdirs();
-
-    String url = PromoterConfig.INSTANCE.getGitRepositoryURL();
-
-    System.out.println("Cloning " + url + " to " + clone);
-    stream.println(PromoterConfig.INSTANCE.getGitExecutable() + " clone --bare " + url + " " + clone);
-    stream.flush();
-    return true;
-  }
-
-  private void fetchIfNeeded(PrintStream stream)
-  {
-    if (!fetched)
-    {
-      fetched = true;
-
-      if (cloneIfNeeded(stream))
-      {
-        return;
-      }
-
-      System.out.println("Fetching " + PromoterConfig.INSTANCE.getProjectCloneLocation() + " to " + PromoterConfig.INSTANCE.getProjectCloneLocation());
-      stream.println(GIT_COMMAND + " fetch");
-      stream.flush();
-    }
   }
 
   @Override
@@ -111,21 +78,41 @@ public class Git extends SourceCodeManager
   }
 
   @Override
-  public void handleLogEntries(String branch, String fromRevision, String toRevision, boolean withPaths, LogEntryHandler handler)
+  public void getCommits(String branch, String fromRevision, String toRevision, BiConsumer<String, String> handler)
   {
     try
     {
       final File outFile = File.createTempFile("promotion-", ".tmp");
 
-      IO.executeProcess("/bin/bash", out -> {
+      List<String> command = new ArrayList<>();
+
+      if (WINDOWS)
+      {
+        command.add("cmd.exe");
+        command.add("/c");
+      }
+      else
+      {
+        command.add("/bin/bash");
+      }
+
+      IO.executeProcess(command, out -> {
         PrintStream stream = new PrintStream(out);
+        cloneIfNeeded(stream);
+
+        stream.println("cd \"" + PromoterConfig.INSTANCE.getProjectCloneLocation() + "\"");
         fetchIfNeeded(stream);
 
         String range = fromRevision + ".." + toRevision;
         System.out.println("Getting log entries for " + branch + " (" + range + ")");
 
-        String command = GIT_COMMAND + " log " + (withPaths ? "--name-only " : "") + " --format=\"" + OUTPUT_FORMAT + "\" " + range + " > " + outFile;
-        stream.println(command);
+        String outputFormat = OUTPUT_FORMAT;
+        if (WINDOWS)
+        {
+          outputFormat = outputFormat.replace("%", "%%");
+        }
+
+        stream.println(GIT_COMMAND + " log --format=\"" + outputFormat + "\" " + range + " > " + outFile);
         stream.flush();
       });
 
@@ -134,8 +121,6 @@ public class Git extends SourceCodeManager
 
       try
       {
-        LogEntry logEntry;
-
         // Start of file. First line has to be "--BEGIN-COMMIT--".
         String line = bufferedReader.readLine();
         if (line == null)
@@ -154,13 +139,8 @@ public class Git extends SourceCodeManager
         for (;;)
         {
           String commitHash = readLineSafe(bufferedReader);
-          logEntry = new LogEntry(commitHash);
-
-          String committer = readLineSafe(bufferedReader);
-          logEntry.setAuthor(committer);
-
-          String date = readLineSafe(bufferedReader);
-          logEntry.setDate(date);
+          /* String committer = */ readLineSafe(bufferedReader);
+          /* String date = */readLineSafe(bufferedReader);
 
           // Now follows the message until the summary marker is read.
           StringBuilder messageString = new StringBuilder();
@@ -170,7 +150,7 @@ public class Git extends SourceCodeManager
             messageString.append("\n");
           }
 
-          logEntry.setMessage(messageString.toString());
+          handler.accept(commitHash, messageString.toString());
 
           summaryReading: //
           for (;;)
@@ -178,13 +158,11 @@ public class Git extends SourceCodeManager
             line = bufferedReader.readLine();
             if (line == null)
             {
-              handler.handleLogEntry(logEntry);
               break processing; // End of file reached.
             }
 
             if (line.equals("--BEGIN-COMMIT--"))
             {
-              handler.handleLogEntry(logEntry);
               break summaryReading; // End of summary section reached.
             }
 
@@ -192,9 +170,6 @@ public class Git extends SourceCodeManager
             {
               continue; // Read over empty lines.
             }
-
-            // We are in the summary section. Read line should contain a path.
-            logEntry.getPaths().add(line);
           }
         }
       }
@@ -212,6 +187,34 @@ public class Git extends SourceCodeManager
     catch (Exception ex)
     {
       throw new RuntimeException(ex);
+    }
+  }
+
+  private void cloneIfNeeded(PrintStream stream)
+  {
+    File clone = PromoterConfig.INSTANCE.getProjectCloneLocation();
+    if (!clone.exists())
+    {
+      File parent = clone.getParentFile();
+      parent.mkdirs();
+
+      String url = PromoterConfig.INSTANCE.getGitRepositoryURL();
+
+      System.out.println("Cloning " + url + " to " + clone);
+      stream.println(GIT_COMMAND + " clone --bare " + url + " " + clone);
+      stream.flush();
+      fetched = true;
+    }
+  }
+
+  private void fetchIfNeeded(PrintStream stream)
+  {
+    if (!fetched)
+    {
+      System.out.println("Fetching " + PromoterConfig.INSTANCE.getProjectCloneLocation() + " to " + PromoterConfig.INSTANCE.getProjectCloneLocation());
+      stream.println(GIT_COMMAND + " fetch");
+      stream.flush();
+      fetched = true;
     }
   }
 

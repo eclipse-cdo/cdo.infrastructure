@@ -107,8 +107,8 @@ public class Promoter extends ComponentFactory
     System.out.println("ProjectCloneLocation = " + PromoterConfig.INSTANCE.getProjectCloneLocation());
     System.out.println("InstallDirectory     = " + PromoterConfig.INSTANCE.getInstallDirectory());
     System.out.println("ConfigDirectory      = " + PromoterConfig.INSTANCE.getConfigDirectory());
-    System.out.println("AntHome              = " + PromoterConfig.INSTANCE.getAntHome());
     System.out.println("GitExecutable        = " + PromoterConfig.INSTANCE.getGitExecutable());
+    System.out.println("GitRepositoryURL     = " + PromoterConfig.INSTANCE.getGitRepositoryURL());
     System.out.println("JobsURL              = " + PromoterConfig.INSTANCE.getJobsURL());
     System.out.println("----------------------------------------------------------------------------------------------------------");
 
@@ -277,7 +277,7 @@ public class Promoter extends ComponentFactory
   {
     public DefaultAnt(File script, File basedir)
     {
-      super(PromoterConfig.INSTANCE.getDirectory("ANT_HOME"), script, basedir);
+      super(script, basedir);
     }
 
     @Override

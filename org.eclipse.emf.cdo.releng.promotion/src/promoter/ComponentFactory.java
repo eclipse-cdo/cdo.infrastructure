@@ -11,15 +11,42 @@
 package promoter;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * @author Eike Stepper
  */
 public class ComponentFactory
 {
+  private <T> String getComponentName(Class<T> type)
+  {
+    return PromoterConfig.INSTANCE.getProperty("class" + type.getSimpleName(), type.getName());
+  }
+
+  public <T> List<T> createComponents(Class<T> type)
+  {
+    List<T> components = new ArrayList<>();
+
+    StringTokenizer tokenizer = new StringTokenizer(getComponentName(type), ",");
+    while (tokenizer.hasMoreTokens())
+    {
+      String name = tokenizer.nextToken().trim();
+
+      T component = createComponent(name);
+      if (component != null)
+      {
+        components.add(component);
+      }
+    }
+
+    return components;
+  }
+
   public <T> T createComponent(Class<T> type)
   {
-    String name = PromoterConfig.INSTANCE.getProperty("class" + type.getSimpleName(), type.getName());
+    String name = getComponentName(type);
     return createComponent(name);
   }
 
@@ -51,9 +78,9 @@ public class ComponentFactory
     return createComponent(SourceCodeManager.class);
   }
 
-  public IssueManager createIssueManager()
+  public List<IssueManager> createIssueManagers()
   {
-    return createComponent(IssueManager.class);
+    return createComponents(IssueManager.class);
   }
 
   public BuildCopier createBuildCopier()

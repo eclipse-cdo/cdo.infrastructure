@@ -22,6 +22,7 @@
 			</fileset>
 		</delete>
 		<mkdir dir="bin" />
+		<ant antfile="lib-install.ant" useNativeBasedir="true" />
 		<javac srcdir="src" destdir="bin" debug="on" includeantruntime="false" />
 		<jar destfile="promoter.jar">
 			<fileset dir="bin">
@@ -40,7 +41,7 @@
 		<java classpath="promoter.jar" classname="${config.classPromoter}">
 			<sysproperty key="JOB_URL" value="${env.JOB_URL}" />
 			<sysproperty key="JOB_NAME" value="${env.JOB_NAME}" />
-			<sysproperty key="ANT_HOME" value="${env.ANT_HOME}" />
+			<!-- <sysproperty key="ANT_HOME" value="${env.ANT_HOME}" /> -->
 			<sysproperty key="workingArea" value="${env.WORKSPACE}" />
 			<sysproperty key="forcedPromotion" value="${promotion.force}" />
 			<sysproperty key="test" value="${promotion.test}" />

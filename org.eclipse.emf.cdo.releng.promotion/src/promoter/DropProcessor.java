@@ -53,11 +53,15 @@ public class DropProcessor extends PromoterComponent
 
   protected void processDrops(XMLOutput xml, boolean loadInfoOnly, List<BuildInfo> buildInfos, File dropsArea) throws Exception
   {
-    for (File drop : dropsArea.listFiles())
+    File[] drops = dropsArea.listFiles();
+    if (drops != null)
     {
-      if (drop.isDirectory())
+      for (File drop : drops)
       {
-        processDrop(xml, drop, loadInfoOnly, buildInfos);
+        if (drop.isDirectory())
+        {
+          processDrop(xml, drop, loadInfoOnly, buildInfos);
+        }
       }
     }
   }

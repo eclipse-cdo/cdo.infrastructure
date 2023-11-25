@@ -10,55 +10,54 @@
  */
 package promoter;
 
-import java.io.File;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * @author Eike Stepper
  */
 public abstract class IssueManager extends PromoterComponent implements Comparator<Issue>
 {
-  private static final boolean USE_CACHE = Boolean.getBoolean("promoter.IssueManager.USE_CACHE");
-
-  private File issuesFolder;
+  private final Map<String, Issue> cache = new HashMap<>();
 
   public IssueManager()
   {
   }
 
-  public synchronized Issue getIssue(String id)
+  public String getType()
   {
-    if (issuesFolder == null)
-    {
-      issuesFolder = new File(PromoterConfig.INSTANCE.getWorkingArea(), "issues");
-      issuesFolder.mkdirs();
-    }
-
-    File file = new File(issuesFolder, id);
-    if (useCache() && file.isFile())
-    {
-      return new Issue(file);
-    }
-
-    Issue issue = doGetIssue(id);
-    if (issue != null)
-    {
-      issue.write(file);
-    }
-
-    return issue;
+    return getClass().getSimpleName();
   }
 
-  public abstract String parseID(String message);
-
-  public abstract String getURL(Issue issue);
-
-  public abstract Integer getSeverity(Issue issue);
-
-  protected abstract Issue doGetIssue(String id);
-
-  protected boolean useCache()
+  public final void getCommitIssues(String commitID, String commitMessage, Consumer<Issue> issueConsumer)
   {
-    return USE_CACHE;
+    getIssueIDs(commitID, commitMessage, issueID -> {
+      Issue issue = cache.computeIfAbsent(issueID, k -> createIssue(issueID));
+      if (issue != null)
+      {
+        issueConsumer.accept(issue);
+      }
+    });
   }
+
+  public String getIssueLabelPrefix()
+  {
+    return "";
+  }
+
+  public String getIssueLabelSuffix()
+  {
+    return "";
+  }
+
+  protected String getIssueLabel(String issueID)
+  {
+    return issueID == null ? null : getIssueLabelPrefix() + issueID + getIssueLabelSuffix();
+  }
+
+  protected abstract void getIssueIDs(String commitID, String commitMessage, Consumer<String> issueIDConsumer);
+
+  protected abstract Issue createIssue(String issueID);
 }

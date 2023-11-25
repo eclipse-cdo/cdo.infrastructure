@@ -18,27 +18,21 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
+import promoter.PromoterConfig;
+
 /**
  * @author Eike Stepper
  */
 public abstract class Ant<RESULT>
 {
-  private File anthome;
-
   private File script;
 
   private File basedir;
 
-  public Ant(File anthome, File script, File basedir)
+  public Ant(File script, File basedir)
   {
-    this.anthome = anthome;
     this.script = script;
     this.basedir = basedir;
-  }
-
-  public final File getAnthome()
-  {
-    return anthome;
   }
 
   public final File getScript()
@@ -105,6 +99,8 @@ public abstract class Ant<RESULT>
 
   protected void executeAntScript()
   {
+    File anthome = PromoterConfig.INSTANCE.getAntHome();
+
     String ant = anthome + "/bin/ant";
     if (System.getProperty("os.name", "").startsWith("Windows"))
     {

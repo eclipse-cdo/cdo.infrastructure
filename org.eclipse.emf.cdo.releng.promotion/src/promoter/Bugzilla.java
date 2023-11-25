@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.function.Consumer;
 
 import promoter.util.IO;
 
@@ -28,24 +29,38 @@ public class Bugzilla extends IssueManager
 
   private static final int RETRIES = 3;
 
+  private static final Integer SEVERITY_ENHANCEMENT = 0;
+
+  private static final Integer SEVERITY_TRIVIAL = 1;
+
+  private static final Integer SEVERITY_MINOR = 2;
+
+  private static final Integer SEVERITY_NORMAL = 3;
+
+  private static final Integer SEVERITY_MAJOR = 4;
+
+  private static final Integer SEVERITY_CRITICAL = 5;
+
+  private static final Integer SEVERITY_BLOCKER = 6;
+
   public Bugzilla()
   {
   }
 
   @Override
-  public String parseID(String message)
+  protected void getIssueIDs(String commitID, String commitMessage, Consumer<String> issueIDConsumer)
   {
-    if (message.length() >= 3 && message.charAt(0) == '[')
+    if (commitMessage.length() >= 3 && commitMessage.charAt(0) == '[')
     {
-      int end = message.indexOf(']');
+      int end = commitMessage.indexOf(']');
       if (end != -1)
       {
-        String id = message.substring(1, end);
+        String id = commitMessage.substring(1, end);
 
         try
         {
           Integer.parseInt(id); // Valid integer?
-          return id;
+          issueIDConsumer.accept(id);
         }
         catch (NumberFormatException ex)
         {
@@ -53,19 +68,17 @@ public class Bugzilla extends IssueManager
         }
       }
     }
-
-    return "";
   }
 
   @Override
-  protected Issue doGetIssue(String id)
+  protected Issue createIssue(String issueID)
   {
     for (int i = 0; i < RETRIES; i++)
     {
       try
       {
         BugHandler handler = new BugHandler();
-        IO.readURL(XML + id, handler);
+        IO.readURL(XML + issueID, handler);
         return handler.getIssue();
       }
       catch (Exception ex)
@@ -81,65 +94,15 @@ public class Bugzilla extends IssueManager
   }
 
   @Override
-  public String getURL(Issue issue)
-  {
-    return SERVER + issue.getID();
-  }
-
-  @Override
-  public Integer getSeverity(Issue issue)
-  {
-    String severity = issue.getSeverity();
-    if ("trivial".equals(severity))
-    {
-      return 1;
-    }
-
-    if ("minor".equals(severity))
-    {
-      return 2;
-    }
-
-    if ("normal".equals(severity))
-    {
-      return 3;
-    }
-
-    if ("major".equals(severity))
-    {
-      return 4;
-    }
-
-    if ("critical".equals(severity))
-    {
-      return 5;
-    }
-
-    if ("blocker".equals(severity))
-    {
-      return 6;
-    }
-
-    return 0;
-  }
-
-  @Override
   public int compare(Issue i1, Issue i2)
   {
     return Integer.valueOf(i1.getID()).compareTo(Integer.valueOf(i2.getID()));
   }
 
-  public static void main(String[] args)
-  {
-    Issue issue = new Bugzilla().doGetIssue("355921");
-    System.out.println(issue.getTitle());
-    System.out.println(issue.getSeverity());
-  }
-
   /**
    * @author Eike Stepper
    */
-  private static final class BugHandler implements IO.InputHandler
+  private final class BugHandler implements IO.InputHandler
   {
     private Issue issue;
 
@@ -218,7 +181,11 @@ public class Bugzilla extends IssueManager
             status += "-" + resolution.toLowerCase();
           }
 
-          issue = new Issue(id, title, severity, component, version, status);
+          String url = SERVER + id;
+          Integer severityIndex = getSeverityIndex(severity);
+          boolean enhancement = severityIndex == SEVERITY_ENHANCEMENT;
+
+          issue = new Issue(Bugzilla.this, url, id, title, enhancement, severity, severityIndex, component, version, status);
           break;
         }
       }
@@ -239,6 +206,41 @@ public class Bugzilla extends IssueManager
       }
 
       return null;
+    }
+
+    private Integer getSeverityIndex(String severity)
+    {
+      if ("trivial".equals(severity))
+      {
+        return SEVERITY_TRIVIAL;
+      }
+
+      if ("minor".equals(severity))
+      {
+        return SEVERITY_MINOR;
+      }
+
+      if ("normal".equals(severity))
+      {
+        return SEVERITY_NORMAL;
+      }
+
+      if ("major".equals(severity))
+      {
+        return SEVERITY_MAJOR;
+      }
+
+      if ("critical".equals(severity))
+      {
+        return SEVERITY_CRITICAL;
+      }
+
+      if ("blocker".equals(severity))
+      {
+        return SEVERITY_BLOCKER;
+      }
+
+      return SEVERITY_ENHANCEMENT;
     }
   }
 }

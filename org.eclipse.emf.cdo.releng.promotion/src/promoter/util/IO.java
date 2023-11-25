@@ -32,7 +32,10 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -51,15 +54,19 @@ public final class IO
   {
   }
 
-  public static void executeProcess(String command, OutputHandler handler)
+  public static void executeProcess(List<String> command, OutputHandler handler)
   {
     File file = null;
 
     try
     {
-      file = File.createTempFile("promoter-", ".tmp");
+      file = File.createTempFile("promoter-", ".bat");
       writeFile(file, handler);
-      executeProcess(command, file.getAbsolutePath());
+
+      command = new ArrayList<>(command);
+      command.add(file.getAbsolutePath());
+
+      executeProcess(command);
     }
     catch (IOException ex)
     {
@@ -75,6 +82,11 @@ public final class IO
   }
 
   public static void executeProcess(String... command)
+  {
+    executeProcess(Arrays.asList(command));
+  }
+
+  public static void executeProcess(List<String> command)
   {
     try
     {
@@ -246,9 +258,13 @@ public final class IO
     int deleted = 0;
     if (file.isDirectory())
     {
-      for (File child : file.listFiles())
+      File[] children = file.listFiles();
+      if (children != null)
       {
-        deleted += delete(child);
+        for (File child : children)
+        {
+          deleted += delete(child);
+        }
       }
     }
 
@@ -266,11 +282,15 @@ public final class IO
     if (source.isDirectory())
     {
       mkdirs(target);
+
       File[] files = source.listFiles();
-      for (File file : files)
+      if (files != null)
       {
-        String name = file.getName();
-        copyTree(new File(source, name), new File(target, name));
+        for (File file : files)
+        {
+          String name = file.getName();
+          copyTree(new File(source, name), new File(target, name));
+        }
       }
     }
     else

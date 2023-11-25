@@ -10,20 +10,26 @@
  */
 package promoter;
 
-import java.io.File;
-
-import promoter.util.IO;
+import java.util.Objects;
 
 /**
  * @author Eike Stepper
  */
-public final class Issue
+public final class Issue implements Comparable<Issue>
 {
+  private final IssueManager manager;
+
+  private final String url;
+
   private final String id;
 
   private final String title;
 
+  private final boolean enhancement;
+
   private final String severity;
+
+  private final int severityIndex;
 
   private final String component;
 
@@ -31,47 +37,67 @@ public final class Issue
 
   private final String status;
 
-  public Issue(String id, String title, String severity, String component, String version, String status)
+  public Issue(IssueManager manager, String url, String id, String title, boolean enhancement, String severity, int severityIndex, String component,
+      String version, String status)
   {
+    this.manager = manager;
+    this.url = url;
     this.id = id;
     this.title = title;
+    this.enhancement = enhancement;
     this.severity = severity;
+    this.severityIndex = severityIndex;
     this.component = component;
     this.version = version;
     this.status = status;
   }
 
-  public Issue(File file)
+  public IssueManager getManager()
   {
-    id = file.getName();
-
-    String content = IO.readTextFile(file);
-    String[] lines = content.split("\n");
-
-    title = lines.length > 0 ? lines[0] : null;
-    severity = lines.length > 1 ? lines[1] : null;
-    component = lines.length > 2 ? lines[2] : null;
-    version = lines.length > 3 ? lines[3] : null;
-    status = lines.length > 4 ? lines[4] : null;
+    return manager;
   }
 
-  public void write(File file)
+  public String getURL()
   {
-    String content = title + "\n" + severity + "\n" + component + "\n" + version + "\n" + status;
-    IO.writeFile(file, content.getBytes());
+    return url;
   }
 
-  public final String getID()
+  public String getID()
   {
     return id;
   }
 
-  public final String getTitle()
+  public String getLabel()
+  {
+    if (manager != null)
+    {
+      return manager.getIssueLabel(id);
+    }
+
+    return id;
+  }
+
+  public String getType()
+  {
+    if (manager != null)
+    {
+      return manager.getType();
+    }
+
+    return "None";
+  }
+
+  public String getTitle()
   {
     return title;
   }
 
-  public final String getSeverity()
+  public boolean isEnhancement()
+  {
+    return enhancement;
+  }
+
+  public String getSeverity()
   {
     return severity;
   }
@@ -94,10 +120,7 @@ public final class Issue
   @Override
   public int hashCode()
   {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + (id == null ? 0 : id.hashCode());
-    return result;
+    return Objects.hash(manager, id);
   }
 
   @Override
@@ -119,24 +142,18 @@ public final class Issue
     }
 
     Issue other = (Issue)obj;
-    if (id == null)
-    {
-      if (other.id != null)
-      {
-        return false;
-      }
-    }
-    else if (!id.equals(other.id))
-    {
-      return false;
-    }
+    return Objects.equals(manager, other.manager) && Objects.equals(id, other.id);
+  }
 
-    return true;
+  @Override
+  public int compareTo(Issue o)
+  {
+    return Integer.compare(o.severityIndex, severityIndex);
   }
 
   @Override
   public String toString()
   {
-    return "Issue [id=" + id + ", title=" + title + "]";
+    return "Issue[" + getLabel() + ", " + title + "]";
   }
 }

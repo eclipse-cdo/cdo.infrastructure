@@ -10,8 +10,7 @@
  */
 package promoter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.BiConsumer;
 
 /**
  * @author Eike Stepper
@@ -24,81 +23,5 @@ public abstract class SourceCodeManager extends PromoterComponent
 
   public abstract void setTag(String branch, String revision, String tag);
 
-  public abstract void handleLogEntries(String branch, String fromRevision, String toRevision, boolean withPaths, LogEntryHandler handler);
-
-  /**
-   * @author Eike Stepper
-   */
-  public static class LogEntry
-  {
-    private String revision;
-
-    private String author;
-
-    private String date;
-
-    private String message;
-
-    private List<String> paths = new ArrayList<>();
-
-    public LogEntry(String revision)
-    {
-      this.revision = revision;
-    }
-
-    public String getRevision()
-    {
-      return revision;
-    }
-
-    public String getAuthor()
-    {
-      return author;
-    }
-
-    public void setAuthor(String author)
-    {
-      this.author = author;
-    }
-
-    public String getDate()
-    {
-      return date;
-    }
-
-    public void setDate(String date)
-    {
-      this.date = date;
-    }
-
-    public String getMessage()
-    {
-      return message;
-    }
-
-    public void setMessage(String message)
-    {
-      this.message = message;
-    }
-
-    public List<String> getPaths()
-    {
-      return paths;
-    }
-
-    @Override
-    public String toString()
-    {
-      return "LogEntry [revision=" + revision + ", author=" + author + ", date=" + date + ", message=" + message + "]";
-    }
-  }
-
-  /**
-   * @author Eike Stepper
-   */
-  @FunctionalInterface
-  public interface LogEntryHandler
-  {
-    public void handleLogEntry(LogEntry logEntry);
-  }
+  public abstract void getCommits(String branch, String fromRevision, String toRevision, BiConsumer<String, String> commitConsumer);
 }

@@ -34,7 +34,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 {
   private SourceCodeManager scm;
 
-  private IssueManager issueManager;
+  private List<IssueManager> issueManagers;
 
   public ReleaseNotesGenerator()
   {
@@ -43,7 +43,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
   public synchronized void generateReleaseNotes(List<BuildInfo> buildInfos)
   {
     scm = getPromoter().getSourceCodeManager();
-    issueManager = getPromoter().createIssueManager();
+    issueManagers = getPromoter().createIssueManagers();
 
     for (ReleaseNotesStream stream : getStreams(buildInfos))
     {
@@ -53,7 +53,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       }
     }
 
-    issueManager = null;
+    issueManagers = null;
     scm = null;
   }
 
@@ -116,8 +116,10 @@ public class ReleaseNotesGenerator extends PromoterComponent
       for (Issue issue : issues)
       {
         xml.element("issue");
-        xml.attribute("url", issueManager.getURL(issue));
+        xml.attribute("url", issue.getURL());
         xml.attribute("id", issue.getID());
+        xml.attribute("label", issue.getLabel());
+        xml.attribute("type", issue.getType());
         xml.attribute("title", issue.getTitle());
         xml.attribute("severity", issue.getSeverity());
         xml.attribute("component", issue.getComponent());
@@ -155,7 +157,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       addIssueComponent(components, "cdo.net4j.db", "Net4j DB Framework");
       addIssueComponent(components, "cdo.docs", "Documentation");
       addIssueComponent(components, "cdo.releng", "Release Engineering");
-      IssueComponent other = addIssueComponent(components, "", "Other");
+      IssueComponent other = addIssueComponent(components, "other", "Other");
 
       for (Issue issue : issues)
       {
@@ -274,7 +276,8 @@ public class ReleaseNotesGenerator extends PromoterComponent
   {
     for (IssueComponent component : components)
     {
-      if (component.getName().equals(name))
+      String componentName = component.getName();
+      if (componentName.equalsIgnoreCase(name))
       {
         return component;
       }
@@ -359,24 +362,21 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
   protected Set<Issue> getIssues(BuildInfo buildInfo, String fromRevision, String toRevision)
   {
-    final Set<Issue> issues = new LinkedHashSet<>();
+    Set<Issue> issues = new LinkedHashSet<>();
 
     if (!fromRevision.equals(toRevision))
     {
       String branch = buildInfo.getBranch();
-      scm.handleLogEntries(branch, fromRevision, toRevision, false, logEntry -> {
-        String message = logEntry.getMessage();
-        String id = issueManager.parseID(message);
-        if (id != null && id.length() != 0)
+
+      scm.getCommits(branch, fromRevision, toRevision, (revision, message) -> {
+        for (IssueManager issueManager : issueManagers)
         {
-          Issue issue = issueManager.getIssue(id);
-          if (issue != null)
-          {
+          issueManager.getCommitIssues(revision, message, issue -> {
             if (issues.add(issue))
             {
-              System.out.println("   " + issue.getID() + ": " + issue.getTitle() + " --> " + issue.getSeverity());
+              System.out.println("   Found " + issue.getType() + " issue " + issue.getLabel() + ": " + issue.getTitle());
             }
-          }
+          });
         }
       });
     }
@@ -386,7 +386,18 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
   protected void sortIssues(List<Issue> issues)
   {
-    Collections.sort(issues, issueManager);
+    Collections.sort(issues, (issue1, issue2) -> {
+      int managerIndex1 = issueManagers.indexOf(issue1.getManager());
+      int managerIndex2 = issueManagers.indexOf(issue2.getManager());
+
+      int result = Integer.compare(managerIndex1, managerIndex2);
+      if (result == 0)
+      {
+        result = issue1.getID().compareTo(issue2.getID());
+      }
+
+      return result;
+    });
   }
 
   /**
@@ -420,14 +431,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
     public void addIssue(Issue issue)
     {
-      if (issueManager.getSeverity(issue) == 0)
-      {
-        enhancements.add(issue);
-      }
-      else
-      {
-        fixes.add(issue);
-      }
+      (issue.isEnhancement() ? enhancements : fixes).add(issue);
     }
 
     public void renderTOC(PrintStream out)
@@ -437,7 +441,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
         return;
       }
 
-      out.println("<a name=\"" + name + "\"></a>");
+      out.println("<a name=\"toc." + name + "\"></a>");
       out.println("<li><a href=\"#" + name + "\">" + label + "</a>");
     }
 
@@ -462,11 +466,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
       if (!fixes.isEmpty())
       {
-        Collections.sort(fixes, (i1, i2) -> {
-          Integer s1 = issueManager.getSeverity(i1);
-          Integer s2 = issueManager.getSeverity(i2);
-          return -s1.compareTo(s2);
-        });
+        fixes.sort(null);
 
         out.println("<h3>Bug Fixes</h3>");
         out.println("<div style=\"margin-left:20px;\">");
@@ -482,11 +482,11 @@ public class ReleaseNotesGenerator extends PromoterComponent
       for (Issue issue : issues)
       {
         String severity = issue.getSeverity();
-        String url = issueManager.getURL(issue);
+        String url = issue.getURL();
         String title = issue.getTitle().replaceAll("<", "&lt;").replaceAll("\"", "&quot;");
 
         out.print("<img src=\"../../images/" + severity + ".gif\" alt=\"" + severity + "\">&nbsp;");
-        out.print("[<a href=\"" + url + "\">" + issue.getID() + "</a>]&nbsp;" + title);
+        out.print("[<a href=\"" + url + "\">" + issue.getLabel() + "</a>]&nbsp;" + title);
         out.print("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"#aaaaaa\"><i>" + issue.getStatus().toLowerCase() + " in " + issue.getVersion() + "</i></font>");
         out.println("<br/>");
       }
