@@ -23,7 +23,12 @@
 		</delete>
 		<mkdir dir="bin" />
 		<ant antfile="lib-install.ant" useNativeBasedir="true" />
-		<javac srcdir="src" destdir="bin" debug="on" includeantruntime="false" />
+		<javac srcdir="src" destdir="bin" debug="on" includeantruntime="false">
+			<classpath>
+				<pathelement location="lib/gson.jar" />
+				<pathelement location="lib/github.jar" />
+			</classpath>
+		</javac>
 		<jar destfile="promoter.jar">
 			<fileset dir="bin">
 				<include name="**" />
@@ -38,7 +43,12 @@
 				<include name="${compositionTempPath}" />
 			</fileset>
 		</delete>
-		<java classpath="promoter.jar" classname="${config.classPromoter}">
+		<java classname="${config.classPromoter}">
+			<classpath>
+				<pathelement location="lib/gson.jar" />
+				<pathelement location="lib/github.jar" />
+				<pathelement location="promoter.jar" />
+			</classpath>
 			<sysproperty key="JOB_URL" value="${env.JOB_URL}" />
 			<sysproperty key="JOB_NAME" value="${env.JOB_NAME}" />
 			<!-- <sysproperty key="ANT_HOME" value="${env.ANT_HOME}" /> -->
