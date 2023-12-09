@@ -347,6 +347,8 @@ public class DropProcessor extends PromoterComponent
         xml.element("include");
         xml.attribute("name", "javadoc/**");
         xml.element("include");
+        xml.attribute("name", "productdoc/**");
+        xml.element("include");
         xml.attribute("name", "schemadoc/**");
         xml.element("include");
         xml.attribute("name", "html/**");
