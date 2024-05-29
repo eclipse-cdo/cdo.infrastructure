@@ -30,6 +30,7 @@
 		<get src="https://repo1.maven.org/maven2/com/google/code/gson/gson/${gson.version}/gson-${gson.version}-sources.jar" dest="gson-sources.zip" />
 
 		<get src="https://repo.eclipse.org/content/repositories/egit-releases/org/eclipse/mylyn/github/org.eclipse.egit.github.core/${github.version}/org.eclipse.egit.github.core-${github.version}.jar" dest="github.jar" />
+		<!--
 		<get src="https://git.eclipse.org/r/plugins/gitiles/egit/egit-github/+archive/v${github.version}/org.eclipse.egit.github.core.tar.gz" dest="github-sources.tgz" />
 		<untar src="github-sources.tgz" dest="tmp" compression="gzip" />
 		<zip basedir="tmp" file="**" destfile="github-sources.zip" />
@@ -40,6 +41,7 @@
 				<include name="tmp/" />
 			</fileset>
 		</delete>
+		-->
 	</target>
 
 </project>
