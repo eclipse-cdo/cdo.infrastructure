@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -549,7 +550,7 @@ public final class IO
 
     try
     {
-      URLConnection connection = new URL(url).openConnection();
+      URLConnection connection = URI.create(url).toURL().openConnection();
       connection.setConnectTimeout(TIMEOUT);
 
       input = connection.getInputStream();

@@ -19,7 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -115,7 +115,7 @@ public class BuildCopier extends PromoterComponent
       {
         try
         {
-          BuildInfo buildInfo = BuildInfo.read(new URL(buildURL + "/artifact/build-info.xml"));
+          BuildInfo buildInfo = BuildInfo.read(URI.create(buildURL + "/artifact/build-info.xml").toURL());
           if (copyBuild(jobProperties, buildURL, buildInfo))
           {
             buildInfos.add(buildInfo);
@@ -166,7 +166,7 @@ public class BuildCopier extends PromoterComponent
 
         try
         {
-          IO.unzip(new URL(buildURL + "/artifact/*zip*/archive.zip"), drop, "archive/");
+          IO.unzip(URI.create(buildURL + "/artifact/*zip*/archive.zip").toURL(), drop, "archive/");
         }
         catch (MalformedURLException ex)
         {
@@ -216,7 +216,7 @@ public class BuildCopier extends PromoterComponent
 
     try
     {
-      XML.parseXML(new URL(jobURL + "/api/xml"), new DefaultHandler()
+      XML.parseXML(URI.create(jobURL + "/api/xml").toURL(), new DefaultHandler()
       {
         private int level;
 
@@ -281,7 +281,7 @@ public class BuildCopier extends PromoterComponent
 
     try
     {
-      XML.parseXML(new URL(buildURL + "/api/xml"), new DefaultHandler()
+      XML.parseXML(URI.create(buildURL + "/api/xml").toURL(), new DefaultHandler()
       {
         private int level;
 
