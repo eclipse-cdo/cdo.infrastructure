@@ -177,19 +177,13 @@ public final class PromoterConfig extends Config
   public String getJobsURL()
   {
     String jobURL = getProperty("JOB_URL");
-    String jobName = getProperty("JOB_NAME");
-    if (jobURL != null && jobName != null)
+    if (jobURL != null)
     {
-      jobURL = Util.rstrip(jobURL, "/");
-
-      if (jobURL.endsWith(jobName))
+      int firstJob = jobURL.indexOf("/job/");
+      if (firstJob != -1)
       {
-        jobURL = jobURL.substring(0, jobURL.length() - jobName.length());
+        return jobURL.substring(0, firstJob) + "/job";
       }
-
-      jobURL = Util.rstrip(jobURL, "/");
-
-      return jobURL;
     }
 
     return getProperty("JOBS_URL"); // Deprecated.

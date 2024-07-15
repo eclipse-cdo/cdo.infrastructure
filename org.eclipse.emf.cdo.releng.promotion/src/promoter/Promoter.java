@@ -109,7 +109,6 @@ public class Promoter extends ComponentFactory
     System.out.println("ConfigDirectory      = " + PromoterConfig.INSTANCE.getConfigDirectory());
     System.out.println("GitExecutable        = " + PromoterConfig.INSTANCE.getGitExecutable());
     System.out.println("GitRepositoryURL     = " + PromoterConfig.INSTANCE.getGitRepositoryURL());
-    System.out.println("JobsURL              = " + PromoterConfig.INSTANCE.getJobsURL());
     System.out.println("----------------------------------------------------------------------------------------------------------");
 
     List<BuildInfo> copiedBuilds = new ArrayList<>();

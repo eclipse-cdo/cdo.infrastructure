@@ -59,7 +59,7 @@ public class BuildCopier extends PromoterComponent
         continue;
       }
 
-      Properties jobProperties = Config.loadProperties(new File(jobDir, "promotion.properties"), false);
+      Properties jobProperties = Config.loadProperties(new File(jobDir, "job.properties"), false);
 
       boolean disabled = Config.isDisabled(jobProperties);
       if (disabled)
@@ -87,7 +87,8 @@ public class BuildCopier extends PromoterComponent
 
   protected void copyBuilds(String jobName, Properties jobProperties, List<BuildInfo> buildInfos)
   {
-    String jobURL = PromoterConfig.INSTANCE.getJobsURL() + "/" + jobName;
+    String jobPath = jobProperties.getProperty("path", jobName);
+    String jobURL = PromoterConfig.INSTANCE.getJobsURL() + "/" + jobPath;
 
     System.out.println();
     System.out.println("Checking builds of " + jobURL);
