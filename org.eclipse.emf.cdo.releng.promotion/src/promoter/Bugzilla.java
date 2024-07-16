@@ -14,14 +14,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.function.Consumer;
 
 import promoter.util.IO;
 
 /**
  * @author Eike Stepper
  */
-public class Bugzilla extends IssueManager
+public class Bugzilla extends IssueManager<Object>
 {
   public static final String SERVER = "https://bugs.eclipse.org/";
 
@@ -48,7 +47,7 @@ public class Bugzilla extends IssueManager
   }
 
   @Override
-  protected void getIssueIDs(String commitID, String commitMessage, Consumer<String> issueIDConsumer)
+  protected void getIssueIDs(String commitID, String commitMessage, IssueIDConsumer<Object> issueIDConsumer)
   {
     if (commitMessage.length() >= 3 && commitMessage.charAt(0) == '[')
     {
@@ -60,7 +59,7 @@ public class Bugzilla extends IssueManager
         try
         {
           Integer.parseInt(id); // Valid integer?
-          issueIDConsumer.accept(id);
+          issueIDConsumer.accept(id, null);
         }
         catch (NumberFormatException ex)
         {
@@ -71,7 +70,7 @@ public class Bugzilla extends IssueManager
   }
 
   @Override
-  protected Issue createIssue(String issueID)
+  protected Issue createIssue(String issueID, Object issueInfo)
   {
     for (int i = 0; i < RETRIES; i++)
     {

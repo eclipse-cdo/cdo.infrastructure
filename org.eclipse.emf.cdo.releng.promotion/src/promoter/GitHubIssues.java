@@ -10,12 +10,15 @@
  */
 package promoter;
 
+import org.eclipse.egit.github.core.AbstractIssue;
 import org.eclipse.egit.github.core.Label;
 import org.eclipse.egit.github.core.Milestone;
+import org.eclipse.egit.github.core.PullRequest;
+import org.eclipse.egit.github.core.client.PageIterator;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +27,7 @@ import java.util.regex.Pattern;
  *
  * @author Eike Stepper
  */
-public class GitHubIssues extends IssueManager
+public class GitHubIssues extends IssueManager<AbstractIssue>
 {
   @SuppressWarnings("unused")
   private static final Pattern USERNAME_PATTERN = Pattern.compile("(^[a-z\\d](?:[a-z\\d]|-(?=[a-z\\d])){0,38}$)", Pattern.CASE_INSENSITIVE);
@@ -44,13 +47,19 @@ public class GitHubIssues extends IssueManager
   }
 
   @Override
+  public int compare(Issue i1, Issue i2)
+  {
+    return Integer.valueOf(i1.getID()).compareTo(Integer.valueOf(i2.getID()));
+  }
+
+  @Override
   public String getIssueLabelPrefix()
   {
     return ISSUE_LABEL_PREFIX;
   }
 
   @Override
-  protected void getIssueIDs(String commitID, String commitMessage, Consumer<String> issueIDConsumer)
+  protected void getIssueIDs(String commitID, String commitMessage, IssueIDConsumer<AbstractIssue> issueIDConsumer)
   {
     // Restrict search to first line of commit message.
     int newline = commitMessage.indexOf(13);
@@ -59,49 +68,68 @@ public class GitHubIssues extends IssueManager
       commitMessage = commitMessage.substring(0, newline);
     }
 
+    int issues = 0;
+
     Matcher matcher = ISSUE_REF_PATTERN.matcher(commitMessage);
     while (matcher.find())
     {
       String issueID = matcher.group(2);
-      issueIDConsumer.accept(issueID);
+      issueIDConsumer.accept(issueID, null);
+      ++issues;
+    }
+
+    if (issues == 0 && commitMessage != null && !commitMessage.startsWith("[Releng]"))
+    {
+      for (PageIterator<PullRequest> it = GitHub.getPullRequestService().pagePullRequests(GitHub.REPO, commitID + " is:merged"); it.hasNext();)
+      {
+        Collection<PullRequest> prs = it.next();
+
+        for (PullRequest pr : prs)
+        {
+          String issueID = Integer.toString(pr.getNumber());
+          issueIDConsumer.accept(issueID, pr);
+        }
+      }
     }
   }
 
   @Override
-  protected Issue createIssue(String issueID)
+  protected Issue createIssue(String issueID, AbstractIssue issueInfo)
   {
     int id = Integer.parseInt(issueID);
-    org.eclipse.egit.github.core.Issue githubIssue;
 
-    try
+    if (issueInfo == null)
     {
-      githubIssue = GitHub.getIssueService().getIssue(GitHub.REPO, id);
-    }
-    catch (IOException ex)
-    {
-      throw new RuntimeException(ex);
+      try
+      {
+        issueInfo = GitHub.getIssueService().getIssue(GitHub.REPO, id);
+      }
+      catch (IOException ex)
+      {
+        ex.printStackTrace();
+      }
     }
 
-    if (githubIssue == null)
+    if (issueInfo == null)
     {
       return null;
     }
 
-    String url = githubIssue.getHtmlUrl();
-    String title = githubIssue.getTitle();
-    boolean enhancement = isEnhancement(githubIssue);
-    String severity = getSeverity(githubIssue);
+    String url = issueInfo.getHtmlUrl();
+    String title = issueInfo.getTitle();
+    boolean enhancement = isEnhancement(issueInfo);
+    String severity = getSeverity(issueInfo);
     int severityIndex = enhancement ? 0 : 1;
-    String component = getComponent(githubIssue);
-    String version = getVersion(githubIssue);
-    String status = githubIssue.getState();
+    String component = getComponent(issueInfo);
+    String version = getVersion(issueInfo);
+    String status = issueInfo.getState();
 
     return new Issue(this, url, issueID, title, enhancement, severity, severityIndex, component, version, status);
   }
 
-  private boolean isEnhancement(org.eclipse.egit.github.core.Issue githubIssue)
+  private static boolean isEnhancement(AbstractIssue issueInfo)
   {
-    for (Label label : githubIssue.getLabels())
+    for (Label label : issueInfo.getLabels())
     {
       String name = label.getName();
       if (GitHub.ENHANCEMENT_LABEL_NAME.equals(name))
@@ -113,9 +141,9 @@ public class GitHubIssues extends IssueManager
     return false;
   }
 
-  private String getSeverity(org.eclipse.egit.github.core.Issue githubIssue)
+  private static String getSeverity(AbstractIssue issueInfo)
   {
-    for (Label label : githubIssue.getLabels())
+    for (Label label : issueInfo.getLabels())
     {
       String name = label.getName();
       if (GitHub.ENHANCEMENT_LABEL_NAME.equals(name))
@@ -127,9 +155,9 @@ public class GitHubIssues extends IssueManager
     return "normal";
   }
 
-  private String getComponent(org.eclipse.egit.github.core.Issue githubIssue)
+  private static String getComponent(AbstractIssue issueInfo)
   {
-    List<Label> labels = githubIssue.getLabels();
+    List<Label> labels = issueInfo.getLabels();
     for (Label label : labels)
     {
       String color = label.getColor();
@@ -156,20 +184,14 @@ public class GitHubIssues extends IssueManager
     return null;
   }
 
-  private String getVersion(org.eclipse.egit.github.core.Issue githubIssue)
+  private static String getVersion(AbstractIssue issueInfo)
   {
-    Milestone milestone = githubIssue.getMilestone();
+    Milestone milestone = issueInfo.getMilestone();
     if (milestone != null)
     {
       return milestone.getTitle();
     }
 
     return null;
-  }
-
-  @Override
-  public int compare(Issue i1, Issue i2)
-  {
-    return Integer.valueOf(i1.getID()).compareTo(Integer.valueOf(i2.getID()));
   }
 }

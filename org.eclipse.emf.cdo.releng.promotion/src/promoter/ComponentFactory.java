@@ -78,9 +78,18 @@ public class ComponentFactory
     return createComponent(SourceCodeManager.class);
   }
 
-  public List<IssueManager> createIssueManagers()
+  @SuppressWarnings("rawtypes")
+  public List<IssueManager<?>> createIssueManagers()
   {
-    return createComponents(IssueManager.class);
+    List<IssueManager<?>> issueManagers = new ArrayList<>();
+
+    List<IssueManager> components = createComponents(IssueManager.class);
+    for (IssueManager issueManager : components)
+    {
+      issueManagers.add(issueManager);
+    }
+
+    return issueManagers;
   }
 
   public BuildCopier createBuildCopier()

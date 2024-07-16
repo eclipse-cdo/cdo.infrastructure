@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 public final class Issue implements Comparable<Issue>
 {
-  private final IssueManager manager;
+  private final IssueManager<?> manager;
 
   private final String url;
 
@@ -37,7 +37,7 @@ public final class Issue implements Comparable<Issue>
 
   private final String status;
 
-  public Issue(IssueManager manager, String url, String id, String title, boolean enhancement, String severity, int severityIndex, String component,
+  public Issue(IssueManager<?> manager, String url, String id, String title, boolean enhancement, String severity, int severityIndex, String component,
       String version, String status)
   {
     this.manager = manager;
@@ -52,7 +52,7 @@ public final class Issue implements Comparable<Issue>
     this.status = status;
   }
 
-  public IssueManager getManager()
+  public IssueManager<?> getManager()
   {
     return manager;
   }

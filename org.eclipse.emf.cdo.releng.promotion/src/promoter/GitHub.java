@@ -50,6 +50,11 @@ public final class GitHub
     GitHubClient client = new GitHubClient();
 
     String github_token = System.getProperty("GITHUB_TOKEN");
+    if (github_token == null)
+    {
+      github_token = System.getenv("GITHUB_TOKEN");
+    }
+
     if (github_token != null && github_token.length() != 0)
     {
       client.setOAuth2Token(github_token);

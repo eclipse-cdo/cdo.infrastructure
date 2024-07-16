@@ -10,18 +10,23 @@
  */
 package promoter;
 
-import org.eclipse.egit.github.core.RepositoryCommit;
+import org.eclipse.egit.github.core.Label;
+import org.eclipse.egit.github.core.Milestone;
+import org.eclipse.egit.github.core.PullRequest;
 import org.eclipse.egit.github.core.RepositoryId;
+import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.CommitService;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.PullRequestService;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
  * @author Eike Stepper
  */
+@SuppressWarnings("all")
 public class GitHubTest
 {
   static RepositoryId cdo = new RepositoryId("eclipse-cdo", "cdo");
@@ -36,9 +41,35 @@ public class GitHubTest
 
   static PullRequestService pullRequestService = new PullRequestService(client);
 
-  @SuppressWarnings("unused")
   public static void main(String[] args) throws Exception
   {
+    for (Collection<PullRequest> prs : pullRequestService.pagePullRequests(GitHub.REPO, "b4d9082bce976b2df23ffb8b45bba23a17f74577 is:merged"))
+    {
+      for (PullRequest pr : prs)
+      {
+        int id = pr.getNumber();
+        System.out.println(id);
+
+        String title = pr.getTitle();
+        System.out.println(title);
+
+        Milestone milestone = pr.getMilestone();
+        System.out.println(milestone.getTitle());
+
+        List<Label> labels = pr.getLabels();
+        for (Label label : labels)
+        {
+          System.out.println(label.getName());
+        }
+
+        List<User> assignees = pr.getAssignees();
+        for (User assignee : assignees)
+        {
+          System.out.println(assignee.getLogin());
+        }
+      }
+    }
+
     // RepositoryCommit commit2 = commitService.getCommit(cdo, "75178686fa2f416da302753a320ceb3c591baeb2");
     //
     // String fromRevision = "19a6f161cd5ea428ef3f46101ec3f4f147199699";
@@ -74,10 +105,10 @@ public class GitHubTest
     // Issue issue = issueService.getIssue(platform, 561);
     // System.out.println();
 
-    List<RepositoryCommit> commits = commitService.getCommits(cdo);
-
-    // RepositoryCommit commit = commitService.getCommit(platform, "54ce9291f8f3c7e25d7e4b945c88c3c85b2e5793");
-    System.out.println();
+    // List<RepositoryCommit> commits = commitService.getCommits(cdo);
+    //
+    // // RepositoryCommit commit = commitService.getCommit(platform, "54ce9291f8f3c7e25d7e4b945c88c3c85b2e5793");
+    // System.out.println();
   }
 
   private static GitHubClient createGitHubClient()

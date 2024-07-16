@@ -34,7 +34,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 {
   private SourceCodeManager scm;
 
-  private List<IssueManager> issueManagers;
+  private List<IssueManager<?>> issueManagers;
 
   public ReleaseNotesGenerator()
   {
@@ -369,7 +369,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       String branch = buildInfo.getBranch();
 
       scm.getCommits(branch, fromRevision, toRevision, (revision, message) -> {
-        for (IssueManager issueManager : issueManagers)
+        for (IssueManager<?> issueManager : issueManagers)
         {
           issueManager.getCommitIssues(revision, message, issue -> {
             if (issues.add(issue))
