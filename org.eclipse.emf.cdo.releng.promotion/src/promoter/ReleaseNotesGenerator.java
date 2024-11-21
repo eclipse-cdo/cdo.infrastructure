@@ -195,20 +195,11 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
       out.println("<p>");
       out.println("These release notes have been generated from the commit log of the <a href=\"https://www.eclipse.org/cdo/downloads/#releases_"
-          + buildInfo.getStream().replace('.', '_') + "\">" + buildInfo.getStream() + "</a> stream and the associated bugzillas.");
-      out.print("<br/>The first commit is " + fromRevision);
-      if (previousBuildInfo != null)
-      {
-        out.println(" in the <a href=\"https://git.eclipse.org/c/cdo/cdo.git/?h=" + previousBuildInfo.getBranch().replaceAll("/", "%2F") + "\">"
-            + previousBuildInfo.getBranch() + "</a> branch.");
-      }
-      else
-      {
-        out.println(" in the <a href=\"https://git.eclipse.org/c/cdo/cdo.git/?h=master\">master</a> branch.");
-      }
-
-      out.println("<br/>The last commit is " + toRevision + " in the <a href=\"" + "https://git.eclipse.org/c/cdo/cdo.git/?h="
-          + buildInfo.getBranch().replaceAll("/", "%2F") + "\">" + buildInfo.getBranch() + "</a> branch.");
+          + buildInfo.getStream().replace('.', '_') + "\">" + buildInfo.getStream() + "</a> stream and the associated "
+          + "<a href=\"https://github.com/eclipse-cdo/cdo/issues\">issues</a> and "
+          + "<a href=\"https://github.com/eclipse-cdo/cdo/pulls\">pull requests</a>.");
+      out.println("<br/>The first commit is " + fromRevision + " in the " + branchLink(previousBuildInfo) + " branch.");
+      out.println("<br/>The last commit is " + toRevision + " in the " + branchLink(buildInfo) + " branch.");
 
       previousBuildNote(out, buildInfo, previousBuildInfo);
       out.println("</p>");
@@ -398,6 +389,22 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
       return result;
     });
+  }
+
+  private static String branchLink(BuildInfo buildInfo)
+  {
+    String branch = buildInfo == null ? "master" : buildInfo.getBranch();
+    return "<a href=\"" + branchHref(branch) + "\">" + branch + "</a>";
+  }
+
+  private static String branchHref(String branch)
+  {
+    if (branch == null || branch.equals("master"))
+    {
+      return "https://github.com/eclipse-cdo/cdo";
+    }
+
+    return "https://github.com/eclipse-cdo/cdo/tree/" + branch;
   }
 
   /**
