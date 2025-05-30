@@ -11,6 +11,7 @@
 package promoter;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 
 import promoter.util.IO;
@@ -24,7 +25,7 @@ public class WebGenerator extends PromoterComponent
   {
   }
 
-  public void generateWeb(WebNode webNode)
+  public final void generateWeb(WebNode webNode)
   {
     System.out.println();
     PrintStream out = null;
@@ -32,7 +33,7 @@ public class WebGenerator extends PromoterComponent
     try
     {
       out = new PrintStream(new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "index.html"));
-      webNode.generate(out, 0);
+      generateWeb(webNode, out);
       out.flush();
     }
     catch (Exception ex)
@@ -43,5 +44,10 @@ public class WebGenerator extends PromoterComponent
     {
       IO.close(out);
     }
+  }
+
+  protected void generateWeb(WebNode webNode, PrintStream out) throws IOException
+  {
+    webNode.generate(out, 0);
   }
 }

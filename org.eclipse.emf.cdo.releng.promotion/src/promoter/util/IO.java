@@ -33,6 +33,7 @@ import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -564,6 +565,13 @@ public final class IO
     {
       close(input);
     }
+  }
+
+  public static String readURL(String url)
+  {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    readURL(url, input -> copy(input, baos));
+    return baos.toString(StandardCharsets.UTF_8);
   }
 
   public static void writeFile(File file, byte[] bytes)
