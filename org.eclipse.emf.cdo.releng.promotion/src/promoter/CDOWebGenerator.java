@@ -24,7 +24,7 @@ import promoter.util.IO;
  */
 public class CDOWebGenerator extends WebGenerator
 {
-  private static final String TEMPLATE = "https://eclipse.dev/cdo/downloads.html";
+  private static final String TEMPLATE = "https://eclipse.dev/cdo/downloads/index.html";
 
   private static final Pattern BREADCRUMB = pattern("BREADCRUMB");
 
