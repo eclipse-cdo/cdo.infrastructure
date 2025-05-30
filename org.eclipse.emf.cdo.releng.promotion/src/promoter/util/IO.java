@@ -571,7 +571,7 @@ public final class IO
   {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     readURL(url, input -> copy(input, baos));
-    return baos.toString(StandardCharsets.UTF_8);
+    return new String(baos.toByteArray(), StandardCharsets.UTF_8);
   }
 
   public static void writeFile(File file, byte[] bytes)

@@ -65,7 +65,7 @@ public class CDOWebGenerator extends WebGenerator
       IO.close(out);
     }
 
-    return baos.toString(StandardCharsets.UTF_8);
+    return new String(baos.toByteArray(), StandardCharsets.UTF_8);
   }
 
   private static String replacePlaceholder(String template, Pattern pattern, String replacement)
