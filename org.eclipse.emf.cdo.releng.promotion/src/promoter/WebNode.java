@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.StreamSupport;
 
@@ -30,6 +31,8 @@ import promoter.util.IO;
  */
 public class WebNode implements Comparable<WebNode>
 {
+  public static final String ROOT = "<root>";
+
   private final boolean EXPAND_ALL = Boolean.getBoolean("webExpandAll");
 
   // The names of the trains that contain Eclipse 4.2 or higher such that the list index is the minor version.
@@ -87,7 +90,7 @@ public class WebNode implements Comparable<WebNode>
   public final String getName()
   {
     String name = relativePath.getName();
-    return name.isEmpty() ? "<root>" : name;
+    return name.isEmpty() ? ROOT : name;
   }
 
   public final Repository getRepository()
@@ -113,6 +116,19 @@ public class WebNode implements Comparable<WebNode>
   public final List<WebNode> getChildren()
   {
     return children;
+  }
+
+  public final WebNode getChild(String name)
+  {
+    for (WebNode child : children)
+    {
+      if (Objects.equals(child.getName(), name))
+      {
+        return child;
+      }
+    }
+
+    return null;
   }
 
   public final BuildInfo getLatestDrop(boolean includeInvisibles)
@@ -329,8 +345,7 @@ public class WebNode implements Comparable<WebNode>
     String dropID = "drop_" + dropName;
     String dropLabel = buildInfo.getQualifier();
 
-    Properties webProperties = Config.loadProperties(new File(buildInfo.getDrop(), "web.properties"), false);
-    String webLabel = webProperties.getProperty("web.label");
+    String webLabel = buildInfo.getWebLabel();
     if (webLabel != null)
     {
       dropLabel = webLabel + " (" + dropLabel + ")";

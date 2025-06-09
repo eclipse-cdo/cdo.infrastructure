@@ -28,6 +28,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
@@ -607,6 +608,49 @@ public final class IO
     }
   }
 
+  public static void printFile(File file, PrintHandler handler)
+  {
+    PrintStream out = null;
+
+    try
+    {
+      out = new PrintStream(file);
+      handler.print(out);
+      out.flush();
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      close(out);
+    }
+  }
+
+  public static String print(PrintHandler handler)
+  {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    PrintStream out = null;
+
+    try
+    {
+      out = new PrintStream(baos);
+      handler.print(out);
+      out.flush();
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      close(out);
+    }
+
+    return new String(baos.toByteArray(), StandardCharsets.UTF_8);
+  }
+
   public static void emptyFile(File file)
   {
     writeFile(file, new byte[0]);
@@ -750,5 +794,17 @@ public final class IO
     };
 
     public void handleOutput(OutputStream out) throws IOException;
+  }
+
+  /**
+   * @author Eike Stepper
+   */
+  public interface PrintHandler
+  {
+    public static final PrintHandler EMPTY = out -> {
+      // Do nothing
+    };
+
+    public void print(PrintStream out) throws IOException;
   }
 }

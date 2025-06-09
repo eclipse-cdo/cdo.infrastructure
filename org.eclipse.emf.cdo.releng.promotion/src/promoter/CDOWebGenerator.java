@@ -10,14 +10,13 @@
  */
 package promoter;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import promoter.util.IO;
+import promoter.util.IO.PrintHandler;
 
 /**
  * @author Eike Stepper
@@ -35,37 +34,81 @@ public class CDOWebGenerator extends WebGenerator
   }
 
   @Override
-  protected void generateWeb(WebNode webNode, PrintStream out) throws IOException
+  protected void generateWeb(WebNode root, PrintStream out) throws IOException
   {
-    String template = IO.readURL(TEMPLATE);
-    String body = generateWebBody(webNode);
+    generateTemplate(out, TEMPLATE, "<a href=\"downloads.html\">Downloads</a><span>All</span>", IO.print(ps -> super.generateWeb(root, ps)));
 
+    printFile("downloads.html", html -> {
+      generateTemplate(html, TEMPLATE, "<span>Downloads</span>", IO.print(ps -> generateDownloads(root, ps)));
+    });
+  }
+
+  private void generateDownloads(WebNode root, PrintStream out)
+  {
+    WebNode releases = root.getChild("releases");
+    WebNode integration = root.getChild("integration");
+
+    generateDownload("Latest Release", releases, out);
+    generateDownload("Latest Stable Build", integration.getChild("stable"), out);
+    generateDownload("Latest Weekly Build", integration.getChild("weekly"), out);
+  }
+
+  private void generateDownload(String heading, WebNode webNode, PrintStream out)
+  {
+    BuildInfo buildInfo = webNode.getLatestDrop(false);
+    String qualifier = buildInfo.getQualifier();
+    String dropLabel = qualifier;
+
+    String webLabel = buildInfo.getWebLabel();
+    if (webLabel != null)
+    {
+      dropLabel += " (" + webLabel + ")";
+    }
+
+    out.println();
+    out.println("<h3>" + heading + "</h3>");
+    out.println("<div class=\"indent\">");
+    out.println("<h4>" + dropLabel + "</h4>");
+
+    out.println("<a class=\"button button-download\" href=\"https://www.eclipse.org/downloads/download.php?file=/modeling/emf/cdo/drops/" + qualifier
+        + "/zips/emf-cdo-" + qualifier + "-Dropins.zip&protocol=http\" title=\"ZIP file with this build's features and bundles\">Download</a>");
+
+    out.println("<a class=\"button button-download\" href=\"https://download.eclipse.org/modeling/emf/cdo/drops/" + qualifier
+        + "\" title=\"p2 repository to install this build's features and bundles\">Update&nbsp;Site</a>");
+
+    out.println("<a class=\"button button-download\" href=\"https://download.eclipse.org/modeling/emf/cdo/drops/" + qualifier
+        + "\" title=\"p2 composite repository to always install the latest release's features and bundles\">Floating&nbsp;Update&nbsp;Site</a>");
+
+    out.println("<br>");
+
+    out.println("<a class=\"button button-neutral\" href=\"https://download.eclipse.org/modeling/emf/cdo/drops/" + qualifier
+        + "/relnotes.html\" title=\"Enhancements and fixes in this build\">Release&nbsp;Notes</a>");
+
+    out.println("<a class=\"button button-neutral\" href=\"https://download.eclipse.org/modeling/emf/cdo/drops/" + qualifier
+        + "/api.html\" title=\"API changes in this build compared to the previous release\">API&nbsp;Report</a>");
+
+    out.println("<a class=\"button button-neutral\" href=\"https://download.eclipse.org/modeling/emf/cdo/drops/" + qualifier
+        + "/tests/index.html\" title=\"Jenkins test results of this build\">Test&nbsp;Report</a>");
+
+    out.println("<a class=\"button button-neutral\" href=\"https://download.eclipse.org/modeling/emf/cdo/drops/" + qualifier
+        + "/help/index.html\" title=\"Online help center for this build\">Documentation</a>");
+
+    out.println("<a href=\"https://download.eclipse.org/modeling/emf/cdo/updates/index.html#" + qualifier + "\">More&nbsp;infos</a>");
+    out.println("</div>");
+  }
+
+  protected static void generateTemplate(PrintStream out, String templateURL, String breadcrumb, String body)
+  {
+    String template = IO.readURL(templateURL);
     template = replacePlaceholder(template, BREADCRUMB, "CDO Downloads");
     template = replacePlaceholder(template, GENERATED_BODY, body);
     out.print(template);
   }
 
-  private String generateWebBody(WebNode webNode)
+  protected static void generateTemplate(PrintStream out, String templateURL, String breadcrumb, PrintHandler bodyHandler)
   {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    PrintStream out = null;
-
-    try
-    {
-      out = new PrintStream(baos);
-      super.generateWeb(webNode, out);
-      out.flush();
-    }
-    catch (Exception ex)
-    {
-      throw new RuntimeException(ex);
-    }
-    finally
-    {
-      IO.close(out);
-    }
-
-    return new String(baos.toByteArray(), StandardCharsets.UTF_8);
+    String body = IO.print(bodyHandler);
+    generateTemplate(out, templateURL, breadcrumb, body);
   }
 
   private static String replacePlaceholder(String template, Pattern pattern, String replacement)

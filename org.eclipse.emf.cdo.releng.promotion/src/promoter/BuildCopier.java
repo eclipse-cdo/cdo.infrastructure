@@ -162,7 +162,10 @@ public class BuildCopier extends PromoterComponent
       File drop = new File(dropsDir, buildInfo.getQualifier());
       if (!drop.exists())
       {
+        drop.mkdirs();
+
         boolean isVisible = autoVisible.contains(buildType);
+        DropProcessor.storeMarkers(drop, jobProperties, isVisible);
         System.out.println("Build " + buildInfo.getNumber() + " is being copied to " + drop + (isVisible ? " (visible)" : " (invisible)"));
 
         try
@@ -187,7 +190,6 @@ public class BuildCopier extends PromoterComponent
         }
 
         setTag(buildInfo);
-        DropProcessor.storeMarkers(drop, jobProperties, isVisible);
         return true;
       }
 

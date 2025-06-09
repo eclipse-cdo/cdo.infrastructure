@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import promoter.util.IO;
+import promoter.util.IO.PrintHandler;
 
 /**
  * @author Eike Stepper
@@ -25,29 +26,20 @@ public class WebGenerator extends PromoterComponent
   {
   }
 
-  public final void generateWeb(WebNode webNode)
+  public final void generateWeb(WebNode root)
   {
     System.out.println();
-    PrintStream out = null;
-
-    try
-    {
-      out = new PrintStream(new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "index.html"));
-      generateWeb(webNode, out);
-      out.flush();
-    }
-    catch (Exception ex)
-    {
-      throw new RuntimeException(ex);
-    }
-    finally
-    {
-      IO.close(out);
-    }
+    printFile("index.html", out -> generateWeb(root, out));
   }
 
-  protected void generateWeb(WebNode webNode, PrintStream out) throws IOException
+  protected void generateWeb(WebNode root, PrintStream out) throws IOException
   {
-    webNode.generate(out, 0);
+    root.generate(out, 0);
+  }
+
+  protected static void printFile(String fileName, PrintHandler handler)
+  {
+    File file = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), fileName);
+    IO.printFile(file, handler);
   }
 }

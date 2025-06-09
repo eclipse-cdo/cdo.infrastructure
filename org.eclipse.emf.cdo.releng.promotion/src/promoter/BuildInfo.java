@@ -17,8 +17,10 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Properties;
 import java.util.function.Predicate;
 
+import promoter.util.Config;
 import promoter.util.XML;
 
 /**
@@ -163,6 +165,13 @@ public final class BuildInfo implements Comparable<BuildInfo>
     File drop = getDrop();
     File marker = new File(drop, DropProcessor.MARKER_INVISIBLE);
     return !marker.isFile();
+  }
+
+  public String getWebLabel()
+  {
+    File drop = getDrop();
+    Properties webProperties = Config.loadProperties(new File(drop, "web.properties"), false);
+    return webProperties.getProperty("web.label");
   }
 
   public File getDrop()
