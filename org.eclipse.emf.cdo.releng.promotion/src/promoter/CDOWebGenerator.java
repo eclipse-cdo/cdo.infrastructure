@@ -23,7 +23,7 @@ import promoter.util.IO.PrintHandler;
  */
 public class CDOWebGenerator extends WebGenerator
 {
-  private static final String TEMPLATE = "https://eclipse.dev/cdo/downloads/index.html";
+  private static final String TEMPLATE = "https://raw.githubusercontent.com/eclipse-cdo/cdo.www/refs/heads/master/downloads/index.html";
 
   private static final Pattern BREADCRUMB = pattern("BREADCRUMB");
 
@@ -36,8 +36,10 @@ public class CDOWebGenerator extends WebGenerator
   @Override
   protected void generateWeb(WebNode root, PrintStream out) throws IOException
   {
+    // All downloads (index.html)
     generateTemplate(out, TEMPLATE, "<a href=\"downloads.html\">Downloads</a><span>All</span>", IO.print(ps -> super.generateWeb(root, ps)));
 
+    // Simple downloads (downloads.html)
     printFile("downloads.html", html -> {
       generateTemplate(html, TEMPLATE, "<span>Downloads</span>", IO.print(ps -> generateDownloads(root, ps)));
     });
