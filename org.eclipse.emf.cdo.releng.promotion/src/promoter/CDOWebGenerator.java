@@ -53,6 +53,13 @@ public class CDOWebGenerator extends WebGenerator
     generateDownload("Latest Release", releases, out);
     generateDownload("Latest Stable Build", integration.getChild("stable"), out);
     generateDownload("Latest Weekly Build", integration.getChild("weekly"), out);
+
+    out.println();
+    out.println("<h3>Other Builds</h3>");
+    out.println("<div class=\"indent\">");
+    out.println("<a class=\"button button-neutral\" href=\"index.html\">All Promoted Builds</a>");
+    out.println("<a class=\"button button-neutral\" href=\"https://ci.eclipse.org/cdo/job/emf-cdo-build/job/master\">Continuous Integration</a>");
+    out.println("</div>");
   }
 
   private void generateDownload(String heading, WebNode webNode, PrintStream out)
@@ -96,13 +103,6 @@ public class CDOWebGenerator extends WebGenerator
         + "/help/index.html\" title=\"The online help center for this build\">Help Center</a>");
 
     out.println("<a href=\"https://download.eclipse.org/modeling/emf/cdo/updates/index.html#" + qualifier + "\">More&nbsp;infos</a>");
-    out.println("</div>");
-
-    out.println();
-    out.println("<h3>Other Builds</h3>");
-    out.println("<div class=\"indent\">");
-    out.println("<a class=\"button button-neutral\" href=\"index.html\">All Promoted Builds</a>");
-    out.println("<a class=\"button button-neutral\" href=\"https://ci.eclipse.org/cdo/job/emf-cdo-build/job/master\">Continuous Integration</a>");
     out.println("</div>");
   }
 
