@@ -260,15 +260,16 @@ public class WebNode implements Comparable<WebNode>
   {
     String nodeName = getAnchorName();
     String nodeID = "repo_" + nodeName;
+    boolean collapsed = !EXPAND_ALL && webCollapsed;
 
     // Heading
     out.println();
-    out.println(prefix(level) + "<div class=\"repo-item\"><a href=\"javascript:toggle('" + nodeID + "')\">" + toggleImage(nodeID, false)
+    out.println(prefix(level) + "<div class=\"repo-item\"><a href=\"javascript:toggle('" + nodeID + "')\">" + toggleImage(nodeID, !collapsed)
         + "</a> <span class=\"repo-label" + pathLevel + "\">" + webLabel + "</span> <a name=\"" + nodeName + "\" href=\"#" + nodeName
         + "\"><img style=\"vertical-align:middle\" src=\"https://eclipse.dev/cdo/images/link_obj.gif\" alt=\"Permalink\" width=\"12\" height=\"12\"/></a></div>");
 
-    out.println(prefix(level++) + "<div class=\"repo" + pathLevel + "\" id=\"repo_" + nodeName + "\""
-        + (!EXPAND_ALL && webCollapsed || empty ? " style=\"display: none\"" : "") + ">");
+    out.println(
+        prefix(level++) + "<div class=\"repo" + pathLevel + "\" id=\"repo_" + nodeName + "\"" + (collapsed || empty ? " style=\"display: none\"" : "") + ">");
 
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
@@ -338,6 +339,7 @@ public class WebNode implements Comparable<WebNode>
     String dropName = buildInfo.getQualifier().replace('-', '_');
     String dropID = "drop_" + dropName;
     String dropLabel = buildInfo.getQualifier();
+    boolean collapsed = !EXPAND_ALL && !firstDrop;
 
     String webLabel = buildInfo.getWebLabel();
     if (webLabel != null)
@@ -345,11 +347,11 @@ public class WebNode implements Comparable<WebNode>
       dropLabel = webLabel + " (" + dropLabel + ")";
     }
 
-    out.println(prefix(level) + "<div class=\"repo-item\"><a href=\"javascript:toggle('" + dropID + "')\">" + toggleImage(dropID, false)
+    out.println(prefix(level) + "<div class=\"repo-item\"><a href=\"javascript:toggle('" + dropID + "')\">" + toggleImage(dropID, !collapsed)
         + "</a> <span class=\"drop-label\">" + dropLabel + "</span> <a name=\"" + dropName + "\" href=\"#" + dropName
         + "\"><img style=\"vertical-align:middle\" src=\"https://eclipse.dev/cdo/images/link_obj.gif\" alt=\"Permalink\" width=\"12\" height=\"12\"/></a></div>");
 
-    out.println(prefix(level++) + "<div class=\"drop\" id=\"" + dropID + "\"" + (EXPAND_ALL || firstDrop ? "" : " style=\"display: none\"") + ">");
+    out.println(prefix(level++) + "<div class=\"drop\" id=\"" + dropID + "\"" + (collapsed ? " style=\"display: none\"" : "") + ">");
     out.println(prefix(level++) + "<table border=\"0\" width=\"100%\">");
 
     File drop = buildInfo.getDrop();
