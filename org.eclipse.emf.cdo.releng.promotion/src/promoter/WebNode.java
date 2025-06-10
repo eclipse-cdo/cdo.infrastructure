@@ -264,7 +264,7 @@ public class WebNode implements Comparable<WebNode>
 
     // Heading
     out.println();
-    out.println(prefix(level) + "<div class=\"repo-item\"><a href=\"javascript:toggle('" + nodeID + "')\">" + toggleImage(nodeID, !collapsed)
+    out.println(prefix(level) + "<div class=\"repo-item\"><a href=\"javascript:toggle('" + nodeID + "')\">" + toggleImage(nodeID, collapsed)
         + "</a> <span class=\"repo-label" + pathLevel + "\">" + webLabel + "</span> <a name=\"" + nodeName + "\" href=\"#" + nodeName
         + "\"><img style=\"vertical-align:middle\" src=\"https://eclipse.dev/cdo/images/link_obj.gif\" alt=\"Permalink\" width=\"12\" height=\"12\"/></a></div>");
 
@@ -347,7 +347,7 @@ public class WebNode implements Comparable<WebNode>
       dropLabel = webLabel + " (" + dropLabel + ")";
     }
 
-    out.println(prefix(level) + "<div class=\"repo-item\"><a href=\"javascript:toggle('" + dropID + "')\">" + toggleImage(dropID, !collapsed)
+    out.println(prefix(level) + "<div class=\"repo-item\"><a href=\"javascript:toggle('" + dropID + "')\">" + toggleImage(dropID, collapsed)
         + "</a> <span class=\"drop-label\">" + dropLabel + "</span> <a name=\"" + dropName + "\" href=\"#" + dropName
         + "\"><img style=\"vertical-align:middle\" src=\"https://eclipse.dev/cdo/images/link_obj.gif\" alt=\"Permalink\" width=\"12\" height=\"12\"/></a></div>");
 
