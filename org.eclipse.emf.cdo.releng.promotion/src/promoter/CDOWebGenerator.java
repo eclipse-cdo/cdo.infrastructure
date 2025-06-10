@@ -93,9 +93,16 @@ public class CDOWebGenerator extends WebGenerator
         + "/tests/index.html\" title=\"The test results of this build\">Test&nbsp;Report</a>");
 
     out.println("<a class=\"button button-neutral\" href=\"https://download.eclipse.org/modeling/emf/cdo/drops/" + qualifier
-        + "/help/index.html\" title=\"The online help center for this build\">Documentation</a>");
+        + "/help/index.html\" title=\"The online help center for this build\">Help Center</a>");
 
     out.println("<a href=\"https://download.eclipse.org/modeling/emf/cdo/updates/index.html#" + qualifier + "\">More&nbsp;infos</a>");
+    out.println("</div>");
+
+    out.println();
+    out.println("<h3>Other Builds</h3>");
+    out.println("<div class=\"indent\">");
+    out.println("<a class=\"button button-neutral\" href=\"index.html\">All Promoted Builds</a>");
+    out.println("<a class=\"button button-neutral\" href=\"https://ci.eclipse.org/cdo/job/emf-cdo-build/job/master\">Continuous Integration</a>");
     out.println("</div>");
   }
 
