@@ -62,7 +62,7 @@ public class CDOWebGenerator extends WebGenerator
     String webLabel = buildInfo.getWebLabel();
     if (webLabel != null)
     {
-      dropLabel += " (" + webLabel + ")";
+      dropLabel += " (CDO " + webLabel + ")";
     }
 
     out.println();
@@ -71,27 +71,27 @@ public class CDOWebGenerator extends WebGenerator
     out.println("<h4>" + dropLabel + "</h4>");
 
     out.println("<a class=\"button button-download\" href=\"https://www.eclipse.org/downloads/download.php?file=/modeling/emf/cdo/drops/" + qualifier
-        + "/zips/emf-cdo-" + qualifier + "-Dropins.zip&protocol=http\" title=\"ZIP file with this build's features and bundles\">Download</a>");
+        + "/zips/emf-cdo-" + qualifier + "-Dropins.zip&protocol=http\" title=\"An archive file with the features and bundles of this build\">Download</a>");
 
     out.println("<a class=\"button button-download\" href=\"https://download.eclipse.org/modeling/emf/cdo/drops/" + qualifier
-        + "\" title=\"p2 repository to install this build's features and bundles\">Update&nbsp;Site</a>");
+        + "\" title=\"A p2 repository to install this build\">Update&nbsp;Site</a>");
 
-    out.println("<a class=\"button button-download\" href=\"https://download.eclipse.org/modeling/emf/cdo/drops/" + qualifier
-        + "\" title=\"p2 composite repository to always install the latest release's features and bundles\">Floating&nbsp;Update&nbsp;Site</a>");
+    out.println("<a class=\"button button-download\" href=\"" + webNode.getLatestRepository().getURL(false)
+        + "\" title=\"A p2 composite repository to always install the " + heading.toLowerCase() + "\">Floating&nbsp;Update&nbsp;Site</a>");
 
     out.println("<br>");
 
     out.println("<a class=\"button button-neutral\" href=\"https://download.eclipse.org/modeling/emf/cdo/drops/" + qualifier
-        + "/relnotes.html\" title=\"Enhancements and fixes in this build\">Release&nbsp;Notes</a>");
+        + "/relnotes.html\" title=\"The enhancements and fixes in this build\">Release&nbsp;Notes</a>");
 
     out.println("<a class=\"button button-neutral\" href=\"https://download.eclipse.org/modeling/emf/cdo/drops/" + qualifier
-        + "/api.html\" title=\"API changes in this build compared to the previous release\">API&nbsp;Report</a>");
+        + "/api.html\" title=\"The API changes in this build compared to the previous release\">API&nbsp;Report</a>");
 
     out.println("<a class=\"button button-neutral\" href=\"https://download.eclipse.org/modeling/emf/cdo/drops/" + qualifier
-        + "/tests/index.html\" title=\"Jenkins test results of this build\">Test&nbsp;Report</a>");
+        + "/tests/index.html\" title=\"The test results of this build\">Test&nbsp;Report</a>");
 
     out.println("<a class=\"button button-neutral\" href=\"https://download.eclipse.org/modeling/emf/cdo/drops/" + qualifier
-        + "/help/index.html\" title=\"Online help center for this build\">Documentation</a>");
+        + "/help/index.html\" title=\"The online help center for this build\">Documentation</a>");
 
     out.println("<a href=\"https://download.eclipse.org/modeling/emf/cdo/updates/index.html#" + qualifier + "\">More&nbsp;infos</a>");
     out.println("</div>");
@@ -100,7 +100,7 @@ public class CDOWebGenerator extends WebGenerator
   protected static void generateTemplate(PrintStream out, String templateURL, String breadcrumb, String body)
   {
     String template = IO.readURL(templateURL);
-    template = replacePlaceholder(template, BREADCRUMB, "CDO Downloads");
+    template = replacePlaceholder(template, BREADCRUMB, breadcrumb);
     template = replacePlaceholder(template, GENERATED_BODY, body);
     out.print(template);
   }
