@@ -58,6 +58,7 @@ public class CDOWebGenerator extends WebGenerator
     out.println("<h3>Other Builds</h3>");
     out.println("<div class=\"indent\">");
     out.println("<a class=\"button button-neutral\" href=\"index.html\">All Promoted Builds</a>");
+    out.println("<br>");
     out.println("<a class=\"button button-neutral\" href=\"https://ci.eclipse.org/cdo/job/emf-cdo-build/job/master\">Continuous Integration</a>");
     out.println("</div>");
   }
