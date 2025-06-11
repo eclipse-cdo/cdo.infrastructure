@@ -29,7 +29,7 @@ public class CDOWebGenerator extends WebGenerator
 
   private static final String DOCUMENTATION_TEMPLATE = GITHUB + "/documentation/index.html";
 
-  private static final Pattern OVERVIEW_PATTERN = Pattern.compile("</table>(.+)<p align=\"right\">", Pattern.DOTALL);
+  private static final Pattern OVERVIEW_PATTERN = Pattern.compile("<p class=\"author\">Author: Eike Stepper</p>(.+)<p align=\"right\">", Pattern.DOTALL);
 
   private static final Pattern BREADCRUMB_PATTERN = pattern("BREADCRUMB");
 
