@@ -221,9 +221,9 @@ public class WebNode implements Comparable<WebNode>
       boolean empty = false;
       boolean surrogate = false;
 
-      if (repository instanceof Repository.Drops)
+      if (repository instanceof Drops)
       {
-        Repository.Drops drops = (Repository.Drops)repository;
+        Drops drops = (Drops)repository;
         buildInfos = new ArrayList<>(drops.getBuildInfos());
         empty = buildInfos.isEmpty();
         surrogate = drops.containsSurrogateDrop();

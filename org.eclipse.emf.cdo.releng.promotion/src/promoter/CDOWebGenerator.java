@@ -15,6 +15,7 @@ import java.io.PrintStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import promoter.Repository.Drops;
 import promoter.util.IO;
 import promoter.util.IO.PrintHandler;
 
@@ -84,6 +85,16 @@ public class CDOWebGenerator extends WebGenerator
     if (webLabel != null)
     {
       dropLabel += " (CDO " + webLabel + ")";
+    }
+
+    Repository repository = webNode.getRepository();
+    if (repository instanceof Drops)
+    {
+      Drops drops = (Drops)repository;
+      if (drops.containsSurrogateDrop())
+      {
+        dropLabel += " is replaced by the " + heading.toLowerCase() + " when available.";
+      }
     }
 
     out.println();
