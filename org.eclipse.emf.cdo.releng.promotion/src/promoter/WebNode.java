@@ -213,7 +213,8 @@ public class WebNode implements Comparable<WebNode>
 
   public void generate(PrintStream out, int level) throws IOException
   {
-    System.out.println(prefix(level) + "Generating HTML for " + (level == 0 ? "https://download.eclipse.org/modeling/emf/cdo/updates/index.html" : getName()));
+    System.out.println(
+        prefix(level) + "Generating HTML for " + getName() + (level == 0 ? " --> https://download.eclipse.org/modeling/emf/cdo/updates/index.html" : ""));
 
     if (repository != null)
     {
