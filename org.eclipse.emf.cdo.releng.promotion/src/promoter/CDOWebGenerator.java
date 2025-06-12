@@ -47,11 +47,15 @@ public class CDOWebGenerator extends WebGenerator
     generateTemplate(out, DOWNLOADS_TEMPLATE, "<a href=\"downloads.html\">Downloads</a><span>All</span>", IO.print(ps -> super.generateWeb(root, ps)));
 
     // Simple downloads (downloads.html)
+    System.out.println();
+    System.out.println("Generating HTML --> https://download.eclipse.org/modeling/emf/cdo/updates/downloads.html");
     printFile("downloads.html", html -> {
       generateTemplate(html, DOWNLOADS_TEMPLATE, "<span>Downloads</span>", IO.print(ps -> generateDownloads(root, ps)));
     });
 
     // Documentation (documentation.html)
+    System.out.println();
+    System.out.println("Generating HTML --> https://download.eclipse.org/modeling/emf/cdo/updates/documentation.html");
     printFile("documentation.html", html -> {
       generateTemplate(html, DOCUMENTATION_TEMPLATE, "<span>Documentation</span>", IO.print(ps -> generateDocumentation(root, ps)));
     });
@@ -86,6 +90,8 @@ public class CDOWebGenerator extends WebGenerator
     {
       dropLabel += " (CDO " + webLabel + ")";
     }
+
+    System.out.println("   Generating HTML for " + qualifier);
 
     Repository repository = webNode.getRepository();
     if (repository instanceof Drops)
@@ -135,6 +141,8 @@ public class CDOWebGenerator extends WebGenerator
     BuildInfo buildInfo = releases.getLatestDrop(false);
     String qualifier = buildInfo.getQualifier();
     String webLabel = buildInfo.getWebLabel();
+
+    System.out.println("   Generating HTML for " + qualifier);
 
     String drop = "https://download.eclipse.org/modeling/emf/cdo/drops/" + qualifier;
     String help = drop + "/help";
