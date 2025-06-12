@@ -139,6 +139,7 @@ public class Repository
 
     generateXML(xml, folder, "compositeArtifacts", "compositeArtifactRepository",
         "org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository");
+
     generateXML(xml, folder, "compositeContent", "compositeMetadataRepository",
         "org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository");
   }

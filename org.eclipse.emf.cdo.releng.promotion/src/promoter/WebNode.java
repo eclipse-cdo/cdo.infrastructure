@@ -377,23 +377,22 @@ public class WebNode implements Comparable<WebNode>
       ++elements;
     }
 
-    // Documentation
+    // Help Center
     if (new File(new File(drop, "help"), "index.html").isFile())
     {
       out.println(prefix(level)
           + "<tr class=\"drop-info\"><td><img style=\"vertical-align:middle\" src=\"https://eclipse.dev/cdo/images/16x16/help-browser.png\"/>&nbsp;&nbsp;<a href=\""
-          + dropURL + "/help/index.html\">Documentation</a> to browse the online help center of this build.</td><td class=\"file-size level" + (pathLevel + 1)
+          + dropURL + "/help/index.html\">Help Center</a> to browse the online documentation of this build.</td><td class=\"file-size level" + (pathLevel + 1)
           + "\"></td></tr>");
       ++elements;
     }
 
-    // API Revolution Report
+    // API Report
     if (new File(drop, "api.html").isFile())
     {
       out.println(prefix(level)
           + "<tr class=\"drop-info\"><td><img style=\"vertical-align:middle\" src=\"https://eclipse.dev/cdo/images/api/report.gif\"/>&nbsp;&nbsp;<a href=\""
-          + dropURL + "/api.html\">API Evolution Report</a> to see the API changes in this stream.</td><td class=\"file-size level" + (pathLevel + 1)
-          + "\"></td></tr>");
+          + dropURL + "/api.html\">API Report</a> to see the API changes in this build.</td><td class=\"file-size level" + (pathLevel + 1) + "\"></td></tr>");
       ++elements;
     }
 
