@@ -43,7 +43,7 @@
 				<include name="${compositionTempPath}" />
 			</fileset>
 		</delete>
-		<java classname="${config.classPromoter}">
+		<java classname="${config.classPromoter}" failonerror="true">
 			<classpath>
 				<pathelement location="promoter.jar" />
 				<pathelement location="lib/gson.jar" />

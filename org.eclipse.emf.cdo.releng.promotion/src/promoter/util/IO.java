@@ -57,7 +57,7 @@ public final class IO
   {
   }
 
-  public static void executeProcess(List<String> command, OutputHandler handler)
+  public static int executeProcess(List<String> command, OutputHandler handler)
   {
     File file = null;
 
@@ -69,7 +69,7 @@ public final class IO
       command = new ArrayList<>(command);
       command.add(file.getAbsolutePath());
 
-      executeProcess(command);
+      return executeProcess(command);
     }
     catch (IOException ex)
     {
@@ -84,12 +84,12 @@ public final class IO
     }
   }
 
-  public static void executeProcess(String... command)
+  public static int executeProcess(String... command)
   {
-    executeProcess(Arrays.asList(command));
+    return executeProcess(Arrays.asList(command));
   }
 
-  public static void executeProcess(List<String> command)
+  public static int executeProcess(List<String> command)
   {
     try
     {
@@ -108,7 +108,7 @@ public final class IO
         }
       }.start();
 
-      process.waitFor();
+      return process.waitFor();
     }
     catch (Exception ex)
     {

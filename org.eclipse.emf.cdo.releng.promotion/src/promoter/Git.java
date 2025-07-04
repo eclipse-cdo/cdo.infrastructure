@@ -96,7 +96,7 @@ public class Git extends SourceCodeManager
         command.add("/bin/bash");
       }
 
-      IO.executeProcess(command, out -> {
+      int exitValue = IO.executeProcess(command, out -> {
         PrintStream stream = new PrintStream(out);
         cloneIfNeeded(stream);
 
@@ -115,6 +115,14 @@ public class Git extends SourceCodeManager
         stream.println(GIT_COMMAND + " log --format=\"" + outputFormat + "\" " + range + " > " + outFile);
         stream.flush();
       });
+
+      int test;
+      exitValue = 5;
+
+      if (exitValue != 0)
+      {
+        throw new RuntimeException("Command '" + command + "' ended with exit value " + exitValue);
+      }
 
       FileReader fileReader = new FileReader(outFile);
       BufferedReader bufferedReader = new BufferedReader(fileReader);

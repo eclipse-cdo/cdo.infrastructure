@@ -112,7 +112,14 @@ public abstract class Ant<RESULT>
     System.out.println();
     System.out.println("Executing Ant script " + path);
 
-    IO.executeProcess(ant, "-f", path);
+    int exitValue = IO.executeProcess(ant, "-f", path);
+    int test;
+    exitValue = 5;
+
+    if (exitValue != 0)
+    {
+      throw new RuntimeException("Command '" + ant + "' ended with exit value " + exitValue);
+    }
   }
 
   protected void init(XMLOutput xml) throws SAXException
