@@ -113,9 +113,6 @@ public abstract class Ant<RESULT>
     System.out.println("Executing Ant script " + path);
 
     int exitValue = IO.executeProcess(ant, "-f", path);
-    int test;
-    exitValue = 5;
-
     if (exitValue != 0)
     {
       throw new RuntimeException("Command '" + ant + "' ended with exit value " + exitValue);

@@ -116,9 +116,6 @@ public class Git extends SourceCodeManager
         stream.flush();
       });
 
-      int test;
-      exitValue = 5;
-
       if (exitValue != 0)
       {
         throw new RuntimeException("Command '" + command + "' ended with exit value " + exitValue);
