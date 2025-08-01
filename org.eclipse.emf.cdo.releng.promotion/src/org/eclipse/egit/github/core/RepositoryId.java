@@ -56,12 +56,20 @@ public class RepositoryId implements IRepositoryIdProvider, Serializable
     for (String segment : id.split("/"))
     { // $NON-NLS-1$
       if (segment.length() > 0)
+      {
         if (owner == null)
+        {
           owner = segment;
+        }
         else if (name == null)
+        {
           name = segment;
+        }
         else
+        {
           break;
+        }
+      }
     }
 
     return owner != null && owner.length() > 0 && name != null && name.length() > 0 ? new RepositoryId(owner, name) : null;
@@ -74,7 +82,7 @@ public class RepositoryId implements IRepositoryIdProvider, Serializable
    * @param url
    * @return repository or null if it could not be parsed from URL path
    */
-  @SuppressWarnings("deprecation")
+  @SuppressWarnings("all")
   public static RepositoryId createFromUrl(String url)
   {
     if (url == null || url.length() == 0)
