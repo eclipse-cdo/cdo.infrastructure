@@ -33,7 +33,7 @@ public class PromoterTest extends Promoter
 
   public PromoterTest()
   {
-    super(true, !COPY_BUILDS, true, false);
+    super(true, !COPY_BUILDS, false);
   }
 
   @Override

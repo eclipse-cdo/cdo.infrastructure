@@ -13,7 +13,6 @@ package promoter;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -26,13 +25,11 @@ import promoter.util.XMLOutput;
 /**
  * @author Eike Stepper
  */
-public class Promoter extends ComponentFactory
+public class Promoter extends ComponentFactory implements Runnable
 {
   private final boolean force;
 
   private final boolean skipCopyBuilds;
-
-  private final boolean skipPerformTasks;
 
   private final boolean skipGenerateReleaseNotes;
 
@@ -42,7 +39,6 @@ public class Promoter extends ComponentFactory
   {
     boolean force = Boolean.getBoolean("forcedPromotion");
     boolean skipCopyBuilds = Boolean.getBoolean("skipCopyBuilds");
-    boolean skipPerformTasks = Boolean.getBoolean("skipPerformTasks");
     boolean skipGenerateReleaseNotes = Boolean.getBoolean("skipGenerateReleaseNotes");
 
     if (args != null)
@@ -57,10 +53,6 @@ public class Promoter extends ComponentFactory
         {
           skipCopyBuilds = true;
         }
-        else if ("--skipPerformTasks".equals(arg))
-        {
-          skipPerformTasks = true;
-        }
         else if ("--skipGenerateReleaseNotes".equals(arg))
         {
           skipGenerateReleaseNotes = true;
@@ -68,15 +60,14 @@ public class Promoter extends ComponentFactory
       }
     }
 
-    Promoter main = new Promoter(force, skipCopyBuilds, skipPerformTasks, skipGenerateReleaseNotes);
-    main.run();
+    Promoter promoter = new Promoter(force, skipCopyBuilds, skipGenerateReleaseNotes);
+    promoter.run();
   }
 
-  public Promoter(boolean force, boolean skipCopyBuilds, boolean skipPerformTasks, boolean skipGenerateReleaseNotes)
+  public Promoter(boolean force, boolean skipCopyBuilds, boolean skipGenerateReleaseNotes)
   {
     this.force = force;
     this.skipCopyBuilds = skipCopyBuilds;
-    this.skipPerformTasks = skipPerformTasks;
     this.skipGenerateReleaseNotes = skipGenerateReleaseNotes;
   }
 
@@ -90,6 +81,7 @@ public class Promoter extends ComponentFactory
     return scm;
   }
 
+  @Override
   public void run()
   {
     System.out.println("----------------------------------------------------------------------------------------------------------");
@@ -112,6 +104,7 @@ public class Promoter extends ComponentFactory
     System.out.println("----------------------------------------------------------------------------------------------------------");
 
     List<BuildInfo> copiedBuilds = new ArrayList<>();
+
     if (!skipCopyBuilds)
     {
       BuildCopier buildCopier = createBuildCopier();
@@ -127,12 +120,10 @@ public class Promoter extends ComponentFactory
       }
     }
 
-    List<Task> performedTasks = skipPerformTasks ? new ArrayList<>() : performTasks(copiedBuilds);
-
-    if (copiedBuilds.isEmpty() && performedTasks.isEmpty())
+    if (copiedBuilds.isEmpty())
     {
       System.out.println();
-      System.out.print("No new builds or tasks have been found.");
+      System.out.print("No new builds have been found.");
 
       if (!force)
       {
@@ -180,54 +171,6 @@ public class Promoter extends ComponentFactory
     });
 
     System.out.println();
-  }
-
-  public List<Task> performTasks(List<BuildInfo> builds)
-  {
-    List<Task> tasks = new ArrayList<>();
-    File publicFolder = new File(PromoterConfig.INSTANCE.getWorkingArea(), "public");
-    File taskFolder = new File(publicFolder, "tasks.inprogress");
-    if (taskFolder.isDirectory())
-    {
-      try
-      {
-        for (File file : taskFolder.listFiles())
-        {
-          if (file.isFile() && file.getName().endsWith(".task"))
-          {
-            String content = IO.readTextFile(file);
-            List<String> args = new ArrayList<>(Arrays.asList(content.split("\n")));
-            String type = args.remove(0);
-
-            Task task = createComponent("promoter.tasks." + type + "Task");
-
-            System.out.println();
-            System.out.println("Performing " + task.getClass().getName());
-
-            if (task.execute(args, builds))
-            {
-              System.out.println("   Ordering recomposition...");
-              tasks.add(task);
-            }
-          }
-        }
-      }
-      catch (RuntimeException ex)
-      {
-        throw ex;
-      }
-      catch (Exception ex)
-      {
-        throw new RuntimeException(ex);
-      }
-      finally
-      {
-        IO.delete(taskFolder);
-        IO.delete(new File(publicFolder, "tasks.tmp")); // Can be left by PHP
-      }
-    }
-
-    return tasks;
   }
 
   public AntResult processDropsAndComposeRepositories(XMLOutput xml) throws Exception

@@ -170,7 +170,7 @@ public class BuildCopier extends PromoterComponent
 
         try
         {
-          IO.unzip(URI.create(buildURL + "/artifact/*zip*/archive.zip").toURL(), drop, "archive/");
+          IO.unzip(URI.create(buildURL + "/artifact/build-results.zip").toURL(), drop, "archive/");
         }
         catch (MalformedURLException ex)
         {
