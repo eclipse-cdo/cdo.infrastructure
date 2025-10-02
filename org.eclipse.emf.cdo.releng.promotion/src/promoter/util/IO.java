@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.UnaryOperator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -718,12 +717,6 @@ public final class IO
 
   public static void unzip(InputStream inputStream, File targetFolder, String prefix)
   {
-    UnaryOperator<String> nameConverter = createPrefixNameConverter(prefix);
-    unzip(inputStream, targetFolder, nameConverter);
-  }
-
-  public static void unzip(InputStream inputStream, File targetFolder, UnaryOperator<String> nameConverter)
-  {
     final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
     ZipInputStream zis = null;
 
@@ -735,10 +728,17 @@ public final class IO
       while ((entry = zis.getNextEntry()) != null)
       {
         String name = entry.getName();
-        if (nameConverter != null)
+        if (prefix != null)
         {
-          name = nameConverter.apply(name);
-          if (name == null || name.length() == 0)
+          if (name.startsWith(prefix))
+          {
+            name = name.substring(prefix.length());
+            if (name.length() == 0)
+            {
+              continue;
+            }
+          }
+          else
           {
             continue;
           }
@@ -774,27 +774,6 @@ public final class IO
     {
       close(zis);
     }
-  }
-
-  private static UnaryOperator<String> createPrefixNameConverter(String prefix)
-  {
-    if (prefix == null || prefix.length() == 0)
-    {
-      return null;
-    }
-
-    return name -> {
-      if (name.startsWith(prefix))
-      {
-        name = name.substring(prefix.length());
-        if (name.length() > 0)
-        {
-          return name;
-        }
-      }
-
-      return null;
-    };
   }
 
   /**
