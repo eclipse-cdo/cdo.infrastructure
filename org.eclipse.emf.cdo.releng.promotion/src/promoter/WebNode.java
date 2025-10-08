@@ -514,6 +514,16 @@ public class WebNode implements Comparable<WebNode>
     generateDropFile(out, level, buildInfo, "test-report.xml", " for the test results of this build.");
     generateDropFile(out, level, buildInfo, "tests/test-report.xml", " for the test results of this build.");
 
+    File tpMacro = generateDropFile(out, level, buildInfo, "tp-macro.setup", " for an Oomph Setup macro that installs this build.");
+    if (tpMacro != null)
+    {
+      String xml = IO.readTextFile(tpMacro);
+      xml = xml.replace( //
+          "<repository url=\"https://download.eclipse.org/modeling/emf/cdo/updates\"/>", //
+          "<repository url=\"" + buildInfo.getDropURL(null, false) + "\"/>");
+      IO.writeTextFile(tpMacro, xml);
+    }
+
     generateDropSeparator(out, level);
 
     out.println(prefix(--level) + "</table>");
@@ -526,7 +536,7 @@ public class WebNode implements Comparable<WebNode>
     out.println(prefix(level) + "<tr class=\"drop-info\"><td colspan=\"2\"><hr class=\"drop-separator\"></td></tr>");
   }
 
-  protected boolean generateDropFile(PrintStream out, int level, BuildInfo buildInfo, String path, String description)
+  protected File generateDropFile(PrintStream out, int level, BuildInfo buildInfo, String path, String description)
   {
     File file = new File(buildInfo.getDrop(), path);
     if (file.isFile())
@@ -541,11 +551,11 @@ public class WebNode implements Comparable<WebNode>
             + "<tr class=\"drop-info\"><td><img style=\"vertical-align:middle\" src=\"https://eclipse.dev/cdo/images/16x16/text-x-generic.png\"/>&nbsp;&nbsp;<a href=\""
             + buildInfo.getDropURL(path, false) + "\">" + label + "</a>" + description + "</td><td class=\"file-size level" + (level + 1) + "\">" + size
             + "</td></tr>");
-        return true;
+        return file;
       }
     }
 
-    return false;
+    return null;
   }
 
   protected boolean generateDropDownload(PrintStream out, int level, BuildInfo buildInfo, String path, String description)

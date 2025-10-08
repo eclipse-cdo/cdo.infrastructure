@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
@@ -574,6 +575,25 @@ public final class IO
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     readURL(url, input -> copy(input, baos));
     return new String(baos.toByteArray(), StandardCharsets.UTF_8);
+  }
+
+  public static void writeTextFile(File file, String contents)
+  {
+    FileWriter output = openWriter(file);
+
+    try
+    {
+      StringReader input = new StringReader(contents);
+      copyCharacter(input, output);
+    }
+    catch (IOException ex)
+    {
+      throw new RuntimeException(ex);
+    }
+    finally
+    {
+      close(output);
+    }
   }
 
   public static void writeFile(File file, byte[] bytes)
