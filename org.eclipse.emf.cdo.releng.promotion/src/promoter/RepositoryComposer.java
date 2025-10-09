@@ -94,6 +94,8 @@ public class RepositoryComposer extends PromoterComponent
         {
           latestRepository.generate(xml);
           webNode.setLatestRepository(latestRepository);
+
+          TPMacroSetup.copyToLatestRepository(latestDrop, latestRepository);
         }
       }
     }

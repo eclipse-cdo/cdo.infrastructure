@@ -514,15 +514,7 @@ public class WebNode implements Comparable<WebNode>
     generateDropFile(out, level, buildInfo, "test-report.xml", " for the test results of this build.");
     generateDropFile(out, level, buildInfo, "tests/test-report.xml", " for the test results of this build.");
 
-    File tpMacro = generateDropFile(out, level, buildInfo, "tp-macro.setup", " for an Oomph Setup macro that installs this build.");
-    if (tpMacro != null)
-    {
-      String xml = IO.readTextFile(tpMacro);
-      xml = xml.replace( //
-          "<repository url=\"https://download.eclipse.org/modeling/emf/cdo/updates\"/>", //
-          "<repository url=\"" + buildInfo.getDropURL(null, false) + "\"/>");
-      IO.writeTextFile(tpMacro, xml);
-    }
+    generateDropFile(out, level, buildInfo, TPMacroSetup.FILE_NAME, " for an Oomph Setup macro that installs this build.");
 
     generateDropSeparator(out, level);
 

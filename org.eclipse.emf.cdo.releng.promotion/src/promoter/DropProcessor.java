@@ -120,6 +120,8 @@ public class DropProcessor extends PromoterComponent
           generateZipSite(xml, drop, zipSite);
         }
       }
+
+      TPMacroSetup.insertDropRepository(buildInfo);
     }
 
     File help = new File(drop, "help");
