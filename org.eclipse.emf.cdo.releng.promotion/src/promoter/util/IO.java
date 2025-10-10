@@ -463,29 +463,30 @@ public final class IO
     copy(input, output, DEFAULT_BUFFER_SIZE);
   }
 
-  public static void copyFile(File source, File target)
+  public static File copyFile(InputProvider inputProvider, File target)
   {
     mkdirs(target.getParentFile());
-    FileInputStream input = null;
-    FileOutputStream output = null;
 
-    try
+    try (InputStream input = inputProvider.getInput(); OutputStream output = openOutputStream(target))
     {
-      input = openInputStream(source);
-      output = openOutputStream(target);
       copy(input, output);
     }
-    finally
+    catch (IOException ex)
     {
-      try
-      {
-        close(input);
-      }
-      finally
-      {
-        close(output);
-      }
+      throw new RuntimeException(ex);
     }
+
+    return target;
+  }
+
+  public static File copyFile(File source, File target)
+  {
+    return copyFile(() -> openInputStream(source), target);
+  }
+
+  public static File copyFile(String url, File target)
+  {
+    return copyFile(() -> URI.create(url).toURL().openStream(), target);
   }
 
   public static String readTextFile(File file)
@@ -820,6 +821,16 @@ public final class IO
   /**
    * @author Eike Stepper
    */
+  @FunctionalInterface
+  public interface InputProvider
+  {
+    public InputStream getInput() throws IOException;
+  }
+
+  /**
+   * @author Eike Stepper
+   */
+  @FunctionalInterface
   public interface InputHandler
   {
     public void handleInput(InputStream in) throws IOException;
@@ -828,6 +839,7 @@ public final class IO
   /**
    * @author Eike Stepper
    */
+  @FunctionalInterface
   public interface OutputHandler
   {
     public static final OutputHandler EMPTY = out -> {
@@ -840,6 +852,7 @@ public final class IO
   /**
    * @author Eike Stepper
    */
+  @FunctionalInterface
   public interface PrintHandler
   {
     public static final PrintHandler EMPTY = out -> {

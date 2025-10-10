@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -168,14 +167,10 @@ public class BuildCopier extends PromoterComponent
         DropProcessor.storeMarkers(drop, jobProperties, isVisible);
         System.out.println("Build " + buildInfo.getNumber() + " is being copied to " + drop + (isVisible ? " (visible)" : " (invisible)"));
 
-        try
-        {
-          IO.unzip(URI.create(buildURL + "/artifact/build-results.zip").toURL(), drop, null);
-        }
-        catch (MalformedURLException ex)
-        {
-          throw new RuntimeException(ex);
-        }
+        File zip = new File(drop, "build-results.zip");
+        IO.copyFile(buildURL + "/artifact/build-results.zip", zip);
+        IO.unzip(zip, drop, null);
+        zip.delete();
 
         // Handle old build results layout
         File siteP2 = new File(drop, "site.p2");
