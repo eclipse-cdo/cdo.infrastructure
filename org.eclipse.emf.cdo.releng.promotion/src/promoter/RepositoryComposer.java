@@ -82,8 +82,9 @@ public class RepositoryComposer extends PromoterComponent
       {
         String latestQualifier = latestDrop.getQualifier();
         String path = relativePath.getPath();
+        File compositionFolder = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), path);
 
-        File latestUrl = new File(new File(PromoterConfig.INSTANCE.getCompositionTempArea(), path), "latest.qualifier");
+        File latestUrl = new File(compositionFolder, "latest.qualifier");
         appendFile(latestUrl, latestQualifier);
 
         File latestUrls = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "latest.qualifiers");
@@ -96,6 +97,26 @@ public class RepositoryComposer extends PromoterComponent
           webNode.setLatestRepository(latestRepository);
 
           TPMacroSetup.copyToLatestRepository(latestDrop, latestRepository);
+        }
+
+        String helpPath = compositionProperties.getProperty("latest.help");
+        if (helpPath != null && helpPath.length() > 0)
+        {
+          File help = new File(latestDrop.getDrop(), "help");
+          if (help.isDirectory())
+          {
+            xml.element("copy");
+            xml.attribute("todir", new File(compositionFolder, helpPath));
+            xml.attribute("failonerror", false);
+            xml.push();
+            xml.element("fileset");
+            xml.attribute("dir", help);
+            xml.push();
+            xml.element("include");
+            xml.attribute("name", "**/*");
+            xml.pop();
+            xml.pop();
+          }
         }
       }
     }
