@@ -105,8 +105,13 @@ public class RepositoryComposer extends PromoterComponent
           File help = new File(latestDrop.getDrop(), "help");
           if (help.isDirectory())
           {
+            File targetFolder = new File(compositionFolder, helpPath);
+
+            xml.element("echo");
+            xml.attribute("message", "Copying " + help + "**/* to " + targetFolder);
+
             xml.element("copy");
-            xml.attribute("todir", new File(compositionFolder, helpPath));
+            xml.attribute("todir", targetFolder);
             xml.attribute("preservelastmodified", true);
             xml.attribute("failonerror", false);
             xml.push();
