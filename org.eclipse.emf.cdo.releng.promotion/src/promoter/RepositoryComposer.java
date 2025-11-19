@@ -107,6 +107,7 @@ public class RepositoryComposer extends PromoterComponent
           {
             xml.element("copy");
             xml.attribute("todir", new File(compositionFolder, helpPath));
+            xml.attribute("preservelastmodified", true);
             xml.attribute("failonerror", false);
             xml.push();
             xml.element("fileset");
