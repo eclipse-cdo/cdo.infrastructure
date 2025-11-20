@@ -167,12 +167,12 @@ public class CDOWebGenerator extends WebGenerator
       File relnotesHTML = new File(drop, "relnotes.html");
       if (relnotesHTML.isFile())
       {
-        System.out.println("   Generating HTML for " + release.getQualifier());
         String html = IO.readTextFile(relnotesHTML);
 
         Matcher matcher = RELNOTES_PATTERN.matcher(html);
         if (matcher.find())
         {
+          System.out.println("   Generating HTML for " + release.getQualifier());
           String body = matcher.group(1).trim();
 
           out.println();
