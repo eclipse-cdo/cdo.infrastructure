@@ -179,7 +179,7 @@ public class CDOWebGenerator extends WebGenerator
           String webLabel = release.getWebLabel();
           if (webLabel != null)
           {
-            body = body.replaceAll(">([A-Z0-9-_]+)</a></h1>", ">" + webLabel + "($1)</a></h1>");
+            body = body.replaceAll(">([A-Z0-9-_]+)</a></h1>", ">" + webLabel + " ($1)</a></h1>");
           }
 
           out.println();
