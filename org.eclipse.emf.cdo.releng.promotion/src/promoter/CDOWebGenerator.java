@@ -45,6 +45,10 @@ public class CDOWebGenerator extends WebGenerator
 
   private static final Pattern RELNOTES_PATTERN = Pattern.compile("<body style=\"[^\"]*\">(.*)</body>", Pattern.DOTALL);
 
+  private static final Pattern TITLE_PATTERN = Pattern.compile(">([A-Z0-9-_]+)</a></h1>");
+
+  private static final Pattern TOC_PATTERN = Pattern.compile("<h3>Table of Contents</h3>.*</ul>", Pattern.DOTALL);
+
   public CDOWebGenerator()
   {
   }
@@ -173,13 +177,18 @@ public class CDOWebGenerator extends WebGenerator
         {
           System.out.println("   Generating HTML for " + release.getQualifier());
           String body = matcher.group(1).trim();
-          body = body.replaceAll("<h3>Table of Contents</h3>.*</ul>", ""); // Remove TOC
-          body = body.replace("../../images/", "../images/"); // Fix image paths
+
+          // Remove TOC
+          body = TOC_PATTERN.matcher(body).replaceFirst("");
+
+          // Fix image paths
+          body = body.replace("../../images/", "../images/");
 
           String webLabel = release.getWebLabel();
           if (webLabel != null)
           {
-            body = body.replaceAll(">([A-Z0-9-_]+)</a></h1>", ">" + webLabel + " ($1)</a></h1>");
+            // Fix titles
+            body = TITLE_PATTERN.matcher(body).replaceFirst(">" + webLabel + " ($1)</a></h1>");
           }
 
           out.println();
