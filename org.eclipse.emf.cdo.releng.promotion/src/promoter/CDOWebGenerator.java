@@ -155,6 +155,7 @@ public class CDOWebGenerator extends WebGenerator
   {
     Set<BuildInfo> releases = new HashSet<>();
     root.getChild("releases").getDrops(true).stream().filter(BuildInfo::isRelease).forEach(releases::add);
+    releases.forEach(System.out::println);
 
     List<BuildInfo> sortedReleases = new ArrayList<>(releases);
     sortedReleases.sort((a, b) -> b.getQualifier().compareTo(a.getQualifier()));
@@ -166,6 +167,7 @@ public class CDOWebGenerator extends WebGenerator
       File relnotesHTML = new File(drop, "relnotes.html");
       if (relnotesHTML.isFile())
       {
+        System.out.println("   Generating HTML for " + release.getQualifier());
         String html = IO.readTextFile(relnotesHTML);
 
         Matcher matcher = RELNOTES_PATTERN.matcher(html);
