@@ -43,7 +43,7 @@ public class CDOWebGenerator extends WebGenerator
 
   private static final Pattern GENERATED_BODY_PATTERN = pattern("GENERATED_BODY");
 
-  private static final Pattern RELNOTES_PATTERN = Pattern.compile("<body style=\"[^\"].\">(.*)</body>", Pattern.DOTALL);
+  private static final Pattern RELNOTES_PATTERN = Pattern.compile("<body style=\"[^\"]*\">(.*)</body>", Pattern.DOTALL);
 
   public CDOWebGenerator()
   {
