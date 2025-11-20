@@ -17,7 +17,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -120,6 +119,13 @@ public class ReleaseNotesGenerator extends PromoterComponent
         xml.attribute("id", issue.getID());
         xml.attribute("label", issue.getLabel());
         xml.attribute("type", issue.getType());
+
+        String subtype = issue.getSubtype();
+        if (subtype != null && subtype.length() != 0)
+        {
+          xml.attribute("subtype", subtype);
+        }
+
         xml.attribute("title", issue.getTitle());
         xml.attribute("severity", issue.getSeverity());
         xml.attribute("component", issue.getComponent());
@@ -171,14 +177,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
         component.addIssue(issue);
       }
 
-      for (Iterator<IssueComponent> it = components.iterator(); it.hasNext();)
-      {
-        IssueComponent component = it.next();
-        if (component.isEmpty())
-        {
-          it.remove();
-        }
-      }
+      components.removeIf(IssueComponent::isEmpty);
 
       out = new PrintStream(relnotesHTML);
 
@@ -493,9 +492,19 @@ public class ReleaseNotesGenerator extends PromoterComponent
         String url = issue.getURL();
         String title = issue.getTitle().replaceAll("<", "&lt;").replaceAll("\"", "&quot;");
 
+        String version = issue.getVersion();
+        if (version == null || version.length() == 0)
+        {
+          version = "";
+        }
+        else
+        {
+          version = " in " + version;
+        }
+
         out.print("<img src=\"../../images/" + severity + ".gif\" alt=\"" + severity + "\">&nbsp;");
         out.print("[<a href=\"" + url + "\">" + issue.getLabel() + "</a>]&nbsp;" + title);
-        out.print("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"#aaaaaa\"><i>" + issue.getStatus().toLowerCase() + " in " + issue.getVersion() + "</i></font>");
+        out.print("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"#aaaaaa\"><i>" + issue.getStatus().toLowerCase() + version + "</i></font>");
         out.println("<br/>");
       }
     }

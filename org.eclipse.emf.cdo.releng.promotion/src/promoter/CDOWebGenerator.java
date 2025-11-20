@@ -10,8 +10,13 @@
  */
 package promoter;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,15 +31,19 @@ public class CDOWebGenerator extends WebGenerator
 {
   private static final String GITHUB = "https://raw.githubusercontent.com/eclipse-cdo/cdo.www/refs/heads/master";
 
-  private static final String DOWNLOADS_TEMPLATE = GITHUB + "/downloads/index.html";
+  private static final String DOWNLOADS_TEMPLATE = "/downloads/index.html";
 
-  private static final String DOCUMENTATION_TEMPLATE = GITHUB + "/documentation/index.html";
+  private static final String RELNOTES_TEMPLATE = "/downloads/all-relnotes.html";
+
+  private static final String DOCUMENTATION_TEMPLATE = "/documentation/index.html";
 
   private static final Pattern OVERVIEW_PATTERN = Pattern.compile("<p class=\"author\">Author: Eike Stepper</p>(.+)<p align=\"right\">", Pattern.DOTALL);
 
   private static final Pattern BREADCRUMB_PATTERN = pattern("BREADCRUMB");
 
   private static final Pattern GENERATED_BODY_PATTERN = pattern("GENERATED_BODY");
+
+  private static final Pattern RELNOTES_PATTERN = Pattern.compile("<body style=\"[^\"].\">(.*)</body>", Pattern.DOTALL);
 
   public CDOWebGenerator()
   {
@@ -51,6 +60,13 @@ public class CDOWebGenerator extends WebGenerator
     System.out.println("Generating HTML --> https://download.eclipse.org/modeling/emf/cdo/updates/downloads.html");
     printFile("downloads.html", html -> {
       generateTemplate(html, DOWNLOADS_TEMPLATE, "<span>Downloads</span>", IO.print(ps -> generateDownloads(root, ps)));
+    });
+
+    // All release notes (all-relnotes.html)
+    System.out.println();
+    System.out.println("Generating HTML --> https://download.eclipse.org/modeling/emf/cdo/updates/all-relnotes.html");
+    printFile("all-relnotes.html", html -> {
+      generateTemplate(html, RELNOTES_TEMPLATE, "<span>Release Notes</span>", IO.print(ps -> generateRelnotes(root, ps)));
     });
 
     // Documentation (documentation.html)
@@ -135,6 +151,36 @@ public class CDOWebGenerator extends WebGenerator
     out.println("</div>");
   }
 
+  private void generateRelnotes(WebNode root, PrintStream out)
+  {
+    Set<BuildInfo> releases = new HashSet<>();
+    root.getChild("releases").getDrops(true).stream().filter(BuildInfo::isRelease).forEach(releases::add);
+
+    List<BuildInfo> sortedReleases = new ArrayList<>(releases);
+    sortedReleases.sort((a, b) -> b.getQualifier().compareTo(a.getQualifier()));
+
+    for (BuildInfo release : sortedReleases)
+    {
+      File drop = release.getDrop();
+
+      File relnotesHTML = new File(drop, "relnotes.html");
+      if (relnotesHTML.isFile())
+      {
+        String html = IO.readTextFile(relnotesHTML);
+
+        Matcher matcher = RELNOTES_PATTERN.matcher(html);
+        if (matcher.find())
+        {
+          String body = matcher.group(1).trim();
+
+          out.println();
+          out.println(body);
+          out.println();
+        }
+      }
+    }
+  }
+
   private void generateDocumentation(WebNode root, PrintStream out)
   {
     WebNode releases = root.getChild("releases");
@@ -172,9 +218,20 @@ public class CDOWebGenerator extends WebGenerator
     }
   }
 
-  protected static void generateTemplate(PrintStream out, String templateURL, String breadcrumb, String body)
+  protected static void generateTemplate(PrintStream out, String templatePath, String breadcrumb, String body)
   {
-    String template = IO.readURL(templateURL);
+    String template;
+
+    boolean localTemplates = Boolean.getBoolean("localTemplates");
+    if (localTemplates)
+    {
+      template = IO.readTextFile(new File(PromoterConfig.INSTANCE.getTemplatesDirectory(), templatePath));
+    }
+    else
+    {
+      template = IO.readURL(GITHUB + templatePath);
+    }
+
     template = replacePlaceholder(template, BREADCRUMB_PATTERN, breadcrumb);
     template = replacePlaceholder(template, GENERATED_BODY_PATTERN, body);
     out.print(template);

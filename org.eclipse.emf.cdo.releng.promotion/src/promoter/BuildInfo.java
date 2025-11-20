@@ -160,6 +160,11 @@ public final class BuildInfo implements Comparable<BuildInfo>
     return type;
   }
 
+  public boolean isRelease()
+  {
+    return "R".equals(type);
+  }
+
   public boolean isVisible()
   {
     File drop = getDrop();

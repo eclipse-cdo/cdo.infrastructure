@@ -23,6 +23,8 @@ public final class Issue implements Comparable<Issue>
 
   private final String id;
 
+  private final String subtype;
+
   private final String title;
 
   private final boolean enhancement;
@@ -37,12 +39,13 @@ public final class Issue implements Comparable<Issue>
 
   private final String status;
 
-  public Issue(IssueManager<?> manager, String url, String id, String title, boolean enhancement, String severity, int severityIndex, String component,
-      String version, String status)
+  public Issue(IssueManager<?> manager, String url, String id, String subtype, String title, boolean enhancement, String severity, int severityIndex,
+      String component, String version, String status)
   {
     this.manager = manager;
     this.url = url;
     this.id = id;
+    this.subtype = subtype;
     this.title = title;
     this.enhancement = enhancement;
     this.severity = severity;
@@ -67,11 +70,16 @@ public final class Issue implements Comparable<Issue>
     return id;
   }
 
+  public String getSubtype()
+  {
+    return subtype;
+  }
+
   public String getLabel()
   {
     if (manager != null)
     {
-      return manager.getIssueLabel(id);
+      return manager.getIssueLabel(this);
     }
 
     return id;

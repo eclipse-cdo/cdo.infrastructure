@@ -43,19 +43,20 @@ public abstract class IssueManager<INFO> extends PromoterComponent implements Co
     });
   }
 
-  public String getIssueLabelPrefix()
+  public String getIssueLabelPrefix(Issue issue)
   {
     return "";
   }
 
-  public String getIssueLabelSuffix()
+  public String getIssueLabelSuffix(Issue issue)
   {
     return "";
   }
 
-  protected String getIssueLabel(String issueID)
+  protected String getIssueLabel(Issue issue)
   {
-    return issueID == null ? null : getIssueLabelPrefix() + issueID + getIssueLabelSuffix();
+    String issueID = issue.getID();
+    return issueID == null ? null : getIssueLabelPrefix(issue) + issueID + getIssueLabelSuffix(issue);
   }
 
   protected abstract void getIssueIDs(String commitID, String commitMessage, IssueIDConsumer<INFO> issueIDConsumer);

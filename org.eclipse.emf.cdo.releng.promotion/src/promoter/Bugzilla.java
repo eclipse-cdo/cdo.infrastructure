@@ -184,7 +184,7 @@ public class Bugzilla extends IssueManager<Object>
           Integer severityIndex = getSeverityIndex(severity);
           boolean enhancement = severityIndex == SEVERITY_ENHANCEMENT;
 
-          issue = new Issue(Bugzilla.this, url, id, title, enhancement, severity, severityIndex, component, version, status);
+          issue = new Issue(Bugzilla.this, url, id, null, title, enhancement, severity, severityIndex, component, version, status);
           break;
         }
       }

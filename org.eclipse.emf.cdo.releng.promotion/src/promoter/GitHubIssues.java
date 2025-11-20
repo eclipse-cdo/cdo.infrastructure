@@ -32,9 +32,15 @@ public class GitHubIssues extends IssueManager<AbstractIssue>
   @SuppressWarnings("unused")
   private static final Pattern USERNAME_PATTERN = Pattern.compile("(^[a-z\\d](?:[a-z\\d]|-(?=[a-z\\d])){0,38}$)", Pattern.CASE_INSENSITIVE);
 
+  private static final String SUBTYPE_ISSUE = "Issue";
+
+  private static final String SUBTYPE_PULL_REQUEST = "PullRequest";
+
   private static final String ISSUE_LABEL_PREFIX = "GH-";
 
-  private static final Pattern ISSUE_REF_PATTERN = Pattern.compile("(#|" + ISSUE_LABEL_PREFIX + ")([\\d]+)");
+  private static final String PR_LABEL_PREFIX = "PR-";
+
+  private static final Pattern ISSUE_REF_PATTERN = Pattern.compile("(#|" + ISSUE_LABEL_PREFIX + "|" + PR_LABEL_PREFIX + ")([\\d]+)");
 
   public GitHubIssues()
   {
@@ -53,8 +59,14 @@ public class GitHubIssues extends IssueManager<AbstractIssue>
   }
 
   @Override
-  public String getIssueLabelPrefix()
+  public String getIssueLabelPrefix(Issue issue)
   {
+    String subtype = issue.getSubtype();
+    if (SUBTYPE_PULL_REQUEST.equals(subtype))
+    {
+      return PR_LABEL_PREFIX;
+    }
+
     return ISSUE_LABEL_PREFIX;
   }
 
@@ -115,6 +127,7 @@ public class GitHubIssues extends IssueManager<AbstractIssue>
       return null;
     }
 
+    String subtype = issueInfo instanceof PullRequest ? SUBTYPE_PULL_REQUEST : SUBTYPE_ISSUE;
     String url = issueInfo.getHtmlUrl();
     String title = issueInfo.getTitle();
     boolean enhancement = isEnhancement(issueInfo);
@@ -124,7 +137,7 @@ public class GitHubIssues extends IssueManager<AbstractIssue>
     String version = getVersion(issueInfo);
     String status = issueInfo.getState();
 
-    return new Issue(this, url, issueID, title, enhancement, severity, severityIndex, component, version, status);
+    return new Issue(this, url, issueID, subtype, title, enhancement, severity, severityIndex, component, version, status);
   }
 
   private static boolean isEnhancement(AbstractIssue issueInfo)

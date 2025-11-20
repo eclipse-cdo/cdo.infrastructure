@@ -75,6 +75,11 @@ public final class PromoterConfig extends Config
     return new File(getInstallDirectory(), "xsl");
   }
 
+  public File getTemplatesDirectory()
+  {
+    return new File(getInstallDirectory(), "templates");
+  }
+
   public File getConfigDirectory()
   {
     return new File(getInstallDirectory(), "config");
