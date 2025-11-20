@@ -155,7 +155,6 @@ public class CDOWebGenerator extends WebGenerator
   {
     Set<BuildInfo> releases = new HashSet<>();
     root.getChild("releases").getDrops(true).stream().filter(BuildInfo::isRelease).forEach(releases::add);
-    releases.forEach(System.out::println);
 
     List<BuildInfo> sortedReleases = new ArrayList<>(releases);
     sortedReleases.sort((a, b) -> b.getQualifier().compareTo(a.getQualifier()));
@@ -174,6 +173,14 @@ public class CDOWebGenerator extends WebGenerator
         {
           System.out.println("   Generating HTML for " + release.getQualifier());
           String body = matcher.group(1).trim();
+          body = body.replaceAll("<h3>Table of Contents</h3>.*</ul>", ""); // Remove TOC
+          body = body.replace("../../images/", "../images/"); // Fix image paths
+
+          String webLabel = release.getWebLabel();
+          if (webLabel != null)
+          {
+            body = body.replaceAll(">([A-Z0-9-_)+</a></h1>", ">" + webLabel + "($1)</a></h1>");
+          }
 
           out.println();
           out.println(body);
