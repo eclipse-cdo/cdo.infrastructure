@@ -158,7 +158,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
       addIssueComponent(components, "cdo.ui", "CDO Model Repository (User Interface)");
       addIssueComponent(components, "cdo.db", "CDO Model Repository (JDBC Support)");
       addIssueComponent(components, "cdo.dawn", "CDO Dawn");
-      addIssueComponent(components, "cdo.net4j", "Net4j Signalling Platform and Utilities");
+      addIssueComponent(components, "cdo.net4j", "Net4j Signaling Platform and Utilities");
       addIssueComponent(components, "cdo.net4j.ui", "Net4j User Interface");
       addIssueComponent(components, "cdo.net4j.db", "Net4j DB Framework");
       addIssueComponent(components, "cdo.docs", "Documentation");
