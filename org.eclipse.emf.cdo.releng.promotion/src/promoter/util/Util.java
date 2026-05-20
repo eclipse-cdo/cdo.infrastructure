@@ -29,4 +29,15 @@ public final class Util
 
     return line;
   }
+
+  public static RuntimeException wrapException(Exception exception)
+  {
+    if (exception instanceof RuntimeException)
+    {
+      return (RuntimeException)exception;
+    }
+
+    return new RuntimeException(exception);
+  }
+
 }

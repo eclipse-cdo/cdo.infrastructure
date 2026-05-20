@@ -15,13 +15,17 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 import java.util.function.Predicate;
 
 import promoter.util.Config;
+import promoter.util.Util;
 import promoter.util.XML;
 
 /**
@@ -343,7 +347,8 @@ public final class BuildInfo implements Comparable<BuildInfo>
       location = Location.ARCHIVE;
     }
 
-    final BuildInfo result = new BuildInfo(location);
+    BuildInfo result = new BuildInfo(location);
+
     XML.parseXML(file, new DefaultHandler()
     {
       @Override
@@ -380,35 +385,51 @@ public final class BuildInfo implements Comparable<BuildInfo>
     return result;
   }
 
-  public static BuildInfo read(URL url) throws IOException
+  public static BuildInfo read(InputStream in) throws IOException
   {
-    final BuildInfo result = new BuildInfo(Location.HUDSON);
-    XML.parseXML(url, new DefaultHandler()
+    BuildInfo result = new BuildInfo(Location.HUDSON);
+
+    try
     {
-      @Override
-      public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+      XML.parseXML(in, new DefaultHandler()
       {
-        if ("build".equals(qName))
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
-          result.setBranch(attributes.getValue("branch"));
-          result.setHudson(attributes.getValue("hudson"));
-          result.setJob(attributes.getValue("job"));
-          result.setNumber(attributes.getValue("number"));
-          result.setQualifier(attributes.getValue("qualifier"));
-          result.setRevision(attributes.getValue("revision"));
-          result.setRelnotesRevision(attributes.getValue("relnotes"));
-          result.setStream(attributes.getValue("stream"));
-          result.setTimestamp(attributes.getValue("timestamp"));
-          result.setTrigger(attributes.getValue("trigger"));
-          result.setTrain(attributes.getValue("train"));
-          result.setEclipse(attributes.getValue("eclipse"));
-          result.setEMF(attributes.getValue("emf"));
-          result.setType(attributes.getValue("type"));
+          if ("build".equals(qName))
+          {
+            result.setBranch(attributes.getValue("branch"));
+            result.setHudson(attributes.getValue("hudson"));
+            result.setJob(attributes.getValue("job"));
+            result.setNumber(attributes.getValue("number"));
+            result.setQualifier(attributes.getValue("qualifier"));
+            result.setRevision(attributes.getValue("revision"));
+            result.setRelnotesRevision(attributes.getValue("relnotes"));
+            result.setStream(attributes.getValue("stream"));
+            result.setTimestamp(attributes.getValue("timestamp"));
+            result.setTrigger(attributes.getValue("trigger"));
+            result.setTrain(attributes.getValue("train"));
+            result.setEclipse(attributes.getValue("eclipse"));
+            result.setEMF(attributes.getValue("emf"));
+            result.setType(attributes.getValue("type"));
+          }
         }
-      }
-    });
+      });
+    }
+    catch (ParserConfigurationException | SAXException ex)
+    {
+      throw Util.wrapException(ex);
+    }
 
     return result;
+  }
+
+  public static BuildInfo read(URL url) throws IOException
+  {
+    try (InputStream in = url.openStream())
+    {
+      return read(in);
+    }
   }
 
   public static Predicate<BuildInfo> testJob(String job)

@@ -18,8 +18,8 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -30,6 +30,7 @@ import java.util.StringTokenizer;
 
 import promoter.util.Config;
 import promoter.util.IO;
+import promoter.util.Jenkins;
 import promoter.util.XML;
 
 /**
@@ -114,9 +115,9 @@ public class BuildCopier extends PromoterComponent
 
       if ("SUCCESS".equalsIgnoreCase(buildResult) || "UNSTABLE".equalsIgnoreCase(buildResult))
       {
-        try
+        try (InputStream xml = Jenkins.openInputStream(buildURL + "/artifact/build-info.xml"))
         {
-          BuildInfo buildInfo = BuildInfo.read(URI.create(buildURL + "/artifact/build-info.xml").toURL());
+          BuildInfo buildInfo = BuildInfo.read(xml);
           if (copyBuild(jobProperties, buildURL, buildInfo))
           {
             buildInfos.add(buildInfo);
@@ -169,7 +170,7 @@ public class BuildCopier extends PromoterComponent
         System.out.println("Build " + buildInfo.getNumber() + " is being copied to " + drop + (isVisible ? " (visible)" : " (invisible)"));
 
         File zip = new File(drop, "build-results.zip");
-        IO.copyFile(buildURL + "/artifact/build-results.zip", zip);
+        IO.copyFile(() -> Jenkins.openInputStream(buildURL + "/artifact/build-results.zip"), zip);
         IO.unzip(zip, drop, null);
         zip.delete();
 
@@ -213,9 +214,9 @@ public class BuildCopier extends PromoterComponent
   {
     final List<Integer> buildNumbers = new ArrayList<>();
 
-    try
+    try (InputStream xml = Jenkins.openInputStream(jobURL + "/api/xml"))
     {
-      XML.parseXML(URI.create(jobURL + "/api/xml").toURL(), new DefaultHandler()
+      XML.parseXML(xml, new DefaultHandler()
       {
         private int level;
 
@@ -278,9 +279,9 @@ public class BuildCopier extends PromoterComponent
   {
     final StringBuilder builder = new StringBuilder();
 
-    try
+    try (InputStream xml = Jenkins.openInputStream(buildURL + "/api/xml"))
     {
-      XML.parseXML(URI.create(buildURL + "/api/xml").toURL(), new DefaultHandler()
+      XML.parseXML(xml, new DefaultHandler()
       {
         private int level;
 

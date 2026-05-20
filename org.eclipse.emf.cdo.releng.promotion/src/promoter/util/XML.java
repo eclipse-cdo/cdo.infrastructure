@@ -46,7 +46,7 @@ public final class XML
     }
     catch (ParserConfigurationException | SAXException ex)
     {
-      throw wrapException(ex);
+      throw Util.wrapException(ex);
     }
     finally
     {
@@ -65,7 +65,7 @@ public final class XML
     }
     catch (ParserConfigurationException | SAXException ex)
     {
-      throw wrapException(ex);
+      throw Util.wrapException(ex);
     }
     finally
     {
@@ -82,15 +82,5 @@ public final class XML
 
     SAXParser parser = parserFactory.newSAXParser();
     parser.parse(in, handler);
-  }
-
-  private static RuntimeException wrapException(Exception exception)
-  {
-    if (exception instanceof RuntimeException)
-    {
-      return (RuntimeException)exception;
-    }
-
-    return new RuntimeException(exception);
   }
 }
