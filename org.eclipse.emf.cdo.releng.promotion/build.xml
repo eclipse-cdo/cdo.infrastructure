@@ -57,6 +57,8 @@
 			<sysproperty key="forcedPromotion" value="${promotion.force}" />
 			<sysproperty key="localTemplates" value="${local.templates}" />
 			<sysproperty key="test" value="${promotion.test}" />
+			<sysproperty key="jenkinsUsername" value="${jenkins.username}" />
+			<sysproperty key="jenkinsPassword" value="${jenkins.password}" />
 		</java>
 	</target>
 

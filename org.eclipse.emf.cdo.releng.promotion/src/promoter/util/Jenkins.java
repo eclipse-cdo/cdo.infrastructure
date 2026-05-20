@@ -13,9 +13,9 @@ import java.util.Base64;
  */
 public final class Jenkins
 {
-  private static final String USERNAME = System.getProperty("JENKINS_USERNAME");
+  private static final String USERNAME = System.getProperty("jenkinsUsername");
 
-  private static final String PASSWORD = System.getProperty("JENKINS_PASSWORD");
+  private static final String PASSWORD = System.getProperty("jenkinsPassword");
 
   private static final String ENCODED = Base64.getEncoder().encodeToString((USERNAME + ":" + PASSWORD).getBytes());
 
