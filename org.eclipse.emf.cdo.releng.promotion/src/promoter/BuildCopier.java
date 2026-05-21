@@ -30,7 +30,6 @@ import java.util.StringTokenizer;
 
 import promoter.util.Config;
 import promoter.util.IO;
-import promoter.util.Jenkins;
 import promoter.util.XML;
 
 /**
