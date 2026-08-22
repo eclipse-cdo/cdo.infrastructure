@@ -45,7 +45,7 @@ public final class TPMacroSetup
           "<repository url=\"" + FIXED_TOKEN + "\"/>", //
           "<repository url=\"" + value + "\"/>");
 
-      if (oldXML.equals(newXML))
+      if (!oldXML.equals(newXML))
       {
         IO.writeTextFile(tpMacro, newXML);
       }
