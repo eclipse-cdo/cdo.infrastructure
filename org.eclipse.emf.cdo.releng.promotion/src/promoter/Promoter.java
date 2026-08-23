@@ -104,7 +104,7 @@ public class Promoter extends ComponentFactory implements Runnable
     System.out.println("GitRepositoryURL     = " + PromoterConfig.INSTANCE.getGitRepositoryURL());
     System.out.println("----------------------------------------------------------------------------------------------------------");
 
-    List<BuildInfo> copiedBuilds = new ArrayList<>();
+    List<PromotionCandidate> promotionCandidates = new ArrayList<>();
 
     if (!skipCopyBuilds)
     {
@@ -112,7 +112,7 @@ public class Promoter extends ComponentFactory implements Runnable
 
       try
       {
-        copiedBuilds = buildCopier.copyBuilds();
+        promotionCandidates = buildCopier.collectPromotionCandidates();
       }
       catch (Exception ex)
       {
@@ -121,7 +121,7 @@ public class Promoter extends ComponentFactory implements Runnable
       }
     }
 
-    if (copiedBuilds.isEmpty())
+    if (promotionCandidates.isEmpty())
     {
       System.out.println();
       System.out.print("No new builds have been found.");
@@ -134,6 +134,14 @@ public class Promoter extends ComponentFactory implements Runnable
 
     System.out.println();
     System.out.println();
+
+    prepareDropsForPromotion(promotionCandidates);
+
+    if (!skipCopyBuilds)
+    {
+      BuildCopier buildCopier = createBuildCopier();
+      buildCopier.copyBuilds(promotionCandidates);
+    }
 
     Ant<AntResult> ant = createAnt();
     AntResult result = ant.run(); // Calls processDropsAndComposeRepositories().
@@ -174,6 +182,55 @@ public class Promoter extends ComponentFactory implements Runnable
     System.out.println();
   }
 
+  public void prepareDropsForPromotion(List<PromotionCandidate> promotionCandidates)
+  {
+    try
+    {
+      DropProcessor dropProcessor = createDropProcessor();
+      List<BuildInfo> buildInfos = dropProcessor.loadBuildInfos();
+      for (PromotionCandidate promotionCandidate : promotionCandidates)
+      {
+        buildInfos.add(promotionCandidate.getBuildInfo());
+      }
+  
+      RepositoryComposer repositoryComposer = createRepositoryComposer();
+      WebNode webNode = repositoryComposer.planRepositories(buildInfos, PromoterConfig.INSTANCE.getConfigCompositesDirectory());
+      if (webNode != null)
+      {
+        deleteOldDrops(webNode, buildInfos);
+        promotionCandidates.removeIf(candidate -> !buildInfos.contains(candidate.getBuildInfo()));
+      }
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+  }
+
+  public void deleteOldDrops(WebNode webNode, List<BuildInfo> allBuildInfos)
+  {
+    Set<BuildInfo> composedDrops = new HashSet<>(webNode.getDrops(true));
+  
+    for (Iterator<BuildInfo> it = allBuildInfos.iterator(); it.hasNext();)
+    {
+      BuildInfo buildInfo = it.next();
+      if (!composedDrops.contains(buildInfo) && buildInfo.isVisible())
+      {
+        File drop = buildInfo.getDrop();
+        if (drop.exists())
+        {
+          System.out.println();
+          System.out.println("Deleting drop: " + buildInfo);
+  
+          int files = IO.delete(drop);
+          System.out.println("Deleted files: " + files);
+        }
+  
+        it.remove();
+      }
+    }
+  }
+
   public AntResult processDropsAndComposeRepositories(XMLOutput xml) throws Exception
   {
     DropProcessor dropProcessor = createDropProcessor();
@@ -182,28 +239,7 @@ public class Promoter extends ComponentFactory implements Runnable
     RepositoryComposer repositoryComposer = createRepositoryComposer();
     WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, PromoterConfig.INSTANCE.getConfigCompositesDirectory());
 
-    deleteOldDrops(webNode, buildInfos);
     return new AntResult(buildInfos, webNode);
-  }
-
-  public void deleteOldDrops(WebNode webNode, List<BuildInfo> allBuildInfos)
-  {
-    Set<BuildInfo> composedDrops = new HashSet<>(webNode.getDrops(true));
-
-    for (Iterator<BuildInfo> it = allBuildInfos.iterator(); it.hasNext();)
-    {
-      BuildInfo buildInfo = it.next();
-      if (!composedDrops.contains(buildInfo) && buildInfo.isVisible())
-      {
-        System.out.println();
-        System.out.println("Deleting drop: " + buildInfo);
-
-        int files = IO.delete(buildInfo.getDrop());
-        System.out.println("Deleted files: " + files);
-
-        it.remove();
-      }
-    }
   }
 
   public Ant<AntResult> createAnt()

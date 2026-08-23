@@ -63,6 +63,8 @@ public final class BuildInfo implements Comparable<BuildInfo>
 
   private String type;
 
+  private Boolean visible;
+
   private BuildInfo(Location location)
   {
     this.location = location;
@@ -172,6 +174,11 @@ public final class BuildInfo implements Comparable<BuildInfo>
 
   public boolean isVisible()
   {
+    if (visible != null)
+    {
+      return visible;
+    }
+
     File drop = getDrop();
     File marker = new File(drop, DropProcessor.MARKER_INVISIBLE);
     return !marker.isFile();
@@ -333,6 +340,11 @@ public final class BuildInfo implements Comparable<BuildInfo>
   void setType(String type)
   {
     this.type = type;
+  }
+
+  void setVisible(boolean visible)
+  {
+    this.visible = visible;
   }
 
   public static BuildInfo read(File file) throws IOException

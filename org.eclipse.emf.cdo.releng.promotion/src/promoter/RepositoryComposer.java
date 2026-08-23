@@ -36,6 +36,11 @@ public class RepositoryComposer extends PromoterComponent
   {
   }
 
+  public WebNode planRepositories(List<BuildInfo> buildInfos, File configFolder) throws SAXException
+  {
+    return composeRepositories(null, buildInfos, configFolder);
+  }
+
   public WebNode composeRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File configFolder) throws SAXException
   {
     if (!configFolder.isDirectory())
@@ -60,7 +65,11 @@ public class RepositoryComposer extends PromoterComponent
     Repository repository = createRepository(relativePath, compositionProperties, buildInfos);
     if (repository != null)
     {
-      repository.generate(xml);
+      if (xml != null)
+      {
+        repository.generate(xml);
+      }
+
       webNode.setRepository(repository);
     }
 
@@ -85,42 +94,45 @@ public class RepositoryComposer extends PromoterComponent
         String path = relativePath.getPath();
         File compositionFolder = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), path);
 
-        File latestUrl = new File(compositionFolder, "latest.qualifier");
-        appendFile(latestUrl, latestQualifier);
-
-        File latestUrls = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "latest.qualifiers");
-        appendFile(latestUrls, path.replace('/', '_').replace('\\', '_').replace('.', '_') + " = " + latestQualifier + "\n");
-
-        Repository latestRepository = createLatestRepository(new File(relativePath, "latest"), compositionProperties, latestDrop);
-        if (latestRepository != null)
+        if (xml != null)
         {
-          latestRepository.generate(xml);
-          webNode.setLatestRepository(latestRepository);
+          File latestUrl = new File(compositionFolder, "latest.qualifier");
+          appendFile(latestUrl, latestQualifier);
 
-          TPMacroSetup.copyToLatestRepository(latestDrop, latestRepository);
-        }
+          File latestUrls = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), "latest.qualifiers");
+          appendFile(latestUrls, path.replace('/', '_').replace('\\', '_').replace('.', '_') + " = " + latestQualifier + "\n");
 
-        String helpPath = compositionProperties.getProperty("latest.help");
-        if (helpPath != null && helpPath.length() > 0)
-        {
-          File help = new File(latestDrop.getDrop(), "help");
-          if (help.isDirectory())
+          Repository latestRepository = createLatestRepository(new File(relativePath, "latest"), compositionProperties, latestDrop);
+          if (latestRepository != null)
           {
-            xml.element("echo");
-            xml.attribute("message", "Copying " + help + "**/* to stable location");
+            latestRepository.generate(xml);
+            webNode.setLatestRepository(latestRepository);
 
-            xml.element("copy");
-            xml.attribute("todir", new File(compositionFolder, helpPath));
-            xml.attribute("preservelastmodified", true);
-            xml.attribute("failonerror", false);
-            xml.push();
-            xml.element("fileset");
-            xml.attribute("dir", help);
-            xml.push();
-            xml.element("include");
-            xml.attribute("name", "**/*");
-            xml.pop();
-            xml.pop();
+            TPMacroSetup.copyToLatestRepository(latestDrop, latestRepository);
+          }
+
+          String helpPath = compositionProperties.getProperty("latest.help");
+          if (helpPath != null && helpPath.length() > 0)
+          {
+            File help = new File(latestDrop.getDrop(), "help");
+            if (help.isDirectory())
+            {
+              xml.element("echo");
+              xml.attribute("message", "Copying " + help + "**/* to stable location");
+
+              xml.element("copy");
+              xml.attribute("todir", new File(compositionFolder, helpPath));
+              xml.attribute("preservelastmodified", true);
+              xml.attribute("failonerror", false);
+              xml.push();
+              xml.element("fileset");
+              xml.attribute("dir", help);
+              xml.push();
+              xml.element("include");
+              xml.attribute("name", "**/*");
+              xml.pop();
+              xml.pop();
+            }
           }
         }
       }

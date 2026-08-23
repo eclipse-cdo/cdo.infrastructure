@@ -41,9 +41,9 @@ public class BuildCopier extends PromoterComponent
   {
   }
 
-  public List<BuildInfo> copyBuilds()
+  public List<PromotionCandidate> collectPromotionCandidates()
   {
-    List<BuildInfo> buildInfos = new ArrayList<>();
+    List<PromotionCandidate> candidates = new ArrayList<>();
     File configFolder = new File(PromoterConfig.INSTANCE.getConfigDirectory(), "jobs");
 
     for (File jobDir : configFolder.listFiles())
@@ -67,25 +67,13 @@ public class BuildCopier extends PromoterComponent
         continue;
       }
 
-      copyBuilds(jobName, jobProperties, buildInfos);
+      collectPromotionCandidates(jobName, jobProperties, candidates);
     }
 
-    File logFile = new File(PromoterConfig.INSTANCE.getWorkingArea(), "copied-builds.txt");
-    IO.writeFile(logFile, out -> {
-      PrintStream stream = new PrintStream(out);
-
-      for (BuildInfo buildInfo : buildInfos)
-      {
-        stream.println(buildInfo.getQualifier());
-      }
-
-      stream.flush();
-    });
-
-    return buildInfos;
+    return candidates;
   }
 
-  protected void copyBuilds(String jobName, Properties jobProperties, List<BuildInfo> buildInfos)
+  protected void collectPromotionCandidates(String jobName, Properties jobProperties, List<PromotionCandidate> candidates)
   {
     String jobPath = jobProperties.getProperty("path", jobName);
     String jobURL = PromoterConfig.INSTANCE.getJobsURL() + "/" + jobPath;
@@ -117,10 +105,7 @@ public class BuildCopier extends PromoterComponent
         try (InputStream xml = Jenkins.openInputStream(buildURL + "/artifact/build-info.xml"))
         {
           BuildInfo buildInfo = BuildInfo.read(xml);
-          if (copyBuild(jobProperties, buildURL, buildInfo))
-          {
-            buildInfos.add(buildInfo);
-          }
+          addPromotionCandidate(jobProperties, buildURL, buildInfo, candidates);
         }
         catch (FileNotFoundException ex)
         {
@@ -147,7 +132,7 @@ public class BuildCopier extends PromoterComponent
     }
   }
 
-  protected boolean copyBuild(Properties jobProperties, String buildURL, BuildInfo buildInfo)
+  protected void addPromotionCandidate(Properties jobProperties, String buildURL, BuildInfo buildInfo, List<PromotionCandidate> candidates)
   {
     String buildType = buildInfo.getType();
     String autoPromote = jobProperties.getProperty("auto.promote", "IMSR");
@@ -157,36 +142,21 @@ public class BuildCopier extends PromoterComponent
     if (autoPromote.contains(buildType))
     {
       File dropsDir = PromoterConfig.INSTANCE.getDropsArea();
-      dropsDir.mkdirs();
-
       File drop = new File(dropsDir, buildInfo.getQualifier());
       if (!drop.exists())
       {
-        drop.mkdirs();
-
-        boolean isVisible = autoVisible.contains(buildType);
-        DropProcessor.storeMarkers(drop, jobProperties, isVisible);
-        System.out.println("Build " + buildInfo.getNumber() + " is being copied to " + drop + (isVisible ? " (visible)" : " (invisible)"));
-
-        File zip = new File(drop, "build-results.zip");
-        IO.copyFile(() -> Jenkins.openInputStream(buildURL + "/artifact/build-results.zip"), zip);
-        IO.unzip(zip, drop, null);
-        zip.delete();
-
-        // Handle old build results layout
-        File siteP2 = new File(drop, "site.p2");
-        if (siteP2.isDirectory())
+        for (PromotionCandidate candidate : candidates)
         {
-          for (File file : siteP2.listFiles())
+          if (buildInfo.getQualifier().equals(candidate.getBuildInfo().getQualifier()))
           {
-            file.renameTo(new File(drop, file.getName()));
+            System.out.println(message + " is already selected for promotion");
+            return;
           }
-
-          siteP2.delete();
         }
 
-        setTag(buildInfo);
-        return true;
+        boolean isVisible = autoVisible.contains(buildType);
+        candidates.add(new PromotionCandidate(jobProperties, buildURL, buildInfo, isVisible));
+        return;
       }
 
       System.out.println(message + " is already promoted");
@@ -195,8 +165,73 @@ public class BuildCopier extends PromoterComponent
     {
       System.out.println(message + " is not configured for promotion");
     }
+  }
 
-    return false;
+  public List<BuildInfo> copyBuilds(List<PromotionCandidate> candidates)
+  {
+    List<BuildInfo> buildInfos = new ArrayList<>();
+    for (PromotionCandidate candidate : candidates)
+    {
+      if (copyBuild(candidate))
+      {
+        buildInfos.add(candidate.getBuildInfo());
+      }
+    }
+
+    File logFile = new File(PromoterConfig.INSTANCE.getWorkingArea(), "copied-builds.txt");
+    IO.writeFile(logFile, out -> {
+      PrintStream stream = new PrintStream(out);
+
+      for (BuildInfo buildInfo : buildInfos)
+      {
+        stream.println(buildInfo.getQualifier());
+      }
+
+      stream.flush();
+    });
+
+    return buildInfos;
+  }
+
+  protected boolean copyBuild(PromotionCandidate candidate)
+  {
+    Properties jobProperties = candidate.getJobProperties();
+    String buildURL = candidate.getBuildURL();
+    BuildInfo buildInfo = candidate.getBuildInfo();
+    File dropsDir = PromoterConfig.INSTANCE.getDropsArea();
+    File drop = new File(dropsDir, buildInfo.getQualifier());
+
+    dropsDir.mkdirs();
+    if (drop.exists())
+    {
+      System.out.println("Build " + buildInfo.getNumber() + " (" + buildInfo.getType() + ") is already promoted");
+      return false;
+    }
+
+    drop.mkdirs();
+    boolean visible = buildInfo.isVisible();
+    DropProcessor.storeMarkers(drop, jobProperties, visible);
+    System.out.println("Build " + buildInfo.getNumber() + " is being copied to " + drop + (visible ? " (visible)" : " (invisible)"));
+
+    File zip = new File(drop, "build-results.zip");
+    IO.copyFile(() -> Jenkins.openInputStream(buildURL + "/artifact/build-results.zip"), zip);
+    IO.unzip(zip, drop, null);
+    zip.delete();
+
+    // Handle old build results layout
+    File siteP2 = new File(drop, "site.p2");
+    if (siteP2.isDirectory())
+    {
+      for (File file : siteP2.listFiles())
+      {
+        file.renameTo(new File(drop, file.getName()));
+      }
+
+      siteP2.delete();
+    }
+
+    setTag(buildInfo);
+    return true;
   }
 
   protected void setTag(BuildInfo buildInfo)

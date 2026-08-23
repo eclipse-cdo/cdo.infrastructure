@@ -44,6 +44,14 @@ public class DropProcessor extends PromoterComponent
   {
   }
 
+  public List<BuildInfo> loadBuildInfos() throws Exception
+  {
+    List<BuildInfo> buildInfos = new ArrayList<>();
+    processDrops(null, true, buildInfos, PromoterConfig.INSTANCE.getArchiveDropsArea());
+    processDrops(null, true, buildInfos, PromoterConfig.INSTANCE.getDropsArea());
+    return buildInfos;
+  }
+
   public List<BuildInfo> processDrops(XMLOutput xml) throws Exception
   {
     List<BuildInfo> buildInfos = new ArrayList<>();
