@@ -11,8 +11,6 @@
  */
 package promoter;
 
-import org.xml.sax.SAXException;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,7 +23,6 @@ import java.util.StringTokenizer;
 
 import promoter.util.Config;
 import promoter.util.IO;
-import promoter.util.XMLOutput;
 
 /**
  * @author Eike Stepper
@@ -36,12 +33,17 @@ public class RepositoryComposer extends PromoterComponent
   {
   }
 
-  public WebNode planRepositories(List<BuildInfo> buildInfos, File configFolder) throws SAXException
+  public WebNode planRepositories(List<BuildInfo> buildInfos, File configFolder)
   {
-    return composeRepositories(null, buildInfos, configFolder);
+    return composeRepositories(buildInfos, configFolder, false);
   }
 
-  public WebNode composeRepositories(XMLOutput xml, List<BuildInfo> buildInfos, File configFolder) throws SAXException
+  public WebNode composeRepositories(List<BuildInfo> buildInfos, File configFolder)
+  {
+    return composeRepositories(buildInfos, configFolder, true);
+  }
+
+  protected WebNode composeRepositories(List<BuildInfo> buildInfos, File configFolder, boolean generate)
   {
     if (!configFolder.isDirectory())
     {
@@ -65,9 +67,9 @@ public class RepositoryComposer extends PromoterComponent
     Repository repository = createRepository(relativePath, compositionProperties, buildInfos);
     if (repository != null)
     {
-      if (xml != null)
+      if (generate)
       {
-        repository.generate(xml);
+        repository.generate();
       }
 
       webNode.setRepository(repository);
@@ -76,7 +78,7 @@ public class RepositoryComposer extends PromoterComponent
     File[] children = configFolder.listFiles();
     for (File child : children)
     {
-      WebNode childWebNode = composeRepositories(xml, buildInfos, child);
+      WebNode childWebNode = composeRepositories(buildInfos, child, generate);
       if (childWebNode != null)
       {
         webNode.getChildren().add(childWebNode);
@@ -94,7 +96,7 @@ public class RepositoryComposer extends PromoterComponent
         String path = relativePath.getPath();
         File compositionFolder = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), path);
 
-        if (xml != null)
+        if (generate)
         {
           File latestUrl = new File(compositionFolder, "latest.qualifier");
           appendFile(latestUrl, latestQualifier);
@@ -105,7 +107,7 @@ public class RepositoryComposer extends PromoterComponent
           Repository latestRepository = createLatestRepository(new File(relativePath, "latest"), compositionProperties, latestDrop);
           if (latestRepository != null)
           {
-            latestRepository.generate(xml);
+            latestRepository.generate();
             webNode.setLatestRepository(latestRepository);
 
             TPMacroSetup.copyToLatestRepository(latestDrop, latestRepository);
@@ -117,21 +119,14 @@ public class RepositoryComposer extends PromoterComponent
             File help = new File(latestDrop.getDrop(), "help");
             if (help.isDirectory())
             {
-              xml.element("echo");
-              xml.attribute("message", "Copying " + help + "**/* to stable location");
+              File target = new File(compositionFolder, helpPath);
 
-              xml.element("copy");
-              xml.attribute("todir", new File(compositionFolder, helpPath));
-              xml.attribute("preservelastmodified", true);
-              xml.attribute("failonerror", false);
-              xml.push();
-              xml.element("fileset");
-              xml.attribute("dir", help);
-              xml.push();
-              xml.element("include");
-              xml.attribute("name", "**/*");
-              xml.pop();
-              xml.pop();
+              if (!IO.isContained(compositionFolder, target))
+              {
+                throw new IllegalStateException("Refusing to copy latest help outside composition area: " + target);
+              }
+
+              IO.copyTree(help, target);
             }
           }
         }

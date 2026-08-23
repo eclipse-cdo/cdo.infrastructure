@@ -11,23 +11,33 @@
  */
 package promoter;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import promoter.util.Config;
 import promoter.util.IO;
-import promoter.util.XMLOutput;
 
 /**
  * @author Eike Stepper
@@ -47,20 +57,20 @@ public class DropProcessor extends PromoterComponent
   public List<BuildInfo> loadBuildInfos() throws Exception
   {
     List<BuildInfo> buildInfos = new ArrayList<>();
-    processDrops(null, true, buildInfos, PromoterConfig.INSTANCE.getArchiveDropsArea());
-    processDrops(null, true, buildInfos, PromoterConfig.INSTANCE.getDropsArea());
+    processDrops(true, buildInfos, PromoterConfig.INSTANCE.getArchiveDropsArea());
+    processDrops(true, buildInfos, PromoterConfig.INSTANCE.getDropsArea());
     return buildInfos;
   }
 
-  public List<BuildInfo> processDrops(XMLOutput xml) throws Exception
+  public List<BuildInfo> processDrops() throws Exception
   {
     List<BuildInfo> buildInfos = new ArrayList<>();
-    processDrops(xml, true, buildInfos, PromoterConfig.INSTANCE.getArchiveDropsArea());
-    processDrops(xml, false, buildInfos, PromoterConfig.INSTANCE.getDropsArea());
+    processDrops(true, buildInfos, PromoterConfig.INSTANCE.getArchiveDropsArea());
+    processDrops(false, buildInfos, PromoterConfig.INSTANCE.getDropsArea());
     return buildInfos;
   }
 
-  protected void processDrops(XMLOutput xml, boolean loadInfoOnly, List<BuildInfo> buildInfos, File dropsArea) throws Exception
+  protected void processDrops(boolean loadInfoOnly, List<BuildInfo> buildInfos, File dropsArea) throws Exception
   {
     File[] drops = dropsArea.listFiles();
     if (drops != null)
@@ -69,13 +79,13 @@ public class DropProcessor extends PromoterComponent
       {
         if (drop.isDirectory())
         {
-          processDrop(xml, drop, loadInfoOnly, buildInfos);
+          processDrop(drop, loadInfoOnly, buildInfos);
         }
       }
     }
   }
 
-  protected void processDrop(XMLOutput xml, File drop, boolean loadInfoOnly, List<BuildInfo> buildInfos) throws Exception
+  protected void processDrop(File drop, boolean loadInfoOnly, List<BuildInfo> buildInfos) throws Exception
   {
     BuildInfo buildInfo = null;
 
@@ -93,23 +103,22 @@ public class DropProcessor extends PromoterComponent
 
     if (IO.isRepository(drop))
     {
-      generateCategories(xml, drop);
+      generateCategories(drop);
 
       // Add p2.mirrorsURL
       File markerFile = new File(drop, DropProcessor.MARKER_MIRRORED);
       if (!markerFile.exists())
       {
-        addMirroring(xml, drop, null, "artifacts");
-        addMirroring(xml, drop, null, "content");
+        addMirroring(drop, null, "artifacts");
+        addMirroring(drop, null, "content");
 
         File categories = new File(drop, "categories");
         if (categories.isDirectory())
         {
-          addMirroring(xml, drop, "categories", "content");
+          addMirroring(drop, "categories", "content");
         }
 
-        xml.element("touch");
-        xml.attribute("file", markerFile);
+        markerFile.createNewFile();
       }
     }
 
@@ -126,7 +135,12 @@ public class DropProcessor extends PromoterComponent
         File zipSite = new File(zips, generateZipSite);
         if (!zipSite.exists())
         {
-          generateZipSite(xml, drop, zipSite);
+          if (!IO.isContained(drop, zipSite))
+          {
+            throw new IllegalStateException("Refusing to create site outside drop: " + zipSite);
+          }
+
+          generateZipSite(drop, zipSite);
         }
       }
 
@@ -136,11 +150,11 @@ public class DropProcessor extends PromoterComponent
     File help = new File(drop, "help");
     if (help.isDirectory())
     {
-      unpackHelp(xml, help);
+      unpackHelp(help);
     }
   }
 
-  protected File generateCategories(XMLOutput xml, File drop) throws SAXException
+  protected File generateCategories(File drop) throws Exception
   {
     File categories = new File(drop, "categories");
     if (categories.isDirectory())
@@ -151,7 +165,7 @@ public class DropProcessor extends PromoterComponent
     File contentJAR = new File(drop, "content.jar");
     File contentXML = new File(drop, "content.xml");
 
-    unzip(xml, drop, contentJAR, contentXML);
+    unzip(contentJAR, drop, name -> name.equals(contentXML.getName()));
 
     File categoriesJAR = new File(categories, "content.jar");
     File categoriesXML = new File(categories, "content.xml");
@@ -159,71 +173,35 @@ public class DropProcessor extends PromoterComponent
     File categoriesJAR2 = new File(categories, "artifacts.jar");
     File categoriesXML2 = new File(categories, "artifacts.xml");
 
-    // Transform
-    xml.element("xslt");
-    xml.attribute("style", new File(PromoterConfig.INSTANCE.getXSLDirectory(), "content2categories.xsl"));
-    xml.attribute("in", contentXML);
-    xml.attribute("out", categoriesXML);
+    categories.mkdirs();
 
-    xml.element("replaceregexp");
-    xml.attribute("file", categoriesXML);
-    xml.attribute("match", "BUILD_QUALIFIER");
-    xml.attribute("replace", drop.getName());
-    xml.attribute("byline", true);
+    TransformerFactory.newInstance().newTransformer(new StreamSource(new File(PromoterConfig.INSTANCE.getXSLDirectory(), "content2categories.xsl")))
+        .transform(new StreamSource(contentXML), new StreamResult(categoriesXML));
 
-    // Find number of categories
-    String sizeProperty = "requires.size." + drop.getName();
+    replaceRegex(categoriesXML, Pattern.compile("BUILD_QUALIFIER"), drop.getName());
 
-    xml.element("resourcecount");
-    xml.attribute("property", sizeProperty);
-    xml.push();
-    xml.element("tokens");
-    xml.push();
-    xml.element("concat");
-    xml.push();
-    xml.element("filterchain");
-    xml.push();
-    xml.element("tokenfilter");
-    xml.push();
-    xml.element("containsregex");
-    xml.attribute("pattern", "required namespace");
-    xml.element("linetokenizer");
-    xml.pop();
-    xml.pop();
-    xml.element("fileset");
-    xml.attribute("file", categoriesXML);
-    xml.pop();
-    xml.pop();
-    xml.pop();
+    long requiredSize;
+    try (Stream<String> lines = Files.lines(categoriesXML.toPath()))
+    {
+      requiredSize = lines.filter(line -> line.contains("required namespace")).count();
+    }
 
-    xml.element("replaceregexp");
-    xml.attribute("file", categoriesXML);
-    xml.attribute("match", "REQUIRES_SIZE");
-    xml.attribute("replace", "${" + sizeProperty + "}");
-    xml.attribute("byline", true);
+    replaceRegex(categoriesXML, Pattern.compile("REQUIRES_SIZE"), Long.toString(requiredSize));
 
-    xml.element("copy");
-    xml.attribute("file", categoriesXML);
-    xml.attribute("tofile", categoriesXML2);
+    IO.copyFile(categoriesXML, categoriesXML2);
+    replaceRegex(categoriesXML2, Pattern.compile("org\\.eclipse\\.equinox\\.internal\\.p2\\.metadata\\.repository\\.LocalMetadataRepository"),
+        "org.eclipse.equinox.p2.artifact.repository.simpleRepository");
 
-    xml.element("replaceregexp");
-    xml.attribute("file", categoriesXML2);
-    xml.attribute("match", "org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository");
-    xml.attribute("replace", "org.eclipse.equinox.p2.artifact.repository.simpleRepository");
-    xml.attribute("byline", true);
+    zipSingle(categories, categoriesJAR, categoriesXML);
+    categoriesXML.delete();
 
-    zip(xml, categories, categoriesJAR, categoriesXML);
-    xml.element("delete");
-    xml.attribute("file", categoriesXML);
-
-    zip(xml, categories, categoriesJAR2, categoriesXML2);
-    xml.element("delete");
-    xml.attribute("file", categoriesXML2);
+    zipSingle(categories, categoriesJAR2, categoriesXML2);
+    categoriesXML2.delete();
 
     return contentXML;
   }
 
-  protected void addMirroring(XMLOutput xml, File drop, String pathInDrop, String name) throws SAXException
+  protected void addMirroring(File drop, String pathInDrop, String name) throws Exception
   {
     File path = pathInDrop == null ? drop : new File(drop, pathInDrop);
 
@@ -236,70 +214,96 @@ public class DropProcessor extends PromoterComponent
     File xmlFile = new File(path, name + ".xml");
     if (!xmlFile.isFile())
     {
-      unzip(xml, path, jarFile, xmlFile);
+      unzip(jarFile, path, entry -> entry.equals(xmlFile.getName()));
     }
 
-    xml.element("replaceregexp");
-    xml.attribute("file", xmlFile);
-    xml.attribute("match", match);
-    xml.attribute("replace", replace);
-
-    zip(xml, path, jarFile, xmlFile);
-
-    xml.element("delete");
-    xml.attribute("file", xmlFile);
+    replaceRegex(xmlFile, Pattern.compile(match), replace);
+    zipSingle(path, jarFile, xmlFile);
+    xmlFile.delete();
   }
 
-  protected void zip(XMLOutput xml, File path, File jarFile, File xmlFile) throws SAXException
+  protected void zipSingle(File path, File jarFile, File xmlFile)
   {
-    xml.element("zip");
-    xml.attribute("destfile", jarFile);
-    xml.attribute("update", false);
-    xml.push();
-    xml.element("fileset");
-    xml.attribute("dir", path);
-    xml.push();
-    xml.element("include");
-    xml.attribute("name", xmlFile.getName());
-    xml.pop();
-    xml.pop();
+    zip(path, jarFile, name -> name.equals(xmlFile.getName()));
   }
 
-  protected void unzip(XMLOutput xml, File path, File jarFile, File xmlFile) throws SAXException
+  protected void unzip(File zipFile, File target, Predicate<String> selector)
   {
-    xml.element("unzip");
-    xml.attribute("dest", path);
-    xml.attribute("src", jarFile);
-    xml.push();
-    xml.element("patternset");
-    xml.attribute("includes", xmlFile.getName());
-    xml.pop();
+    try (InputStream input = IO.openInputStream(zipFile))
+    {
+      IO.unzip(input, target, name -> isSafeZipEntry(name) && selector.test(name) ? name : null);
+    }
+    catch (IOException ex)
+    {
+      throw new RuntimeException(ex);
+    }
   }
 
-  protected void generateZipSite(XMLOutput xml, File drop, File zipSite) throws SAXException
+  protected boolean isSafeZipEntry(String name)
   {
-    xml.element("zip");
-    xml.attribute("destfile", zipSite);
-    xml.push();
-    xml.element("fileset");
-    xml.attribute("dir", drop);
-    xml.push();
-    xml.element("include");
-    xml.attribute("name", "artifacts.jar");
-    xml.element("include");
-    xml.attribute("name", "content.jar");
-    xml.element("include");
-    xml.attribute("name", "binary/**");
-    xml.element("include");
-    xml.attribute("name", "features/**");
-    xml.element("include");
-    xml.attribute("name", "plugins/**");
-    xml.element("include");
-    xml.pop();
-    xml.pop();
+    String normalized = name.replace('\\', '/');
+    return !normalized.startsWith("/") && !normalized.contains(":") && !normalized.startsWith("../") && !normalized.contains("/../")
+        && !normalized.endsWith("/..") && !normalized.equals("..");
   }
 
-  protected void unpackHelp(XMLOutput xml, File help) throws SAXException, IOException
+  protected void zip(File source, File destination, Predicate<String> selector)
+  {
+    IO.mkdirs(destination.getParentFile());
+
+    try (ZipOutputStream output = new ZipOutputStream(new FileOutputStream(destination)))
+    {
+      zip(source, source, selector, output);
+    }
+    catch (IOException ex)
+    {
+      throw new RuntimeException(ex);
+    }
+  }
+
+  protected void zip(File root, File current, Predicate<String> selector, ZipOutputStream output) throws IOException
+  {
+    File[] files = current.listFiles();
+    if (files == null)
+    {
+      return;
+    }
+
+    for (File file : files)
+    {
+      String name = root.toPath().relativize(file.toPath()).toString().replace(File.separatorChar, '/');
+      if (file.isDirectory())
+      {
+        zip(root, file, selector, output);
+      }
+      else if (selector.test(name))
+      {
+        output.putNextEntry(new ZipEntry(name));
+
+        try (InputStream input = fileInput(file))
+        {
+          IO.copy(input, output);
+        }
+
+        output.closeEntry();
+      }
+    }
+  }
+
+  protected InputStream fileInput(File file)
+  {
+    return IO.openInputStream(file);
+  }
+
+  protected void generateZipSite(File drop, File zipSite)
+  {
+    zip(drop, zipSite, name -> name.equals("artifacts.jar") //
+        || name.equals("content.jar") //
+        || name.startsWith("binary/") //
+        || name.startsWith("features/") //
+        || name.startsWith("plugins/"));
+  }
+
+  protected void unpackHelp(File help) throws IOException
   {
     File docsFile = new File(help, "docs.txt");
     if (docsFile.isFile())
@@ -336,78 +340,79 @@ public class DropProcessor extends PromoterComponent
       File plugins = new File(help, "plugins");
       for (String doc : docs)
       {
-        // Unzip from dropins.zip
-        xml.element("unzip");
-        xml.attribute("dest", help);
-        xml.push();
-        xml.element("fileset");
-        xml.attribute("dir", new File(help.getParentFile(), "zips"));
-        xml.push();
-        xml.element("include");
-        xml.attribute("name", "*-Dropins.zip");
-        xml.pop();
-        xml.element("patternset");
-        xml.attribute("includes", "plugins/" + doc + "_*.jar");
-        xml.pop();
+        File zips = new File(help.getParentFile(), "zips");
+        File[] dropinZips = zips.listFiles(file -> file.isFile() && file.getName().endsWith("-Dropins.zip"));
+        if (dropinZips != null)
+        {
+          for (File dropinZip : dropinZips)
+          {
+            unzip(dropinZip, help, name -> name.startsWith("plugins/" + doc + "_") && name.endsWith(".jar"));
+          }
+        }
 
-        xml.element("unzip");
-        xml.attribute("dest", new File(help, doc));
-        xml.push();
-        xml.element("patternset");
-        xml.push();
-        xml.element("include");
-        xml.attribute("name", "javadoc/**");
-        xml.element("include");
-        xml.attribute("name", "productdoc/**");
-        xml.element("include");
-        xml.attribute("name", "schemadoc/**");
-        xml.element("include");
-        xml.attribute("name", "html/**");
-        xml.element("include");
-        xml.attribute("name", "images/**");
-        xml.element("include");
-        xml.attribute("name", "about.html");
-        xml.element("include");
-        xml.attribute("name", "copyright.txt");
-        xml.element("include");
-        xml.attribute("name", "plugin.properties");
-        xml.pop();
-        xml.element("fileset");
-        xml.attribute("dir", plugins);
-        xml.attribute("includes", doc + "_*.jar");
-        xml.pop();
+        File plugin = new File(help, doc);
+        if (!IO.isContained(help, plugin))
+        {
+          throw new IllegalStateException("Refusing to unpack documentation outside help directory: " + plugin);
+        }
+
+        File[] pluginJars = plugins.listFiles(file -> file.isFile() && file.getName().startsWith(doc + "_") && file.getName().endsWith(".jar"));
+        if (pluginJars != null)
+        {
+          for (File pluginJar : pluginJars)
+          {
+            unzip(pluginJar, plugin,
+                name -> name.startsWith("javadoc/") || name.startsWith("productdoc/") || name.startsWith("schemadoc/") || name.startsWith("html/")
+                    || name.startsWith("images/") || name.equals("about.html") || name.equals("copyright.txt") || name.equals("plugin.properties"));
+          }
+        }
       }
 
       // Remove the temp unpack folder
-      xml.element("delete");
-      xml.attribute("includeemptydirs", true);
-      xml.attribute("failonerror", true);
-      xml.push();
-      xml.element("fileset");
-      xml.attribute("dir", help);
-      xml.push();
-      xml.element("include");
-      xml.attribute("name", "plugins/**");
-      xml.element("include");
-      xml.attribute("name", "plugins/**");
-      xml.pop();
-      xml.pop();
+      IO.delete(plugins);
 
       // Uncomment breadcrumbs
-      xml.element("replaceregexp");
-      xml.attribute("match", "<!-- (<div class=\"help_breadcrumbs\">.*?) -->");
-      xml.attribute("replace", "\\1");
-      xml.attribute("flags", "s");
-      xml.push();
-      xml.element("fileset");
-      xml.attribute("dir", help);
-      xml.attribute("includes", "**/*.html");
-      xml.pop();
+      Pattern breadcrumbs = Pattern.compile("<!-- (<div class=\\\"help_breadcrumbs\\\">.*?) -->", Pattern.DOTALL);
+      replaceInTree(help, breadcrumbs, "$1");
 
       // Rename docs.txt
-      xml.element("move");
-      xml.attribute("file", docsFile);
-      xml.attribute("tofile", new File(help, ".docs"));
+      Files.move(docsFile.toPath(), new File(help, ".docs").toPath(), StandardCopyOption.REPLACE_EXISTING);
+    }
+  }
+
+  protected void replaceRegex(File file, Pattern pattern, String replacement)
+  {
+    replaceRegexRaw(file, pattern, Matcher.quoteReplacement(replacement));
+  }
+
+  protected void replaceRegexRaw(File file, Pattern pattern, String replacement)
+  {
+    String contents = IO.readTextFile(file);
+    String result = pattern.matcher(contents).replaceAll(replacement);
+    if (!contents.equals(result))
+    {
+      IO.writeTextFile(file, result);
+    }
+  }
+
+  protected void replaceInTree(File folder, Pattern pattern, String replacement)
+  {
+    File[] files = folder.listFiles();
+    if (files == null)
+    {
+      return;
+    }
+
+    for (File file : files)
+    {
+      if (file.isDirectory())
+      {
+        replaceInTree(file, pattern, replacement);
+      }
+      else if (file.getName().endsWith(".html"))
+      {
+        replaceRegexRaw(file, pattern, replacement);
+      }
     }
   }
 

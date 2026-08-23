@@ -201,6 +201,11 @@ public class BuildCopier extends PromoterComponent
     File dropsDir = PromoterConfig.INSTANCE.getDropsArea();
     File drop = new File(dropsDir, buildInfo.getQualifier());
 
+    if (!IO.isContained(dropsDir, drop))
+    {
+      throw new IllegalArgumentException("Refusing to copy build outside drops area: " + drop);
+    }
+
     dropsDir.mkdirs();
     if (drop.exists())
     {

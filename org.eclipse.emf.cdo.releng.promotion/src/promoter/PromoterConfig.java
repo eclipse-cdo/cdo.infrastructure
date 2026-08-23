@@ -61,11 +61,6 @@ public final class PromoterConfig extends Config
     return getDirectory("projectCloneLocation"); // Deprecated.
   }
 
-  public File getAntHome()
-  {
-    return getDirectory("ANT_HOME");
-  }
-
   public File getInstallDirectory()
   {
     return getUserDirectory();

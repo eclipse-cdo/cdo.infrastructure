@@ -37,6 +37,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -281,6 +282,20 @@ public final class IO
 
     file.deleteOnExit();
     return deleted;
+  }
+
+  public static boolean isContained(File folder, File file)
+  {
+    try
+    {
+      Path folderPath = folder.getCanonicalFile().toPath();
+      Path filePath = file.getCanonicalFile().toPath();
+      return !folderPath.equals(filePath) && filePath.startsWith(folderPath);
+    }
+    catch (IOException ex)
+    {
+      throw new RuntimeException(ex);
+    }
   }
 
   public static void copyTree(File source, File target)

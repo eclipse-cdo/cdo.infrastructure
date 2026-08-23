@@ -25,6 +25,7 @@ import java.util.Properties;
 import java.util.function.Predicate;
 
 import promoter.util.Config;
+import promoter.util.IO;
 import promoter.util.Util;
 import promoter.util.XML;
 
@@ -194,7 +195,13 @@ public final class BuildInfo implements Comparable<BuildInfo>
   public File getDrop()
   {
     File area = location == Location.ARCHIVE ? PromoterConfig.INSTANCE.getArchiveDropsArea() : PromoterConfig.INSTANCE.getDropsArea();
-    return new File(area, qualifier);
+    File drop = new File(area, qualifier);
+    if (!IO.isContained(area, drop))
+    {
+      throw new IllegalStateException("Build qualifier resolves outside drops area: " + qualifier);
+    }
+
+    return drop;
   }
 
   public String getDropURL(String path, boolean mirror)

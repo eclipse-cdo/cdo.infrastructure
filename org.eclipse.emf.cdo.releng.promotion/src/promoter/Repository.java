@@ -12,6 +12,8 @@
 package promoter;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +22,8 @@ import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import promoter.BuildInfo.Location;
 import promoter.util.IO;
@@ -114,7 +118,7 @@ public class Repository
     return path;
   }
 
-  public void generate(XMLOutput xml)
+  public void generate()
   {
     folder.mkdirs();
 
@@ -138,11 +142,9 @@ public class Repository
 
     generateHTML(folder);
 
-    generateXML(xml, folder, "compositeArtifacts", "compositeArtifactRepository",
-        "org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository");
+    generateXML(folder, "compositeArtifacts", "compositeArtifactRepository", "org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository");
 
-    generateXML(xml, folder, "compositeContent", "compositeMetadataRepository",
-        "org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository");
+    generateXML(folder, "compositeContent", "compositeMetadataRepository", "org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository");
   }
 
   protected void generateHTML(File folder)
@@ -210,9 +212,10 @@ public class Repository
     }
   }
 
-  protected void generateXML(final XMLOutput xml, final File folder, final String xmlName, final String entityName, final String typeName)
+  protected void generateXML(File folder, String xmlName, String entityName, String typeName)
   {
-    final File xmlFile = new File(folder, xmlName + ".xml");
+    File xmlFile = new File(folder, xmlName + ".xml");
+
     IO.writeFile(xmlFile, out -> {
       try
       {
@@ -256,26 +259,36 @@ public class Repository
         repoXML.pop();
         repoXML.done();
 
-        if (COMPRESS)
-        {
-          xml.element("zip");
-          xml.attribute("destfile", new File(folder, xmlName + ".jar"));
-          xml.attribute("update", false);
-          xml.push();
-          xml.element("fileset");
-          xml.attribute("dir", folder);
-          xml.push();
-          xml.element("include");
-          xml.attribute("name", xmlFile.getName());
-          xml.pop();
-          xml.pop();
-        }
       }
       catch (Exception ex)
       {
         throw new RuntimeException(ex);
       }
     });
+
+    if (COMPRESS)
+    {
+      zipSingle(folder, new File(folder, xmlName + ".jar"), xmlFile);
+    }
+  }
+
+  protected void zipSingle(File folder, File zipFile, File sourceFile)
+  {
+    try (ZipOutputStream output = new ZipOutputStream(new FileOutputStream(zipFile)))
+    {
+      output.putNextEntry(new ZipEntry(sourceFile.getName()));
+
+      try (java.io.InputStream input = IO.openInputStream(sourceFile))
+      {
+        IO.copy(input, output);
+      }
+
+      output.closeEntry();
+    }
+    catch (IOException ex)
+    {
+      throw new RuntimeException(ex);
+    }
   }
 
   /**

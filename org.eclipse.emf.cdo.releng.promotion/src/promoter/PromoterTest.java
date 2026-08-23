@@ -13,8 +13,6 @@ package promoter;
 
 import java.io.File;
 
-import promoter.util.Ant;
-
 /**
  * @author Eike Stepper
  */
@@ -35,21 +33,6 @@ public class PromoterTest extends Promoter
   public PromoterTest()
   {
     super(true, !COPY_BUILDS, false);
-  }
-
-  @Override
-  public Ant<AntResult> createAnt()
-  {
-    File script = new File(PromoterConfig.INSTANCE.getWorkingArea(), "promoter.ant");
-    File basedir = PromoterConfig.INSTANCE.getDownloadsArea();
-    return new DefaultAnt(script, basedir)
-    {
-      @Override
-      protected void executeAntScript()
-      {
-        // super.executeAntScript();
-      }
-    };
   }
 
   public static void main(String[] args)

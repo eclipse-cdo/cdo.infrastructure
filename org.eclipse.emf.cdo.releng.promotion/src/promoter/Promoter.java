@@ -19,9 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import promoter.util.Ant;
 import promoter.util.IO;
-import promoter.util.XMLOutput;
 
 /**
  * @author Eike Stepper
@@ -143,8 +141,17 @@ public class Promoter extends ComponentFactory implements Runnable
       buildCopier.copyBuilds(promotionCandidates);
     }
 
-    Ant<AntResult> ant = createAnt();
-    AntResult result = ant.run(); // Calls processDropsAndComposeRepositories().
+    PromotionResult result;
+
+    try
+    {
+      result = processDropsAndComposeRepositories();
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+
     List<BuildInfo> buildInfos = result.getBuildInfos();
 
     if (!skipGenerateReleaseNotes)
@@ -192,7 +199,7 @@ public class Promoter extends ComponentFactory implements Runnable
       {
         buildInfos.add(promotionCandidate.getBuildInfo());
       }
-  
+
       RepositoryComposer repositoryComposer = createRepositoryComposer();
       WebNode webNode = repositoryComposer.planRepositories(buildInfos, PromoterConfig.INSTANCE.getConfigCompositesDirectory());
       if (webNode != null)
@@ -210,7 +217,7 @@ public class Promoter extends ComponentFactory implements Runnable
   public void deleteOldDrops(WebNode webNode, List<BuildInfo> allBuildInfos)
   {
     Set<BuildInfo> composedDrops = new HashSet<>(webNode.getDrops(true));
-  
+
     for (Iterator<BuildInfo> it = allBuildInfos.iterator(); it.hasNext();)
     {
       BuildInfo buildInfo = it.next();
@@ -219,63 +226,48 @@ public class Promoter extends ComponentFactory implements Runnable
         File drop = buildInfo.getDrop();
         if (drop.exists())
         {
+          File dropsArea = buildInfo.getLocation() == BuildInfo.Location.ARCHIVE //
+              ? PromoterConfig.INSTANCE.getArchiveDropsArea() //
+              : PromoterConfig.INSTANCE.getDropsArea();
+
+          if (!IO.isContained(dropsArea, drop))
+          {
+            throw new IllegalStateException("Refusing to delete drop outside drops area: " + drop);
+          }
+
           System.out.println();
           System.out.println("Deleting drop: " + buildInfo);
-  
+
           int files = IO.delete(drop);
           System.out.println("Deleted files: " + files);
         }
-  
+
         it.remove();
       }
     }
   }
 
-  public AntResult processDropsAndComposeRepositories(XMLOutput xml) throws Exception
+  public PromotionResult processDropsAndComposeRepositories() throws Exception
   {
     DropProcessor dropProcessor = createDropProcessor();
-    List<BuildInfo> buildInfos = dropProcessor.processDrops(xml);
+    List<BuildInfo> buildInfos = dropProcessor.processDrops();
 
     RepositoryComposer repositoryComposer = createRepositoryComposer();
-    WebNode webNode = repositoryComposer.composeRepositories(xml, buildInfos, PromoterConfig.INSTANCE.getConfigCompositesDirectory());
+    WebNode webNode = repositoryComposer.composeRepositories(buildInfos, PromoterConfig.INSTANCE.getConfigCompositesDirectory());
 
-    return new AntResult(buildInfos, webNode);
-  }
-
-  public Ant<AntResult> createAnt()
-  {
-    File script = new File(PromoterConfig.INSTANCE.getWorkingArea(), "promoter.ant");
-    File basedir = PromoterConfig.INSTANCE.getDownloadsArea();
-    return new DefaultAnt(script, basedir);
+    return new PromotionResult(buildInfos, webNode);
   }
 
   /**
    * @author Eike Stepper
    */
-  public class DefaultAnt extends Ant<AntResult>
-  {
-    public DefaultAnt(File script, File basedir)
-    {
-      super(script, basedir);
-    }
-
-    @Override
-    protected AntResult create(XMLOutput xml) throws Exception
-    {
-      return processDropsAndComposeRepositories(xml);
-    }
-  }
-
-  /**
-   * @author Eike Stepper
-   */
-  public static class AntResult
+  public static class PromotionResult
   {
     private List<BuildInfo> buildInfos;
 
     private WebNode rootNode;
 
-    public AntResult(List<BuildInfo> buildInfos, WebNode rootNode)
+    public PromotionResult(List<BuildInfo> buildInfos, WebNode rootNode)
     {
       this.buildInfos = buildInfos;
       this.rootNode = rootNode;
