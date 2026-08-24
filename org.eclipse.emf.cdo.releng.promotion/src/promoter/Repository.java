@@ -52,9 +52,6 @@ public class Repository
     path = relativePath.getPath().replace('\\', '/');
     folder = new File(PromoterConfig.INSTANCE.getCompositionTempArea(), path);
 
-    System.out.println();
-    System.out.println("Generating repository " + name + ":");
-    System.out.println(getURL(false));
   }
 
   public final String getName()
@@ -120,6 +117,10 @@ public class Repository
 
   public void generate()
   {
+    System.out.println();
+    System.out.println("Generating repository " + name + ":");
+    System.out.println(getURL(false));
+
     folder.mkdirs();
 
     IO.writeFile(new File(folder, "composition.properties"), out -> {

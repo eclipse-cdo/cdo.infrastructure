@@ -156,6 +156,7 @@ public class BuildCopier extends PromoterComponent
 
         boolean isVisible = autoVisible.contains(buildType);
         candidates.add(new PromotionCandidate(jobProperties, buildURL, buildInfo, isVisible));
+        System.out.println(message + " is selected for promotion" + (isVisible ? " (visible)" : " (invisible)"));
         return;
       }
 
