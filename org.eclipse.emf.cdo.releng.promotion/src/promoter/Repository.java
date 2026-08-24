@@ -82,7 +82,6 @@ public class Repository
   public void addChild(String child)
   {
     child = child.replace('\\', '/');
-    System.out.println("   Adding child location: " + child);
     children.add(child);
   }
 
@@ -120,6 +119,11 @@ public class Repository
     System.out.println();
     System.out.println("Generating repository " + name + ":");
     System.out.println(getURL(false));
+
+    for (String child : children)
+    {
+      System.out.println("   Adding child location: " + child);
+    }
 
     folder.mkdirs();
 
