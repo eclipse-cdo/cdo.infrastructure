@@ -217,7 +217,7 @@ public class BuildCopier extends PromoterComponent
     drop.mkdirs();
     boolean visible = buildInfo.isVisible();
     DropProcessor.storeMarkers(drop, jobProperties, visible);
-    System.out.println("Build " + buildInfo.getNumber() + " is being copied to " + drop + (visible ? " (visible)" : " (invisible)"));
+    System.out.println("Copying build " + buildInfo.getNumber() + " to " + drop + (visible ? " (visible)" : " (invisible)"));
 
     File zip = new File(drop, "build-results.zip");
     IO.copyFile(() -> Jenkins.openInputStream(buildURL + "/artifact/build-results.zip"), zip);
