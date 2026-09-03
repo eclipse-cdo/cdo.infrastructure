@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 /**
@@ -199,7 +200,7 @@ public class XMLOutput
     }
 
     xmlHandler.endDocument();
-    PrintStream stream = new PrintStream(out);
+    PrintStream stream = new PrintStream(out, false, StandardCharsets.UTF_8);
     stream.println();
     stream.flush();
   }

@@ -22,6 +22,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -181,7 +182,7 @@ public class DropProcessor extends PromoterComponent
     replaceRegex(categoriesXML, Pattern.compile("BUILD_QUALIFIER"), drop.getName());
 
     long requiredSize;
-    try (Stream<String> lines = Files.lines(categoriesXML.toPath()))
+    try (Stream<String> lines = Files.lines(categoriesXML.toPath(), StandardCharsets.UTF_8))
     {
       requiredSize = lines.filter(line -> line.contains("required namespace")).count();
     }
@@ -323,7 +324,7 @@ public class DropProcessor extends PromoterComponent
 
       try
       {
-        reader = new BufferedReader(new FileReader(docsFile));
+        reader = new BufferedReader(new FileReader(docsFile, StandardCharsets.UTF_8));
 
         String line;
         while ((line = reader.readLine()) != null)

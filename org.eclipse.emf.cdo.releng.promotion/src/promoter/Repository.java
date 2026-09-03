@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -128,7 +129,7 @@ public class Repository
     folder.mkdirs();
 
     IO.writeFile(new File(folder, "composition.properties"), out -> {
-      PrintStream stream = new PrintStream(out);
+      PrintStream stream = new PrintStream(out, false, StandardCharsets.UTF_8);
       stream.println("composite.name=" + name);
       stream.flush();
     });
@@ -137,7 +138,7 @@ public class Repository
     // {
     // public void handleOutput(OutputStream out) throws IOException
     // {
-    // PrintStream stream = new PrintStream(out);
+    // PrintStream stream = new PrintStream(out, false, StandardCharsets.UTF_8);
     // stream.println("version = 1");
     // stream.println("metadata.repository.factory.order = compositeContent.xml,\\!");
     // stream.println("artifact.repository.factory.order = compositeArtifacts.xml,\\!");
@@ -159,7 +160,7 @@ public class Repository
 
     try
     {
-      out = new PrintStream(htmlFile);
+      out = new PrintStream(htmlFile, StandardCharsets.UTF_8);
 
       String title = "CDO Composite Update Site (" + name + ")";
 

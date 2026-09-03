@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
@@ -17,7 +18,7 @@ public final class Jenkins
 
   private static final String PASSWORD = System.getProperty("jenkinsPassword");
 
-  private static final String ENCODED = Base64.getEncoder().encodeToString((USERNAME + ":" + PASSWORD).getBytes());
+  private static final String ENCODED = Base64.getEncoder().encodeToString((USERNAME + ":" + PASSWORD).getBytes(StandardCharsets.UTF_8));
 
   public static InputStream openInputStream(String url) throws IOException
   {

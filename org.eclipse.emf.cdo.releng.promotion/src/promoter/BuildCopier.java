@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -181,7 +182,7 @@ public class BuildCopier extends PromoterComponent
 
     File logFile = new File(PromoterConfig.INSTANCE.getWorkingArea(), "copied-builds.txt");
     IO.writeFile(logFile, out -> {
-      PrintStream stream = new PrintStream(out);
+      PrintStream stream = new PrintStream(out, false, StandardCharsets.UTF_8);
 
       for (BuildInfo buildInfo : buildInfos)
       {

@@ -13,6 +13,7 @@ package promoter;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -176,7 +177,7 @@ public class Promoter extends ComponentFactory implements Runnable
     }
 
     IO.writeFile(new File(PromoterConfig.INSTANCE.getDropsArea(), "drops.txt"), out -> {
-      PrintStream stream = new PrintStream(out);
+      PrintStream stream = new PrintStream(out, false, StandardCharsets.UTF_8);
 
       for (BuildInfo buildInfo : buildInfos)
       {

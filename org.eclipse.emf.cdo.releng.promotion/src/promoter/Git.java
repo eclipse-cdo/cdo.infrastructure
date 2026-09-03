@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -61,7 +62,7 @@ public class Git extends SourceCodeManager
     // {
     // public void handleOutput(OutputStream out) throws IOException
     // {
-    // PrintStream stream = new PrintStream(out);
+    // PrintStream stream = new PrintStream(out, false, StandardCharsets.UTF_8);
     // fetchIfNeeded(stream);
     //
     // String tag = "drops/" + qualifier;
@@ -98,7 +99,7 @@ public class Git extends SourceCodeManager
       }
 
       int exitValue = IO.executeProcess(command, out -> {
-        PrintStream stream = new PrintStream(out);
+        PrintStream stream = new PrintStream(out, false, StandardCharsets.UTF_8);
         cloneIfNeeded(stream);
 
         stream.println("cd \"" + PromoterConfig.INSTANCE.getProjectCloneLocation() + "\"");
@@ -122,7 +123,7 @@ public class Git extends SourceCodeManager
         throw new RuntimeException("Command '" + command + "' ended with exit value " + exitValue);
       }
 
-      FileReader fileReader = new FileReader(outFile);
+      FileReader fileReader = new FileReader(outFile, StandardCharsets.UTF_8);
       BufferedReader bufferedReader = new BufferedReader(fileReader);
 
       try

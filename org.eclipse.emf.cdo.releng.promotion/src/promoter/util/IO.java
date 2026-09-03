@@ -204,7 +204,7 @@ public final class IO
   {
     try
     {
-      return new FileReader(file);
+      return new FileReader(file, StandardCharsets.UTF_8);
     }
     catch (IOException ex)
     {
@@ -221,7 +221,7 @@ public final class IO
   {
     try
     {
-      return new FileWriter(file);
+      return new FileWriter(file, StandardCharsets.UTF_8);
     }
     catch (IOException ex)
     {
@@ -652,7 +652,7 @@ public final class IO
 
     try
     {
-      out = new PrintStream(file);
+      out = new PrintStream(file, StandardCharsets.UTF_8);
       handler.print(out);
       out.flush();
     }
@@ -673,7 +673,7 @@ public final class IO
 
     try
     {
-      out = new PrintStream(baos);
+      out = new PrintStream(baos, false, StandardCharsets.UTF_8);
       handler.print(out);
       out.flush();
     }

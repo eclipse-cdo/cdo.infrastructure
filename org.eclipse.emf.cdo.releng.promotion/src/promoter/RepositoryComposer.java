@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -188,7 +189,7 @@ public class RepositoryComposer extends PromoterComponent
     try
     {
       out = new FileOutputStream(file, true);
-      PrintStream stream = new PrintStream(out);
+      PrintStream stream = new PrintStream(out, false, StandardCharsets.UTF_8);
 
       stream.print(line);
       stream.flush();

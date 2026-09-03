@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -180,7 +181,7 @@ public class ReleaseNotesGenerator extends PromoterComponent
 
       components.removeIf(IssueComponent::isEmpty);
 
-      out = new PrintStream(relnotesHTML);
+      out = new PrintStream(relnotesHTML, StandardCharsets.UTF_8);
 
       String qualifier = buildInfo.getQualifier();
       out.println("<!DOCTYPE html>");

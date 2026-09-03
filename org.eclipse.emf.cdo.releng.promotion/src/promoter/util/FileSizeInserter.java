@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Eike Stepper
@@ -44,9 +45,9 @@ public class FileSizeInserter
     try
     {
       in = new FileInputStream(file);
-      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
-      out = new PrintStream(temp);
+      out = new PrintStream(temp, StandardCharsets.UTF_8);
 
       String line;
       while ((line = reader.readLine()) != null)
